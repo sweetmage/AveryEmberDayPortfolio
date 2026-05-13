@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Avery Ember Day — Resume</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,500;0,600;0,700;0,800;0,900;1,600;1,800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* Cream base + Avery's brand tokens (pink / teal / orange).
+       Pulled directly from Avery_personal_brand.html so the resume reads
+       as part of the same identity system. */
+    --bg: #faf6ed;
+    --surface: #ffffff;
+    --ink: #1a1a1a;
+    --ink-soft: #2e2e2e;
+    --muted: #6a6a6a;
+    --faint: #b0b0b0;
+    --line: #e7e2d3;
+
+    --accent: #ff0099;          /* brand pink */
+    --accent-soft: #ffb8de;
+    --accent-faint: #ffe5f2;
+
+    --accent-2: #37a7b6;        /* brand teal */
+    --accent-2-soft: #b8dde2;
+    --accent-2-faint: #e0eff1;
+
+    --accent-3: #fa9176;        /* brand orange (used selectively) */
+    --accent-3-soft: #fcc4b3;
+    --accent-3-faint: #fde6dd;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-size: 10.5px;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  .page {
+    max-width: 880px;
+    margin: 0 auto;
+    padding: 32px 36px 36px;
+    background: var(--bg);
+    position: relative;
+  }
+
+  /* Subtle warm paper texture via crosshatched gradient. */
+  .page::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image:
+      radial-gradient(circle at 1px 1px, rgba(26, 24, 20, 0.045) 1px, transparent 0);
+    background-size: 24px 24px;
+    pointer-events: none;
+    z-index: 0;
+  }
+  .page > * { position: relative; z-index: 1; }
+
+  /* HEADER */
+  header {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: end;
+    gap: 28px;
+    padding-bottom: 14px;
+    margin-bottom: 16px;
+    border-bottom: 1px solid var(--line);
+    position: relative;
+  }
+
+  header::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: -1px;
+    width: 140px;
+    height: 3px;
+    background: linear-gradient(90deg, var(--accent) 0%, var(--accent-3) 50%, var(--accent-2) 100%);
+    border-radius: 2px;
+  }
+
+  .name-block { display: flex; flex-direction: column; gap: 4px; }
+
+  h1 {
+    font-family: 'Barlow Condensed', 'Inter', sans-serif;
+    font-weight: 800;
+    font-size: 46px;
+    line-height: 0.95;
+    letter-spacing: 0.005em;
+    color: var(--ink);
+    text-transform: uppercase;
+  }
+
+  h1 .accent {
+    color: var(--accent);
+    font-style: italic;
+    font-weight: 700;
+  }
+
+  .tagline {
+    font-family: 'Inter', sans-serif;
+    color: var(--ink-soft);
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.01em;
+    margin-top: 4px;
+    max-width: 56ch;
+  }
+
+  .pronouns {
+    display: inline-block;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 9px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    color: var(--accent-3);
+    background: var(--accent-3-faint);
+    border: 1px solid var(--accent-3-soft);
+    padding: 2px 8px 1px;
+    border-radius: 3px;
+    margin-top: 6px;
+  }
+
+  .contact {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 3px;
+    font-size: 9.5px;
+    color: var(--ink-soft);
+    text-align: right;
+  }
+
+  .contact a { color: var(--ink-soft); text-decoration: none; border-bottom: 1px dotted var(--accent-soft); }
+  .contact a:hover { color: var(--accent); }
+
+  .contact .row {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+  }
+
+  .contact .label {
+    font-family: 'Barlow Condensed', sans-serif;
+    text-transform: uppercase;
+    font-size: 8.5px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    color: var(--accent);
+    min-width: 52px;
+    text-align: right;
+  }
+
+  /* SUMMARY */
+  .summary {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-left: 3px solid var(--accent);
+    border-radius: 4px;
+    padding: 12px 16px 13px;
+    margin-bottom: 14px;
+    color: var(--ink-soft);
+    line-height: 1.55;
+    box-shadow: 0 1px 0 rgba(26, 24, 20, 0.02);
+  }
+
+  .summary::before {
+    content: "Summary";
+    display: block;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    color: var(--accent);
+    margin-bottom: 6px;
+  }
+
+  /* TWO-COLUMN BODY */
+  .body {
+    display: grid;
+    grid-template-columns: 0.85fr 2fr;
+    gap: 22px;
+    align-items: start;
+  }
+
+  /* SECTION HEADERS */
+  .section-title {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    color: var(--accent);
+    margin-bottom: 10px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid var(--accent-soft);
+    display: flex;
+    align-items: center;
+    gap: 9px;
+  }
+
+  .section-title::before {
+    content: "";
+    width: 7px;
+    height: 7px;
+    background: var(--accent);
+    flex-shrink: 0;
+    transform: rotate(45deg);
+  }
+
+  section + section { margin-top: 11px; }
+
+  /* SKILL GROUPS */
+  .skill-group + .skill-group { margin-top: 10px; }
+
+  .skill-group h4 {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--ink);
+    margin-bottom: 3px;
+  }
+
+  .skill-group p {
+    font-size: 9.5px;
+    color: var(--ink-soft);
+    line-height: 1.5;
+  }
+
+  /* AWARDS — horizontal row in main column */
+  .awards-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 9px;
+    margin-top: 4px;
+  }
+  .award {
+    background: var(--accent-2-faint);
+    border: 1px solid var(--accent-2-soft);
+    border-left: 2px solid var(--accent-2);
+    border-radius: 4px;
+    padding: 8px 10px 9px;
+    font-size: 9px;
+    line-height: 1.4;
+  }
+  .award .award-name {
+    font-weight: 600;
+    color: var(--ink);
+    display: block;
+    margin-bottom: 2px;
+    font-size: 9.5px;
+    line-height: 1.25;
+  }
+  .award .award-meta {
+    color: var(--muted);
+    font-size: 8.5px;
+    font-style: italic;
+  }
+
+  /* EDUCATION */
+  .edu {
+    font-size: 9.5px;
+    line-height: 1.5;
+    color: var(--ink-soft);
+  }
+  .edu .school {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--ink);
+  }
+  .edu .school-meta { color: var(--muted); font-size: 9px; margin-top: 1px; }
+  .edu .school-detail { margin-top: 5px; font-size: 9.5px; line-height: 1.45; }
+
+  /* EXPERIENCE */
+  .role {
+    margin-bottom: 11px;
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+  .role:last-child { margin-bottom: 0; }
+
+  .role-header { display: flex; flex-direction: column; gap: 1px; margin-bottom: 4px; }
+
+  .role-title-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 12px;
+  }
+
+  .role-title {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700;
+    font-size: 15px;
+    color: var(--ink);
+    line-height: 1.15;
+    letter-spacing: 0.005em;
+    text-transform: uppercase;
+  }
+
+  .role-dates {
+    font-family: 'Inter', sans-serif;
+    font-size: 9px;
+    color: var(--muted);
+    font-feature-settings: "tnum";
+    letter-spacing: 0.02em;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .role-meta {
+    font-size: 9.5px;
+    color: var(--ink-soft);
+    line-height: 1.4;
+  }
+
+  .role-meta .company {
+    font-weight: 600;
+    color: var(--accent-2);
+  }
+
+  .role-meta .sep { color: var(--faint); margin: 0 5px; }
+  .role-meta .location { color: var(--muted); }
+
+  .role ul {
+    list-style: none;
+    margin-top: 4px;
+    padding-left: 0;
+  }
+
+  .role li {
+    position: relative;
+    padding-left: 14px;
+    font-size: 9.5px;
+    color: var(--ink-soft);
+    line-height: 1.5;
+    margin-bottom: 2px;
+  }
+
+  .role li::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 6px;
+    width: 5px;
+    height: 1.5px;
+    background: var(--accent);
+  }
+
+  .role li strong { color: var(--ink); font-weight: 600; }
+
+  /* FOOTER (portfolio re-link) */
+  .footer-portfolio {
+    margin-top: 10px;
+    padding-top: 7px;
+    border-top: 1px dashed var(--line);
+    text-align: center;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 10.5px;
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    color: var(--muted);
+  }
+  .footer-portfolio .url {
+    color: var(--accent);
+    font-weight: 700;
+  }
+
+  /* PRINT — single-page A4 */
+  @page {
+    size: A4;
+    margin: 0;
+  }
+
+  @media print {
+    html, body {
+      background: var(--bg);
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+    .page {
+      max-width: none;
+      width: 210mm;
+      margin: 0;
+      padding: 7mm 11mm 5mm;
+    }
+    /* DO NOT add page-break-inside: avoid to <section>. Only protect tight units. */
+    .body, aside, main, section { break-inside: auto; page-break-inside: auto; }
+    .role, .summary, .skill-group, .award { break-inside: avoid; page-break-inside: avoid; }
+  }
+
+  @media (max-width: 720px) {
+    html, body { font-size: 12px; }
+    .page { padding: 22px 18px; }
+    header { grid-template-columns: 1fr; gap: 12px; }
+    .contact { align-items: flex-start; text-align: left; }
+    h1 { font-size: 38px; }
+    .body { grid-template-columns: 1fr; gap: 20px; }
+    .role-title-row { flex-direction: column; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <header>
+    <div class="name-block">
+      <h1>Avery <span class="accent">Ember</span> Day</h1>
+      <div class="tagline">Brand &amp; Visual Designer · AI-Fluent Production · 6+ years across freelance, print, motion &amp; 3D</div>
+      <div><span class="pronouns">they / them</span></div>
+    </div>
+    <div class="contact">
+      <div class="row"><span class="label">Portfolio</span><a href="https://averyemberday.com">averyemberday.com</a></div>
+      <div class="row"><span class="label">LinkedIn</span><a href="https://linkedin.com/in/averyemberday">linkedin.com/in/averyemberday</a></div>
+      <div class="row"><span class="label">Upwork</span><a href="https://upwork.com/freelancers/averyemberday">upwork.com/freelancers/averyemberday</a></div>
+      <div class="row"><span class="label">Email</span><span>averyemberday@gmail.com</span></div>
+      <div class="row"><span class="label">Based</span><span>San Antonio, TX &amp; Las Vegas, NV — Remote</span></div>
+    </div>
+  </header>
+
+  <div class="summary">
+    Brand and visual designer with 6+ years of freelance experience and a B.S. in Graphic Information Technology from Arizona State University, earned while working full-time in a supervisory role. Specialize in brand identity systems, print production, motion graphics, and illustration for small businesses, creative clients, and entertainment IP. AI-fluent — integrate Adobe Firefly, ChatGPT, and Claude into ideation, asset variation, and production workflows to compress iteration time while maintaining brand consistency. A concurrent decade of operations leadership at Starbucks sharpens deadline discipline and stakeholder communication that translate directly to design-team and client work.
+  </div>
+
+  <div class="body">
+
+    <aside>
+      <section>
+        <div class="section-title">Core Skills</div>
+
+        <div class="skill-group">
+          <h4>Design Tools</h4>
+          <p>Figma, Adobe Illustrator, Adobe Photoshop, Adobe InDesign, Adobe After Effects, Adobe Premiere Pro, Adobe Dimension.</p>
+        </div>
+
+        <div class="skill-group">
+          <h4>Motion, Video &amp; 3D</h4>
+          <p>After Effects, Premiere Pro, Blender, Substance 3D, motion graphics, character illustration, 2D/3D hybrid production.</p>
+        </div>
+
+        <div class="skill-group">
+          <h4>AI-Assisted Workflow</h4>
+          <p>Adobe Firefly (Generative Fill, Generative Expand), ChatGPT, Claude, Notion AI, prompt engineering for brand-aligned generation, AI-powered ideation &amp; asset variation.</p>
+        </div>
+
+        <div class="skill-group">
+          <h4>Brand &amp; Visual Systems</h4>
+          <p>Brand identity, logo design, style guides, design systems, typography, color theory (CMYK / RGB), iconography, layout, visual hierarchy, social media design.</p>
+        </div>
+
+        <div class="skill-group">
+          <h4>Print &amp; Production</h4>
+          <p>Print production, packaging, banners, posters, marketing collateral, pre-press, production-ready file delivery, print vendor coordination.</p>
+        </div>
+
+        <div class="skill-group">
+          <h4>Web &amp; Digital</h4>
+          <p>HTML, CSS, responsive design fundamentals, social media assets, digital imaging, web-ready asset preparation.</p>
+        </div>
+
+        <div class="skill-group">
+          <h4>Process &amp; Collaboration</h4>
+          <p>Creative direction, creative briefs, client communication, stakeholder management, project &amp; deadline management, cross-functional collaboration.</p>
+        </div>
+      </section>
+
+      <section>
+        <div class="section-title">Education</div>
+        <div class="edu">
+          <div class="school">Arizona State University</div>
+          <div class="school-meta">Tempe, Arizona · Aug 2018 – Dec 2024</div>
+          <div class="school-detail"><strong>B.S. Graphic Information Technology</strong><br />Dean's College of Integrative Sciences &amp; Arts. Coursework spanning brand identity, typography, color theory, UX principles, digital imaging, motion graphics, and web development.</div>
+        </div>
+      </section>
+
+    </aside>
+
+    <main>
+      <section>
+        <div class="section-title">Professional Experience</div>
+
+        <div class="role">
+          <div class="role-header">
+            <div class="role-title-row">
+              <div class="role-title">Freelance Brand &amp; Visual Designer</div>
+              <div class="role-dates">Nov 2018 – Present</div>
+            </div>
+            <div class="role-meta">
+              <span class="company">Upwork &amp; Direct Clients</span>
+              <span class="sep">·</span>
+              <span class="location">Remote — San Antonio, TX &amp; Las Vegas, NV</span>
+            </div>
+          </div>
+          <ul>
+            <li>Designed brand identity systems, logo packages, and print production deliverables for <strong>7+ clients</strong> across small business, content creator, and entertainment IP categories.</li>
+            <li>Crafted a print-ready banner for <strong>Macro-Pro, Inc.</strong> via Upwork; produced a multi-piece office poster series for <strong>Allegra</strong>, a San Antonio print company.</li>
+            <li>Developed original character art and logo design for <strong>SECTION6</strong>, a WGAW-registered adult animated series pitch by X.A. Allister.</li>
+            <li>Built logo and banner packages for two content creators; created virtual and print marketing materials for a D&amp;D community group launching a brick-and-mortar bar in San Antonio.</li>
+            <li>Integrate <strong>Adobe Firefly, ChatGPT, Claude, and Notion AI</strong> into ideation, mood-boarding, and concept-variation cycles — compressing iteration time without compromising brand consistency or hand-crafted feel.</li>
+            <li>Deliver consistently on-brief, on-time, and on-brand — published client testimonial via Upwork.</li>
+          </ul>
+        </div>
+
+        <div class="role">
+          <div class="role-header">
+            <div class="role-title-row">
+              <div class="role-title">Shift Supervisor — Operations &amp; Team Lead</div>
+              <div class="role-dates">Apr 2015 – Present</div>
+            </div>
+            <div class="role-meta">
+              <span class="company">Starbucks</span>
+              <span class="sep">·</span>
+              <span class="location">San Antonio, TX &amp; Las Vegas, NV</span>
+            </div>
+          </div>
+          <ul>
+            <li>Lead shift teams of <strong>up to 30</strong> across <strong>7 store formats</strong>, managing real-time operations, scheduling, and escalations in high-volume environments.</li>
+            <li>Trained and onboarded <strong>10+ new team members</strong> across customer service standards, product preparation, and safety compliance.</li>
+            <li>Built people management, deadline discipline, and high-pressure stakeholder communication — skills now applied directly to client work and creative-team collaboration.</li>
+            <li>Maintained accurate cash management, inventory, and opening / closing procedures across a decade of operational responsibility.</li>
+          </ul>
+        </div>
+
+      </section>
+
+      <section>
+        <div class="section-title">Awards &amp; Recognition</div>
+        <div class="awards-row">
+          <div class="award">
+            <span class="award-name">5× National Junior Art Honor Society Medal</span>
+            <span class="award-meta">National juried competition — painting, sculpture &amp; portfolio art</span>
+          </div>
+          <div class="award">
+            <span class="award-name">Dean's College Recognition</span>
+            <span class="award-meta">ASU College of Integrative Sciences &amp; Arts · 2024</span>
+          </div>
+          <div class="award">
+            <span class="award-name">Published Client Testimonial</span>
+            <span class="award-meta">Macro-Pro, Inc. via Upwork — "delivered on time and on-brand"</span>
+          </div>
+        </div>
+      </section>
+    </main>
+
+  </div>
+
+</div>
+</body>
+</html>

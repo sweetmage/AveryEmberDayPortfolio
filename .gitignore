@@ -1,0 +1,3 @@
+# Ignore nested git repos (standalone projects with their own remotes)
+/git/portfolio/
+/projects/RNG/
