@@ -1,8 +1,0 @@
-{
-  "permissions": {
-    "allow": [
-      "Skill(shxdow-flow)",
-      "Skill(shxdow-flow:*)"
-    ]
-  }
-}
