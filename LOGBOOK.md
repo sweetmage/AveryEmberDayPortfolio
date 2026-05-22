@@ -1,3 +1,29 @@
+## Entry 004 — 2026-05-21
+
+**Agent:** big-pickle
+**Cycle:** h2-brand-blue
+**Task:** Style Work, About Me, and Contact h2s and their underlines with brand blue
+
+### Changes
+
+- **style.css** — Added `#work h2, #about h2, #contact h2` block with `color: #7eb8ff` and `border-bottom-color: #7eb8ff`. Leaves all other h2s (gallery pages, etc.) untouched.
+
+---
+
+## Entry 003 — 2026-05-21
+
+**Agent:** big-pickle
+**Cycle:** layout-update
+**Task:** Move nav below hero as sticky bar, remove duplicate pill badge, hug screen edges
+
+### Changes
+
+- **index.html** — Removed `.brand-pill-ir` "Multi-Media Designer" badge from hero content. Moved `<nav class="brand-nav">` from above hero to below it (after `</section>` closing tag). Hero is now standalone outside `<main>`; content sections (work, about, contact) wrapped in `<main>`.
+- **brand.css** — `.brand-nav` changed from `position: fixed; top: 0; left: 0; right: 0; height: 64px` to `position: sticky; top: 0; height: 44px`. Added `.brand-nav .brand-container` rule with minimal padding so content hugs screen edges.
+- **style.css** — `#hero` reduced top padding from `5em` to `2em`, added `margin: 0` to prevent section margin gap, duplicated flexbox props for specificity override.
+
+---
+
 ## Entry 001 — 2026-05-20
 
 **Agent:** claude-sonnet-4-6 (lumis, executor)
