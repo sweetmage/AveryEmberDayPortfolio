@@ -112,6 +112,17 @@ header {
 #logo {
     width: 2.2em;
     height: auto;
+    transition: filter var(--brand-transition-fast);
+}
+
+[data-theme="light"] #logo {
+    filter: invert(1);
+}
+
+@media (prefers-color-scheme: light) {
+    :root:not([data-theme="dark"]) #logo {
+        filter: invert(1);
+    }
 }
 
 #logoText {
@@ -119,11 +130,13 @@ header {
     font-size: 1.05em;
     font-weight: var(--brand-weight-regular);
     line-height: 1.9;
-    text-shadow: none;
-    background: linear-gradient(90deg, var(--brand-ir-1), var(--brand-ir-4), var(--brand-ir-6));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+    color: var(--brand-text);
+}
+
+nav {
+    display: flex;
+    align-items: center;
+    gap: 8px;
 }
 
 nav ul {
@@ -233,6 +246,25 @@ footer p {
 }
 
 /* ── Hero ────────────────────────────────────────────────────────── */
+.hero-logo {
+    width: clamp(180px, 40vw, 300px);
+    height: auto;
+    position: relative;
+    z-index: 1;
+    display: block;
+    margin: 0 auto 0.4em;
+}
+
+[data-theme="light"] .hero-logo {
+    content: url('images/icons/BubbleLogo/bubbleLogo-black.svg');
+}
+
+@media (prefers-color-scheme: light) {
+    :root:not([data-theme="dark"]) .hero-logo {
+        content: url('images/icons/BubbleLogo/bubbleLogo-black.svg');
+    }
+}
+
 #hero {
     position: relative;
     text-align: center;
@@ -255,9 +287,38 @@ footer p {
     background-clip: text;
 }
 
+.hero-name,
+#hero h1.hero-name {
+    font-family: var(--brand-font-display);
+    font-size: clamp(1.6em, 5vw, 2.8em);
+    font-weight: var(--brand-weight-regular);
+    color: #ffffff;
+    background: none;
+    -webkit-background-clip: unset;
+    -webkit-text-fill-color: #ffffff;
+    background-clip: unset;
+    position: relative;
+    z-index: 1;
+    margin: 0.2em 0 0.1em;
+}
+
+[data-theme="light"] .hero-name,
+[data-theme="light"] #hero h1.hero-name {
+    color: #000000;
+    -webkit-text-fill-color: #000000;
+}
+
+@media (prefers-color-scheme: light) {
+    :root:not([data-theme="dark"]) .hero-name,
+    :root:not([data-theme="dark"]) #hero h1.hero-name {
+        color: #000000;
+        -webkit-text-fill-color: #000000;
+    }
+}
+
 .hero-sub {
     background: transparent;
-    color: var(--brand-text-muted);
+    color: var(--brand-text-soft);
     font-family: var(--brand-font-heading);
     font-size: 1em;
     font-weight: var(--brand-weight-light);

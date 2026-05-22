@@ -1,0 +1,17 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "brandforge",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": ["serve", "-l", "3477", "."],
+      "port": 3477
+    },
+    {
+      "name": "portfolio",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": ["serve", "-l", "3478", "D:\\My Stuff\\Git\\CometGit\\portfoliowebsite"],
+      "port": 3478
+    }
+  ]
+}

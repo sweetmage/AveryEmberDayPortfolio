@@ -2,21 +2,206 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="author" content="Avery Ember Day" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Brand Identity — Avery Ember Day</title>
+    <meta name="author" content="Avery Ember Day" />
+    <title>Avery Ember Day Brand — Avery Ember Day</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Outfit:wght@300;400;500;600;700&family=Sriracha&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../brand.css" />
     <link rel="stylesheet" href="../style.css" />
+    <script>
+      (function(){var t=localStorage.getItem('theme');if(t)document.documentElement.setAttribute('data-theme',t);})();
+    </script>
+    <style>
+      .project-hero {
+        padding: 80px 24px 48px;
+        max-width: var(--brand-content-max);
+        margin: 0 auto;
+      }
+      .project-back {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        font-family: var(--brand-font-body);
+        font-size: 0.85rem;
+        color: var(--brand-text-muted);
+        text-decoration: none;
+        margin-bottom: 32px;
+        transition: color var(--brand-transition-fast);
+      }
+      .project-back:hover { color: var(--brand-text); }
+      .project-back svg { width: 16px; height: 16px; }
+
+      .project-tag {
+        display: inline-block;
+        font-family: var(--brand-font-body);
+        font-size: 0.75rem;
+        font-weight: 500;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--brand-accent);
+        margin-bottom: 12px;
+      }
+      .project-title {
+        font-family: var(--brand-font-display);
+        font-size: clamp(2rem, 5vw, 3.5rem);
+        color: var(--brand-text);
+        margin: 0 0 16px;
+        line-height: 1.1;
+      }
+      .project-desc {
+        font-family: var(--brand-font-body);
+        font-size: 1rem;
+        color: var(--brand-text-soft);
+        max-width: 560px;
+        line-height: 1.7;
+        margin: 0;
+      }
+
+      .project-section {
+        max-width: var(--brand-content-max);
+        margin: 0 auto;
+        padding: 0 24px 80px;
+      }
+      .section-label {
+        font-family: var(--brand-font-body);
+        font-size: 0.75rem;
+        font-weight: 600;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--brand-text-muted);
+        margin: 0 0 24px;
+      }
+      .section-title {
+        font-family: var(--brand-font-heading);
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: var(--brand-text);
+        margin: 0 0 32px;
+      }
+
+      /* Logo grid */
+      .logo-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 16px;
+      }
+      .logo-swatch {
+        border-radius: var(--brand-radius-lg);
+        overflow: hidden;
+        border: 1px solid var(--brand-border);
+        display: flex;
+        flex-direction: column;
+      }
+      .logo-swatch-canvas {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 40px;
+        flex: 1;
+      }
+      .logo-swatch-canvas.bg-dark   { background: #0A0A0A; }
+      .logo-swatch-canvas.bg-mid    { background: #1a1a1a; }
+      .logo-swatch-canvas.bg-blue   { background: #7eb8ff; }
+      .logo-swatch-canvas.bg-light  { background: #F2F0EC; }
+      .logo-swatch-canvas.bg-white  { background: #ffffff; }
+      .logo-swatch-canvas.bg-accent { background: var(--brand-accent-dim); }
+
+      .logo-swatch img {
+        width: 160px;
+        height: 160px;
+        object-fit: contain;
+      }
+      .logo-swatch-label {
+        padding: 12px 16px;
+        background: var(--brand-surface-1);
+        border-top: 1px solid var(--brand-border);
+      }
+      .logo-swatch-label strong {
+        display: block;
+        font-family: var(--brand-font-body);
+        font-size: 0.85rem;
+        font-weight: 500;
+        color: var(--brand-text);
+      }
+      .logo-swatch-label span {
+        font-family: var(--brand-font-body);
+        font-size: 0.75rem;
+        color: var(--brand-text-muted);
+      }
+
+      /* Color palette */
+      .palette-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-bottom: 40px;
+      }
+      .swatch {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        flex: 1;
+        min-width: 100px;
+      }
+      .swatch-block {
+        height: 72px;
+        border-radius: var(--brand-radius-md);
+        border: 1px solid var(--brand-border);
+      }
+      .swatch-name {
+        font-family: var(--brand-font-body);
+        font-size: 0.8rem;
+        font-weight: 500;
+        color: var(--brand-text);
+      }
+      .swatch-hex {
+        font-family: 'Courier New', monospace;
+        font-size: 0.72rem;
+        color: var(--brand-text-muted);
+      }
+
+      /* Type specimen */
+      .type-specimen {
+        background: var(--brand-surface-1);
+        border: 1px solid var(--brand-border);
+        border-radius: var(--brand-radius-lg);
+        padding: 32px;
+        display: flex;
+        flex-direction: column;
+        gap: 24px;
+      }
+      .type-row {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        padding-bottom: 24px;
+        border-bottom: 1px solid var(--brand-border);
+      }
+      .type-row:last-child {
+        padding-bottom: 0;
+        border-bottom: none;
+      }
+      .type-label {
+        font-family: var(--brand-font-body);
+        font-size: 0.72rem;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--brand-text-muted);
+      }
+      .type-display  { font-family: var(--brand-font-display); font-size: 2.5rem; color: var(--brand-text); }
+      .type-heading  { font-family: var(--brand-font-heading); font-size: 1.5rem; font-weight: 600; color: var(--brand-text); }
+      .type-body     { font-family: var(--brand-font-body); font-size: 1rem; color: var(--brand-text-soft); line-height: 1.6; }
+    </style>
   </head>
   <body>
     <div class="brand-page-bg" aria-hidden="true"></div>
     <div class="brand-page-noise" aria-hidden="true"></div>
+
     <header>
       <div id="logoContainer">
-        <img src="../images/AveryDayLogo.png" alt="Avery Ember Day Logo" id="logo" />
+        <img src="../images/icons/BubbleLogo/bubbleLogo-white-notxt.svg" alt="Avery Ember Day Logo" id="logo" />
         <span id="logoText">Avery Ember Day</span>
       </div>
       <nav>
@@ -26,41 +211,148 @@
           <li><a href="../resume/AveryEmberDay_Resume_2026.html" target="_blank">Resume</a></li>
           <li><a href="../index.html#contact">Contact</a></li>
         </ul>
+        <button id="theme-toggle" aria-label="Toggle light/dark mode">
+          <svg class="icon-sun" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 17a5 5 0 1 0 0-10 5 5 0 0 0 0 10zm0 2a1 1 0 0 1 1 1v1a1 1 0 1 1-2 0v-1a1 1 0 0 1 1-1zm0-14a1 1 0 0 1-1-1V3a1 1 0 1 1 2 0v1a1 1 0 0 1-1 1zM4.22 5.64a1 1 0 0 1 1.42-1.42l.7.71a1 1 0 0 1-1.41 1.41l-.71-.7zm14.14 12.72a1 1 0 0 1 1.42 1.42l-.71.7a1 1 0 1 1-1.41-1.41l.7-.71zM3 12a1 1 0 0 1 1-1h1a1 1 0 1 1 0 2H4a1 1 0 0 1-1-1zm16 0a1 1 0 0 1 1-1h1a1 1 0 1 1 0 2h-1a1 1 0 0 1-1-1zM5.64 19.78l-.7.71a1 1 0 1 1-1.42-1.42l.71-.7a1 1 0 0 1 1.41 1.41zm12.72-14.14.71-.71a1 1 0 1 1 1.42 1.42l-.71.7a1 1 0 0 1-1.42-1.41z"/></svg>
+          <svg class="icon-moon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M21 12.79A9 9 0 1 1 11.21 3a7 7 0 0 0 9.79 9.79z"/></svg>
+        </button>
       </nav>
     </header>
 
-    <main class="case-study">
-      <a href="../index.html" class="back-link">&larr; Back to work</a>
-
-      <section class="case-study-hero">
+    <main>
+      <div class="project-hero">
+        <a href="../index.html#work" class="project-back">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M5 12l7-7M5 12l7 7"/></svg>
+          Back to Work
+        </a>
         <span class="project-tag">Brand Identity</span>
-        <h1>Avery Ember Day Brand</h1>
-        <p class="case-study-summary">A complete personal brand identity system — the same brand you're looking at right now. Logo family, color palette, typography, and applications across print and digital.</p>
-      </section>
+        <h1 class="project-title">Avery Ember Day Brand</h1>
+        <p class="project-desc">Complete personal brand identity system — logos, color, type, and applications. Built to work across dark and light contexts with a consistent voice.</p>
+      </div>
 
-      <section class="case-study-section">
-        <h2>Logo Family</h2>
-        <div class="case-study-cover placeholder-img wide-placeholder"></div>
-      </section>
+      <!-- Logo Variants -->
+      <section class="project-section">
+        <p class="section-label">Identity</p>
+        <h2 class="section-title">Logo Variants</h2>
+        <div class="logo-grid">
 
-      <section class="case-study-section brand-system-grid">
-        <div class="brand-block">
-          <h2>Color</h2>
-          <div class="placeholder-img"></div>
+          <div class="logo-swatch">
+            <div class="logo-swatch-canvas bg-dark">
+              <img src="../images/icons/BubbleLogo/bubbleLogo-blue.png" alt="Blue logo with text" />
+            </div>
+            <div class="logo-swatch-label">
+              <strong>Primary — Blue</strong>
+              <span>Dark backgrounds · #7eb8ff</span>
+            </div>
+          </div>
+
+          <div class="logo-swatch">
+            <div class="logo-swatch-canvas bg-light">
+              <img src="../images/icons/BubbleLogo/bubbleLogo-black.png" alt="Black logo with text" />
+            </div>
+            <div class="logo-swatch-label">
+              <strong>Primary — Black</strong>
+              <span>Light backgrounds · #000000</span>
+            </div>
+          </div>
+
+          <div class="logo-swatch">
+            <div class="logo-swatch-canvas bg-mid">
+              <img src="../images/icons/BubbleLogo/bubbleLogo-white.png" alt="White logo with text" />
+            </div>
+            <div class="logo-swatch-label">
+              <strong>Primary — White</strong>
+              <span>Dark backgrounds · #ffffff</span>
+            </div>
+          </div>
+
+          <div class="logo-swatch">
+            <div class="logo-swatch-canvas bg-dark">
+              <img src="../images/icons/BubbleLogo/bubbleLogo-blue-notxt.png" alt="Blue icon mark" />
+            </div>
+            <div class="logo-swatch-label">
+              <strong>Icon Mark — Blue</strong>
+              <span>Favicon · App icon · Small use</span>
+            </div>
+          </div>
+
+          <div class="logo-swatch">
+            <div class="logo-swatch-canvas bg-light">
+              <img src="../images/icons/BubbleLogo/bubbleLogo-black-notxt.png" alt="Black icon mark" />
+            </div>
+            <div class="logo-swatch-label">
+              <strong>Icon Mark — Black</strong>
+              <span>Light backgrounds · small use</span>
+            </div>
+          </div>
+
+          <div class="logo-swatch">
+            <div class="logo-swatch-canvas bg-mid">
+              <img src="../images/icons/BubbleLogo/bubbleLogo-white-notxt.png" alt="White icon mark" />
+            </div>
+            <div class="logo-swatch-label">
+              <strong>Icon Mark — White</strong>
+              <span>Dark backgrounds · small use</span>
+            </div>
+          </div>
+
         </div>
-        <div class="brand-block">
-          <h2>Typography</h2>
-          <div class="placeholder-img"></div>
+      </section>
+
+      <!-- Color Palette -->
+      <section class="project-section">
+        <p class="section-label">Color</p>
+        <h2 class="section-title">Brand Palette</h2>
+        <div class="palette-row">
+          <div class="swatch">
+            <div class="swatch-block" style="background:#7eb8ff;"></div>
+            <span class="swatch-name">Brand Blue</span>
+            <span class="swatch-hex">#7eb8ff</span>
+          </div>
+          <div class="swatch">
+            <div class="swatch-block" style="background:#CC44FF;"></div>
+            <span class="swatch-name">Accent</span>
+            <span class="swatch-hex">#CC44FF</span>
+          </div>
+          <div class="swatch">
+            <div class="swatch-block" style="background:#00FFFF;"></div>
+            <span class="swatch-name">Neon</span>
+            <span class="swatch-hex">#00FFFF</span>
+          </div>
+          <div class="swatch">
+            <div class="swatch-block" style="background:#f5b96a;"></div>
+            <span class="swatch-name">Gold</span>
+            <span class="swatch-hex">#f5b96a</span>
+          </div>
+          <div class="swatch">
+            <div class="swatch-block" style="background:#0A0A0A; border-color: rgba(255,255,255,0.1);"></div>
+            <span class="swatch-name">Dark BG</span>
+            <span class="swatch-hex">#0A0A0A</span>
+          </div>
+          <div class="swatch">
+            <div class="swatch-block" style="background:#F2F0EC;"></div>
+            <span class="swatch-name">Light BG</span>
+            <span class="swatch-hex">#F2F0EC</span>
+          </div>
         </div>
       </section>
 
-      <section class="case-study-section">
-        <h2>Applications</h2>
-        <div class="case-study-pages">
-          <div class="placeholder-img"><span class="placeholder-label">Business Card</span></div>
-          <div class="placeholder-img"><span class="placeholder-label">Email Signature</span></div>
-          <div class="placeholder-img"><span class="placeholder-label">Social Media</span></div>
-          <div class="placeholder-img"><span class="placeholder-label">Stationery</span></div>
+      <!-- Typography -->
+      <section class="project-section">
+        <p class="section-label">Typography</p>
+        <h2 class="section-title">Type System</h2>
+        <div class="type-specimen">
+          <div class="type-row">
+            <span class="type-label">Display — Sriracha</span>
+            <span class="type-display">Avery Ember Day</span>
+          </div>
+          <div class="type-row">
+            <span class="type-label">Heading — Outfit 600</span>
+            <span class="type-heading">Brand Identity System</span>
+          </div>
+          <div class="type-row">
+            <span class="type-label">Body — Inter 400</span>
+            <span class="type-body">Multi-Media Designer based in Las Vegas. Illustration, brand identity, and motion graphics. Design with a focus on character, mood, and accessibility.</span>
+          </div>
         </div>
       </section>
     </main>
@@ -74,6 +366,7 @@
         <path d="M11.25 15.688l-7.656 7.656-3.594-3.688 11.063-11.094 11.344 11.344-3.5 3.5z"/>
       </svg>
     </button>
-    <script src="../script.js"></script>
+
+    <script src="../Script.js"></script>
   </body>
 </html>
