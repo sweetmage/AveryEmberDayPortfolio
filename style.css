@@ -23,19 +23,6 @@ blockquote:before, blockquote:after,
 q:before, q:after { content: ""; content: none; }
 table { border-collapse: collapse; border-spacing: 0; }
 
-/* ── Local fonts (fallbacks) ─────────────────────────────────────── */
-@font-face {
-    font-family: 'Funcity';
-    src: url('fonts/funcitylevel1basic-webfont.woff2') format('woff2'),
-         url('fonts/funcitylevel1basic-webfont.woff') format('woff');
-    font-weight: normal; font-style: normal;
-}
-@font-face {
-    font-family: 'Sonny Cond';
-    src: url('fonts/sonnycond-book-webfont.woff2') format('woff2'),
-         url('fonts/sonnycond-book-webfont.woff') format('woff');
-    font-weight: normal; font-style: normal;
-}
 
 /* ── Base ────────────────────────────────────────────────────────── */
 *, *::before, *::after {
@@ -487,33 +474,32 @@ footer p {
 }
 
 .icon {
-    width: 2.4em;
-    height: auto;
-    margin: 0.4em;
-    fill: var(--brand-text-muted);
-    transition: fill var(--brand-transition-fast);
+    width: 24px;
+    height: 24px;
+    display: block;
+    flex-shrink: 0;
+    color: inherit;
 }
 
 .icon-link {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 44px;
-    height: 44px;
+    width: 52px;
+    height: 52px;
     border-radius: 50%;
     border: 1px solid var(--brand-border);
     background: var(--brand-surface-2);
+    color: var(--brand-text-muted);
     transition: border-color var(--brand-transition-fast),
-                background var(--brand-transition-fast);
+                background var(--brand-transition-fast),
+                color var(--brand-transition-fast);
 }
 
 .icon-link:hover {
     border-color: var(--brand-accent);
     background: var(--brand-accent-dim);
-}
-
-.icon-link:hover svg {
-    fill: var(--brand-accent);
+    color: var(--brand-accent);
 }
 
 /* ── Back link ───────────────────────────────────────────────────── */
