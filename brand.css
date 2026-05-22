@@ -172,7 +172,7 @@
     /* Layout */
     --brand-content-max:   1200px;
     --brand-section-gap:   80px;
-    --brand-header-height: 64px;
+    --brand-header-height: 80px;
 
     /* Transitions */
     --brand-transition-fast: 140ms ease;
