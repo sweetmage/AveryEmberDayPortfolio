@@ -210,7 +210,7 @@ h2 {
 #work h2,
 #about h2,
 #contact h2 {
-    color: #7eb8ff;
+    color: var(--brand-text-muted);
     border-bottom-color: #7eb8ff;
 }
 
@@ -269,6 +269,26 @@ footer p {
 @media (prefers-color-scheme: light) {
     :root:not([data-theme="dark"]) .hero-logo {
         content: url('images/icons/BubbleLogo/bubbleLogo-black.svg');
+    }
+}
+
+[data-theme="light"] .brand-nav-logo {
+    color: var(--brand-text-base);
+}
+
+@media (prefers-color-scheme: light) {
+    :root:not([data-theme="dark"]) .brand-nav-logo {
+        color: var(--brand-text-base);
+    }
+}
+
+[data-theme="light"] .brand-nav-logo img {
+    content: url('images/icons/BubbleLogo/bubbleLogo-black-notxt.svg');
+}
+
+@media (prefers-color-scheme: light) {
+    :root:not([data-theme="dark"]) .brand-nav-logo img {
+        content: url('images/icons/BubbleLogo/bubbleLogo-black-notxt.svg');
     }
 }
 
