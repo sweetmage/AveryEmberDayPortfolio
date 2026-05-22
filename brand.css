@@ -3,6 +3,8 @@
    All portfolio CSS uses --brand-* vars from this file.
    ─────────────────────────────────────────────────────────────── */
 
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Outfit:wght@300;400;500;600;700&family=Sriracha&display=swap');
+
 @property --brand-orbit-angle {
     syntax: '<angle>';
     inherits: false;
