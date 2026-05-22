@@ -211,7 +211,7 @@ h2 {
 #about h2,
 #contact h2 {
     color: var(--brand-text-muted);
-    border-bottom-color: #7eb8ff;
+    border-bottom-color: var(--brand-ir-4);
 }
 
 h3 {
