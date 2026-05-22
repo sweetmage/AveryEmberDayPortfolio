@@ -814,3 +814,25 @@ iframe {
     header, main, footer { font-size: larger; }
     .portrait-series { grid-template-columns: repeat(4, 1fr); }
 }
+
+/* ── Bubble positions ────────────────────────────────────────────── */
+.brand-bubble--1 { --bx: 8%;  --by: 72%; --bd: 22px; --bd2: -1.2s; }
+.brand-bubble--2 { --bx: 18%; --by: 30%; --bd: 54px; --bd2: -3.1s; }
+.brand-bubble--3 { --bx: 32%; --by: 85%; --bd: 14px; --bd2: -0.5s; }
+.brand-bubble--4 { --bx: 42%; --by: 15%; --bd: 90px; --bd2: -5.4s; }
+.brand-bubble--5 { --bx: 58%; --by: 60%; --bd: 28px; --bd2: -2.2s; }
+.brand-bubble--6 { --bx: 67%; --by: 90%; --bd: 16px; --bd2: -1.8s; }
+.brand-bubble--7 { --bx: 75%; --by: 40%; --bd: 46px; --bd2: -4.0s; }
+.brand-bubble--8 { --bx: 84%; --by: 20%; --bd: 32px; --bd2: -0.9s; }
+.brand-bubble--9 { --bx: 91%; --by: 65%; --bd: 72px; --bd2: -6.2s; }
+
+/* ── Project card cover image ────────────────────────────────────── */
+.project-card-cover { width: 100%; height: 100%; object-fit: cover; }
+
+/* ── Brand palette swatches ──────────────────────────────────────── */
+.swatch-block--blue   { background: #7eb8ff; }
+.swatch-block--accent { background: #CC44FF; }
+.swatch-block--neon   { background: #00FFFF; }
+.swatch-block--gold   { background: #f5b96a; }
+.swatch-block--dark   { background: #0A0A0A; border-color: rgba(255,255,255,0.1); }
+.swatch-block--light  { background: #F2F0EC; }
