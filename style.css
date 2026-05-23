@@ -23,19 +23,6 @@ blockquote:before, blockquote:after,
 q:before, q:after { content: ""; content: none; }
 table { border-collapse: collapse; border-spacing: 0; }
 
-/* ── Local fonts (fallbacks) ─────────────────────────────────────── */
-@font-face {
-    font-family: 'Funcity';
-    src: url('fonts/funcitylevel1basic-webfont.woff2') format('woff2'),
-         url('fonts/funcitylevel1basic-webfont.woff') format('woff');
-    font-weight: normal; font-style: normal;
-}
-@font-face {
-    font-family: 'Sonny Cond';
-    src: url('fonts/sonnycond-book-webfont.woff2') format('woff2'),
-         url('fonts/sonnycond-book-webfont.woff') format('woff');
-    font-weight: normal; font-style: normal;
-}
 
 /* ── Base ────────────────────────────────────────────────────────── */
 *, *::before, *::after {
@@ -211,7 +198,7 @@ h2 {
 #about h2,
 #contact h2 {
     color: var(--brand-text-muted);
-    border-bottom-color: #7eb8ff;
+    border-bottom-color: var(--brand-ir-4);
 }
 
 h3 {
@@ -487,33 +474,32 @@ footer p {
 }
 
 .icon {
-    width: 2.4em;
-    height: auto;
-    margin: 0.4em;
-    fill: var(--brand-text-muted);
-    transition: fill var(--brand-transition-fast);
+    width: 24px;
+    height: 24px;
+    display: block;
+    flex-shrink: 0;
+    color: inherit;
 }
 
 .icon-link {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 44px;
-    height: 44px;
+    width: 52px;
+    height: 52px;
     border-radius: 50%;
     border: 1px solid var(--brand-border);
     background: var(--brand-surface-2);
+    color: var(--brand-text-muted);
     transition: border-color var(--brand-transition-fast),
-                background var(--brand-transition-fast);
+                background var(--brand-transition-fast),
+                color var(--brand-transition-fast);
 }
 
 .icon-link:hover {
     border-color: var(--brand-accent);
     background: var(--brand-accent-dim);
-}
-
-.icon-link:hover svg {
-    fill: var(--brand-accent);
+    color: var(--brand-accent);
 }
 
 /* ── Back link ───────────────────────────────────────────────────── */
@@ -827,4 +813,61 @@ iframe {
 @media screen and (min-width: 1024px) {
     header, main, footer { font-size: larger; }
     .portrait-series { grid-template-columns: repeat(4, 1fr); }
+}
+
+/* ── Bubble positions ────────────────────────────────────────────── */
+.brand-bubble--1 { --bx: 8%;  --by: 72%; --bd: 22px; --bd2: -1.2s; }
+.brand-bubble--2 { --bx: 18%; --by: 30%; --bd: 54px; --bd2: -3.1s; }
+.brand-bubble--3 { --bx: 32%; --by: 85%; --bd: 14px; --bd2: -0.5s; }
+.brand-bubble--4 { --bx: 42%; --by: 15%; --bd: 90px; --bd2: -5.4s; }
+.brand-bubble--5 { --bx: 58%; --by: 60%; --bd: 28px; --bd2: -2.2s; }
+.brand-bubble--6 { --bx: 67%; --by: 90%; --bd: 16px; --bd2: -1.8s; }
+.brand-bubble--7 { --bx: 75%; --by: 40%; --bd: 46px; --bd2: -4.0s; }
+.brand-bubble--8 { --bx: 84%; --by: 20%; --bd: 32px; --bd2: -0.9s; }
+.brand-bubble--9 { --bx: 91%; --by: 65%; --bd: 72px; --bd2: -6.2s; }
+
+/* ── Project card cover image ────────────────────────────────────── */
+.project-card-cover { width: 100%; height: 100%; object-fit: cover; }
+
+/* ── Brand palette swatches ──────────────────────────────────────── */
+.swatch-block--blue   { background: #7eb8ff; }
+.swatch-block--accent { background: #CC44FF; }
+.swatch-block--neon   { background: #00FFFF; }
+.swatch-block--gold   { background: #f5b96a; }
+.swatch-block--dark   { background: #0A0A0A; border-color: rgba(255,255,255,0.1); }
+.swatch-block--light  { background: #F2F0EC; }
+
+/* ── Accessibility utilities ─────────────────────────────────────── */
+.skip-link {
+  position: absolute;
+  top: -40px;
+  left: 0;
+  background: #0A0A0A;
+  color: #fff;
+  padding: 8px 16px;
+  z-index: 100;
+  text-decoration: none;
+  transition: top 0.2s;
+}
+.skip-link:focus {
+  top: 0;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0,0,0,0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.brand-nav-links a:focus-visible,
+nav a:focus-visible {
+  outline: 2px solid var(--brand-accent);
+  outline-offset: 3px;
+  border-radius: 2px;
 }

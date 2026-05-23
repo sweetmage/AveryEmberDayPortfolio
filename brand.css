@@ -3,6 +3,8 @@
    All portfolio CSS uses --brand-* vars from this file.
    ─────────────────────────────────────────────────────────────── */
 
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Outfit:wght@300;400;500;600;700&family=Sriracha&display=swap');
+
 @property --brand-orbit-angle {
     syntax: '<angle>';
     inherits: false;
@@ -153,9 +155,9 @@
     --brand-shadow-card: var(--brand-shadow-md);
 
     /* Typography */
-    --brand-font-display:   'Sriracha', 'Funcity', sans-serif;
+    --brand-font-display:   'Sriracha', sans-serif;
     --brand-font-heading:   'Outfit', sans-serif;
-    --brand-font-body:      'Inter', 'Sonny Cond', sans-serif;
+    --brand-font-body:      'Inter', sans-serif;
     --brand-weight-thin:    100;
     --brand-weight-light:   300;
     --brand-weight-regular: 400;
