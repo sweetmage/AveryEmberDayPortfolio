@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Skill(shxdow-flow)",
+      "Skill(shxdow-flow:*)",
+      "mcp__Claude_Preview__preview_start",
+      "mcp__c3c98b80-186d-4612-b2bd-a34d1a79b42e__list_projects",
+      "mcp__c3c98b80-186d-4612-b2bd-a34d1a79b42e__search_task"
+    ]
+  }
+}

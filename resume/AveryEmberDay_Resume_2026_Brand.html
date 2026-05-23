@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Avery Ember Day — Resume</title>
+<link rel="icon" href="../images/icons/BubbleLogo/bubbleLogo-white-notxt.svg" type="image/svg+xml" />
+<link rel="stylesheet" href="../brand.css" />
+<script>
+  (function(){var t=localStorage.getItem('theme');if(t)document.documentElement.setAttribute('data-theme',t);})();
+</script>
+<style>
+/* ── Resume-specific overrides on top of brand tokens ─────────────── */
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  background: var(--brand-bg);
+  color: var(--brand-text);
+  font-family: var(--brand-font-body);
+  font-size: 10.5px;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ── Top bar — uses shared brand-nav styles from brand.css */
+/* Hide light logo in dark mode, show dark logo in light mode */
+.logo-dark { display: block; }
+.logo-light { display: none; }
+
+:root[data-theme="light"] .logo-dark { display: none; }
+:root[data-theme="light"] .logo-light { display: block; }
+
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]) .logo-dark { display: none; }
+  :root:not([data-theme="dark"]) .logo-light { display: block; }
+}
+
+.resume-back {
+  font-family: var(--brand-font-body);
+  font-size: 11px;
+  font-weight: var(--brand-weight-medium);
+  color: var(--brand-text-muted);
+  text-decoration: none;
+  letter-spacing: 0.04em;
+  transition: color var(--brand-transition-fast);
+}
+.resume-back:hover { color: var(--brand-text); }
+
+/* ── Page wrapper ───────────────────────────────────────────────────── */
+.page {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 28px 32px 36px;
+  background: var(--brand-bg);
+  position: relative;
+}
+
+/* Subtle dot-grid texture */
+.page::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(circle at 1px 1px, var(--brand-border) 1px, transparent 0);
+  background-size: 24px 24px;
+  pointer-events: none;
+  z-index: 0;
+}
+.page > * { position: relative; z-index: 1; }
+
+/* ── Header ─────────────────────────────────────────────────────────── */
+header {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: end;
+  gap: 24px;
+  padding-bottom: 14px;
+  margin-bottom: 16px;
+  border-bottom: 1px solid var(--brand-border);
+  position: relative;
+}
+
+header::after {
+  content: "";
+  position: absolute;
+  inset-inline: 0;
+  bottom: -1px;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(90deg, var(--brand-ir-1), var(--brand-ir-3), var(--brand-ir-6));
+  border-radius: 2px;
+}
+
+.name-block {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+h1 {
+  font-family: var(--brand-font-display);
+  font-weight: var(--brand-weight-regular);
+  font-size: 42px;
+  line-height: 1.0;
+  letter-spacing: -0.02em;
+  color: var(--brand-text);
+}
+
+h1 .accent {
+  background: linear-gradient(90deg, var(--brand-ir-1), var(--brand-ir-3));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.tagline {
+  font-family: var(--brand-font-body);
+  color: var(--brand-text-muted);
+  font-size: 10px;
+  font-weight: var(--brand-weight-medium);
+  letter-spacing: 0.01em;
+  margin-top: 4px;
+  max-width: 56ch;
+}
+
+.pronouns {
+  display: inline-block;
+  font-family: var(--brand-font-heading);
+  font-size: 9px;
+  font-weight: var(--brand-weight-semibold);
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--brand-gold);
+  background: var(--brand-gold-dim);
+  border: 1px solid color-mix(in srgb, var(--brand-gold) 30%, transparent);
+  padding: 2px 8px 1px;
+  border-radius: 3px;
+  margin-top: 6px;
+}
+
+/* ── Contact block ─────────────────────────────────────────────────── */
+.contact {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 3px;
+  font-size: 9.5px;
+  color: var(--brand-text-soft);
+  text-align: right;
+}
+
+.contact a {
+  color: var(--brand-text-soft);
+  text-decoration: none;
+  border-bottom: 1px dotted var(--brand-accent-dim);
+  transition: color var(--brand-transition-fast), border-color var(--brand-transition-fast);
+}
+.contact a:hover { color: var(--brand-accent); border-color: var(--brand-accent); }
+
+.contact .row {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.contact .label {
+  font-family: var(--brand-font-heading);
+  text-transform: uppercase;
+  font-size: 8.5px;
+  font-weight: var(--brand-weight-semibold);
+  letter-spacing: 0.10em;
+  color: var(--brand-accent);
+  min-width: 52px;
+  text-align: right;
+}
+
+/* ── Summary ────────────────────────────────────────────────────────── */
+.summary {
+  background: var(--brand-surface-1);
+  border: 1px solid var(--brand-border);
+  border-left: 3px solid var(--brand-accent);
+  border-radius: var(--brand-radius-sm);
+  padding: 12px 16px 13px;
+  margin-bottom: 14px;
+  color: var(--brand-text-soft);
+  line-height: 1.55;
+  box-shadow: var(--brand-shadow-sm);
+}
+
+.summary::before {
+  content: "Summary";
+  display: block;
+  font-family: var(--brand-font-heading);
+  font-size: 11px;
+  font-weight: var(--brand-weight-semibold);
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--brand-accent);
+  margin-bottom: 6px;
+}
+
+/* ── Two-column body ────────────────────────────────────────────────── */
+.body {
+  display: grid;
+  grid-template-columns: 0.85fr 2fr;
+  gap: 22px;
+  align-items: start;
+}
+
+/* ── Section titles ─────────────────────────────────────────────────── */
+.section-title {
+  font-family: var(--brand-font-heading);
+  font-size: 11px;
+  font-weight: var(--brand-weight-semibold);
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--brand-accent);
+  margin-bottom: 10px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--brand-accent-dim);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.section-title::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  background: var(--brand-accent);
+  flex-shrink: 0;
+  transform: rotate(45deg);
+  border-radius: 1px;
+}
+
+section + section { margin-top: 11px; }
+
+/* ── Skill groups ───────────────────────────────────────────────────── */
+.skill-group + .skill-group { margin-top: 10px; }
+
+.skill-group h4 {
+  font-family: var(--brand-font-heading);
+  font-size: 10px;
+  font-weight: var(--brand-weight-semibold);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--brand-text);
+  margin-bottom: 3px;
+}
+
+.skill-group p {
+  font-size: 9.5px;
+  color: var(--brand-text-soft);
+  line-height: 1.5;
+}
+
+/* ── Awards row ─────────────────────────────────────────────────────── */
+.awards-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 9px;
+  margin-top: 4px;
+}
+
+.award {
+  background: color-mix(in srgb, var(--brand-surface-1) 94%, var(--brand-neon) 6%);
+  border: 1px solid color-mix(in srgb, var(--brand-border) 72%, var(--brand-neon) 28%);
+  border-left: 2px solid var(--brand-neon);
+  border-radius: var(--brand-radius-sm);
+  padding: 8px 10px 9px;
+  font-size: 9px;
+  line-height: 1.4;
+}
+
+.award .award-name {
+  font-family: var(--brand-font-heading);
+  font-weight: var(--brand-weight-semibold);
+  color: var(--brand-text);
+  display: block;
+  margin-bottom: 2px;
+  font-size: 9.5px;
+  line-height: 1.25;
+}
+
+.award .award-meta {
+  color: var(--brand-text-muted);
+  font-size: 8.5px;
+  font-style: italic;
+}
+
+/* ── Education ──────────────────────────────────────────────────────── */
+.edu {
+  font-size: 9.5px;
+  line-height: 1.5;
+  color: var(--brand-text-soft);
+}
+
+.edu .school {
+  font-family: var(--brand-font-heading);
+  font-weight: var(--brand-weight-semibold);
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--brand-text);
+}
+
+.edu .school-meta {
+  color: var(--brand-text-muted);
+  font-size: 9px;
+  margin-top: 1px;
+}
+
+.edu .school-detail {
+  margin-top: 5px;
+  font-size: 9.5px;
+  line-height: 1.45;
+}
+
+/* ── Experience roles ───────────────────────────────────────────────── */
+.role {
+  margin-bottom: 11px;
+  break-inside: avoid;
+  page-break-inside: avoid;
+}
+.role:last-child { margin-bottom: 0; }
+
+.role-header {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  margin-bottom: 4px;
+}
+
+.role-title-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+}
+
+.role-title {
+  font-family: var(--brand-font-heading);
+  font-weight: var(--brand-weight-semibold);
+  font-size: 13px;
+  color: var(--brand-text);
+  line-height: 1.15;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+}
+
+.role-dates {
+  font-family: var(--brand-font-body);
+  font-size: 9px;
+  color: var(--brand-text-muted);
+  font-feature-settings: "tnum";
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.role-meta {
+  font-size: 9.5px;
+  color: var(--brand-text-soft);
+  line-height: 1.4;
+}
+
+.role-meta .company {
+  font-weight: var(--brand-weight-semibold);
+  color: var(--brand-neon);
+}
+
+.role-meta .sep { color: var(--brand-text-faint); margin: 0 5px; }
+.role-meta .location { color: var(--brand-text-muted); }
+
+.role ul {
+  list-style: none;
+  margin-top: 4px;
+  padding-left: 0;
+}
+
+.role li {
+  position: relative;
+  padding-left: 14px;
+  font-size: 9.5px;
+  color: var(--brand-text-soft);
+  line-height: 1.5;
+  margin-bottom: 2px;
+}
+
+.role li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 6px;
+  width: 5px;
+  height: 1.5px;
+  background: var(--brand-accent);
+}
+
+.role li strong { color: var(--brand-text); font-weight: var(--brand-weight-semibold); }
+
+/* ── Footer portfolio link ──────────────────────────────────────────── */
+.footer-portfolio {
+  margin-top: 10px;
+  padding-top: 7px;
+  border-top: 1px dashed var(--brand-border-mid);
+  text-align: center;
+  font-family: var(--brand-font-heading);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--brand-text-muted);
+}
+
+.footer-portfolio .url {
+  color: var(--brand-accent);
+  font-weight: var(--brand-weight-semibold);
+}
+
+/* ── Iridescent spectrum divider ────────────────────────────────────── */
+.resume-spectrum {
+  height: 2px;
+  border: none;
+  background: linear-gradient(90deg,
+    var(--brand-ir-1), var(--brand-ir-2), var(--brand-ir-3),
+    var(--brand-ir-4), var(--brand-ir-5), var(--brand-ir-6));
+  margin: 0;
+  opacity: 0.72;
+}
+
+/* ── Print ──────────────────────────────────────────────────────────── */
+@page { size: A4; margin: 0; }
+
+@media print {
+  html, body {
+    background: #ffffff !important;
+    color: #1a1a1a !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .resume-topbar { display: none; }
+  .resume-spectrum { display: none; }
+
+  .page {
+    max-width: none;
+    width: 210mm;
+    margin: 0;
+    padding: 7mm 11mm 5mm;
+    background: #ffffff !important;
+  }
+
+  /* Flatten brand tokens to printer-safe values */
+  :root {
+    --brand-bg: #ffffff;
+    --brand-surface-1: #f5f5f5;
+    --brand-text: #1a1a1a;
+    --brand-text-soft: #2e2e2e;
+    --brand-text-muted: #6a6a6a;
+    --brand-text-faint: #999999;
+    --brand-border: #e0e0e0;
+    --brand-border-mid: #cccccc;
+    --brand-accent: #7a1ccc;
+    --brand-accent-dim: rgba(122, 28, 204, 0.15);
+    --brand-neon: #007a8a;
+    --brand-gold: #9a5c00;
+    --brand-gold-dim: rgba(154, 92, 0, 0.15);
+    --brand-ir-1: #7a1ccc;
+    --brand-ir-3: #9a5c00;
+    --brand-ir-6: #007a8a;
+    --brand-shadow-sm: none;
+  }
+
+  h1 .accent {
+    -webkit-text-fill-color: #7a1ccc;
+    background: none;
+  }
+
+  .page::before { display: none; }
+  .body, aside, main, section { break-inside: auto; page-break-inside: auto; }
+  .role, .summary, .skill-group, .award { break-inside: avoid; page-break-inside: avoid; }
+}
+
+/* ── Responsive ─────────────────────────────────────────────────────── */
+@media (max-width: 720px) {
+  html, body { font-size: 12px; }
+  .page { padding: 22px 18px; }
+  header { grid-template-columns: 1fr; gap: 12px; }
+  .contact { align-items: flex-start; text-align: left; }
+  h1 { font-size: 34px; }
+  .body { grid-template-columns: 1fr; gap: 20px; }
+  .role-title-row { flex-direction: column; }
+  .awards-row { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+  <div class="brand-page-bg" aria-hidden="true"></div>
+  <div class="brand-page-noise" aria-hidden="true"></div>
+
+  <!-- Top bar -->
+  <nav class="brand-nav" aria-label="Resume navigation">
+    <div class="brand-container brand-nav-inner">
+    <a href="../index.html" class="brand-nav-logo">
+      <img class="logo-dark" src="../images/icons/BubbleLogo/bubbleLogo-white-notxt.svg" alt="" width="26" height="26" />
+      <img class="logo-light" src="../images/icons/BubbleLogo/bubbleLogo-black-notxt.svg" alt="" width="26" height="26" />
+      Avery Ember Day
+    </a>
+    <div class="brand-nav-actions">
+      <a href="../index.html" class="resume-back">← Portfolio</a>
+      <button class="brand-theme-toggle" id="theme-toggle" aria-label="Toggle light/dark mode" style="position:relative;">
+        <svg class="icon-sun" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M12 17a5 5 0 1 0 0-10 5 5 0 0 0 0 10zm0 2a1 1 0 0 1 1 1v1a1 1 0 1 1-2 0v-1a1 1 0 0 1 1-1zm0-14a1 1 0 0 1-1-1V3a1 1 0 1 1 2 0v1a1 1 0 0 1-1 1zM4.22 5.64a1 1 0 0 1 1.42-1.42l.7.71a1 1 0 0 1-1.41 1.41l-.71-.7zm14.14 12.72a1 1 0 0 1 1.42 1.42l-.71.7a1 1 0 1 1-1.41-1.41l.7-.71zM3 12a1 1 0 0 1 1-1h1a1 1 0 1 1 0 2H4a1 1 0 0 1-1-1zm16 0a1 1 0 0 1 1-1h1a1 1 0 1 1 0 2h-1a1 1 0 0 1-1-1zM5.64 19.78l-.7.71a1 1 0 1 1-1.42-1.42l.71-.7a1 1 0 0 1 1.41 1.41zm12.72-14.14.71-.71a1 1 0 1 1 1.42 1.42l-.71.7a1 1 0 0 1-1.42-1.41z"/></svg>
+        <svg class="icon-moon" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M21 12.79A9 9 0 1 1 11.21 3a7 7 0 0 0 9.79 9.79z"/></svg>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<hr class="resume-spectrum" />
+
+<div class="page brand-container">
+
+  <header>
+    <div class="name-block">
+      <h1>Avery Ember Day</h1>
+      <div class="tagline">Brand &amp; Visual Designer · AI-Fluent Production · 6+ years across freelance, print, motion &amp; 3D</div>
+      <div><span class="pronouns">they / them</span></div>
+    </div>
+    <div class="contact">
+      <div class="row"><span class="label">Portfolio</span><a href="https://averyemberday.com">averyemberday.com</a></div>
+      <div class="row"><span class="label">LinkedIn</span><a href="https://linkedin.com/in/averyemberday">linkedin.com/in/averyemberday</a></div>
+      <div class="row"><span class="label">Upwork</span><a href="https://upwork.com/freelancers/averyemberday">upwork.com/freelancers/averyemberday</a></div>
+      <div class="row"><span class="label">Email</span><span>averyemberday@gmail.com</span></div>
+      <div class="row"><span class="label">Based</span><span>San Antonio, TX &amp; Las Vegas, NV — Remote</span></div>
+    </div>
+  </header>
+
+  <div class="summary">
+    Brand and visual designer with 6+ years of freelance experience and a B.S. in Graphic Information Technology from Arizona State University, earned while working full-time in a supervisory role. Specialize in brand identity systems, print production, motion graphics, and illustration for small businesses, creative clients, and entertainment IP. AI-fluent — integrate Adobe Firefly, ChatGPT, and Claude into ideation, asset variation, and production workflows to compress iteration time while maintaining brand consistency. A concurrent decade of operations leadership at Starbucks sharpens deadline discipline and stakeholder communication that translate directly to design-team and client work.
+  </div>
+
+  <div class="body">
+
+    <aside>
+      <section>
+        <div class="section-title">Core Skills</div>
+
+        <div class="skill-group">
+          <h4>Design Tools</h4>
+          <p>Figma, Adobe Illustrator, Adobe Photoshop, Adobe InDesign, Adobe After Effects, Adobe Premiere Pro, Adobe Dimension.</p>
+        </div>
+
+        <div class="skill-group">
+          <h4>Motion, Video &amp; 3D</h4>
+          <p>After Effects, Premiere Pro, Blender, Substance 3D, motion graphics, character illustration, 2D/3D hybrid production.</p>
+        </div>
+
+        <div class="skill-group">
+          <h4>AI-Assisted Workflow</h4>
+          <p>Adobe Firefly (Generative Fill, Generative Expand), ChatGPT, Claude, Notion AI, prompt engineering for brand-aligned generation, AI-powered ideation &amp; asset variation.</p>
+        </div>
+
+        <div class="skill-group">
+          <h4>Brand &amp; Visual Systems</h4>
+          <p>Brand identity, logo design, style guides, design systems, typography, color theory (CMYK / RGB), iconography, layout, visual hierarchy, social media design.</p>
+        </div>
+
+        <div class="skill-group">
+          <h4>Print &amp; Production</h4>
+          <p>Print production, packaging, banners, posters, marketing collateral, pre-press, production-ready file delivery, print vendor coordination.</p>
+        </div>
+
+        <div class="skill-group">
+          <h4>Web &amp; Digital</h4>
+          <p>HTML, CSS, responsive design fundamentals, social media assets, digital imaging, web-ready asset preparation.</p>
+        </div>
+
+        <div class="skill-group">
+          <h4>Process &amp; Collaboration</h4>
+          <p>Creative direction, creative briefs, client communication, stakeholder management, project &amp; deadline management, cross-functional collaboration.</p>
+        </div>
+      </section>
+
+      <section>
+        <div class="section-title">Education</div>
+        <div class="edu">
+          <div class="school">Arizona State University</div>
+          <div class="school-meta">Tempe, Arizona · Aug 2018 – Dec 2024</div>
+          <div class="school-detail"><strong>B.S. Graphic Information Technology</strong><br />Dean's College of Integrative Sciences &amp; Arts. Coursework spanning brand identity, typography, color theory, UX principles, digital imaging, motion graphics, and web development.</div>
+        </div>
+      </section>
+    </aside>
+
+    <main>
+      <section>
+        <div class="section-title">Professional Experience</div>
+
+        <div class="role">
+          <div class="role-header">
+            <div class="role-title-row">
+              <div class="role-title">Freelance Brand &amp; Visual Designer</div>
+              <div class="role-dates">Nov 2018 – Present</div>
+            </div>
+            <div class="role-meta">
+              <span class="company">Upwork &amp; Direct Clients</span>
+              <span class="sep">·</span>
+              <span class="location">Remote — San Antonio, TX &amp; Las Vegas, NV</span>
+            </div>
+          </div>
+          <ul>
+            <li>Designed brand identity systems, logo packages, and print production deliverables for <strong>7+ clients</strong> across small business, content creator, and entertainment IP categories.</li>
+            <li>Crafted a print-ready banner for <strong>Macro-Pro, Inc.</strong> via Upwork; produced a multi-piece office poster series for <strong>Allegra</strong>, a San Antonio print company.</li>
+            <li>Developed original character art and logo design for <strong>SECTION6</strong>, a WGAW-registered adult animated series pitch by X.A. Allister.</li>
+            <li>Built logo and banner packages for two content creators; created virtual and print marketing materials for a D&amp;D community group launching a brick-and-mortar bar in San Antonio.</li>
+            <li>Integrate <strong>Adobe Firefly, ChatGPT, Claude, and Notion AI</strong> into ideation, mood-boarding, and concept-variation cycles — compressing iteration time without compromising brand consistency or hand-crafted feel.</li>
+            <li>Deliver consistently on-brief, on-time, and on-brand — published client testimonial via Upwork.</li>
+          </ul>
+        </div>
+
+        <div class="role">
+          <div class="role-header">
+            <div class="role-title-row">
+              <div class="role-title">Shift Supervisor — Operations &amp; Team Lead</div>
+              <div class="role-dates">Apr 2015 – Present</div>
+            </div>
+            <div class="role-meta">
+              <span class="company">Starbucks</span>
+              <span class="sep">·</span>
+              <span class="location">San Antonio, TX &amp; Las Vegas, NV</span>
+            </div>
+          </div>
+          <ul>
+            <li>Lead shift teams of <strong>up to 30</strong> across <strong>7 store formats</strong>, managing real-time operations, scheduling, and escalations in high-volume environments.</li>
+            <li>Trained and onboarded <strong>10+ new team members</strong> across customer service standards, product preparation, and safety compliance.</li>
+            <li>Built people management, deadline discipline, and high-pressure stakeholder communication — skills now applied directly to client work and creative-team collaboration.</li>
+            <li>Maintained accurate cash management, inventory, and opening / closing procedures across a decade of operational responsibility.</li>
+          </ul>
+        </div>
+      </section>
+
+      <section>
+        <div class="section-title">Awards &amp; Recognition</div>
+        <div class="awards-row">
+          <div class="award">
+            <span class="award-name">5× National Junior Art Honor Society Medal</span>
+            <span class="award-meta">National juried competition — painting, sculpture &amp; portfolio art</span>
+          </div>
+          <div class="award">
+            <span class="award-name">Dean's College Recognition</span>
+            <span class="award-meta">ASU College of Integrative Sciences &amp; Arts · 2024</span>
+          </div>
+          <div class="award">
+            <span class="award-name">Published Client Testimonial</span>
+            <span class="award-meta">Macro-Pro, Inc. via Upwork — "delivered on time and on-brand"</span>
+          </div>
+        </div>
+      </section>
+    </main>
+
+  </div>
+
+  <div class="footer-portfolio">
+    Portfolio &amp; Work — <span class="url">averyemberday.com</span>
+    &nbsp;·&nbsp; LinkedIn: <span class="url">linkedin.com/in/averyemberday</span>
+    &nbsp;·&nbsp; Upwork: <span class="url">upwork.com/freelancers/averyemberday</span>
+  </div>
+
+</div>
+
+<script>
+  (function () {
+    var btn = document.getElementById('theme-toggle');
+    if (!btn) return;
+    btn.addEventListener('click', function () {
+      var root = document.documentElement;
+      var current = root.getAttribute('data-theme');
+      var next = current === 'light' ? 'dark' : 'light';
+      root.setAttribute('data-theme', next);
+      try { localStorage.setItem('theme', next); } catch(e) {}
+    });
+  })();
+</script>
+</body>
+</html>
