@@ -155,9 +155,9 @@
     --brand-shadow-card: var(--brand-shadow-md);
 
     /* Typography */
-    --brand-font-display:   'Sriracha', 'Funcity', sans-serif;
+    --brand-font-display:   'Sriracha', sans-serif;
     --brand-font-heading:   'Outfit', sans-serif;
-    --brand-font-body:      'Inter', 'Sonny Cond', sans-serif;
+    --brand-font-body:      'Inter', sans-serif;
     --brand-weight-thin:    100;
     --brand-weight-light:   300;
     --brand-weight-regular: 400;

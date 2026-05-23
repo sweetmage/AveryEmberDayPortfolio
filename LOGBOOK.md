@@ -1,3 +1,52 @@
+## Entry 007 — 2026-05-22
+
+**Agent:** claude-sonnet-4-6 (nova-flux, img-opt)
+**Cycle:** gallery-image-optimization
+**Task:** Optimize gallery images — convert PNGs to WebP, resize to 1200px max width
+
+### Changes
+
+- **images/myart/Gallery/*.webp** — 12 new WebP files generated from source PNGs via `npx sharp-cli -f webp -q 82 resize 1200`. Total reduced from ~105MB → ~2.4MB for this set.
+- **images/myart/Gallery/SelfPortraitSeries/*.webp** — 4 new WebP files. ~21MB → ~900KB.
+- **gallery/gallery.html** — All 16 `<img src>` paths updated from `.png` to `.webp`.
+- **index.html** — Gallery card thumbnail (FacesFinal) updated to `.webp`.
+- Source PNGs retained on disk (in git history). Original 16 files: 1.2–19MB each.
+
+---
+
+## Entry 006 — 2026-05-22
+
+**Agent:** claude-sonnet-4-6 (nova-flux, head-fixes)
+**Cycle:** identity-head-fixes
+**Task:** Identity & Head fixes — favicon, title, Script.js cleanup, onclick removal
+
+### Changes
+
+- **index.html** — Added `<link rel="icon">` (SVG), updated `<title>` to "Avery Ember Day — Multi-Media Designer", removed `onclick="scrollToTop()"` from return-to-top button.
+- **gallery/gallery.html** — Added `<link rel="icon">` (SVG), removed inline onclick.
+- **projects/brand-avery-ember-day.html** — Added `<link rel="icon">` (SVG), removed inline onclick.
+- **Script.js** — Replaced `window.onscroll` with `addEventListener('scroll', ..., { passive: true })`, removed `scrollToTop()` function, added `btn.addEventListener('click', ...)` for return-to-top. Added null-guard on `btn`.
+- Script.js casing confirmed consistent (`Script.js`) across all HTML pages — no change needed.
+- `#logoContainer` already contains logo `<img>` on gallery and project pages — no change needed.
+
+---
+
+## Entry 005 — 2026-05-22
+
+**Agent:** claude-sonnet-4-6 (nova-flux, a11y)
+**Cycle:** accessibility-baseline
+**Task:** WCAG 2.1 AA accessibility baseline across all pages
+
+### Changes
+
+- **style.css** — Added `.skip-link` (off-screen, reveals on focus; #0A0A0A bg for contrast), `.sr-only`, and `nav a:focus-visible` / `.brand-nav-links a:focus-visible` ring (2px `--brand-accent` outline).
+- **index.html** — Added `<a href="#main" class="skip-link">` as first body child; `id="main"` on `<main>`; `aria-label="Primary navigation"` on `<nav>`.
+- **gallery/gallery.html** — Same three fixes applied.
+- **projects/brand-avery-ember-day.html** — Same three fixes applied.
+- axe-core WCAG 2.1 AA audit on index.html post-fix: 0 violations.
+
+---
+
 ## Entry 004 — 2026-05-21
 
 **Agent:** big-pickle
