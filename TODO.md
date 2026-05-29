@@ -48,22 +48,22 @@ Project id `69c8addc8f0823c509e1979f`. Mirrors TickTick task/checklist state; `*
 ### A History of Mistrust (tag `history-of-mistrust`)
 - [x] 03. Export 30 frames as web-optimized images (webp display + hi-res)
 - [x] 04. Export 3 combined set images (sets of 10, stitched wide)
-- [ ] 05. Create project page from template *(done in repo: `projects/history-of-mistrust.html`)*
+- [x] 05. Create project page from template *(done in repo: `projects/history-of-mistrust.html`)*
 - [ ] 06. Build continuous horizontal carousel (3 sets of 10, no gaps, seamless)
 - [ ] 07. Per-set slideshow (one at a time) + combined set image after each set
 - [ ] 08. Click-to-fullscreen lightbox (keyboard + close, accessible)
-- [ ] 09. Add project card to index.html Work section *(done in repo: card + cover image)*
+- [x] 09. Add project card to index.html Work section *(done in repo: card + cover image)*
 - [ ] 10. Verify: responsive, theme, a11y, keyboard nav, browser test
 
 ### mistrust (checklist)
 - [x] Remake moodboard
 - [x] Fix spelling errors
 - [x] Finish redesign
-- [ ] Designate title card
+- [x] Designate title card *(Slide 1 — title cover)*
 
 ### Sub-page content & image paths
-- [ ] history-of-mistrust.html: add real images (storyboard, spreads) from Process.pdf
-- [ ] confirm all image src paths resolve
+- [x] history-of-mistrust.html: add real images (storyboard, spreads) from Process.pdf
+- [x] confirm all image src paths resolve
 - [ ] patriots-low-thirds.html: add render still or embed video
 - [ ] self-portrait-series.html: verify image paths
 - [x] gallery/gallery.html: verify all gallery image paths load
@@ -71,7 +71,7 @@ Project id `69c8addc8f0823c509e1979f`. Mirrors TickTick task/checklist state; `*
 - [x] history-of-mistrust.html: fix spelling mistakes
 
 ### Project card thumbnails — 3 missing
-- [ ] A History of Mistrust: cover image → images/projects/mistrust-thumb.jpg
+- [x] A History of Mistrust: cover image → images/projects/mistrust-thumb.jpg
 - [ ] AED Brand Identity: brand showcase → images/projects/brand-thumb.jpg
 - [ ] Patriots Low Thirds: still/render → images/projects/patriots-thumb.jpg
 - [ ] Wire all 3 thumbnail `<img>` tags into `.project-card-img` divs in index.html

@@ -1,3 +1,22 @@
+## Entry 011 — 2026-05-28
+
+**Agent:** kimi-k2.6 (shxdow-flow)
+**Cycle:** history-of-mistrust-project-card
+**Task:** Use slide 9 as project card thumbnail in index.html
+
+### Changes
+
+- **images/projects/mistrust-thumb.jpg** (new) — Converted from `images/myart/A History of Mistrust/slides/slide-09.webp` (720×720, q90). Slide 9 (Dr. Joycelyn Elders quote) selected as the project card cover image.
+- **index.html** — A History of Mistrust project card `<img src>` updated from the wide collage (`images/myart/A History of Mistrust/A History of Mistrust.png`) to the new thumbnail (`images/projects/mistrust-thumb.jpg`).
+- **TODO.md** — Marked task 09 (Add project card) and the "Project card thumbnails — 3 missing" sub-item for mistrust as complete.
+
+### Verification
+
+- Image renders correctly; file path resolves relative to `index.html`.
+- No other index.html markup changed.
+
+---
+
 ## Entry 010 — 2026-05-28
 
 **Agent:** claude-opus-4-8 (vela, shxdow-flow)
