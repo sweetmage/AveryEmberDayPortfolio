@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="author" content="Avery Ember Day" />
+    <title>A History of Mistrust — Avery Ember Day</title>
+    <link rel="icon" href="../images/icons/BubbleLogo/bubbleLogo-white-notxt.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="../brand.css" />
+    <link rel="stylesheet" href="../style.css" />
+    <script>
+      (function(){var t=localStorage.getItem('theme');if(t)document.documentElement.setAttribute('data-theme',t);})();
+    </script>
+    <style>
+      .project-hero {
+        padding: 80px 24px 48px;
+        max-width: var(--brand-content-max);
+        margin: 0 auto;
+      }
+      .project-back {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        font-family: var(--brand-font-body);
+        font-size: 0.85rem;
+        color: var(--brand-text-muted);
+        text-decoration: none;
+        margin-bottom: 32px;
+        transition: color var(--brand-transition-fast);
+      }
+      .project-back:hover { color: var(--brand-text); }
+      .project-back svg { width: 16px; height: 16px; }
+
+      .project-tag {
+        display: inline-block;
+        font-family: var(--brand-font-body);
+        font-size: 0.75rem;
+        font-weight: 500;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--brand-accent);
+        margin-bottom: 12px;
+      }
+      .project-title {
+        font-family: var(--brand-font-display);
+        font-size: clamp(2rem, 5vw, 3.5rem);
+        color: var(--brand-text);
+        margin: 0 0 16px;
+        line-height: 1.1;
+      }
+      .project-desc {
+        font-family: var(--brand-font-body);
+        font-size: 1rem;
+        color: var(--brand-text-soft);
+        max-width: 640px;
+        line-height: 1.7;
+        margin: 0;
+      }
+
+      .project-section {
+        max-width: var(--brand-content-max);
+        margin: 0 auto;
+        padding: 0 24px 80px;
+      }
+      .section-label {
+        font-family: var(--brand-font-body);
+        font-size: 0.75rem;
+        font-weight: 600;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--brand-text-muted);
+        margin: 0 0 24px;
+      }
+      .section-title {
+        font-family: var(--brand-font-heading);
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: #7eb8ff;
+        margin: 0 0 32px;
+      }
+
+      /* Slide grid */
+      .slide-grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 24px;
+      }
+      .slide-card {
+        border-radius: var(--brand-radius-lg);
+        overflow: hidden;
+        border: 1px solid var(--brand-border);
+        background: var(--brand-surface-1);
+      }
+      .slide-card img {
+        width: 100%;
+        height: auto;
+        display: block;
+      }
+      .slide-card-label {
+        padding: 10px 16px;
+        font-family: var(--brand-font-body);
+        font-size: 0.8rem;
+        color: var(--brand-text-muted);
+        text-align: center;
+        border-top: 1px solid var(--brand-border);
+      }
+
+      /* Supporting material */
+      .supporting-grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 24px;
+      }
+      .supporting-card {
+        border-radius: var(--brand-radius-lg);
+        overflow: hidden;
+        border: 1px solid var(--brand-border);
+        background: var(--brand-surface-1);
+      }
+      .supporting-card img {
+        width: 100%;
+        height: auto;
+        display: block;
+      }
+      .supporting-card-label {
+        padding: 12px 16px;
+        border-top: 1px solid var(--brand-border);
+      }
+      .supporting-card-label strong {
+        display: block;
+        font-family: var(--brand-font-body);
+        font-size: 0.85rem;
+        font-weight: 500;
+        color: var(--brand-text);
+      }
+      .supporting-card-label span {
+        font-family: var(--brand-font-body);
+        font-size: 0.75rem;
+        color: var(--brand-text-muted);
+      }
+
+      /* Bibliography / Sources */
+      .sources-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        columns: 1;
+        column-gap: 48px;
+      }
+      .sources-list li {
+        font-family: var(--brand-font-body);
+        font-size: 0.82rem;
+        color: var(--brand-text-muted);
+        line-height: 1.55;
+        margin-bottom: 12px;
+        break-inside: avoid;
+        padding-left: 1.5em;
+        text-indent: -1.5em;
+      }
+      .sources-list li a {
+        color: var(--brand-text-soft);
+        text-decoration: underline;
+        text-underline-offset: 2px;
+        word-break: break-word;
+      }
+      .sources-list li a:hover {
+        color: var(--brand-accent);
+      }
+
+      @media screen and (min-width: 700px) {
+        .sources-list { columns: 2; }
+      }
+      @media screen and (min-width: 1100px) {
+        .sources-list { columns: 3; }
+      }
+
+      @media screen and (min-width: 600px) {
+        .slide-grid { grid-template-columns: repeat(2, 1fr); }
+        .supporting-grid { grid-template-columns: repeat(2, 1fr); }
+      }
+      @media screen and (min-width: 900px) {
+        .slide-grid { grid-template-columns: repeat(3, 1fr); }
+      }
+    </style>
+  </head>
+  <body>
+    <a href="#main" class="skip-link">Skip to content</a>
+    <div class="brand-page-bg" aria-hidden="true"></div>
+    <div class="brand-page-noise" aria-hidden="true"></div>
+
+    <header>
+      <div id="logoContainer">
+        <img src="../images/icons/BubbleLogo/bubbleLogo-white-notxt.svg" alt="Avery Ember Day Logo" id="logo" />
+        <span id="logoText">Avery Ember Day</span>
+      </div>
+      <nav aria-label="Primary navigation">
+        <ul>
+          <li><a href="../index.html#work">Work</a></li>
+          <li><a href="../index.html#about">About</a></li>
+          <li><a href="../resume/AveryEmberDay_Resume_2026.html" target="_blank">Resume</a></li>
+          <li><a href="../index.html#contact">Contact</a></li>
+        </ul>
+        <button id="theme-toggle" aria-label="Toggle light/dark mode">
+          <svg class="icon-sun" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 17a5 5 0 1 0 0-10 5 5 0 0 0 0 10zm0 2a1 1 0 0 1 1 1v1a1 1 0 1 1-2 0v-1a1 1 0 0 1 1-1zm0-14a1 1 0 0 1-1-1V3a1 1 0 1 1 2 0v1a1 1 0 0 1-1 1zM4.22 5.64a1 1 0 0 1 1.42-1.42l.7.71a1 1 0 0 1-1.41 1.41l-.71-.7zm14.14 12.72a1 1 0 0 1 1.42 1.42l-.71.7a1 1 0 1 1-1.41-1.41l.7-.71zM3 12a1 1 0 0 1 1-1h1a1 1 0 1 1 0 2H4a1 1 0 0 1-1-1zm16 0a1 1 0 0 1 1-1h1a1 1 0 1 1 0 2h-1a1 1 0 0 1-1-1zM5.64 19.78l-.7.71a1 1 0 1 1-1.42-1.42l.71-.7a1 1 0 0 1 1.41 1.41zm12.72-14.14.71-.71a1 1 0 1 1 1.42 1.42l-.71.7a1 1 0 0 1-1.42-1.41z"/></svg>
+          <svg class="icon-moon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M21 12.79A9 9 0 1 1 11.21 3a7 7 0 0 0 9.79 9.79z"/></svg>
+        </button>
+      </nav>
+    </header>
+
+    <main id="main">
+      <!-- Hero -->
+      <div class="project-hero">
+        <a href="../index.html#work" class="project-back">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M5 12l7-7M5 12l7 7"/></svg>
+          Back to Work
+        </a>
+        <span class="project-tag">Editorial / Infographic</span>
+        <h1 class="project-title">A History of Mistrust</h1>
+        <p class="project-desc">A 30-slide Instagram carousel exploring medical mistrust in marginalized communities — from HIV/AIDS stigma and the Tuskegee study to LGBTQ+ health disparities and community-led solutions. Full preproduction included: storyboards, moodboard, and process documentation.</p>
+      </div>
+
+      <!-- Carousel Slides -->
+      <section class="project-section">
+        <p class="section-label">Social Campaign</p>
+        <h2 class="section-title">Carousel Slides</h2>
+        <div class="slide-grid">
+
+          <div class="slide-card">
+            <img src="../images/myart/A History of Mistrust/slides/slide-01.webp" alt="Slide 1 — Title cover" loading="lazy" />
+            <div class="slide-card-label">Slide 1</div>
+          </div>
+          <div class="slide-card">
+            <img src="../images/myart/A History of Mistrust/slides/slide-02.webp" alt="Slide 2" loading="lazy" />
+            <div class="slide-card-label">Slide 2</div>
+          </div>
+          <div class="slide-card">
+            <img src="../images/myart/A History of Mistrust/slides/slide-03.webp" alt="Slide 3" loading="lazy" />
+            <div class="slide-card-label">Slide 3</div>
+          </div>
+          <div class="slide-card">
+            <img src="../images/myart/A History of Mistrust/slides/slide-04.webp" alt="Slide 4" loading="lazy" />
+            <div class="slide-card-label">Slide 4</div>
+          </div>
+          <div class="slide-card">
+            <img src="../images/myart/A History of Mistrust/slides/slide-05.webp" alt="Slide 5" loading="lazy" />
+            <div class="slide-card-label">Slide 5</div>
+          </div>
+          <div class="slide-card">
+            <img src="../images/myart/A History of Mistrust/slides/slide-06.webp" alt="Slide 6" loading="lazy" />
+            <div class="slide-card-label">Slide 6</div>
+          </div>
+          <div class="slide-card">
+            <img src="../images/myart/A History of Mistrust/slides/slide-07.webp" alt="Slide 7" loading="lazy" />
+            <div class="slide-card-label">Slide 7</div>
+          </div>
+          <div class="slide-card">
+            <img src="../images/myart/A History of Mistrust/slides/slide-08.webp" alt="Slide 8" loading="lazy" />
+            <div class="slide-card-label">Slide 8</div>
+          </div>
+          <div class="slide-card">
+            <img src="../images/myart/A History of Mistrust/slides/slide-09.webp" alt="Slide 9" loading="lazy" />
+            <div class="slide-card-label">Slide 9</div>
+          </div>
+          <div class="slide-card">
+            <img src="../images/myart/A History of Mistrust/slides/slide-10.webp" alt="Slide 10" loading="lazy" />
+            <div class="slide-card-label">Slide 10</div>
+          </div>
+          <div class="slide-card">
+            <img src="../images/myart/A History of Mistrust/slides/slide-11.webp" alt="Slide 11" loading="lazy" />
+            <div class="slide-card-label">Slide 11</div>
+          </div>
+          <div class="slide-card">
+            <img src="../images/myart/A History of Mistrust/slides/slide-12.webp" alt="Slide 12" loading="lazy" />
+            <div class="slide-card-label">Slide 12</div>
+          </div>
+          <div class="slide-card">
+            <img src="../images/myart/A History of Mistrust/slides/slide-13.webp" alt="Slide 13" loading="lazy" />
+            <div class="slide-card-label">Slide 13</div>
+          </div>
+          <div class="slide-card">
+            <img src="../images/myart/A History of Mistrust/slides/slide-14.webp" alt="Slide 14" loading="lazy" />
+            <div class="slide-card-label">Slide 14</div>
+          </div>
+          <div class="slide-card">
+            <img src="../images/myart/A History of Mistrust/slides/slide-15.webp" alt="Slide 15" loading="lazy" />
+            <div class="slide-card-label">Slide 15</div>
+          </div>
+          <div class="slide-card">
+            <img src="../images/myart/A History of Mistrust/slides/slide-16.webp" alt="Slide 16" loading="lazy" />
+            <div class="slide-card-label">Slide 16</div>
+          </div>
+          <div class="slide-card">
+            <img src="../images/myart/A History of Mistrust/slides/slide-17.webp" alt="Slide 17" loading="lazy" />
+            <div class="slide-card-label">Slide 17</div>
+          </div>
+          <div class="slide-card">
+            <img src="../images/myart/A History of Mistrust/slides/slide-18.webp" alt="Slide 18" loading="lazy" />
+            <div class="slide-card-label">Slide 18</div>
+          </div>
+          <div class="slide-card">
+            <img src="../images/myart/A History of Mistrust/slides/slide-19.webp" alt="Slide 19" loading="lazy" />
+            <div class="slide-card-label">Slide 19</div>
+          </div>
+          <div class="slide-card">
+            <img src="../images/myart/A History of Mistrust/slides/slide-20.webp" alt="Slide 20" loading="lazy" />
+            <div class="slide-card-label">Slide 20</div>
+          </div>
+          <div class="slide-card">
+            <img src="../images/myart/A History of Mistrust/slides/slide-21.webp" alt="Slide 21" loading="lazy" />
+            <div class="slide-card-label">Slide 21</div>
+          </div>
+          <div class="slide-card">
+            <img src="../images/myart/A History of Mistrust/slides/slide-22.webp" alt="Slide 22" loading="lazy" />
+            <div class="slide-card-label">Slide 22</div>
+          </div>
+          <div class="slide-card">
+            <img src="../images/myart/A History of Mistrust/slides/slide-23.webp" alt="Slide 23" loading="lazy" />
+            <div class="slide-card-label">Slide 23</div>
+          </div>
+          <div class="slide-card">
+            <img src="../images/myart/A History of Mistrust/slides/slide-24.webp" alt="Slide 24" loading="lazy" />
+            <div class="slide-card-label">Slide 24</div>
+          </div>
+          <div class="slide-card">
+            <img src="../images/myart/A History of Mistrust/slides/slide-25.webp" alt="Slide 25" loading="lazy" />
+            <div class="slide-card-label">Slide 25</div>
+          </div>
+          <div class="slide-card">
+            <img src="../images/myart/A History of Mistrust/slides/slide-26.webp" alt="Slide 26" loading="lazy" />
+            <div class="slide-card-label">Slide 26</div>
+          </div>
+          <div class="slide-card">
+            <img src="../images/myart/A History of Mistrust/slides/slide-27.webp" alt="Slide 27" loading="lazy" />
+            <div class="slide-card-label">Slide 27</div>
+          </div>
+          <div class="slide-card">
+            <img src="../images/myart/A History of Mistrust/slides/slide-28.webp" alt="Slide 28" loading="lazy" />
+            <div class="slide-card-label">Slide 28</div>
+          </div>
+          <div class="slide-card">
+            <img src="../images/myart/A History of Mistrust/slides/slide-29.webp" alt="Slide 29" loading="lazy" />
+            <div class="slide-card-label">Slide 29</div>
+          </div>
+          <div class="slide-card">
+            <img src="../images/myart/A History of Mistrust/slides/slide-30.webp" alt="Slide 30" loading="lazy" />
+            <div class="slide-card-label">Slide 30</div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- Moodboard -->
+      <section class="project-section">
+        <p class="section-label">Preproduction</p>
+        <h2 class="section-title">Moodboard</h2>
+        <div class="supporting-grid">
+          <div class="supporting-card">
+            <img src="../images/myart/A History of Mistrust/supporting material/HistoryofMistrustMoodboard.png" alt="A History of Mistrust moodboard" />
+            <div class="supporting-card-label">
+              <strong>Moodboard</strong>
+              <span>Visual research and reference</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Storyboard -->
+      <section class="project-section">
+        <p class="section-label">Preproduction</p>
+        <h2 class="section-title">Storyboard</h2>
+        <div class="supporting-grid">
+          <div class="supporting-card">
+            <img src="../images/myart/A History of Mistrust/supporting material/aHistoryOfMistrustStoryboard.jpg" alt="A History of Mistrust storyboard" />
+            <div class="supporting-card-label">
+              <strong>Storyboard</strong>
+              <span>Layout and flow planning</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Sources -->
+      <section class="project-section">
+        <p class="section-label">Research</p>
+        <h2 class="section-title">Sources & Bibliography</h2>
+        <ul class="sources-list">
+          <li>AIDSVu. (2024). <em>AIDSVu Releases 2024 PrEP Use Data</em>. Emory University Rollins School of Public Health. <a href="https://aidsvu.org/news-updates/aidsvu-releases-2024-prep-use-data-showing-growing-use-across-the-u-s/" target="_blank">Link</a></li>
+          <li>Alsan, M., Garrick, O., & Graziani, G. C. (2019). Does Diversity Matter for Health? Experimental Evidence from Oakland. <em>American Economic Review, 109</em>(12), 4071-4111. <a href="https://pubs.aeaweb.org/doi/10.1257/aer.20181446" target="_blank">Link</a></li>
+          <li>American Medical Association (AMA). (2023). <em>Physicians can realize their power to advance health equity</em>. National Health Equity Grand Rounds. <a href="https://www.ama-assn.org/public-health/health-equity/physicians-can-realize-their-power-advance-health-equity" target="_blank">Link</a></li>
+          <li>Association of American Medical Colleges (AAMC). (2005). <em>Cultural Competence Education</em>. <a href="https://www.aamc.org/media/20856/download" target="_blank">Link</a></li>
+          <li>California State Auditor. (2014). <em>Sterilization of Female Inmates: Some Inmates Were Sterilized Following Violations of State Law and Established Policies and Procedures</em>. <a href="https://information.auditor.ca.gov/pdfs/reports/2013-120.pdf" target="_blank">Link</a></li>
+          <li>Centers for Disease Control and Prevention (CDC). (2024). <em>Breast Cancer Among Young Women</em>. <a href="https://www.cdc.gov/united-states-cancer-statistics/publications/breast-cancer-among-young-women.html" target="_blank">Link</a></li>
+          <li>Centers for Disease Control and Prevention (CDC). (2024). <em>HIV Diagnoses</em>. <a href="https://www.hiv.gov/hiv-basics/overview/data-and-trends/statistics" target="_blank">Link</a></li>
+          <li>Centers for Disease Control and Prevention (CDC). (2024). <em>The Untreated Syphilis Study at Tuskegee Timeline</em>. <a href="https://www.cdc.gov/tuskegee/about/timeline.html" target="_blank">Link</a></li>
+          <li>CNET. (2025). <em>How to access important health info that's been scrubbed from the CDC site</em>. <a href="https://www.cnet.com/tech/services-and-software/how-to-access-important-health-info-thats-been-scrubbed-from-the-cdc-site/" target="_blank">Link</a></li>
+          <li>Dick, B. (2024). <em>When Homosexuality Stopped Being a Mental Disorder in the DSM</em>. National Alliance on Mental Illness (NAMI). <a href="https://www.namisb.org/blog/blogs-articles-news-2/when-homosexuality-stopped-being-a-mental-disorder-in-the-dsm-5" target="_blank">Link</a></li>
+          <li>Georgia State University Library. (n.d.). <em>Reagan's Response</em>. Out in the Archives: Documenting LGBTQ History. <a href="https://exhibits.library.gsu.edu/out-in-the-archives/hiv-aids/reagans-response/" target="_blank">Link</a></li>
+          <li>Hoffman, K. M., Trawalter, S., Axt, J. R., & Oliver, M. N. (2016). Racial bias in pain assessment and treatment recommendations, and false beliefs about biological differences between blacks and whites. <em>Proceedings of the National Academy of Sciences, 113</em>(16), 4296-4301. <a href="https://www.pnas.org/doi/10.1073/pnas.1516047113" target="_blank">Link</a></li>
+          <li>Kaiser Family Foundation (KFF). (2023). <em>Access Uncertain for New Injectable PrEP As the Affordable Care Act's (ACA) Open Enrollment Begins</em>. <a href="https://www.kff.org/hiv-aids/access-uncertain-for-new-injectable-prep-as-the-affordable-care-acts-aca-open-enrollment-begins/" target="_blank">Link</a></li>
+          <li>Kaiser Family Foundation (KFF). (2023). <em>LGBT Adults' Experiences with Discrimination and Health Care Disparities</em>. <a href="https://www.kff.org/racial-equity-and-health-policy/lgbt-adults-experiences-with-discrimination-and-health-care-disparities-findings-from-the-kff-survey-of-racism-discrimination-and-health/" target="_blank">Link</a></li>
+          <li>Lambda Legal. (2010). <em>When Health Care Isn't Caring: Lambda Legal's Survey of Discrimination Against LGBT People and People with HIV</em>. <a href="https://lambdalegal.org/wp-content/uploads/2011/10/whcic-report_when-health-care-isnt-caring.pdf" target="_blank">Link</a></li>
+          <li>MacCarthy, S., et al. (2022). <em>The Benefit of Affirming Care for LGBTQ+ Population Health</em>. AcademyHealth / MedRxiv. <a href="https://www.medrxiv.org/content/10.1101/2022.05.26.22275633v1.full-text" target="_blank">Link</a></li>
+          <li>National Center for Transgender Equality & National LGBTQ Task Force. (2011). <em>Injustice at Every Turn: A Report of the National Transgender Discrimination Survey</em>. <a href="https://www.thetaskforce.org/app/uploads/2019/07/ntds_full.pdf" target="_blank">Link</a></li>
+          <li>NIH National Library of Medicine. (2024). <em>Medical Mistrust Becomes a Social Determinant of Health, Leading to Health Inequities</em>. <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC11944586/" target="_blank">Link</a></li>
+          <li>Price, G. N., & Darity, W. A. (2020). <em>Did North Carolina Economically Breed-Out Blacks During its Historical Eugenic Sterilization Campaign?</em> American Review of Political Economy. <a href="https://today.duke.edu/2020/07/new-paper-examines-disproportionate-effect-eugenics-nc%E2%80%99s-black-population" target="_blank">Link</a></li>
+          <li>Trepka, M. J., et al. (2016). <em>Delayed HIV diagnosis among men who have sex with men</em>. <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC5263177/" target="_blank">Link</a></li>
+          <li>U.S. General Accounting Office. (1976). <em>Formulation of the Indian Health Service</em>. Native Voices Timeline. <a href="https://www.nlm.nih.gov/nativevoices/timeline/543.html" target="_blank">Link</a></li>
+          <li>UNAIDS. (2024). <em>Global HIV statistics</em>. <a href="https://www.unaids.org/sites/default/files/media_asset/UNAIDS_FactSheet_en.pdf" target="_blank">Link</a></li>
+          <li>Whitman-Walker Institute. (2022). <em>Whitman-Walker Institute and Partners Release First Research on Trans and Nonbinary Health</em>. <a href="https://www.whitman-walker.org/whitman-walker-institute-and-partners-release-first-research-findings-for-trans-and-nonbinary-health/" target="_blank">Link</a></li>
+          <li>American Psychiatric Association. <em>Working with LGBTQ Patients</em>. <a href="https://www.psychiatry.org/psychiatrists/diversity/education/best-practice-highlights/working-with-lgbtq-patients" target="_blank">Link</a></li>
+          <li>NAMI San Bernardino. <em>When Homosexuality Stopped Being a Mental Disorder in the DSM</em>. <a href="https://www.namisb.org/blog/blogs-articles-news-2/when-homosexuality-stopped-being-a-mental-disorder-in-the-dsm-5" target="_blank">Link</a></li>
+          <li>PMC - NIH. <em>Out of DSM: Depathologizing Homosexuality</em>. <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC4695779/" target="_blank">Link</a></li>
+          <li>Annual Reviews. <em>History and Iatrogenic Effects of Conversion Therapy</em>. <a href="https://www.annualreviews.org/content/journals/10.1146/annurev-clinpsy-080822-052144?crawler=true&mimetype=application/pdf" target="_blank">Link</a></li>
+          <li>Psychology Town. <em>Homosexuality: From Pathology to Acceptance</em>. <a href="https://psychology.town/mental-health-in-special-areas/homosexuality-pathology-to-acceptance/" target="_blank">Link</a></li>
+          <li>PMC. <em>R. Spitzer and the depathologization of homosexuality: some considerations on the 50th anniversary</em>. <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC11083874/" target="_blank">Link</a></li>
+          <li>AACN. <em>Caring for LGBTQ+ Patients in Critical and Progressive Care</em>. <a href="https://www.aacn.org/blog/caring-for-lgbtq-patients-in-critical-and-progressive-care" target="_blank">Link</a></li>
+          <li>PMC. <em>Broken down by bias: Healthcare biases experienced by BIPOC and LGBTQ+ patients</em>. <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC8861755/" target="_blank">Link</a></li>
+          <li>Brandeis ScholarWorks. <em>The Illegitimacy of Sterilization: The Merging of Welfare and Eugenics in North Carolina, 1929-2015</em>. <a href="https://scholarworks.brandeis.edu/view/pdfCoverPage?instCode=01BRAND_INST&filePid=13419020920001921&download=true" target="_blank">Link</a></li>
+          <li>Lawrence, J. (2000). The Indian Health Service and the Sterilization of Native American Women. <em>The American Indian Quarterly, 24</em>(3), 400-419. <a href="https://doi.org/10.1353/aiq.2000.0008" target="_blank">Link</a></li>
+          <li>Government Accountability Office (GAO). <em>HRD-77-3 Investigation of Allegations Concerning Indian Health Service</em>. <a href="https://www.gao.gov/assets/hrd-77-3.pdf" target="_blank">Link</a></li>
+          <li>PBS. <em>Unwanted Sterilization and Eugenics Programs in the United States</em>. <a href="https://www.pbs.org/independentlens/blog/unwanted-sterilization-and-eugenics-programs-in-the-united-states/" target="_blank">Link</a></li>
+          <li>PMC. <em>California's Sterilization Survivors: An Estimate and Call for Redress</em>. <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC5308144/" target="_blank">Link</a></li>
+          <li>Prison Policy. <em>"If They Hand You a Paper, You Sign It": A Call to End the Sterilization of Women in Prison</em>. <a href="https://www.prisonpolicy.org/scans/Roth_If_They_Hand_You_1_15_2015.pdf" target="_blank">Link</a></li>
+          <li>Stern, A. M. (2005). STERILIZED in the Name of Public Health. Race, Immigration, and Reproductive Control in Modern California. <em>American Journal of Public Health, 95</em>(7), 1128-1138. <a href="https://doi.org/10.2105/ajph.2004.041608" target="_blank">Link</a></li>
+          <li>PMC. <em>STERILIZED in the Name of Public Health: Race, Immigration, and Reproductive Control in Modern California</em>. <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC1449330/" target="_blank">Link</a></li>
+          <li>Embryo Project Encyclopedia. <em>The Tuskegee Syphilis Study (1932–1972)</em>. <a href="https://embryo.asu.edu/pages/tuskegee-syphilis-study-1932-1972" target="_blank">Link</a></li>
+          <li>PMC. <em>Fiftieth Anniversary of Uncovering the Tuskegee Syphilis Study: The Story and Timeless Lessons</em>. <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC9872801/" target="_blank">Link</a></li>
+
+          <li>CDC. <em>About The Untreated Syphilis Study at Tuskegee</em>. <a href="https://www.cdc.gov/tuskegee/about/index.html" target="_blank">Link</a></li>
+
+          <li>Reagan Presidential Library. <em>The President's News Conference</em>. <a href="https://www.reaganlibrary.gov/archives/speech/presidents-news-conference-16" target="_blank">Link</a></li>
+          <li>Swarthmore College. <em>Silence From the Great Communicator: The Early Years of the AIDS Epidemic Under the Reagan Administration</em>. <a href="https://works.swarthmore.edu/cgi/viewcontent.cgi?article=1167&context=suhj" target="_blank">Link</a></li>
+          <li>CIDRAP. <em>Removal of pages from CDC website brings confusion, dismay</em>. <a href="https://www.cidrap.umn.edu/public-health/removal-pages-cdc-website-brings-confusion-dismay" target="_blank">Link</a></li>
+          <li>PMC. <em>Rewriting women's health: a content analysis of the Trump administration's revisions to womenshealth.gov</em>. <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC12613099/" target="_blank">Link</a></li>
+          <li>PMC. <em>Medical Mistrust: A Concept Analysis</em>. <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC11944586/" target="_blank">Link</a></li>
+          <li>PMC. <em>Medical mistrust, racism, and delays in preventive health screening among African-American men</em>. <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC8620213/" target="_blank">Link</a></li>
+          <li>Health Affairs. <em>Challenges To Reducing Discrimination And Health ...</em>. <a href="https://www.healthaffairs.org/doi/abs/10.1377/hlthaff.2016.1091?journalCode=hlthaff" target="_blank">Link</a></li>
+          <li>PMC. <em>PrEP-Related Medical, Structural and Institutional Mistrust among a Socioeconomically Diverse Sample of Black, Latine, Asian, and White Young Sexual Minority Men</em>. <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC12929284/" target="_blank">Link</a></li>
+          <li>PMC. <em>Medical Mistrust Among Black Patients with Serious Illness: A Mixed Methods Study</em>. <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC11534910/" target="_blank">Link</a></li>
+          <li>CDC. <em>HIV Diagnoses, Deaths, and Prevalence | HIV Data</em>. <a href="https://www.cdc.gov/hiv-data/nhss/hiv-diagnoses-deaths-prevalence.html" target="_blank">Link</a></li>
+          <li>AIDSVu. <em>AIDSVu Releases New PrEP Data and Launches PrEPVu.org</em>. <a href="https://aidsvu.org/news-updates/aidsvu-releases-new-prep-data-and-launches-prepvu-org-a-new-prep-equity-platform/" target="_blank">Link</a></li>
+          <li>AIDSVu. <em>AIDSVu Releases New Data Highlighting Ongoing Inequities in PrEP Use</em>. <a href="https://aidsvu.org/news-updates/news-updates-aidsvu-releases-new-data-highlighting-ongoing-inequities-in-prep-use-among-black-and-hispanic-people-and-across-regions-of-the-county/" target="_blank">Link</a></li>
+          <li>Health Affairs. <em>Estimating The Impact Of Out-Of-Pocket Cost Changes On Abandonment Of HIV Pre-Exposure Prophylaxis</em>. <a href="https://www.healthaffairs.org/doi/10.1377/hlthaff.2023.00808" target="_blank">Link</a></li>
+          <li>Satcher Institute. <em>The Impact of HIV on Elder Black Same Gender Loving Men (SGLM)</em>. <a href="https://satcherinstitute.org/news/the-impact-of-hiv-on-elder-black-same-gender-loving-men" target="_blank">Link</a></li>
+          <li>PSNet. <em>Racial bias in pain assessment and treatment recommendations...</em>. <a href="https://psnet.ahrq.gov/issue/racial-bias-pain-assessment-and-treatment-recommendations-and-false-beliefs-about-biological" target="_blank">Link</a></li>
+          <li>The Cancer Network. <em>National Transgender Discrimination Survey Report on health and health care</em>. <a href="https://cancer-network.org/wp-content/uploads/2017/02/National_Transgender_Discrimination_Survey_Report_on_health_and_health_care.pdf" target="_blank">Link</a></li>
+          <li>Advocates for Trans Equality. <em>National Transgender Discrimination Survey: Full Report</em>. <a href="https://transequality.org/resources/national-transgender-discrimination-survey-full-report" target="_blank">Link</a></li>
+          <li>PMC. <em>Identifying and Addressing Barriers to Transgender Healthcare</em>. <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC8606364/" target="_blank">Link</a></li>
+          <li>PubMed. <em>Racial bias in pain assessment and treatment recommendations...</em>. <a href="https://pubmed.ncbi.nlm.nih.gov/27044069/" target="_blank">Link</a></li>
+          <li>SF.gov. <em>HIV Epidemiology Annual Report 2022</em>. <a href="https://www.sf.gov/sites/default/files/2023-12/AnnualReport2022%2020231109Final_0.pdf" target="_blank">Link</a></li>
+          <li>AJPH. <em>Trends and Racial Disparities of Late-Stage HIV Diagnosis: Hawaii, 2010–2016</em>. <a href="https://ajph.aphapublications.org/doi/full/10.2105/AJPH.2018.304506" target="_blank">Link</a></li>
+          <li>SEER Program. <em>Cancer Stat Facts: Female Breast Cancer</em>. <a href="https://seer.cancer.gov/statfacts/html/breast.html" target="_blank">Link</a></li>
+          <li>CDC. <em>Vital Signs: Racial Disparities in Breast Cancer Severity — United States, 2005–2009</em>. <a href="https://www.cdc.gov/mmwr/preview/mmwrhtml/mm6145a5.htm" target="_blank">Link</a></li>
+          <li>American Cancer Society. <em>Breast Cancer Facts & Figures 2024-2025</em>. <a href="https://www.cancer.org/content/dam/cancer-org/research/cancer-facts-and-statistics/breast-cancer-facts-and-figures/2024/breast-cancer-facts-and-figures-2024.pdf" target="_blank">Link</a></li>
+          <li>WHO. <em>HIV - World Health Organization</em>. <a href="https://www.who.int/data/gho/data/themes/hiv-aids" target="_blank">Link</a></li>
+          <li>UNAIDS. <em>Global HIV & AIDS statistics — Fact sheet</em>. <a href="https://www.unaids.org/en/resources/fact-sheet" target="_blank">Link</a></li>
+          <li>Howard Brown Health. <em>Community Based Research</em>. <a href="https://howardbrown.org/era/research/community-based-research/" target="_blank">Link</a></li>
+          <li>PMC. <em>Health Communication and Sexual Orientation, Gender Identity, and Expression</em>. <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC9219031/" target="_blank">Link</a></li>
+          <li>PMC. <em>Community engagement to improve access to healthcare: a comparative case study to advance implementation science for transgender health equity</em>. <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC9339189/" target="_blank">Link</a></li>
+          <li>NBER. <em>Does Diversity Matter for Health? Experimental Evidence from Oakland</em>. <a href="https://www.nber.org/system/files/working_papers/w24787/w24787.pdf" target="_blank">Link</a></li>
+          <li>Poverty Action Lab. <em>Matching Provider Race to Increase Take-up of Preventive Health Services among Black Men in the United States</em>. <a href="https://www.povertyactionlab.org/evaluation/matching-provider-race-increase-take-preventive-health-services-among-black-men-united" target="_blank">Link</a></li>
+          <li>PMC. <em>Association of Affirming Care with Chronic Disease and Preventive Care Outcomes among Lesbian, Gay, Bisexual, Transgender, and Queer Older Adults</em>. <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC10251765/" target="_blank">Link</a></li>
+          <li>FOLX HEALTH. <em>Do LGBTQIA+ Health Care Providers Improve LGBTQIA+ Well-being?</em>. <a href="https://www.folxhealth.com/library/do-lgbtqia-health-care-providers-improve-lgbtqia-well-being" target="_blank">Link</a></li>
+          <li>AcademyHealth. <em>The Benefit of Affirming Care for LGBTQ+ Population Health</em>. <a href="https://academyhealth.org/blog/2022-06/benefit-affirming-care-lgbtq-population-health" target="_blank">Link</a></li>
+          <li>MedEdPORTAL. <em>Structural Competency: Curriculum for Medical Students, Residents, and Interprofessional Teams on the Structural Factors That Produce Health Disparities</em>. <a href="https://www.mededportal.org/doi/10.15766/mep_2374-8265.10888" target="_blank">Link</a></li>
+          <li>PMC. <em>A review on cultural competency in medical education</em>. <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC9638640/" target="_blank">Link</a></li>
+          <li>AAMC. <em>Assessing Change: Evaluating Cultural Competence Education and Training</em>. <a href="https://www.aamc.org/media/33226/download" target="_blank">Link</a></li>
+          <li>PMC. <em>Cultural competency education in the medical curriculum to overcome health care disparities</em>. <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC10443984/" target="_blank">Link</a></li>
+          <li>The Spokesman-Review. <em>Black Women Told To Fight On, Even When Battle Unbearable</em>. <a href="https://www.spokesman.com/stories/1995/jul/10/black-women-told-to-fight-on-even-when-battle/" target="_blank">Link</a></li>
+          <li>Professional Heart Daily. <em>Priority for Cardiovascular Health Equity among U.S. Women</em>. <a href="https://professional.heart.org/en/science-news/cardiovascular-disease-risk-factors-in-women-impact-of-race/commentary" target="_blank">Link</a></li>
+        </ul>
+      </section>
+    </main>
+
+    <footer>
+      <p>&copy; 2026 Avery Ember Day</p>
+    </footer>
+
+    <button id="return-to-top" aria-label="Return to top">
+      <svg viewBox="0 0 20 30" xmlns="http://www.w3.org/2000/svg">
+        <path d="M11.25 15.688l-7.656 7.656-3.594-3.688 11.063-11.094 11.344 11.344-3.5 3.5z"/>
+      </svg>
+    </button>
+
+    <script src="../Script.js"></script>
+  </body>
+</html>
