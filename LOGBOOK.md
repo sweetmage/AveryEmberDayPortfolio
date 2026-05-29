@@ -1,3 +1,95 @@
+## Entry 011 — 2026-05-28
+
+**Agent:** kimi-k2.6 (shxdow-flow)
+**Cycle:** history-of-mistrust-project-card
+**Task:** Use slide 9 as project card thumbnail in index.html
+
+### Changes
+
+- **images/projects/mistrust-thumb.jpg** (new) — Converted from `images/myart/A History of Mistrust/slides/slide-09.webp` (720×720, q90). Slide 9 (Dr. Joycelyn Elders quote) selected as the project card cover image.
+- **index.html** — A History of Mistrust project card `<img src>` updated from the wide collage (`images/myart/A History of Mistrust/A History of Mistrust.png`) to the new thumbnail (`images/projects/mistrust-thumb.jpg`).
+- **TODO.md** — Marked task 09 (Add project card) and the "Project card thumbnails — 3 missing" sub-item for mistrust as complete.
+
+### Verification
+
+- Image renders correctly; file path resolves relative to `index.html`.
+- No other index.html markup changed.
+
+---
+
+## Entry 010 — 2026-05-28
+
+**Agent:** claude-opus-4-8 (vela, shxdow-flow)
+**Cycle:** history-of-mistrust-cross-target-sync
+**Task:** Web-optimize slide exports (TickTick 03), build combined set images (04), fix page filename
+
+### Changes
+
+- **images/myart/A History of Mistrust/slides/slide-NN.webp** (new, 30) — display tier, longest side 720px, q80 (~0.9MB total).
+- **images/myart/A History of Mistrust/slides/slide-NN@2x.webp** (new, 30) — full tier, native 1080px, q85 (~1.55MB total). Reserved for future fullscreen/lightbox (TickTick 08).
+- **images/myart/A History of Mistrust/sets/set-1..3.webp** (new) — three combined set images, each stitching 10 slides horizontally at native widths to preserve the seamless carousel flow (~0.5MB each). For the per-set "combined image" view (TickTick 04/07).
+- **projects/a-history-of-mistrust.html → projects/history-of-mistrust.html** — renamed to match the TickTick 05 spec filename.
+- **projects/history-of-mistrust.html** — 30 grid `<img>` srcs switched from `slide-NN.png` to the lighter `slide-NN.webp`.
+- **index.html** — Work card link updated to `projects/history-of-mistrust.html`.
+
+### Left on TickTick (per user)
+
+- 06 continuous horizontal carousel, 07 per-set slideshow, 08 click-to-fullscreen lightbox, 10 full a11y/responsive verify pass. Assets (@2x.webp + set images) are staged for these.
+- Orphaned `slides/slide-NN.png` left in place (also mirrored in `finals/`); not deleted.
+
+### Verification
+
+- Headed preview (port 3478): page loads, all 30 webp render (0 broken), no console errors, both-theme layout intact (screenshot captured).
+- index.html card resolves to renamed file; no remaining `a-history-of-mistrust` references in HTML.
+
+---
+
+## Entry 009 — 2026-05-28
+
+**Agent:** qwen3.6-plus (shxdow-flow)
+**Cycle:** history-of-mistrust-cross-target-sync
+**Task:** Transcribe all 30 slides, assemble canonical content doc, reorganize local folder
+
+### Changes
+
+- **docs/plans/2026-05-28-history-of-mistrust-canonical-content.md** (new) — Full transcription of all 30 carousel slides: slide number, heading, body copy, quotes, stats. Spot-checked slides 1, 7, 15, 30 against source PNGs.
+- **D:\My Stuff\creations\Best\A History of Mistrust\finals/** (new) — 30 carousel slides copied with zero-padded naming (`slide-01.png` … `slide-30.png`).
+- **D:\My Stuff\creations\Best\A History of Mistrust\README.md** (new) — Project manifest: overview, file structure, per-slide content summary table, sources note, designer credit.
+
+### Skipped (require human action)
+
+- **Phase 2 — TickTick:** No API key or CLI available. Requires manual audit of `history-of-mistrust` tasks in Portfolio Website list.
+- **Phase 3 — Google doc:** Requires logged-in agent-browser session. Doc URL and edit confirmation needed from user.
+
+### Verification
+
+- All 30 slides read directly from source PNGs; transcription matches pixel content.
+- `finals/` directory contains exactly 30 files, zero-padded, sortable.
+- README.md covers full project scope and file inventory.
+
+---
+
+## Entry 008 — 2026-05-28
+
+**Agent:** qwen3.6-plus (shxdow-flow)
+**Cycle:** history-of-mistrust-portfolio
+**Task:** Build "A History of Mistrust" case study page + fix index card
+
+### Changes
+
+- **images/myart/A History of Mistrust/slides/slide-01.png … slide-30.png** — 30 carousel slide PNGs copied from existing repo images with zero-padded naming convention.
+- **projects/a-history-of-mistrust.html** (new) — Full case study page from brand template. Sections: hero (tag "Editorial / Infographic", correct description), 30-slide carousel grid (3-col desktop, 1-col mobile), Moodboard, Storyboard, Sources/Bibliography (80+ research citations in responsive multi-column layout). Includes header/nav/footer, theme toggle, return-to-top, `../brand.css` + `../style.css`, skip-link accessibility.
+- **index.html** — "A History of Mistrust" card updated: replaced `placeholder-img` with cover image (`A History of Mistrust.png`), corrected tag from "Narrative Illustration" to "Editorial / Infographic", updated description to reflect 30-slide Instagram carousel about medical mistrust.
+- **Bibliography refinement** — Replaced Wikipedia citations for *Madrigal v. Quilligan* and *Sterilization of Native American Women* with peer-reviewed sources (Stern 2005 AJPH, Lawrence 2000 AIQ). Removed redundant Wikipedia citations for Tuskegee and Reagan/AIDS where primary sources already exist.
+
+### Verification
+
+- Headed browser: page loads, all 30 slides render, both light/dark themes correct, mobile responsive (375px), no clipping.
+- Index card: cover image displays, correct tag and description.
+- Sources section: 3-column desktop, 2-column tablet, 1-column mobile. Hanging indent formatting, clickable links.
+
+---
+
 ## Entry 007 — 2026-05-22
 
 **Agent:** claude-sonnet-4-6 (nova-flux, img-opt)
