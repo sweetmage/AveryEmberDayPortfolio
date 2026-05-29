@@ -65,7 +65,7 @@ Project id `69c8addc8f0823c509e1979f`. Mirrors TickTick task/checklist state; `*
 - [x] history-of-mistrust.html: add real images (storyboard, spreads) from Process.pdf
 - [x] confirm all image src paths resolve
 - [ ] patriots-low-thirds.html: add render still or embed video
-- [ ] self-portrait-series.html: verify image paths
+- [x] self-portrait-series.html: verify image paths *(page removed in BrandForge-v2 migration — placeholders only, no real images)*
 - [x] gallery/gallery.html: verify all gallery image paths load
 - [x] Confirm images/AveryDayLogo.png is not referenced anywhere
 - [x] history-of-mistrust.html: fix spelling mistakes

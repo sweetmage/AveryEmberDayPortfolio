@@ -181,6 +181,255 @@
       @media screen and (min-width: 900px) {
         .slide-grid { grid-template-columns: repeat(3, 1fr); }
       }
+
+      /* ── Carousel ── */
+      .carousel-wrap { position: relative; }
+      .carousel-track {
+        display: flex;
+        gap: 0;
+        overflow-x: auto;
+        scroll-snap-type: x mandatory;
+        scroll-behavior: smooth;
+        overscroll-behavior-x: contain;
+        -webkit-overflow-scrolling: touch;
+        border-radius: var(--brand-radius-lg);
+        border: 1px solid var(--brand-border);
+        background: var(--brand-surface-1);
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .carousel-track { scroll-behavior: auto; }
+      }
+      .carousel-set {
+        flex: 0 0 100%;
+        scroll-snap-align: start;
+        position: relative;
+      }
+      .carousel-set img {
+        width: 100%;
+        height: auto;
+        display: block;
+      }
+      .carousel-set-label {
+        position: absolute;
+        bottom: 12px;
+        left: 12px;
+        background: rgba(10,10,10,0.75);
+        color: #fff;
+        font-family: var(--brand-font-body);
+        font-size: 0.75rem;
+        padding: 4px 10px;
+        border-radius: var(--brand-radius-sm);
+        pointer-events: none;
+      }
+      .carousel-arrow {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        z-index: 2;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        border: 1px solid var(--brand-border);
+        background: var(--brand-surface-2);
+        color: var(--brand-text);
+        font-size: 1.1rem;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: background var(--brand-transition-fast), border-color var(--brand-transition-fast);
+      }
+      .carousel-arrow:hover { background: var(--brand-accent-dim); border-color: var(--brand-accent); }
+      .carousel-arrow:focus-visible { outline: 2px solid var(--brand-accent); outline-offset: 2px; }
+      .carousel-prev { left: 8px; }
+      .carousel-next { right: 8px; }
+      .carousel-dots {
+        display: flex;
+        justify-content: center;
+        gap: 8px;
+        margin-top: 12px;
+      }
+      .carousel-dots button {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        border: 1px solid var(--brand-border-mid);
+        background: var(--brand-surface-2);
+        cursor: pointer;
+        padding: 0;
+        transition: background var(--brand-transition-fast), border-color var(--brand-transition-fast);
+      }
+      .carousel-dots button[aria-selected="true"] {
+        background: var(--brand-accent);
+        border-color: var(--brand-accent);
+      }
+      .carousel-dots button:focus-visible { outline: 2px solid var(--brand-accent); outline-offset: 2px; }
+
+      /* ── Slideshow ── */
+      .slideshow-wrap { max-width: 720px; margin: 0 auto; }
+      .slideshow-set-tabs {
+        display: flex;
+        gap: 8px;
+        justify-content: center;
+        margin-bottom: 16px;
+      }
+      .slideshow-set-tabs button {
+        font-family: var(--brand-font-body);
+        font-size: 0.82rem;
+        font-weight: 500;
+        padding: 6px 16px;
+        border-radius: var(--brand-radius-sm);
+        border: 1px solid var(--brand-border);
+        background: var(--brand-surface-2);
+        color: var(--brand-text-muted);
+        cursor: pointer;
+        transition: background var(--brand-transition-fast), border-color var(--brand-transition-fast), color var(--brand-transition-fast);
+      }
+      .slideshow-set-tabs button[aria-selected="true"] {
+        background: var(--brand-accent-dim);
+        border-color: var(--brand-accent);
+        color: var(--brand-accent);
+      }
+      .slideshow-set-tabs button:focus-visible { outline: 2px solid var(--brand-accent); outline-offset: 2px; }
+      .slideshow-viewer {
+        border-radius: var(--brand-radius-lg);
+        overflow: hidden;
+        border: 1px solid var(--brand-border);
+        background: var(--brand-surface-1);
+        position: relative;
+        aspect-ratio: 1 / 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .slideshow-viewer img {
+        max-width: 100%;
+        max-height: 100%;
+        object-fit: contain;
+        display: block;
+      }
+      .slideshow-caption {
+        text-align: center;
+        font-family: var(--brand-font-body);
+        font-size: 0.85rem;
+        color: var(--brand-text-muted);
+        margin-top: 10px;
+        min-height: 1.4em;
+      }
+      .slideshow-controls {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 16px;
+        margin-top: 16px;
+      }
+      .slideshow-controls button {
+        font-family: var(--brand-font-body);
+        font-size: 0.85rem;
+        padding: 6px 14px;
+        border-radius: var(--brand-radius-sm);
+        border: 1px solid var(--brand-border);
+        background: var(--brand-surface-2);
+        color: var(--brand-text);
+        cursor: pointer;
+        transition: background var(--brand-transition-fast), border-color var(--brand-transition-fast);
+      }
+      .slideshow-controls button:hover { background: var(--brand-accent-dim); border-color: var(--brand-accent); }
+      .slideshow-controls button:focus-visible { outline: 2px solid var(--brand-accent); outline-offset: 2px; }
+      .slideshow-controls button:disabled {
+        opacity: 0.4;
+        cursor: not-allowed;
+        background: var(--brand-surface-2);
+        border-color: var(--brand-border);
+      }
+      #slideshow-counter {
+        font-family: var(--brand-font-body);
+        font-size: 0.82rem;
+        color: var(--brand-text-muted);
+        min-width: 100px;
+        text-align: center;
+      }
+
+      /* ── Lightbox ── */
+      .lightbox-overlay {
+        position: fixed;
+        inset: 0;
+        z-index: 100;
+        background: rgba(10,10,10,0.92);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 48px 24px;
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 200ms ease, visibility 200ms ease;
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .lightbox-overlay { transition: none; }
+      }
+      .lightbox-overlay.active {
+        opacity: 1;
+        visibility: visible;
+      }
+      .lightbox-overlay img {
+        max-width: 100%;
+        max-height: calc(100vh - 96px);
+        object-fit: contain;
+        border-radius: var(--brand-radius-sm);
+      }
+      .lightbox-close {
+        position: absolute;
+        top: 16px;
+        right: 16px;
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        border: 1px solid rgba(255,255,255,0.2);
+        background: rgba(255,255,255,0.1);
+        color: #fff;
+        font-size: 1.5rem;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 101;
+      }
+      .lightbox-close:hover { background: rgba(255,255,255,0.2); }
+      .lightbox-close:focus-visible { outline: 2px solid var(--brand-accent); outline-offset: 2px; }
+      .lightbox-arrow {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        border: 1px solid rgba(255,255,255,0.2);
+        background: rgba(255,255,255,0.1);
+        color: #fff;
+        font-size: 1.2rem;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 101;
+      }
+      .lightbox-arrow:hover { background: rgba(255,255,255,0.2); }
+      .lightbox-arrow:focus-visible { outline: 2px solid var(--brand-accent); outline-offset: 2px; }
+      .lightbox-prev { left: 16px; }
+      .lightbox-next { right: 16px; }
+      .lightbox-caption {
+        position: absolute;
+        bottom: 16px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: rgba(10,10,10,0.8);
+        color: var(--brand-text-soft);
+        font-family: var(--brand-font-body);
+        font-size: 0.82rem;
+        padding: 6px 14px;
+        border-radius: var(--brand-radius-sm);
+        white-space: nowrap;
+      }
     </style>
   </head>
   <body>
@@ -349,6 +598,57 @@
         </div>
       </section>
 
+      <!-- Continuous Carousel -->
+      <section class="project-section">
+        <p class="section-label">Social Campaign</p>
+        <h2 class="section-title">Continuous Carousel</h2>
+        <div class="carousel-wrap">
+          <button class="carousel-arrow carousel-prev" aria-label="Previous set">&#8249;</button>
+          <div class="carousel-track" role="region" aria-label="Carousel of 3 slide sets" tabindex="0">
+            <div class="carousel-set" data-set="1">
+              <img src="../images/myart/A History of Mistrust/sets/set-1.webp" alt="Set 1 — slides 1 through 10" loading="lazy" decoding="async" />
+              <span class="carousel-set-label">Set 1 · Slides 1–10</span>
+            </div>
+            <div class="carousel-set" data-set="2">
+              <img src="../images/myart/A History of Mistrust/sets/set-2.webp" alt="Set 2 — slides 11 through 20" loading="lazy" decoding="async" />
+              <span class="carousel-set-label">Set 2 · Slides 11–20</span>
+            </div>
+            <div class="carousel-set" data-set="3">
+              <img src="../images/myart/A History of Mistrust/sets/set-3.webp" alt="Set 3 — slides 21 through 30" loading="lazy" decoding="async" />
+              <span class="carousel-set-label">Set 3 · Slides 21–30</span>
+            </div>
+          </div>
+          <button class="carousel-arrow carousel-next" aria-label="Next set">&#8250;</button>
+          <div class="carousel-dots" role="tablist" aria-label="Carousel sets">
+            <button role="tab" aria-selected="true" aria-label="Go to set 1" data-index="0"></button>
+            <button role="tab" aria-selected="false" aria-label="Go to set 2" data-index="1"></button>
+            <button role="tab" aria-selected="false" aria-label="Go to set 3" data-index="2"></button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Per-Set Slideshow -->
+      <section class="project-section">
+        <p class="section-label">Social Campaign</p>
+        <h2 class="section-title">Per-Set Slideshow</h2>
+        <div class="slideshow-wrap">
+          <div class="slideshow-set-tabs" role="tablist" aria-label="Slide sets">
+            <button role="tab" aria-selected="true" aria-controls="slideshow-panel" id="tab-set1">Set 1</button>
+            <button role="tab" aria-selected="false" aria-controls="slideshow-panel" id="tab-set2">Set 2</button>
+            <button role="tab" aria-selected="false" aria-controls="slideshow-panel" id="tab-set3">Set 3</button>
+          </div>
+          <div class="slideshow-viewer" id="slideshow-panel" role="region" aria-label="Slide viewer">
+            <img id="slideshow-img" src="../images/myart/A History of Mistrust/slides/slide-01.webp" alt="Slide 1 — Title cover" decoding="async" />
+          </div>
+          <p id="slideshow-caption" class="slideshow-caption" aria-live="polite">Slide 1 of 30 — Title cover</p>
+          <div class="slideshow-controls">
+            <button id="slideshow-prev" aria-label="Previous slide">&#8249; Prev</button>
+            <span id="slideshow-counter">Slide 1 of 30</span>
+            <button id="slideshow-next" aria-label="Next slide">Next &#8250;</button>
+          </div>
+        </div>
+      </section>
+
       <!-- Moodboard -->
       <section class="project-section">
         <p class="section-label">Preproduction</p>
@@ -472,6 +772,15 @@
       </section>
     </main>
 
+    <!-- Lightbox -->
+    <div id="lightbox" class="lightbox-overlay" role="dialog" aria-modal="true" aria-label="Image viewer" hidden>
+      <button class="lightbox-close" aria-label="Close image viewer">&times;</button>
+      <button class="lightbox-arrow lightbox-prev" aria-label="Previous image">&#8249;</button>
+      <img id="lightbox-img" src="" alt="" decoding="async" />
+      <button class="lightbox-arrow lightbox-next" aria-label="Next image">&#8250;</button>
+      <p id="lightbox-caption" class="lightbox-caption" aria-live="polite"></p>
+    </div>
+
     <footer>
       <p>&copy; 2026 Avery Ember Day</p>
     </footer>
@@ -483,5 +792,239 @@
     </button>
 
     <script src="../Script.js"></script>
+    <script>
+    (function() {
+      'use strict';
+
+      /* ── Slide data ── */
+      const slides = [];
+      for (let i = 1; i <= 30; i++) {
+        slides.push({
+          src: '../images/myart/A History of Mistrust/slides/slide-' + String(i).padStart(2, '0') + '.webp',
+          full: '../images/myart/A History of Mistrust/slides/slide-' + String(i).padStart(2, '0') + '@2x.webp',
+          alt: i === 1 ? 'Slide 1 — Title cover' : 'Slide ' + i,
+          caption: 'Slide ' + i + ' of 30' + (i === 1 ? ' — Title cover' : '')
+        });
+        if (i === 10 || i === 20 || i === 30) {
+          const setNum = i / 10;
+          slides.push({
+            src: '../images/myart/A History of Mistrust/sets/set-' + setNum + '.webp',
+            full: '../images/myart/A History of Mistrust/sets/set-' + setNum + '.webp',
+            alt: 'End of Set ' + setNum + ' — combined summary',
+            caption: 'End of Set ' + setNum + ' — combined summary',
+            isSetImage: true,
+            setNum: setNum
+          });
+        }
+      }
+
+      /* ── Slideshow ── */
+      const slideshowImg = document.getElementById('slideshow-img');
+      const slideshowCaption = document.getElementById('slideshow-caption');
+      const slideshowCounter = document.getElementById('slideshow-counter');
+      const prevBtn = document.getElementById('slideshow-prev');
+      const nextBtn = document.getElementById('slideshow-next');
+      const setTabs = document.querySelectorAll('.slideshow-set-tabs [role="tab"]');
+      let currentIndex = 0;
+
+      function setBoundaries() {
+        prevBtn.disabled = currentIndex === 0;
+        nextBtn.disabled = currentIndex === slides.length - 1;
+      }
+
+      function showSlide(index) {
+        if (index < 0 || index >= slides.length) return;
+        currentIndex = index;
+        const s = slides[index];
+        slideshowImg.src = s.src;
+        slideshowImg.alt = s.alt;
+        slideshowCaption.textContent = s.caption;
+        slideshowCounter.textContent = s.isSetImage ? s.caption : 'Slide ' + (index < 10 ? index + 1 : index < 21 ? index - 0 : index - 1) + ' of 30';
+        // Update set tab
+        let activeSet = 0;
+        if (index >= 0 && index <= 10) activeSet = 0;
+        else if (index >= 11 && index <= 21) activeSet = 1;
+        else activeSet = 2;
+        setTabs.forEach((tab, i) => {
+          tab.setAttribute('aria-selected', String(i === activeSet));
+        });
+        setBoundaries();
+        preloadAdjacent(index);
+      }
+
+      function preloadAdjacent(index) {
+        [index - 1, index + 1].forEach(i => {
+          if (i >= 0 && i < slides.length) {
+            const img = new Image();
+            img.src = slides[i].src;
+          }
+        });
+      }
+
+      prevBtn.addEventListener('click', () => showSlide(currentIndex - 1));
+      nextBtn.addEventListener('click', () => showSlide(currentIndex + 1));
+
+      setTabs.forEach((tab, i) => {
+        tab.addEventListener('click', () => {
+          const targets = [0, 11, 22];
+          showSlide(targets[i]);
+        });
+      });
+
+      document.addEventListener('keydown', (e) => {
+        if (lightbox.classList.contains('active')) return; // lightbox handles its own keys
+        const active = document.activeElement;
+        const inSlideshow = active && (active.closest('.slideshow-wrap') || active.id === 'slideshow-img');
+        if (!inSlideshow) return;
+        if (e.key === 'ArrowLeft') { e.preventDefault(); showSlide(currentIndex - 1); }
+        if (e.key === 'ArrowRight') { e.preventDefault(); showSlide(currentIndex + 1); }
+      });
+
+      setBoundaries();
+      preloadAdjacent(0);
+
+      /* ── Carousel ── */
+      const track = document.querySelector('.carousel-track');
+      const carouselPrev = document.querySelector('.carousel-prev');
+      const carouselNext = document.querySelector('.carousel-next');
+      const dots = document.querySelectorAll('.carousel-dots [role="tab"]');
+      const sets = document.querySelectorAll('.carousel-set');
+
+      function scrollToSet(index) {
+        if (!sets[index]) return;
+        sets[index].scrollIntoView({ behavior: 'smooth', inline: 'start', block: 'nearest' });
+      }
+
+      carouselPrev.addEventListener('click', () => {
+        const scrollLeft = track.scrollLeft;
+        const w = track.clientWidth;
+        const idx = Math.max(0, Math.round(scrollLeft / w) - 1);
+        scrollToSet(idx);
+      });
+      carouselNext.addEventListener('click', () => {
+        const scrollLeft = track.scrollLeft;
+        const w = track.clientWidth;
+        const idx = Math.min(sets.length - 1, Math.round(scrollLeft / w) + 1);
+        scrollToSet(idx);
+      });
+
+      dots.forEach((dot, i) => {
+        dot.addEventListener('click', () => scrollToSet(i));
+      });
+
+      // Sync dots on scroll
+      let scrollTimeout;
+      track.addEventListener('scroll', () => {
+        clearTimeout(scrollTimeout);
+        scrollTimeout = setTimeout(() => {
+          const w = track.clientWidth;
+          const idx = Math.round(track.scrollLeft / w);
+          dots.forEach((d, i) => d.setAttribute('aria-selected', String(i === idx)));
+        }, 100);
+      });
+
+      /* ── Lightbox ── */
+      const lightbox = document.getElementById('lightbox');
+      const lbImg = document.getElementById('lightbox-img');
+      const lbCaption = document.getElementById('lightbox-caption');
+      const lbClose = document.querySelector('.lightbox-close');
+      const lbPrev = document.querySelector('.lightbox-prev');
+      const lbNext = document.querySelector('.lightbox-next');
+      let lbIndex = -1;
+      let lastFocused = null;
+
+      const focusableSelectors = 'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])';
+
+      function openLightbox(index) {
+        if (index < 0 || index >= slides.length) return;
+        lbIndex = index;
+        lastFocused = document.activeElement;
+        lbImg.src = slides[index].full;
+        lbImg.alt = slides[index].alt;
+        lbCaption.textContent = slides[index].caption;
+        lightbox.hidden = false;
+        // force reflow
+        void lightbox.offsetWidth;
+        lightbox.classList.add('active');
+        document.body.style.overflow = 'hidden';
+        lbClose.focus();
+        preloadAdjacent(index);
+      }
+
+      function closeLightbox() {
+        lightbox.classList.remove('active');
+        document.body.style.overflow = '';
+        setTimeout(() => {
+          lightbox.hidden = true;
+          lbImg.src = '';
+        }, 200);
+        if (lastFocused) lastFocused.focus();
+      }
+
+      function lbShow(index) {
+        if (index < 0 || index >= slides.length) return;
+        lbIndex = index;
+        lbImg.src = slides[index].full;
+        lbImg.alt = slides[index].alt;
+        lbCaption.textContent = slides[index].caption;
+        preloadAdjacent(index);
+      }
+
+      lbClose.addEventListener('click', closeLightbox);
+      lbPrev.addEventListener('click', () => lbShow(lbIndex - 1));
+      lbNext.addEventListener('click', () => lbShow(lbIndex + 1));
+
+      lightbox.addEventListener('click', (e) => {
+        if (e.target === lightbox) closeLightbox();
+      });
+
+      lightbox.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') { e.preventDefault(); closeLightbox(); }
+        if (e.key === 'ArrowLeft') { e.preventDefault(); lbShow(lbIndex - 1); }
+        if (e.key === 'ArrowRight') { e.preventDefault(); lbShow(lbIndex + 1); }
+        // Focus trap
+        const focusables = Array.from(lightbox.querySelectorAll(focusableSelectors)).filter(el => el.offsetParent !== null);
+        if (focusables.length === 0) return;
+        const first = focusables[0];
+        const last = focusables[focusables.length - 1];
+        if (e.key === 'Tab') {
+          if (e.shiftKey && document.activeElement === first) {
+            e.preventDefault();
+            last.focus();
+          } else if (!e.shiftKey && document.activeElement === last) {
+            e.preventDefault();
+            first.focus();
+          }
+        }
+      });
+
+      /* ── Wire lightbox to slide images ── */
+      // Grid images
+      document.querySelectorAll('.slide-card img').forEach((img, i) => {
+        img.style.cursor = 'zoom-in';
+        img.addEventListener('click', () => {
+          // Map grid index (0-29) to slideshow index (0-32 with set images at 10, 21, 32)
+          let idx = i;
+          if (i >= 10) idx++;
+          if (i >= 20) idx++;
+          openLightbox(idx);
+        });
+      });
+
+      // Slideshow image
+      slideshowImg.style.cursor = 'zoom-in';
+      slideshowImg.addEventListener('click', () => openLightbox(currentIndex));
+
+      // Carousel set images
+      document.querySelectorAll('.carousel-set img').forEach((img, i) => {
+        img.style.cursor = 'zoom-in';
+        img.addEventListener('click', () => {
+          // Clicking a set image opens the first slide of that set
+          const setFirst = [0, 11, 22];
+          openLightbox(setFirst[i]);
+        });
+      });
+    })();
+    </script>
   </body>
 </html>
