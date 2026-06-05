@@ -1,3 +1,8 @@
 # Ignore nested git repos (standalone projects with their own remotes)
 /git/portfolio/
 /projects/RNG/
+
+# Cross-target sync (personal task IDs, auth tokens)
+/docs/sync/mapping.json
+/docs/sync/*-manifest.json
+.env

@@ -1,3 +1,5 @@
+> **Status:** Consolidated in TODO.md > Completed Plans Archive
+
 # Nanoagent Plan — Hero Bubble Animation Rebuild
 
 **Date:** 2026-05-20  

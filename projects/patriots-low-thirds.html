@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="author" content="Avery Ember Day" />
+    <title>Patriots Low Thirds — Avery Ember Day</title>
+    <link rel="icon" href="../images/icons/BubbleLogo/bubbleLogo-white-notxt.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="../brand.css" />
+    <link rel="stylesheet" href="../style.css" />
+    <script>
+      (function(){var t=localStorage.getItem('theme');if(t)document.documentElement.setAttribute('data-theme',t);})();
+    </script>
+    <style>
+      .project-hero {
+        padding: 80px 24px 48px;
+        max-width: var(--brand-content-max);
+        margin: 0 auto;
+      }
+      .project-back {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        font-family: var(--brand-font-body);
+        font-size: 0.85rem;
+        color: var(--brand-text-muted);
+        text-decoration: none;
+        margin-bottom: 32px;
+        transition: color var(--brand-transition-fast);
+      }
+      .project-back:hover { color: var(--brand-text); }
+      .project-back svg { width: 16px; height: 16px; }
+
+      .project-tag {
+        display: inline-block;
+        font-family: var(--brand-font-body);
+        font-size: 0.75rem;
+        font-weight: 500;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--brand-accent);
+        margin-bottom: 12px;
+      }
+      .project-title {
+        font-family: var(--brand-font-display);
+        font-size: clamp(2rem, 5vw, 3.5rem);
+        color: var(--brand-text);
+        margin: 0 0 16px;
+        line-height: 1.1;
+      }
+      .project-desc {
+        font-family: var(--brand-font-body);
+        font-size: 1rem;
+        color: var(--brand-text-soft);
+        max-width: 640px;
+        line-height: 1.7;
+        margin: 0;
+      }
+
+      .project-section {
+        max-width: var(--brand-content-max);
+        margin: 0 auto;
+        padding: 0 24px 80px;
+      }
+      .section-title {
+        font-family: var(--brand-font-heading);
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: #7eb8ff;
+        margin: 0 0 32px;
+      }
+
+      /* Placeholder grid for storyboard / render stills */
+      .placeholder-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+        gap: 16px;
+      }
+      .placeholder-card {
+        aspect-ratio: 16 / 9;
+        background: var(--brand-surface-2);
+        border: 1px dashed var(--brand-border-mid);
+        border-radius: var(--brand-radius-lg);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--brand-text-faint);
+        font-family: var(--brand-font-body);
+        font-size: 0.85rem;
+        text-align: center;
+        padding: 1em;
+      }
+
+      /* Video embed container */
+      .video-frame {
+        aspect-ratio: 16 / 9;
+        background: var(--brand-surface-2);
+        border: 1px dashed var(--brand-border-mid);
+        border-radius: var(--brand-radius-lg);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--brand-text-faint);
+        font-family: var(--brand-font-body);
+        font-size: 0.95rem;
+        text-align: center;
+        padding: 1.5em;
+      }
+    </style>
+  </head>
+  <body>
+    <a href="#main" class="skip-link">Skip to content</a>
+    <div class="brand-page-bg" aria-hidden="true"></div>
+    <div class="brand-page-noise" aria-hidden="true"></div>
+
+    <header>
+      <div id="logoContainer">
+        <img src="../images/icons/BubbleLogo/bubbleLogo-white-notxt.svg" alt="Avery Ember Day Logo" id="logo" />
+        <span id="logoText">Avery Ember Day</span>
+      </div>
+      <nav aria-label="Primary navigation">
+        <ul>
+          <li><a href="../index.html#work">Work</a></li>
+          <li><a href="../index.html#about">About</a></li>
+          <li><a href="../resume/AveryEmberDay_Resume_2026.html" target="_blank">Resume</a></li>
+          <li><a href="../index.html#contact">Contact</a></li>
+        </ul>
+        <button id="theme-toggle" aria-label="Toggle light/dark mode">
+          <svg class="icon-sun" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 17a5 5 0 1 0 0-10 5 5 0 0 0 0 10zm0 2a1 1 0 0 1 1 1v1a1 1 0 1 1-2 0v-1a1 1 0 0 1 1-1zm0-14a1 1 0 0 1-1-1V3a1 1 0 1 1 2 0v1a1 1 0 0 1-1 1zM4.22 5.64a1 1 0 0 1 1.42-1.42l.7.71a1 1 0 0 1-1.41 1.41l-.71-.7zm14.14 12.72a1 1 0 0 1 1.42 1.42l-.71.7a1 1 0 1 1-1.41-1.41l.7-.71zM3 12a1 1 0 0 1 1-1h1a1 1 0 1 1 0 2H4a1 1 0 0 1-1-1zm16 0a1 1 0 0 1 1-1h1a1 1 0 1 1 0 2h-1a1 1 0 0 1-1-1zM5.64 19.78l-.7.71a1 1 0 1 1-1.42-1.42l.71-.7a1 1 0 0 1 1.41 1.41zm12.72-14.14.71-.71a1 1 0 1 1 1.42 1.42l-.71.7a1 1 0 0 1-1.42-1.41z"/></svg>
+          <svg class="icon-moon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M21 12.79A9 9 0 1 1 11.21 3a7 7 0 0 0 9.79 9.79z"/></svg>
+        </button>
+      </nav>
+    </header>
+
+    <main id="main">
+      <div class="project-hero">
+        <a href="../index.html#work" class="project-back">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M5 12l7-7M5 12l7 7"/></svg>
+          Back to Work
+        </a>
+        <span class="project-tag">Motion Graphics</span>
+        <h1 class="project-title">Patriots Low Thirds</h1>
+        <p class="project-desc">Broadcast lower-thirds package for the New England Patriots — from motion brief and storyboard to final After Effects render. Designed for high-readability at 1080p with team-brand colors and kinetic typography.</p>
+      </div>
+
+      <!-- Brief -->
+      <section class="project-section">
+        <h2 class="section-title">Brief</h2>
+        <p class="project-desc" style="max-width: 100%;">Create a dynamic lower-thirds system for a Patriots broadcast segment. The design needed to feel fast, athletic, and on-brand while keeping player names and stats legible against live game footage. I explored several kinetic-type directions before landing on a split-slide reveal with a chrome bevel and subtle motion blur.</p>
+      </section>
+
+      <!-- Storyboard -->
+      <section class="project-section">
+        <h2 class="section-title">Storyboard</h2>
+        <div class="placeholder-grid" aria-label="Storyboard frames placeholder">
+          <div class="placeholder-card">Storyboard frame 1 — opening slide</div>
+          <div class="placeholder-card">Storyboard frame 2 — name reveal</div>
+          <div class="placeholder-card">Storyboard frame 3 — stat transition</div>
+          <div class="placeholder-card">Storyboard frame 4 — hold / outro</div>
+        </div>
+      </section>
+
+      <!-- Final Render -->
+      <section class="project-section">
+        <h2 class="section-title">Final Render</h2>
+        <div class="video-frame" aria-label="Final motion render placeholder">
+          Final motion render will be embedded here.<br />
+          Export an MP4 or GIF and replace this placeholder with a &lt;video&gt; or &lt;img&gt; tag.
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <p>&copy; 2026 Avery Ember Day</p>
+    </footer>
+
+    <button id="return-to-top" aria-label="Return to top">
+      <svg viewBox="0 0 20 30" xmlns="http://www.w3.org/2000/svg">
+        <path d="M11.25 15.688l-7.656 7.656-3.594-3.688 11.063-11.094 11.344 11.344-3.5 3.5z"/>
+      </svg>
+    </button>
+
+    <script src="../Script.js"></script>
+  </body>
+</html>

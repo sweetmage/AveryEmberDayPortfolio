@@ -1,0 +1,879 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="author" content="Avery Ember Day" />
+    <title>A History of Mistrust — Avery Ember Day</title>
+    <link rel="icon" href="../images/icons/BubbleLogo/bubbleLogo-white-notxt.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="../brand.css" />
+    <link rel="stylesheet" href="../style.css" />
+    <script>
+      (function(){var t=localStorage.getItem('theme');if(t)document.documentElement.setAttribute('data-theme',t);})();
+    </script>
+    <style>
+      .project-hero {
+        padding: 80px 24px 48px;
+        max-width: var(--brand-content-max);
+        margin: 0 auto;
+      }
+      .project-back {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        font-family: var(--brand-font-body);
+        font-size: 0.85rem;
+        color: var(--brand-text-muted);
+        text-decoration: none;
+        margin-bottom: 32px;
+        transition: color var(--brand-transition-fast);
+      }
+      .project-back:hover { color: var(--brand-text); }
+      .project-back svg { width: 16px; height: 16px; }
+
+      .project-tag {
+        display: inline-block;
+        font-family: var(--brand-font-body);
+        font-size: 0.75rem;
+        font-weight: 500;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--brand-accent);
+        margin-bottom: 12px;
+      }
+      .project-title {
+        font-family: var(--brand-font-display);
+        font-size: clamp(2rem, 5vw, 3.5rem);
+        color: var(--brand-text);
+        margin: 0 0 16px;
+        line-height: 1.1;
+      }
+      .project-desc {
+        font-family: var(--brand-font-body);
+        font-size: 1rem;
+        color: var(--brand-text-soft);
+        max-width: 640px;
+        line-height: 1.7;
+        margin: 0;
+      }
+
+      .project-section {
+        max-width: var(--brand-content-max);
+        margin: 0 auto;
+        padding: 0 24px 80px;
+      }
+      .section-title {
+        font-family: var(--brand-font-heading);
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: #7eb8ff;
+        margin: 0 0 32px;
+      }
+
+      .all-sets-full {
+        display: flex;
+        flex-direction: column;
+        gap: 24px;
+        width: 100%;
+      }
+      .all-sets-full .carousel-set {
+        width: 100%;
+        border-radius: var(--brand-radius-lg);
+        overflow: hidden;
+        border: 1px solid var(--brand-border);
+        background: var(--brand-surface-1);
+        cursor: pointer;
+        transition: border-color var(--brand-transition-fast);
+      }
+      .all-sets-full .carousel-set:hover {
+        border-color: var(--brand-accent-dim);
+      }
+
+      /* Supporting material */
+      .supporting-grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 24px;
+      }
+      .supporting-card {
+        border-radius: var(--brand-radius-lg);
+        overflow: hidden;
+        border: 1px solid var(--brand-border);
+        background: var(--brand-surface-1);
+      }
+      .supporting-card img {
+        width: 100%;
+        height: auto;
+        display: block;
+      }
+      .supporting-card-label {
+        padding: 12px 16px;
+        border-top: 1px solid var(--brand-border);
+      }
+      .supporting-card-label strong {
+        display: block;
+        font-family: var(--brand-font-body);
+        font-size: 0.85rem;
+        font-weight: 500;
+        color: var(--brand-text);
+      }
+      .supporting-card-label span {
+        font-family: var(--brand-font-body);
+        font-size: 0.75rem;
+        color: var(--brand-text-muted);
+      }
+
+      /* Bibliography / Sources */
+      .sources-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        columns: 1;
+        column-gap: 48px;
+      }
+      .sources-list li {
+        font-family: var(--brand-font-body);
+        font-size: 0.82rem;
+        color: var(--brand-text-muted);
+        line-height: 1.55;
+        margin-bottom: 12px;
+        break-inside: avoid;
+        padding-left: 1.5em;
+        text-indent: -1.5em;
+      }
+      .sources-list li a {
+        color: var(--brand-text-soft);
+        text-decoration: underline;
+        text-underline-offset: 2px;
+        word-break: break-word;
+      }
+      .sources-list li a:hover {
+        color: var(--brand-accent);
+      }
+
+      @media screen and (min-width: 700px) {
+        .sources-list { columns: 2; }
+      }
+      @media screen and (min-width: 1100px) {
+        .sources-list { columns: 3; }
+      }
+
+      @media screen and (min-width: 600px) {
+        .supporting-grid { grid-template-columns: repeat(2, 1fr); }
+      }
+
+      /* ── Carousel sets ── */
+      .carousel-set {
+        position: relative;
+      }
+      .carousel-set img {
+        width: 100%;
+        height: auto;
+        display: block;
+      }
+
+      /* ── Per-set slideshows ── */
+      .set-slideshows {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 32px;
+      }
+      @media screen and (min-width: 900px) {
+        .set-slideshows { grid-template-columns: repeat(3, 1fr); gap: 24px; }
+      }
+      .set-slideshow {
+        display: flex;
+        flex-direction: column;
+        min-width: 0;
+      }
+      .set-ss-label {
+        font-family: var(--brand-font-body);
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: var(--brand-text-soft);
+        margin: 0 0 12px;
+        text-align: center;
+      }
+      .set-ss-viewer {
+        border-radius: var(--brand-radius-lg);
+        overflow: hidden;
+        border: 1px solid var(--brand-border);
+        background: var(--brand-surface-1);
+        position: relative;
+        aspect-ratio: 1 / 1;
+        cursor: pointer;
+      }
+      .set-ss-track {
+        display: flex;
+        width: 100%;
+        height: 100%;
+        transform: translateX(0);
+        transition: transform 300ms cubic-bezier(0.34, 1.56, 0.64, 1);
+      }
+      .set-ss-track.no-transition { transition: none; }
+      @media (prefers-reduced-motion: reduce) {
+        .set-ss-track { transition: none; }
+      }
+      .set-ss-slide {
+        min-width: 100%;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+      }
+      .set-ss-slide img {
+        max-width: 100%;
+        max-height: 100%;
+        object-fit: contain;
+        display: block;
+      }
+      .set-ss-caption {
+        text-align: center;
+        font-family: var(--brand-font-body);
+        font-size: 0.82rem;
+        color: var(--brand-text-muted);
+        margin-top: 10px;
+        min-height: 1.4em;
+      }
+      .set-ss-controls {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
+        margin-top: 12px;
+      }
+      .set-ss-controls button {
+        font-family: var(--brand-font-body);
+        font-size: 0.82rem;
+        padding: 6px 12px;
+        border-radius: var(--brand-radius-sm);
+        border: 1px solid var(--brand-border);
+        background: var(--brand-surface-2);
+        color: var(--brand-text);
+        cursor: pointer;
+        transition: background var(--brand-transition-fast), border-color var(--brand-transition-fast);
+      }
+      .set-ss-controls button:hover { background: var(--brand-accent-dim); border-color: var(--brand-accent); }
+      .set-ss-controls button:focus-visible { outline: 2px solid var(--brand-accent); outline-offset: 2px; }
+      .set-ss-controls button:disabled {
+        opacity: 0.4;
+        cursor: not-allowed;
+        background: var(--brand-surface-2);
+        border-color: var(--brand-border);
+      }
+      .set-ss-counter {
+        font-family: var(--brand-font-body);
+        font-size: 0.8rem;
+        color: var(--brand-text-muted);
+        min-width: 84px;
+        text-align: center;
+      }
+
+      /* ── Lightbox ── */
+      .lightbox-overlay {
+        position: fixed;
+        inset: 0;
+        z-index: 100;
+        background: rgba(10,10,10,0.92);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 48px 24px;
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 200ms ease, visibility 200ms ease;
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .lightbox-overlay { transition: none; }
+      }
+      .lightbox-overlay.active {
+        opacity: 1;
+        visibility: visible;
+      }
+      .lightbox-frame {
+        position: relative;
+        width: 100%;
+        max-width: 1080px;
+        overflow: hidden;
+        border-radius: var(--brand-radius-sm);
+        touch-action: pan-y;
+        cursor: grab;
+      }
+      .lightbox-frame.dragging {
+        cursor: grabbing;
+      }
+      .lightbox-track {
+        display: flex;
+        transform: translateX(0);
+        transition: transform 240ms ease;
+        width: 100%;
+      }
+      .lightbox-slide {
+        min-width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .lightbox-slide img {
+        width: 100%;
+        max-height: calc(100vh - 160px);
+        object-fit: contain;
+        display: block;
+      }
+      .lightbox-close {
+        position: absolute;
+        top: 16px;
+        right: 16px;
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        border: 1px solid rgba(255,255,255,0.2);
+        background: rgba(255,255,255,0.1);
+        color: #fff;
+        font-size: 1.5rem;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 101;
+      }
+      .lightbox-close:hover { background: rgba(255,255,255,0.2); }
+      .lightbox-close:focus-visible { outline: 2px solid var(--brand-accent); outline-offset: 2px; }
+      .lightbox-arrow {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        border: 1px solid rgba(255,255,255,0.2);
+        background: rgba(255,255,255,0.1);
+        color: #fff;
+        font-size: 1.2rem;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 101;
+      }
+      .lightbox-arrow:hover { background: rgba(255,255,255,0.2); }
+      .lightbox-arrow:focus-visible { outline: 2px solid var(--brand-accent); outline-offset: 2px; }
+      .lightbox-prev { left: 16px; }
+      .lightbox-next { right: 16px; }
+      .lightbox-caption {
+        position: absolute;
+        bottom: 16px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: rgba(10,10,10,0.8);
+        color: var(--brand-text-soft);
+        font-family: var(--brand-font-body);
+        font-size: 0.82rem;
+        padding: 6px 14px;
+        border-radius: var(--brand-radius-sm);
+        white-space: nowrap;
+      }
+    </style>
+  </head>
+  <body>
+    <a href="#main" class="skip-link">Skip to content</a>
+    <div class="brand-page-bg" aria-hidden="true"></div>
+    <div class="brand-page-noise" aria-hidden="true"></div>
+
+    <header>
+      <div id="logoContainer">
+        <img src="../images/icons/BubbleLogo/bubbleLogo-white-notxt.svg" alt="Avery Ember Day Logo" id="logo" />
+        <span id="logoText">Avery Ember Day</span>
+      </div>
+      <nav aria-label="Primary navigation">
+        <ul>
+          <li><a href="../index.html#work">Work</a></li>
+          <li><a href="../index.html#about">About</a></li>
+          <li><a href="../resume/AveryEmberDay_Resume_2026.html" target="_blank">Resume</a></li>
+          <li><a href="../index.html#contact">Contact</a></li>
+        </ul>
+        <button id="theme-toggle" aria-label="Toggle light/dark mode">
+          <svg class="icon-sun" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 17a5 5 0 1 0 0-10 5 5 0 0 0 0 10zm0 2a1 1 0 0 1 1 1v1a1 1 0 1 1-2 0v-1a1 1 0 0 1 1-1zm0-14a1 1 0 0 1-1-1V3a1 1 0 1 1 2 0v1a1 1 0 0 1-1 1zM4.22 5.64a1 1 0 0 1 1.42-1.42l.7.71a1 1 0 0 1-1.41 1.41l-.71-.7zm14.14 12.72a1 1 0 0 1 1.42 1.42l-.71.7a1 1 0 1 1-1.41-1.41l.7-.71zM3 12a1 1 0 0 1 1-1h1a1 1 0 1 1 0 2H4a1 1 0 0 1-1-1zm16 0a1 1 0 0 1 1-1h1a1 1 0 1 1 0 2h-1a1 1 0 0 1-1-1zM5.64 19.78l-.7.71a1 1 0 1 1-1.42-1.42l.71-.7a1 1 0 0 1 1.41 1.41zm12.72-14.14.71-.71a1 1 0 1 1 1.42 1.42l-.71.7a1 1 0 0 1-1.42-1.41z"/></svg>
+          <svg class="icon-moon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M21 12.79A9 9 0 1 1 11.21 3a7 7 0 0 0 9.79 9.79z"/></svg>
+        </button>
+      </nav>
+    </header>
+
+    <main id="main">
+      <!-- Hero -->
+      <div class="project-hero">
+        <a href="../index.html#work" class="project-back">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M5 12l7-7M5 12l7 7"/></svg>
+          Back to Work
+        </a>
+        <span class="project-tag">Editorial / Infographic</span>
+        <h1 class="project-title">A History of Mistrust</h1>
+      </div>
+
+
+      <!-- Description -->
+      <section class="project-section">
+        <h2 class="section-title">Description</h2>
+        <p class="project-desc">A long-form Instagram carousel series with 3 sets of 10 slides examining the roots and ripple effects of medical mistrust, spanning the Tuskegee syphilis study, HIV/AIDS-era stigma, contemporary LGBTQ+ health disparities, and the community-led models offering a way forward. Backed by full preproduction including moodboard, storyboards, and process documentation.</p>
+      </section>
+
+      <!-- Per-set slideshows -->
+      <section class="project-section">
+        <h2 class="section-title">Slideshow</h2>
+        <div class="set-slideshows">
+          <div class="set-slideshow" data-set="1">
+            <p class="set-ss-label">Set 1 · Slides 1–10</p>
+            <div class="set-ss-viewer" role="region" aria-label="Set 1 slide viewer">
+              <div class="set-ss-track"></div>
+            </div>
+            <p class="set-ss-caption" aria-live="polite"></p>
+            <div class="set-ss-controls">
+              <button class="set-ss-prev" aria-label="Previous slide, set 1">&#8249; Prev</button>
+              <span class="set-ss-counter">Slide 1 of 10</span>
+              <button class="set-ss-next" aria-label="Next slide, set 1">Next &#8250;</button>
+            </div>
+          </div>
+          <div class="set-slideshow" data-set="2">
+            <p class="set-ss-label">Set 2 · Slides 11–20</p>
+            <div class="set-ss-viewer" role="region" aria-label="Set 2 slide viewer">
+              <div class="set-ss-track"></div>
+            </div>
+            <p class="set-ss-caption" aria-live="polite"></p>
+            <div class="set-ss-controls">
+              <button class="set-ss-prev" aria-label="Previous slide, set 2">&#8249; Prev</button>
+              <span class="set-ss-counter">Slide 1 of 10</span>
+              <button class="set-ss-next" aria-label="Next slide, set 2">Next &#8250;</button>
+            </div>
+          </div>
+          <div class="set-slideshow" data-set="3">
+            <p class="set-ss-label">Set 3 · Slides 21–30</p>
+            <div class="set-ss-viewer" role="region" aria-label="Set 3 slide viewer">
+              <div class="set-ss-track"></div>
+            </div>
+            <p class="set-ss-caption" aria-live="polite"></p>
+            <div class="set-ss-controls">
+              <button class="set-ss-prev" aria-label="Previous slide, set 3">&#8249; Prev</button>
+              <span class="set-ss-counter">Slide 1 of 10</span>
+              <button class="set-ss-next" aria-label="Next slide, set 3">Next &#8250;</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Moodboard & Storyboard -->
+      <section class="project-section">
+        <h2 class="section-title">Moodboard & Storyboard</h2>
+        <div class="supporting-grid">
+          <div class="supporting-card">
+            <img src="../images/myart/A History of Mistrust/supporting material/HistoryofMistrustMoodboard-cropped.png" alt="A History of Mistrust moodboard" />
+            <div class="supporting-card-label">
+              <strong>Moodboard</strong>
+              <span>Visual research and reference</span>
+            </div>
+          </div>
+          <div class="supporting-card">
+            <img src="../images/myart/A History of Mistrust/supporting material/aHistoryOfMistrustStoryboard.jpg" alt="A History of Mistrust storyboard" />
+            <div class="supporting-card-label">
+              <strong>Storyboard</strong>
+              <span>Layout and flow planning</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- All Slides -->
+      <section class="project-section">
+        <h2 class="section-title">All Slides</h2>
+        <div class="all-sets-full">
+          <div class="carousel-set" data-set="1">
+            <img src="../images/myart/A History of Mistrust/sets/set-1.webp" alt="A History of Mistrust carousel, slides 1 through 10 combined" loading="lazy" decoding="async" />
+          </div>
+          <div class="carousel-set" data-set="2">
+            <img src="../images/myart/A History of Mistrust/sets/set-2.webp" alt="A History of Mistrust carousel, slides 11 through 20 combined" loading="lazy" decoding="async" />
+          </div>
+          <div class="carousel-set" data-set="3">
+            <img src="../images/myart/A History of Mistrust/sets/set-3.webp" alt="A History of Mistrust carousel, slides 21 through 30 combined" loading="lazy" decoding="async" />
+          </div>
+        </div>
+      </section>
+
+      <!-- Sources -->
+      <section class="project-section">
+        <h2 class="section-title">Sources & Bibliography</h2>
+        <ul class="sources-list">
+          <li>AIDSVu. (2024). <em>AIDSVu Releases 2024 PrEP Use Data</em>. Emory University Rollins School of Public Health. <a href="https://aidsvu.org/news-updates/aidsvu-releases-2024-prep-use-data-showing-growing-use-across-the-u-s/" target="_blank">Link</a></li>
+          <li>Alsan, M., Garrick, O., & Graziani, G. C. (2019). Does Diversity Matter for Health? Experimental Evidence from Oakland. <em>American Economic Review, 109</em>(12), 4071-4111. <a href="https://pubs.aeaweb.org/doi/10.1257/aer.20181446" target="_blank">Link</a></li>
+          <li>American Medical Association (AMA). (2023). <em>Physicians can realize their power to advance health equity</em>. National Health Equity Grand Rounds. <a href="https://www.ama-assn.org/public-health/health-equity/physicians-can-realize-their-power-advance-health-equity" target="_blank">Link</a></li>
+          <li>Association of American Medical Colleges (AAMC). (2005). <em>Cultural Competence Education</em>. <a href="https://www.aamc.org/media/20856/download" target="_blank">Link</a></li>
+          <li>California State Auditor. (2014). <em>Sterilization of Female Inmates: Some Inmates Were Sterilized Following Violations of State Law and Established Policies and Procedures</em>. <a href="https://information.auditor.ca.gov/pdfs/reports/2013-120.pdf" target="_blank">Link</a></li>
+          <li>Centers for Disease Control and Prevention (CDC). (2024). <em>Breast Cancer Among Young Women</em>. <a href="https://www.cdc.gov/united-states-cancer-statistics/publications/breast-cancer-among-young-women.html" target="_blank">Link</a></li>
+          <li>Centers for Disease Control and Prevention (CDC). (2024). <em>HIV Diagnoses</em>. <a href="https://www.hiv.gov/hiv-basics/overview/data-and-trends/statistics" target="_blank">Link</a></li>
+          <li>Centers for Disease Control and Prevention (CDC). (2024). <em>The Untreated Syphilis Study at Tuskegee Timeline</em>. <a href="https://www.cdc.gov/tuskegee/about/timeline.html" target="_blank">Link</a></li>
+          <li>CNET. (2025). <em>How to access important health info that's been scrubbed from the CDC site</em>. <a href="https://www.cnet.com/tech/services-and-software/how-to-access-important-health-info-thats-been-scrubbed-from-the-cdc-site/" target="_blank">Link</a></li>
+          <li>Dick, B. (2024). <em>When Homosexuality Stopped Being a Mental Disorder in the DSM</em>. National Alliance on Mental Illness (NAMI). <a href="https://www.namisb.org/blog/blogs-articles-news-2/when-homosexuality-stopped-being-a-mental-disorder-in-the-dsm-5" target="_blank">Link</a></li>
+          <li>Georgia State University Library. (n.d.). <em>Reagan's Response</em>. Out in the Archives: Documenting LGBTQ History. <a href="https://exhibits.library.gsu.edu/out-in-the-archives/hiv-aids/reagans-response/" target="_blank">Link</a></li>
+          <li>Hoffman, K. M., Trawalter, S., Axt, J. R., & Oliver, M. N. (2016). Racial bias in pain assessment and treatment recommendations, and false beliefs about biological differences between blacks and whites. <em>Proceedings of the National Academy of Sciences, 113</em>(16), 4296-4301. <a href="https://www.pnas.org/doi/10.1073/pnas.1516047113" target="_blank">Link</a></li>
+          <li>Kaiser Family Foundation (KFF). (2023). <em>Access Uncertain for New Injectable PrEP As the Affordable Care Act's (ACA) Open Enrollment Begins</em>. <a href="https://www.kff.org/hiv-aids/access-uncertain-for-new-injectable-prep-as-the-affordable-care-acts-aca-open-enrollment-begins/" target="_blank">Link</a></li>
+          <li>Kaiser Family Foundation (KFF). (2023). <em>LGBT Adults' Experiences with Discrimination and Health Care Disparities</em>. <a href="https://www.kff.org/racial-equity-and-health-policy/lgbt-adults-experiences-with-discrimination-and-health-care-disparities-findings-from-the-kff-survey-of-racism-discrimination-and-health/" target="_blank">Link</a></li>
+          <li>Lambda Legal. (2010). <em>When Health Care Isn't Caring: Lambda Legal's Survey of Discrimination Against LGBT People and People with HIV</em>. <a href="https://lambdalegal.org/wp-content/uploads/2011/10/whcic-report_when-health-care-isnt-caring.pdf" target="_blank">Link</a></li>
+          <li>MacCarthy, S., et al. (2022). <em>The Benefit of Affirming Care for LGBTQ+ Population Health</em>. AcademyHealth / MedRxiv. <a href="https://www.medrxiv.org/content/10.1101/2022.05.26.22275633v1.full-text" target="_blank">Link</a></li>
+          <li>National Center for Transgender Equality & National LGBTQ Task Force. (2011). <em>Injustice at Every Turn: A Report of the National Transgender Discrimination Survey</em>. <a href="https://www.thetaskforce.org/app/uploads/2019/07/ntds_full.pdf" target="_blank">Link</a></li>
+          <li>NIH National Library of Medicine. (2024). <em>Medical Mistrust Becomes a Social Determinant of Health, Leading to Health Inequities</em>. <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC11944586/" target="_blank">Link</a></li>
+          <li>Price, G. N., & Darity, W. A. (2020). <em>Did North Carolina Economically Breed-Out Blacks During its Historical Eugenic Sterilization Campaign?</em> American Review of Political Economy. <a href="https://today.duke.edu/2020/07/new-paper-examines-disproportionate-effect-eugenics-nc%E2%80%99s-black-population" target="_blank">Link</a></li>
+          <li>Trepka, M. J., et al. (2016). <em>Delayed HIV diagnosis among men who have sex with men</em>. <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC5263177/" target="_blank">Link</a></li>
+          <li>U.S. General Accounting Office. (1976). <em>Formulation of the Indian Health Service</em>. Native Voices Timeline. <a href="https://www.nlm.nih.gov/nativevoices/timeline/543.html" target="_blank">Link</a></li>
+          <li>UNAIDS. (2024). <em>Global HIV statistics</em>. <a href="https://www.unaids.org/sites/default/files/media_asset/UNAIDS_FactSheet_en.pdf" target="_blank">Link</a></li>
+          <li>Whitman-Walker Institute. (2022). <em>Whitman-Walker Institute and Partners Release First Research on Trans and Nonbinary Health</em>. <a href="https://www.whitman-walker.org/whitman-walker-institute-and-partners-release-first-research-findings-for-trans-and-nonbinary-health/" target="_blank">Link</a></li>
+          <li>American Psychiatric Association. <em>Working with LGBTQ Patients</em>. <a href="https://www.psychiatry.org/psychiatrists/diversity/education/best-practice-highlights/working-with-lgbtq-patients" target="_blank">Link</a></li>
+          <li>NAMI San Bernardino. <em>When Homosexuality Stopped Being a Mental Disorder in the DSM</em>. <a href="https://www.namisb.org/blog/blogs-articles-news-2/when-homosexuality-stopped-being-a-mental-disorder-in-the-dsm-5" target="_blank">Link</a></li>
+          <li>PMC - NIH. <em>Out of DSM: Depathologizing Homosexuality</em>. <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC4695779/" target="_blank">Link</a></li>
+          <li>Annual Reviews. <em>History and Iatrogenic Effects of Conversion Therapy</em>. <a href="https://www.annualreviews.org/content/journals/10.1146/annurev-clinpsy-080822-052144?crawler=true&mimetype=application/pdf" target="_blank">Link</a></li>
+          <li>Psychology Town. <em>Homosexuality: From Pathology to Acceptance</em>. <a href="https://psychology.town/mental-health-in-special-areas/homosexuality-pathology-to-acceptance/" target="_blank">Link</a></li>
+          <li>PMC. <em>R. Spitzer and the depathologization of homosexuality: some considerations on the 50th anniversary</em>. <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC11083874/" target="_blank">Link</a></li>
+          <li>AACN. <em>Caring for LGBTQ+ Patients in Critical and Progressive Care</em>. <a href="https://www.aacn.org/blog/caring-for-lgbtq-patients-in-critical-and-progressive-care" target="_blank">Link</a></li>
+          <li>PMC. <em>Broken down by bias: Healthcare biases experienced by BIPOC and LGBTQ+ patients</em>. <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC8861755/" target="_blank">Link</a></li>
+          <li>Brandeis ScholarWorks. <em>The Illegitimacy of Sterilization: The Merging of Welfare and Eugenics in North Carolina, 1929-2015</em>. <a href="https://scholarworks.brandeis.edu/view/pdfCoverPage?instCode=01BRAND_INST&filePid=13419020920001921&download=true" target="_blank">Link</a></li>
+          <li>Lawrence, J. (2000). The Indian Health Service and the Sterilization of Native American Women. <em>The American Indian Quarterly, 24</em>(3), 400-419. <a href="https://doi.org/10.1353/aiq.2000.0008" target="_blank">Link</a></li>
+          <li>Government Accountability Office (GAO). <em>HRD-77-3 Investigation of Allegations Concerning Indian Health Service</em>. <a href="https://www.gao.gov/assets/hrd-77-3.pdf" target="_blank">Link</a></li>
+          <li>PBS. <em>Unwanted Sterilization and Eugenics Programs in the United States</em>. <a href="https://www.pbs.org/independentlens/blog/unwanted-sterilization-and-eugenics-programs-in-the-united-states/" target="_blank">Link</a></li>
+          <li>PMC. <em>California's Sterilization Survivors: An Estimate and Call for Redress</em>. <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC5308144/" target="_blank">Link</a></li>
+          <li>Prison Policy. <em>"If They Hand You a Paper, You Sign It": A Call to End the Sterilization of Women in Prison</em>. <a href="https://www.prisonpolicy.org/scans/Roth_If_They_Hand_You_1_15_2015.pdf" target="_blank">Link</a></li>
+          <li>Stern, A. M. (2005). STERILIZED in the Name of Public Health. Race, Immigration, and Reproductive Control in Modern California. <em>American Journal of Public Health, 95</em>(7), 1128-1138. <a href="https://doi.org/10.2105/ajph.2004.041608" target="_blank">Link</a></li>
+          <li>PMC. <em>STERILIZED in the Name of Public Health: Race, Immigration, and Reproductive Control in Modern California</em>. <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC1449330/" target="_blank">Link</a></li>
+          <li>Embryo Project Encyclopedia. <em>The Tuskegee Syphilis Study (1932–1972)</em>. <a href="https://embryo.asu.edu/pages/tuskegee-syphilis-study-1932-1972" target="_blank">Link</a></li>
+          <li>PMC. <em>Fiftieth Anniversary of Uncovering the Tuskegee Syphilis Study: The Story and Timeless Lessons</em>. <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC9872801/" target="_blank">Link</a></li>
+
+          <li>CDC. <em>About The Untreated Syphilis Study at Tuskegee</em>. <a href="https://www.cdc.gov/tuskegee/about/index.html" target="_blank">Link</a></li>
+
+          <li>Reagan Presidential Library. <em>The President's News Conference</em>. <a href="https://www.reaganlibrary.gov/archives/speech/presidents-news-conference-16" target="_blank">Link</a></li>
+          <li>Swarthmore College. <em>Silence From the Great Communicator: The Early Years of the AIDS Epidemic Under the Reagan Administration</em>. <a href="https://works.swarthmore.edu/cgi/viewcontent.cgi?article=1167&context=suhj" target="_blank">Link</a></li>
+          <li>CIDRAP. <em>Removal of pages from CDC website brings confusion, dismay</em>. <a href="https://www.cidrap.umn.edu/public-health/removal-pages-cdc-website-brings-confusion-dismay" target="_blank">Link</a></li>
+          <li>PMC. <em>Rewriting women's health: a content analysis of the Trump administration's revisions to womenshealth.gov</em>. <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC12613099/" target="_blank">Link</a></li>
+          <li>PMC. <em>Medical Mistrust: A Concept Analysis</em>. <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC11944586/" target="_blank">Link</a></li>
+          <li>PMC. <em>Medical mistrust, racism, and delays in preventive health screening among African-American men</em>. <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC8620213/" target="_blank">Link</a></li>
+          <li>Health Affairs. <em>Challenges To Reducing Discrimination And Health ...</em>. <a href="https://www.healthaffairs.org/doi/abs/10.1377/hlthaff.2016.1091?journalCode=hlthaff" target="_blank">Link</a></li>
+          <li>PMC. <em>PrEP-Related Medical, Structural and Institutional Mistrust among a Socioeconomically Diverse Sample of Black, Latine, Asian, and White Young Sexual Minority Men</em>. <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC12929284/" target="_blank">Link</a></li>
+          <li>PMC. <em>Medical Mistrust Among Black Patients with Serious Illness: A Mixed Methods Study</em>. <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC11534910/" target="_blank">Link</a></li>
+          <li>CDC. <em>HIV Diagnoses, Deaths, and Prevalence | HIV Data</em>. <a href="https://www.cdc.gov/hiv-data/nhss/hiv-diagnoses-deaths-prevalence.html" target="_blank">Link</a></li>
+          <li>AIDSVu. <em>AIDSVu Releases New PrEP Data and Launches PrEPVu.org</em>. <a href="https://aidsvu.org/news-updates/aidsvu-releases-new-prep-data-and-launches-prepvu-org-a-new-prep-equity-platform/" target="_blank">Link</a></li>
+          <li>AIDSVu. <em>AIDSVu Releases New Data Highlighting Ongoing Inequities in PrEP Use</em>. <a href="https://aidsvu.org/news-updates/news-updates-aidsvu-releases-new-data-highlighting-ongoing-inequities-in-prep-use-among-black-and-hispanic-people-and-across-regions-of-the-county/" target="_blank">Link</a></li>
+          <li>Health Affairs. <em>Estimating The Impact Of Out-Of-Pocket Cost Changes On Abandonment Of HIV Pre-Exposure Prophylaxis</em>. <a href="https://www.healthaffairs.org/doi/10.1377/hlthaff.2023.00808" target="_blank">Link</a></li>
+          <li>Satcher Institute. <em>The Impact of HIV on Elder Black Same Gender Loving Men (SGLM)</em>. <a href="https://satcherinstitute.org/news/the-impact-of-hiv-on-elder-black-same-gender-loving-men" target="_blank">Link</a></li>
+          <li>PSNet. <em>Racial bias in pain assessment and treatment recommendations...</em>. <a href="https://psnet.ahrq.gov/issue/racial-bias-pain-assessment-and-treatment-recommendations-and-false-beliefs-about-biological" target="_blank">Link</a></li>
+          <li>The Cancer Network. <em>National Transgender Discrimination Survey Report on health and health care</em>. <a href="https://cancer-network.org/wp-content/uploads/2017/02/National_Transgender_Discrimination_Survey_Report_on_health_and_health_care.pdf" target="_blank">Link</a></li>
+          <li>Advocates for Trans Equality. <em>National Transgender Discrimination Survey: Full Report</em>. <a href="https://transequality.org/resources/national-transgender-discrimination-survey-full-report" target="_blank">Link</a></li>
+          <li>PMC. <em>Identifying and Addressing Barriers to Transgender Healthcare</em>. <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC8606364/" target="_blank">Link</a></li>
+          <li>PubMed. <em>Racial bias in pain assessment and treatment recommendations...</em>. <a href="https://pubmed.ncbi.nlm.nih.gov/27044069/" target="_blank">Link</a></li>
+          <li>SF.gov. <em>HIV Epidemiology Annual Report 2022</em>. <a href="https://www.sf.gov/sites/default/files/2023-12/AnnualReport2022%2020231109Final_0.pdf" target="_blank">Link</a></li>
+          <li>AJPH. <em>Trends and Racial Disparities of Late-Stage HIV Diagnosis: Hawaii, 2010–2016</em>. <a href="https://ajph.aphapublications.org/doi/full/10.2105/AJPH.2018.304506" target="_blank">Link</a></li>
+          <li>SEER Program. <em>Cancer Stat Facts: Female Breast Cancer</em>. <a href="https://seer.cancer.gov/statfacts/html/breast.html" target="_blank">Link</a></li>
+          <li>CDC. <em>Vital Signs: Racial Disparities in Breast Cancer Severity — United States, 2005–2009</em>. <a href="https://www.cdc.gov/mmwr/preview/mmwrhtml/mm6145a5.htm" target="_blank">Link</a></li>
+          <li>American Cancer Society. <em>Breast Cancer Facts & Figures 2024-2025</em>. <a href="https://www.cancer.org/content/dam/cancer-org/research/cancer-facts-and-statistics/breast-cancer-facts-and-figures/2024/breast-cancer-facts-and-figures-2024.pdf" target="_blank">Link</a></li>
+          <li>WHO. <em>HIV - World Health Organization</em>. <a href="https://www.who.int/data/gho/data/themes/hiv-aids" target="_blank">Link</a></li>
+          <li>UNAIDS. <em>Global HIV & AIDS statistics — Fact sheet</em>. <a href="https://www.unaids.org/en/resources/fact-sheet" target="_blank">Link</a></li>
+          <li>Howard Brown Health. <em>Community Based Research</em>. <a href="https://howardbrown.org/era/research/community-based-research/" target="_blank">Link</a></li>
+          <li>PMC. <em>Health Communication and Sexual Orientation, Gender Identity, and Expression</em>. <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC9219031/" target="_blank">Link</a></li>
+          <li>PMC. <em>Community engagement to improve access to healthcare: a comparative case study to advance implementation science for transgender health equity</em>. <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC9339189/" target="_blank">Link</a></li>
+          <li>NBER. <em>Does Diversity Matter for Health? Experimental Evidence from Oakland</em>. <a href="https://www.nber.org/system/files/working_papers/w24787/w24787.pdf" target="_blank">Link</a></li>
+          <li>Poverty Action Lab. <em>Matching Provider Race to Increase Take-up of Preventive Health Services among Black Men in the United States</em>. <a href="https://www.povertyactionlab.org/evaluation/matching-provider-race-increase-take-preventive-health-services-among-black-men-united" target="_blank">Link</a></li>
+          <li>PMC. <em>Association of Affirming Care with Chronic Disease and Preventive Care Outcomes among Lesbian, Gay, Bisexual, Transgender, and Queer Older Adults</em>. <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC10251765/" target="_blank">Link</a></li>
+          <li>FOLX HEALTH. <em>Do LGBTQIA+ Health Care Providers Improve LGBTQIA+ Well-being?</em>. <a href="https://www.folxhealth.com/library/do-lgbtqia-health-care-providers-improve-lgbtqia-well-being" target="_blank">Link</a></li>
+          <li>AcademyHealth. <em>The Benefit of Affirming Care for LGBTQ+ Population Health</em>. <a href="https://academyhealth.org/blog/2022-06/benefit-affirming-care-lgbtq-population-health" target="_blank">Link</a></li>
+          <li>MedEdPORTAL. <em>Structural Competency: Curriculum for Medical Students, Residents, and Interprofessional Teams on the Structural Factors That Produce Health Disparities</em>. <a href="https://www.mededportal.org/doi/10.15766/mep_2374-8265.10888" target="_blank">Link</a></li>
+          <li>PMC. <em>A review on cultural competency in medical education</em>. <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC9638640/" target="_blank">Link</a></li>
+          <li>AAMC. <em>Assessing Change: Evaluating Cultural Competence Education and Training</em>. <a href="https://www.aamc.org/media/33226/download" target="_blank">Link</a></li>
+          <li>PMC. <em>Cultural competency education in the medical curriculum to overcome health care disparities</em>. <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC10443984/" target="_blank">Link</a></li>
+          <li>The Spokesman-Review. <em>Black Women Told To Fight On, Even When Battle Unbearable</em>. <a href="https://www.spokesman.com/stories/1995/jul/10/black-women-told-to-fight-on-even-when-battle/" target="_blank">Link</a></li>
+          <li>Professional Heart Daily. <em>Priority for Cardiovascular Health Equity among U.S. Women</em>. <a href="https://professional.heart.org/en/science-news/cardiovascular-disease-risk-factors-in-women-impact-of-race/commentary" target="_blank">Link</a></li>
+        </ul>
+      </section>
+    </main>
+
+    <!-- Lightbox -->
+    <div id="lightbox" class="lightbox-overlay" role="dialog" aria-modal="true" aria-label="Image viewer" hidden>
+      <button class="lightbox-close" aria-label="Close image viewer">&times;</button>
+      <button class="lightbox-arrow lightbox-prev" aria-label="Previous image">&#8249;</button>
+      <div class="lightbox-frame" tabindex="0">
+        <div class="lightbox-track"></div>
+      </div>
+      <button class="lightbox-arrow lightbox-next" aria-label="Next image">&#8250;</button>
+      <p id="lightbox-caption" class="lightbox-caption" aria-live="polite"></p>
+    </div>
+
+    <footer>
+      <p>&copy; 2026 Avery Ember Day</p>
+    </footer>
+
+    <button id="return-to-top" aria-label="Return to top">
+      <svg viewBox="0 0 20 30" xmlns="http://www.w3.org/2000/svg">
+        <path d="M11.25 15.688l-7.656 7.656-3.594-3.688 11.063-11.094 11.344 11.344-3.5 3.5z"/>
+      </svg>
+    </button>
+
+    <script src="../Script.js"></script>
+    <script>
+    (function() {
+      'use strict';
+
+      /* ── Slide data ── */
+      const BASE = '../images/myart/A History of Mistrust/slides/';
+
+      /* Exact words written on each slide (used as alt text + caption) */
+      const SLIDE_ALT = [
+        "A History of Mistrust: Why Some Communities Struggle to Trust Doctors",
+        "Fun Fact: Being LGBTQ+ is normal and okay",
+        "Un-Fun Fact: Homosexuality was classified as a mental disorder that was treated with harmful conversion therapy or even shock therapy until 1973. Even after guidelines were changed, harmful treatments persisted through the 1980s, and discrimination persists today.",
+        "POC & LGBTQ+ individuals often face systemic discrimination when seeking healthcare.",
+        "Black, Indigenous, and Latinx women have been sterilized without consent as recently as 2013.",
+        "Tuskegee Experiment (1932-1972): American healthcare providers lied to Black men and denied them treatment for syphilis to study the disease, even after a widespread cure was developed.",
+        "AIDS Care in Marginalized Communities",
+        "Black people represent only 12% of the population but bear 38% of new diagnoses (which is a >3x disparity ratio), while Hispanic individuals represent 18% of the population but bear 32% of new diagnoses. Why?",
+        "Systemic barriers prevent access to life-saving treatments like PrEP",
+        "High costs, lack of access to healthcare, stigma & discrimination all contribute to these disparities.",
+        "LGBTQ+ individuals and POC often receive disproportionately inferior treatment and face dismissal of symptoms.",
+        "This discrimination leads to avoidance of crucial treatment.",
+        "This directly leads these communities to later diagnoses & worse health outcomes.",
+        "The AIDS crisis emerged in the early 1980s, claiming the lives of over 44 million people worldwide.",
+        "The US Government's slow response disproportionately harmed LGBTQ+ & POC communities. Current information on the subject has been removed from USA.gov.",
+        "Mistrust leads to: late diagnoses, poorer mental health, non-adherence to necessary treatment, higher mortality rates.",
+        "“Health is more than the absence of disease. Health is about jobs and employment, education, the environment, and all of those things that go into making us healthy.” —Dr. Joycelyn Elders",
+        "The first step to rebuilding trust is understanding why it was broken. Share this series with your community and let's start that conversation together.",
+        "Do your part: get yourself tested, end the stigma behind STDs, educate yourself, encourage your loved ones to get tested.",
+        "Awareness is only effective in numbers. Share this post among your community. Let's work towards a better future together.",
+        "Rebuilding Trust Between Marginalized Communities & Healthcare Providers",
+        "Rebuilding trust is critical to closing the gap in medical care for marginalized communities. Okay sounds cool, but...",
+        "How Do We Start?",
+        "Support Community-led Clinics. Clinics run by LGBTQ+ & POC often provide safe, affirming care.",
+        "Representation Matters. Patients trust providers who reflect their race, culture, & experiences.",
+        "Cultural Competency is Essential. Training doctors and nurses to understand diverse experiences is key to changing how marginalized communities receive care.",
+        "“We do have the power, if we come together, to make change.” —Dr. Karthik Sivashanker",
+        "Advocate for Policy Changes. We need policies that require inclusive care and punish discriminatory practices in healthcare systems.",
+        "Community support for policy changes is necessary to ensure inclusive healthcare for all!",
+        "Share this to spread awareness so we can secure a future with healthcare that is: inclusive, affordable, accessible, culturally competent."
+      ];
+
+      const slides = [];
+      for (let i = 1; i <= 30; i++) {
+        slides.push({
+          src: BASE + 'slide-' + String(i).padStart(2, '0') + '.webp',
+          full: BASE + 'slide-' + String(i).padStart(2, '0') + '@2x.webp',
+          alt: SLIDE_ALT[i - 1],
+          n: i
+        });
+      }
+
+      /* ── Lightbox ── */
+      const lightbox = document.getElementById('lightbox');
+      const lbTrack = document.querySelector('.lightbox-track');
+      const lbCaption = document.getElementById('lightbox-caption');
+      const lbClose = document.querySelector('.lightbox-close');
+      const lbPrev = document.querySelector('.lightbox-prev');
+      const lbNext = document.querySelector('.lightbox-next');
+      const lbFrame = document.querySelector('.lightbox-frame');
+      let lbIndex = 0;
+      let lastFocused = null;
+      let isDragging = false;
+      let startX = 0;
+      let prevTranslate = 0;
+      const dragThreshold = 80;
+      const focusableSelectors = 'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])';
+
+      const lightboxSlides = slides.map((slide, index) => ({
+        ...slide,
+        index,
+        caption: 'Slide ' + slide.n + ' of 30 · Set ' + Math.ceil(slide.n / 10)
+      }));
+
+      lightboxSlides.forEach((slide) => {
+        const pane = document.createElement('div');
+        pane.className = 'lightbox-slide';
+        const img = document.createElement('img');
+        img.src = slide.full;
+        img.alt = slide.alt;
+        img.decoding = 'async';
+        pane.appendChild(img);
+        lbTrack.appendChild(pane);
+      });
+
+      function updateLightboxPosition(animate = true) {
+        lbTrack.style.transition = animate ? 'transform 240ms ease' : 'none';
+        lbTrack.style.transform = `translateX(${-lbIndex * 100}%)`;
+      }
+
+      function setLightboxControls() {
+        lbPrev.disabled = lbIndex === 0;
+        lbNext.disabled = lbIndex === lightboxSlides.length - 1;
+      }
+
+      function updateLightboxCaption() {
+        lbCaption.textContent = lightboxSlides[lbIndex].caption;
+      }
+
+      function openLightbox(index) {
+        if (index < 0 || index >= lightboxSlides.length) return;
+        lbIndex = index;
+        lastFocused = document.activeElement;
+        lightbox.hidden = false;
+        void lightbox.offsetWidth;
+        lightbox.classList.add('active');
+        document.body.style.overflow = 'hidden';
+        updateLightboxCaption();
+        setLightboxControls();
+        updateLightboxPosition(false);
+        lbFrame.focus();
+      }
+
+      function closeLightbox() {
+        lightbox.classList.remove('active');
+        document.body.style.overflow = '';
+        setTimeout(() => {
+          lightbox.hidden = true;
+        }, 200);
+        if (lastFocused) lastFocused.focus();
+      }
+
+      function showLightbox(index) {
+        if (index < 0 || index >= lightboxSlides.length) return;
+        lbIndex = index;
+        updateLightboxCaption();
+        setLightboxControls();
+        updateLightboxPosition();
+      }
+
+      lbClose.addEventListener('click', closeLightbox);
+      lbPrev.addEventListener('click', () => showLightbox(lbIndex - 1));
+      lbNext.addEventListener('click', () => showLightbox(lbIndex + 1));
+
+      lightbox.addEventListener('click', (e) => {
+        if (e.target === lightbox) closeLightbox();
+      });
+
+      lightbox.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') { e.preventDefault(); closeLightbox(); }
+        if (e.key === 'ArrowLeft') { e.preventDefault(); showLightbox(lbIndex - 1); }
+        if (e.key === 'ArrowRight') { e.preventDefault(); showLightbox(lbIndex + 1); }
+        const focusables = Array.from(lightbox.querySelectorAll(focusableSelectors)).filter(el => el.offsetParent !== null);
+        if (focusables.length === 0) return;
+        const first = focusables[0];
+        const last = focusables[focusables.length - 1];
+        if (e.key === 'Tab') {
+          if (e.shiftKey && document.activeElement === first) {
+            e.preventDefault();
+            last.focus();
+          } else if (!e.shiftKey && document.activeElement === last) {
+            e.preventDefault();
+            first.focus();
+          }
+        }
+      });
+
+      function getFrameWidth() {
+        return lbFrame.clientWidth || lbFrame.getBoundingClientRect().width;
+      }
+
+      function pointerDown(event) {
+        if (event.pointerType === 'mouse' && event.button !== 0) return;
+        if (event.target.closest('button')) return;
+        isDragging = true;
+        startX = event.clientX;
+        prevTranslate = -lbIndex * getFrameWidth();
+        lbFrame.setPointerCapture(event.pointerId);
+        lbFrame.classList.add('dragging');
+        lbTrack.style.transition = 'none';
+      }
+
+      function pointerMove(event) {
+        if (!isDragging) return;
+        const delta = event.clientX - startX;
+        lbTrack.style.transform = `translateX(${prevTranslate + delta}px)`;
+      }
+
+      function pointerUp(event) {
+        if (!isDragging) return;
+        isDragging = false;
+        lbFrame.releasePointerCapture(event.pointerId);
+        lbFrame.classList.remove('dragging');
+        const delta = event.clientX - startX;
+        if (Math.abs(delta) > dragThreshold) {
+          if (delta < 0) showLightbox(lbIndex + 1);
+          else showLightbox(lbIndex - 1);
+        } else {
+          showLightbox(lbIndex);
+        }
+      }
+
+      lbFrame.addEventListener('pointerdown', pointerDown);
+      lbFrame.addEventListener('pointermove', pointerMove);
+      lbFrame.addEventListener('pointerup', pointerUp);
+      lbFrame.addEventListener('pointercancel', pointerUp);
+      lbFrame.addEventListener('pointerleave', pointerUp);
+
+      /* ── Per-set slideshows ── */
+      document.querySelectorAll('.set-slideshow').forEach((widget) => {
+        const setNum = parseInt(widget.dataset.set, 10);
+        const startGlobal = (setNum - 1) * 10; // 0-based index into slides
+        const track = widget.querySelector('.set-ss-track');
+        const caption = widget.querySelector('.set-ss-caption');
+        const counter = widget.querySelector('.set-ss-counter');
+        const viewer = widget.querySelector('.set-ss-viewer');
+        const prevBtn = widget.querySelector('.set-ss-prev');
+        const nextBtn = widget.querySelector('.set-ss-next');
+        const setSlides = slides.slice(startGlobal, startGlobal + 10);
+        let local = 0;
+
+        setSlides.forEach((s) => {
+          const pane = document.createElement('div');
+          pane.className = 'set-ss-slide';
+          const img = document.createElement('img');
+          img.src = s.src;
+          img.alt = s.alt;
+          img.decoding = 'async';
+          img.loading = 'lazy';
+          pane.appendChild(img);
+          track.appendChild(pane);
+        });
+
+        function preload(j) {
+          if (j >= 0 && j < setSlides.length) {
+            const im = new Image();
+            im.src = setSlides[j].src;
+          }
+        }
+
+        function update(animate) {
+          track.classList.toggle('no-transition', !animate);
+          track.style.transform = `translateX(${-local * 100}%)`;
+          if (!animate) setTimeout(() => track.classList.remove('no-transition'), 10);
+          const s = setSlides[local];
+          counter.textContent = 'Slide ' + (local + 1) + ' of ' + setSlides.length;
+          caption.textContent = 'Slide ' + s.n + ' of 30';
+          prevBtn.disabled = local === 0;
+          nextBtn.disabled = local === setSlides.length - 1;
+          preload(local - 1);
+          preload(local + 1);
+        }
+
+        prevBtn.addEventListener('click', () => { if (local > 0) { local--; update(true); } });
+        nextBtn.addEventListener('click', () => { if (local < setSlides.length - 1) { local++; update(true); } });
+        viewer.addEventListener('click', () => openLightbox(startGlobal + local));
+
+        widget.addEventListener('keydown', (e) => {
+          if (lightbox.classList.contains('active')) return;
+          if (e.key === 'ArrowLeft') { e.preventDefault(); if (local > 0) { local--; update(true); } }
+          if (e.key === 'ArrowRight') { e.preventDefault(); if (local < setSlides.length - 1) { local++; update(true); } }
+        });
+
+        update(false);
+      });
+
+      /* ── Carousel set images → lightbox at set start ── */
+      document.querySelectorAll('.carousel-set img').forEach((img, i) => {
+        img.style.cursor = 'pointer';
+        img.addEventListener('click', () => openLightbox(i * 10));
+      });
+    })();
+    </script>
+  </body>
+</html>

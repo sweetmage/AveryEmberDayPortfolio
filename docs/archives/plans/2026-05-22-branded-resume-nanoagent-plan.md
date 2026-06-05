@@ -1,3 +1,5 @@
+> **Status:** Consolidated in TODO.md > Completed Plans Archive
+
 # Nanoagent Plan: Branded Resume 2026-05-22
 
 ## Goal
