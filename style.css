@@ -710,6 +710,20 @@ footer p {
     padding: 0.5em;
 }
 
+.wip-badge {
+    display: inline-block;
+    font-family: var(--brand-font-body);
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--brand-accent);
+    background: var(--brand-surface-1);
+    border: 1px solid var(--brand-accent-dim);
+    border-radius: var(--brand-radius-md);
+    padding: 4px 10px;
+}
+
 /* ── Misc legacy IDs ─────────────────────────────────────────────── */
 .textbox { position: relative; }
 #aboutgrid { position: relative; }

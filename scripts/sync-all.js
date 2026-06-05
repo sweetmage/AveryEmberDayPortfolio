@@ -4,8 +4,9 @@
 // Usage: node scripts/sync-all.js [--dry-run] [--apply]
 // Steps:
 //   1. Regenerate docs/sync/local-tasks.json from TODO.md
-//   2. Sync to Google Tasks (if GOOGLE_REFRESH_TOKEN present)
-//   3. Sync to TickTick (if TICKTICK_ACCESS_TOKEN present)
+//   2. Sync to TickTick (if TICKTICK_ACCESS_TOKEN present)
+//
+// NOTE: Google Tasks sync was retired on 2026-06-04. See scripts/_archive/README.md.
 
 const { spawnSync } = require("node:child_process");
 const path = require("node:path");
@@ -51,7 +52,6 @@ async function main() {
     process.exit(1);
   }
 
-  const skipGoogle = args.includes("--skip-google");
   const env = loadEnv();
   const modeFlag = dryRun ? "--dry-run" : "--apply";
   const extraFlags = pendingOnly ? ["--pending-only"] : [];
@@ -66,23 +66,10 @@ async function main() {
     process.exit(1);
   }
 
-  // Step 2: Google (disabled by default for this project)
-  if (!skipGoogle && env.GOOGLE_REFRESH_TOKEN) {
-    console.log("\n========================================");
-    console.log("Step 2: Sync to Google Tasks");
-    console.log("========================================");
-    if (!run("sync-google.js", [modeFlag, ...extraFlags])) {
-      console.error("\n[sync-all] Google sync failed (see output above).");
-      failed = true;
-    }
-  } else {
-    console.log("\n[sync-all] Skipping Google sync — disabled for this project. Use --skip-google to suppress this message.");
-  }
-
-  // Step 3: TickTick
+  // Step 2: TickTick
   if (env.TICKTICK_ACCESS_TOKEN) {
     console.log("\n========================================");
-    console.log("Step 3: Sync to TickTick");
+    console.log("Step 2: Sync to TickTick");
     console.log("========================================");
     if (!run("sync-ticktick.js", [modeFlag, ...extraFlags])) {
       console.error("\n[sync-all] TickTick sync failed (see output above).");

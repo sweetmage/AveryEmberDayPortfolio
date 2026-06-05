@@ -5,4 +5,5 @@
 # Cross-target sync (personal task IDs, auth tokens)
 /docs/sync/mapping.json
 /docs/sync/*-manifest.json
+/docs/sync/google-docs.json
 .env

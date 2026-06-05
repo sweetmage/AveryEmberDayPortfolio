@@ -180,8 +180,17 @@ async function findOrCreateTaskList(env, listName) {
 }
 
 async function fetchRemoteTasks(env, listId) {
-  const result = await apiGet(env, `/lists/${listId}/tasks`);
-  return (result.items || []).filter((t) => t.id); // exclude deleted/completed hidden if any
+  const all = [];
+  let nextPageToken = null;
+  do {
+    const path = nextPageToken
+      ? `/lists/${listId}/tasks?pageToken=${encodeURIComponent(nextPageToken)}`
+      : `/lists/${listId}/tasks`;
+    const result = await apiGet(env, path);
+    if (result.items) all.push(...result.items);
+    nextPageToken = result.nextPageToken || null;
+  } while (nextPageToken);
+  return all.filter((t) => t.id);
 }
 
 function buildRemoteIdMap(remoteTasks) {
@@ -210,6 +219,94 @@ function parseRemoteNotes(notes = "") {
   return localIdMatch ? localIdMatch[1] : null;
 }
 
+async function runPurge(env, listName, dryRun, apply) {
+  console.log(`[purge] Target: Google Tasks — list "${listName}"`);
+  console.log(`[purge] Mode: ${dryRun ? "DRY-RUN" : "APPLY"}`);
+  console.log("");
+
+  // Auth + list setup
+  let listId;
+  try {
+    listId = await findOrCreateTaskList(env, listName);
+  } catch (err) {
+    console.error("[auth/list] Failed:", err.message);
+    process.exit(1);
+  }
+
+  // Fetch remote tasks
+  let remoteTasks;
+  try {
+    remoteTasks = await fetchRemoteTasks(env, listId);
+  } catch (err) {
+    console.error("[fetch] Failed:", err.message);
+    process.exit(1);
+  }
+
+  // Identify synced tasks (those with localId: in notes)
+  const synced = [];
+  const unknown = [];
+  for (const t of remoteTasks) {
+    if (parseRemoteNotes(t.notes)) {
+      synced.push(t);
+    } else {
+      unknown.push(t);
+    }
+  }
+
+  let mapping = readJson(mappingPath) || { version: "1.0", ticktick: {}, google: {} };
+
+  console.log(`[purge] Total tasks in list: ${remoteTasks.length}`);
+  console.log(`[purge] Synced tasks (will delete): ${synced.length}`);
+  console.log(`[purge] Unsynced / user-added tasks (will skip): ${unknown.length}`);
+  console.log("");
+
+  // Also detect mapping entries for tasks already gone from the list
+  const remoteIdsInList = new Set(remoteTasks.map((t) => t.id));
+  const orphanedMappings = [];
+  for (const localId of Object.keys(mapping.google || {})) {
+    const remoteId = mapping.google[localId];
+    if (!remoteIdsInList.has(remoteId)) {
+      orphanedMappings.push({ localId, remoteId });
+    }
+  }
+  if (orphanedMappings.length) {
+    console.log(`[purge] Orphaned mapping entries (already missing from list): ${orphanedMappings.length}`);
+  }
+  console.log("");
+
+  if (dryRun) {
+    for (const t of synced) {
+      const lid = parseRemoteNotes(t.notes);
+      console.log(`[DELETE]  "${t.title}" (localId: ${lid}, remoteId: ${t.id})`);
+    }
+    for (const o of orphanedMappings) {
+      console.log(`[CLEAR]   mapping entry ${o.localId} → ${o.remoteId} (task already missing)`);
+    }
+    console.log("\nDry-run complete. No remote changes made.");
+    process.exit(0);
+  }
+
+  // Apply
+  for (const t of synced) {
+    const lid = parseRemoteNotes(t.notes);
+    try {
+      await apiDelete(env, `/lists/${listId}/tasks/${t.id}`);
+      console.log(`[DELETE]  "${t.title}" (localId: ${lid}, remoteId: ${t.id})`);
+      delete mapping.google[lid];
+    } catch (err) {
+      console.error(`[DELETE]  FAILED "${t.title}" (${t.id}):`, err.message);
+    }
+  }
+
+  for (const o of orphanedMappings) {
+    delete mapping.google[o.localId];
+    console.log(`[CLEAR]   mapping entry ${o.localId} → ${o.remoteId} (task already missing)`);
+  }
+
+  writeJson(mappingPath, mapping);
+  console.log("\n[done] Purge complete. Mapping updated.");
+}
+
 async function main() {
   const args = process.argv.slice(2);
   const dryRun = args.includes("--dry-run");
@@ -217,6 +314,21 @@ async function main() {
   const pendingOnly = args.includes("--pending-only");
   const listNameArg = args.find((a) => a.startsWith("--list-name="));
   const listName = listNameArg ? listNameArg.split("=")[1] : "Portfolio Website";
+  const purge = args.includes("--purge");
+
+  const env = loadEnv();
+
+  if (purge) {
+    // Purge mode: standalone, only --dry-run and --apply are valid modifiers
+    if (!dryRun && !apply) {
+      console.log("Usage: node scripts/sync-google.js --purge [--dry-run] [--apply] [--list-name=\"Portfolio Website\"]");
+      console.log("  --purge         Delete all previously-synced tasks (those with localId: in notes)");
+      console.log("  --dry-run       Show planned deletions without modifying remote state");
+      console.log("  --apply         Execute deletions and update mapping");
+      process.exit(1);
+    }
+    return await runPurge(env, listName, dryRun, apply);
+  }
 
   if (!dryRun && !apply) {
     console.log("Usage: node scripts/sync-google.js [--dry-run] [--apply] [--pending-only] [--list-name=\"Portfolio Website\"]");
@@ -225,8 +337,6 @@ async function main() {
     console.log("  --pending-only  Only sync tasks with status !== completed");
     process.exit(1);
   }
-
-  const env = loadEnv();
   if (!env.GOOGLE_REFRESH_TOKEN) {
     console.error("Missing GOOGLE_REFRESH_TOKEN in .env");
     console.error("Run: node scripts/google-oauth.js");

@@ -2,6 +2,58 @@
 
 ---
 
+## ⚠️ Framework Decision Pending (2026-06-04)
+
+The website is currently vanilla HTML/CSS/JS. User is evaluating a move to a JS framework (React, Vue, Svelte, Astro, SolidJS, etc.) but **has not yet chosen one**.
+
+**Impact on open work:**
+- All new feature plans (incl. `docs/plans/2026-06-04-hero-bubble-physics.md`) should keep core logic framework-agnostic (plain ES modules) so wrappers can be added later.
+- Hold off on any large structural refactor (build tooling, routing, component model) until the framework is chosen.
+- Existing pages (`index.html`, `projects/*.html`, `resume/*.html`) stay vanilla until migration day.
+
+**Action required from user:** Pick a framework (or confirm staying vanilla) so plans can be revised with concrete wrapper specs.
+
+---
+
+## ✅ Phase 1 Structural Fixes (2026-06-04)
+
+**Status:** Complete (branch `shxdowloop/2026-06-04/phase-1-structural-fixes`)
+
+- [x] Unify navigation — `.brand-nav` + `.brand-footer` applied to all sub-pages (`history-of-mistrust`, `brand-avery-ember-day`, `patriots-low-thirds`, `gallery`)
+- [x] Resume links — all nav Resume links point to `AveryEmberDay_Resume_2026_Brand.html`
+- [x] Upwork icon — wired into `index.html` Contact section; SVG updated to `currentColor` fill
+- [x] Patriots placeholders — replaced with clean `.wip-notice` blocks; `.wip-badge` added to project card in `index.html`
+- [x] Gallery empty placeholders — 9 empty Digital Art placeholders removed
+
+---
+
+## ✅ Sync Scope Change (2026-06-04) — DONE → CANCELLED
+
+**Google Tasks sync is retired.** Agent no longer mirrors progress to Google Tasks.
+
+**Original plan:** Build custom `google-docs.js` + `google-oauth.js` pipeline for agent read/edit access via Google APIs. **Status: CANCELLED** — user pivoted to OpenTabs direct browser use for Google Docs interaction. Custom OAuth/script integration abandoned. `scripts/google-oauth.js` and `scripts/google-docs.js` left on disk as utilities but no longer part of an active plan.
+
+**What changed:**
+- `scripts/sync-google.js` — archived to `scripts/_archive/` after purging all 49 previously-synced tasks from Google Tasks list "Portfolio Website".
+- `scripts/sync-all.js` — Google leg removed; TickTick sync remains as one-way reference.
+- `scripts/google-oauth.js` — recreated. Requests `documents` + `drive.readonly` scopes (no `tasks`).
+- `scripts/google-docs.js` — new. Supports `list`, `find`, `read`, `diff`, `update` against an allow-list (`docs/sync/google-docs.json`, gitignored).
+- `docs/sync/mapping.json` — `google` key cleared.
+- `.env` — `GOOGLE_REFRESH_TOKEN` / `GOOGLE_ACCESS_TOKEN` need rotation via `node scripts/google-oauth.js` (human step).
+
+**Plan:** `docs/plans/2026-06-04-google-docs-access.md`
+
+---
+
+## Active Plans
+
+- `docs/plans/2026-06-04-hero-bubble-physics.md` — Hero bubble physics (canvas) — awaiting implementation; pending framework decision above.
+- ~~`docs/plans/2026-06-04-google-docs-access.md` — Google Docs read/edit access — CANCELLED. User pivoted to OpenTabs direct browser use; custom OAuth/script integration abandoned. Plan archived to `docs/archives/plans/`.~~
+
+All other plans are completed and archived under `docs/archives/plans/`.
+
+---
+
 ## Completed Plans Archive
 
 Consolidated reference for finished implementation plans. See original plan files in `docs/plans/` for full details.
@@ -30,15 +82,31 @@ Consolidated reference for finished implementation plans. See original plan file
 ### All Plans Cross-Reference Analysis (2026-06-02)
 **Goal:** Analyze all existing implementation plans vs. current codebase state  
 **Status:** ✅ DONE  
-**Files:** Analysis documentation (read-only reference)  
-**Key specs:** Cross-referenced 5 plans, found 3 fully done + 2 partial; identified gaps (missing thumbnails, carousel task tracker)  
-**Plan ref:** [docs/plans/2026-06-02-all-plans-nanoagent-analysis.md](docs/plans/2026-06-02-all-plans-nanoagent-analysis.md)
+**Plan ref:** [docs/archives/plans/2026-06-02-all-plans-nanoagent-analysis.md](docs/archives/plans/2026-06-02-all-plans-nanoagent-analysis.md)
+
+### Google ↔ TickTick Cross-Target Sync (2026-06-02 → 2026-06-04)
+**Goal:** Local-first task sync pipeline with outbound push to TickTick + Google Tasks  
+**Status:** ✅ DONE — both auth blockers resolved; 24 pending tasks live-synced 2026-06-04 via `scripts/sync-all.js --apply --pending-only`  
+**Files:** `scripts/sync-{ticktick,google,all}.js`, `scripts/{ticktick,google}-oauth.js`, `scripts/parse-todo.js`, `docs/sync/local-tasks.json`, `docs/sync/mapping.json`  
+**Plan refs:** [docs/archives/plans/2026-06-02-google-ticktick-cross-target-sync.md](docs/archives/plans/2026-06-02-google-ticktick-cross-target-sync.md), [docs/archives/plans/2026-06-03-complete-google-ticktick-plan-shxdowloop-nanoagent-plan.md](docs/archives/plans/2026-06-03-complete-google-ticktick-plan-shxdowloop-nanoagent-plan.md)
+
+### History of Mistrust — Page Rework (2026-06-03)
+**Goal:** Reorder sections, drop double headers, per-set slideshows (3 cols), match moodboard crop to storyboard, real alt text  
+**Status:** ✅ DONE  
+**Files:** `projects/history-of-mistrust.html`, `images/myart/A History of Mistrust/supporting material/HistoryofMistrustMoodboard-cropped.png`  
+**Plan ref:** [docs/archives/plans/2026-06-03-history-of-mistrust-rework.md](docs/archives/plans/2026-06-03-history-of-mistrust-rework.md)
+
+### All Slides — Full-Width Stacked Sets (2026-06-03)
+**Goal:** Polish All Slides section with consistent card styling and remove dead grid CSS  
+**Status:** ✅ DONE  
+**Files:** `projects/history-of-mistrust.html` (embedded CSS + JS only)  
+**Plan ref:** [docs/archives/plans/2026-06-03-all-slides-fullwidth-stacked-sets.md](docs/archives/plans/2026-06-03-all-slides-fullwidth-stacked-sets.md)
 
 ---
 
-## ✅ Phase 2 Complete: Plan Files Archived (2026-06-02)
+## ✅ Plan Files Archived (2026-06-04)
 
-All 7 plan files moved to `docs/archives/plans/` for historical preservation. Original detailed specs remain accessible via archive links in Completed Plans Archive section above.
+All completed plan files moved to `docs/archives/plans/`. Only active plans remain in `docs/plans/`.
 
 ---
 

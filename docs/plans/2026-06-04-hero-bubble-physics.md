@@ -5,6 +5,18 @@
 
 ---
 
+## ⚠️ Framework Decision Pending (2026-06-04)
+
+The site is currently vanilla HTML/CSS/JS. The user is evaluating moving the website to a JS framework (e.g., React, Vue, Svelte, Astro, SolidJS, etc.) but has **not yet chosen one**. Before this plan is implemented:
+
+- Confirm the chosen framework. If a framework is adopted before/after this work, the canvas physics module (`scripts/bubbles.js`) must be re-wired as a component (e.g., a React `useEffect` hook with cleanup, a Svelte `onMount`, or an Astro client island).
+- The physics core (state, integration, collision, squish) is framework-agnostic and should stay as a plain ES module so it can be imported into any framework wrapper.
+- Defer the `index.html` markup swap (Step 6 in Build Sequence) until the framework decision is made — that step changes whichever entry template the chosen framework uses.
+
+If the framework decision is delayed, this plan can still ship against vanilla HTML as currently scoped; the wrapper layer is the only thing that would need rework on migration.
+
+---
+
 ## Goal
 
 Replace the static CSS `.brand-bubble` divs in the hero section with a canvas-based physics simulation where bubbles:
