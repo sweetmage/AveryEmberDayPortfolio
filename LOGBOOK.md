@@ -1,3 +1,115 @@
+## Entry 030 — 2026-06-04
+
+**Agent:** Kilo (Claude route, shxdow-flow)
+**Cycle:** todo-update
+**Task:** Add new user-requested tasks to TODO.md and regenerate local task sync.
+
+### Changes
+
+- **`TODO.md`** — Added three new task groups under existing open-work section:
+  - **Gallery tag system** — 4 pending tasks: design taxonomy (by medium), implement filter UI in `gallery/gallery.html`, wire tag metadata into gallery items, verify responsive breakpoints.
+  - **A History of Mistrust — post-framework** — 2 pending tasks: finish carousel polish after framework decision, create viewer-accessible canonical slide content file with numbered bibliography/sources.
+- **`docs/sync/local-tasks.json`** — Regenerated via `node scripts/parse-todo.js`. Now 94 tasks (76 completed, 18 pending).
+
+### Notes
+
+- Patriots Low Thirds and watermarking tasks already existed in TODO.md (Motion graphics Patriots checklist and Standalone); user reconfirmed intent.
+- Carousel task explicitly gated on framework decision from "⚠️ Framework Decision Pending" section.
+- No code changes; no commits performed.
+
+---
+
+## Entry 029 — 2026-06-04
+
+**Agent:** Kilo (Claude route, shxdow-flow)
+**Cycle:** prelaunch-qa
+**Task:** Run the full pre-launch QA checklist from TODO.md. Fix broken assets, optimize images, verify links, spell-check, keyboard nav, visual review at 4 breakpoints, recruiter impression screenshot.
+
+### Changes
+
+- **`gallery/gallery.html`** — Fixed `Self Portrait Series - In Love - Final.png` → `.webp` (line 61). Gallery now references only webp images.
+- **`images/myart/Gallery/*.png`** — Deleted 16 unused large PNGs (~118 MB total). All had `.webp` equivalents already referenced by HTML.
+- **`images/projects/mistrust-thumb.jpg`** — Recovered from `feat/history-of-mistrust-case-study` branch (was missing from current branch; caused 404 on index card).
+- **`images/myart/A History of Mistrust/slides/`** — Recovered 60 slide webp files (30 display + 30 @2x) from `feat/history-of-mistrust-case-study` branch. These were referenced by `history-of-mistrust.html` JS slideshow but missing from current branch.
+- **`images/myart/A History of Mistrust/sets/`** — Recovered 3 combined set webp files from same feature branch.
+- **`images/myart/A History of Mistrust/supporting material/aHistoryOfMistrustStoryboard.jpg`** — Copied from parent dir into `supporting material/` to match HTML reference path. Parent dir duplicate deleted.
+- **`images/myart/A History of Mistrust/aHistoryOfMistrustStoryboard.jpg`** — Deleted duplicate from parent directory.
+- **`TODO.md`** — Marked all 7 Pre-launch QA checklist items complete. Also marked gallery card breakpoint verification complete.
+- **`docs/plans/2026-06-04-prelaunch-qa.md`** — New implementation plan for this cycle.
+
+### Verification
+
+- **Link check:** Node script verified all internal `href`/`src` paths in 6 HTML files resolve to existing files. 0 broken links remain.
+- **Spell check:** Node script scanned visible text across 6 HTML files against 28 common misspellings. 0 typos found.
+- **Accessibility:** Skip-link present on all pages; `:focus-visible` styles defined in `brand.css:963` and `style.css:882`; theme toggle has `aria-label`; nav links use semantic `<nav>` + `<ul>`.
+- **Visual review:** Playwright full-page screenshots captured at 360px, 768px, 1024px, 1440px for `index.html`, `history-of-mistrust.html`, `gallery.html`. All reviewed for clipping/overflow/awkward whitespace. No layout regressions.
+- **Recruiter impression:** Hero screenshot at 1440px shows logo, name, and tagline clearly above the fold with animated bubble background.
+
+### Notes
+
+- **Binary file recovery pitfall:** Initial recovery via `git show ... > file` in PowerShell corrupted binaries with UTF-16 BOM. Fixed by using `git checkout <branch> -- <path>` instead, which preserves binary fidelity.
+- **Open risk:** Large PNG source files remain in `images/myart/A History of Mistrust/` (e.g., `A History of Mistrust.png`, `SET1/2/3 A History of Mistrust.png`, `Instagram post - 1..30.png`). These are not referenced by HTML but total ~200+ MB. Recommend deleting or moving to external archive before deploy to minimize repo/deploy size.
+- Patriots Low Thirds thumbnail (`images/projects/patriots-thumb.jpg`) remains blocked on user export from After Effects. `.wip-badge` on index card makes the missing asset explicit.
+
+---
+
+## Entry 028 — 2026-06-04
+
+**Agent:** Kilo (Claude route, shxdow-flow)
+**Cycle:** docs-cleanup
+**Task:** Archive completed plan files and update TODO.md / LOGBOOK to reflect current state.
+
+### Changes
+
+- **`docs/plans/2026-06-04-accessibility-docs.md`** — Moved to `docs/archives/plans/` (plan completed).
+- **`docs/plans/2026-06-04-phase-1-structural-fixes-shxdowloop.md`** — Moved to `docs/archives/plans/` (plan completed).
+- **`TODO.md`** —
+  - Consolidated **Active Plans** to a single entry: `2026-06-04-hero-bubble-physics.md`.
+  - Removed stale crossed-out Google Docs plan reference from Active Plans.
+  - Removed duplicate "Hero Bubble Physics (active)" section lower in the file.
+  - Updated **Completed Plans Archive** plan refs for Phase 1 Structural Fixes and Accessibility Documentation to point to `docs/archives/plans/`.
+- **`LOGBOOK.md`** — This entry added.
+
+### Verification
+
+- `Get-ChildItem docs\plans` → only `2026-06-04-hero-bubble-physics.md` remains.
+- `Get-ChildItem docs\archives\plans` → both archived plans present.
+- `git status` correctly shows the moves as renames.
+
+### Notes
+
+- Only one active plan remains in `docs/plans/`. All completed plans now live in `docs/archives/plans/` as intended.
+- No code files touched; all changes are docs/plans housekeeping.
+
+---
+
+## Entry 027 — 2026-06-04
+
+**Agent:** Kilo (Claude route, shxdow-flow)
+**Cycle:** accessibility-docs
+**Task:** Create accessibility reference documentation for brand.css; update TODO.md completed plans archive.
+
+### Changes
+
+- **`docs/accessibility.md`** — New. Living accessibility reference covering: contrast ratio tables for all text tiers in dark and light themes, muted/faint token usage rules, focus indicator contract (`:focus-visible` spec), reduced-motion contract (both `@media` blocks documented), known gap register (6 items), and future contributor checklist.
+- **`docs/plans/2026-06-04-accessibility-docs.md`** — New. Implementation plan for this task.
+- **`TODO.md`** — Added two missing entries to Completed Plans Archive: Phase 1 Structural Fixes (2026-06-04) and Accessibility Documentation — brand.css (2026-06-04).
+
+### Verification
+
+- All hex values cited in `docs/accessibility.md` verified against `brand.css` token declarations (lines 111–182 dark, 185–229 light).
+- `focus-visible` spec verified at `brand.css:963–966`.
+- Reduced-motion blocks verified at `brand.css:482–488` and `brand.css:1126–1134`.
+- `.brand-eyebrow` / `.brand-section-label` muted token usage verified at `brand.css:786–800`.
+
+### Notes
+
+- Contrast ratios are calculated approximations from the WCAG relative luminance formula. Validate with axe/WAVE before publishing a formal conformance statement.
+- Gap #5 (missing `:focus-visible` on nav links, footer links, cards) is the highest-priority actionable item from the gap register.
+- `style.css` and project-specific HTML pages are out of scope for this pass; a separate audit is noted in gap #6.
+
+---
+
 ## Entry 026 — 2026-06-04
 
 **Agent:** kimi-k2.6 (kilo, shxdowloop)

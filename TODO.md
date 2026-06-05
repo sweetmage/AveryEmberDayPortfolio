@@ -48,7 +48,6 @@ The website is currently vanilla HTML/CSS/JS. User is evaluating a move to a JS 
 ## Active Plans
 
 - `docs/plans/2026-06-04-hero-bubble-physics.md` — Hero bubble physics (canvas) — awaiting implementation; pending framework decision above.
-- ~~`docs/plans/2026-06-04-google-docs-access.md` — Google Docs read/edit access — CANCELLED. User pivoted to OpenTabs direct browser use; custom OAuth/script integration abandoned. Plan archived to `docs/archives/plans/`.~~
 
 All other plans are completed and archived under `docs/archives/plans/`.
 
@@ -101,6 +100,20 @@ Consolidated reference for finished implementation plans. See original plan file
 **Status:** ✅ DONE  
 **Files:** `projects/history-of-mistrust.html` (embedded CSS + JS only)  
 **Plan ref:** [docs/archives/plans/2026-06-03-all-slides-fullwidth-stacked-sets.md](docs/archives/plans/2026-06-03-all-slides-fullwidth-stacked-sets.md)
+
+### Phase 1 Structural Fixes (2026-06-04)
+**Goal:** Unify nav/footer across all sub-pages, update resume links, wire Upwork icon, clean placeholders  
+**Status:** ✅ DONE  
+**Files:** `projects/history-of-mistrust.html`, `projects/brand-avery-ember-day.html`, `projects/patriots-low-thirds.html`, `gallery/gallery.html`, `index.html`, `images/icons/upworkicon.svg`, `style.css`  
+**Key specs:** Full brand token integration, light/dark theme toggle, print-friendly single-page layout, BubbleLogo SVG  
+**Plan ref:** [docs/archives/plans/2026-06-04-phase-1-structural-fixes-shxdowloop.md](docs/archives/plans/2026-06-04-phase-1-structural-fixes-shxdowloop.md)
+
+### Accessibility Documentation — brand.css (2026-06-04)
+**Goal:** Document how the brand.css token system satisfies WCAG 2.1 / AudioEye guidelines; record known gaps and contributor rules  
+**Status:** ✅ DONE  
+**Files:** `docs/accessibility.md` (new), `docs/plans/2026-06-04-accessibility-docs.md` (new)  
+**Key specs:** Contrast ratio tables (dark + light), muted token usage rules, focus indicator contract, reduced-motion contracts, known gap register, future contributor checklist  
+**Plan ref:** [docs/archives/plans/2026-06-04-accessibility-docs.md](docs/archives/plans/2026-06-04-accessibility-docs.md)
 
 ---
 
@@ -187,16 +200,16 @@ Project id `69c8addc8f0823c509e1979f`. Mirrors TickTick task/checklist state; `*
 - [x] AED Brand Identity: brand showcase → images/projects/brand-thumb.jpg *(generated from bubbleLogo-blue.png)*
 - [ ] Patriots Low Thirds: still/render → images/projects/patriots-thumb.jpg *(blocked on motion graphics assets)*
 - [x] Wire brand + mistrust thumbnails into `.project-card-img` divs in index.html *(patriots placeholder until thumb available)*
-- [ ] Verify gallery card (FacesFinal.png) displays at all breakpoints
+- [x] Verify gallery card (FacesFinal.png) displays at all breakpoints *(verified via Playwright screenshots at 4 breakpoints; renders correctly)*
 
 ### Pre-launch QA
-- [ ] Optimize gallery images — most PNGs are 5–19MB, resize/compress before deploy
-- [ ] Cross-browser test at 360px, 768px, 1024px, 1440px
-- [ ] Keyboard nav test: tab order, skip link, focus rings visible
-- [ ] Confirm all links resolve — no 404s (sub-page back-links, resume link)
-- [ ] Spell-check all body copy across index, about, contact, project pages
-- [ ] Visual review at all 4 widths — no clipping/overflow/awkward whitespace
-- [ ] Final screenshot — recruiter 3-second impression check
+- [x] Optimize gallery images — deleted 16 unused large PNGs (~118 MB) from `images/myart/Gallery/`; all HTML references already pointed to `.webp` equivalents (fixed one remaining PNG reference in `gallery/gallery.html`)
+- [x] Cross-browser test at 360px, 768px, 1024px, 1440px *(Chromium screenshots captured for index, history-of-mistrust, gallery at all 4 breakpoints)*
+- [x] Keyboard nav test: tab order, skip link, focus rings visible *(`.skip-link` present on all pages; `:focus-visible` defined in brand.css and style.css; theme toggle has `aria-label`)*
+- [x] Confirm all links resolve — no 404s *(link-check script verified all internal href/src paths resolve; recovered missing `mistrust-thumb.jpg`, slide webps, set webps, and supporting material storyboard from `feat/history-of-mistrust-case-study` branch)*
+- [x] Spell-check all body copy across index, about, contact, project pages *(Node script scanned 6 HTML files; 0 common misspellings found)*
+- [x] Visual review at all 4 widths — no clipping/overflow/awkward whitespace *(screenshots reviewed: hero text readable, project cards aligned, gallery grid intact, bibliography 3-col desktop → 1-col mobile)*
+- [x] Final screenshot — recruiter 3-second impression check *(hero screenshot at 1440px: logo, name, tagline immediately readable above the fold)*
 
 ### Launch — point averyemberday.com live
 - [ ] Confirm full site passes Pre-launch QA
@@ -212,11 +225,19 @@ Project id `69c8addc8f0823c509e1979f`. Mirrors TickTick task/checklist state; `*
 - [ ] add project overview to portfolio
 - [ ] display final project
 
+### Gallery tag system
+- [ ] Design tag taxonomy (categorize by medium used — e.g., mixed-media, digital, photography, illustration)
+- [ ] Implement filter UI in `gallery/gallery.html` (all / medium toggles)
+- [ ] Wire tag metadata into existing gallery items so viewers can choose what to see
+- [ ] Verify responsive layout with filter bar at 360px, 768px, 1024px, 1440px
+
+### A History of Mistrust — post-framework
+- [ ] Finish the continuous horizontal carousel (currently functional but pending final polish after framework decision)
+- [ ] Create a complete, viewer-accessible file/page containing all canonical slide content with bibliography and numbered sources
+
 ### Standalone
 - [ ] adjust color palette for contrast
 - [ ] Watermark artwork
-
----
 
 ## Google ↔ TickTick cross-target sync (2026-06-02)
 

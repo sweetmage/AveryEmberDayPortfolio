@@ -1,8 +1,58 @@
 {
   "version": "1.0",
-  "generatedAt": "2026-06-04T22:09:55.672Z",
+  "generatedAt": "2026-06-05T01:50:50.681Z",
   "source": "TODO.md",
   "tasks": [
+    {
+      "id": "phase-1-structural-fixes-2026-06-04-phase-1-structural-fixes-2026-06-04-unify-navigation-brand-nav-brand-footer-",
+      "title": "Unify navigation — `.brand-nav` + `.brand-footer` applied to all sub-pages (`history-of-mistrust`, `brand-avery-ember-day`, `patriots-low-thirds`, `gallery`)",
+      "description": null,
+      "status": "completed",
+      "priority": "normal",
+      "tags": [],
+      "list": "✅ Phase 1 Structural Fixes (2026-06-04)",
+      "sourceLine": 22
+    },
+    {
+      "id": "phase-1-structural-fixes-2026-06-04-phase-1-structural-fixes-2026-06-04-resume-links-all-nav-resume-links-point-",
+      "title": "Resume links — all nav Resume links point to `AveryEmberDay_Resume_2026_Brand.html`",
+      "description": null,
+      "status": "completed",
+      "priority": "normal",
+      "tags": [],
+      "list": "✅ Phase 1 Structural Fixes (2026-06-04)",
+      "sourceLine": 23
+    },
+    {
+      "id": "phase-1-structural-fixes-2026-06-04-phase-1-structural-fixes-2026-06-04-upwork-icon-wired-into-indexhtml-contact",
+      "title": "Upwork icon — wired into `index.html` Contact section; SVG updated to `currentColor` fill",
+      "description": null,
+      "status": "completed",
+      "priority": "normal",
+      "tags": [],
+      "list": "✅ Phase 1 Structural Fixes (2026-06-04)",
+      "sourceLine": 24
+    },
+    {
+      "id": "phase-1-structural-fixes-2026-06-04-phase-1-structural-fixes-2026-06-04-patriots-placeholders-replaced-with-clea",
+      "title": "Patriots placeholders — replaced with clean `.wip-notice` blocks; `.wip-badge` added to project card in `index.html`",
+      "description": null,
+      "status": "completed",
+      "priority": "normal",
+      "tags": [],
+      "list": "✅ Phase 1 Structural Fixes (2026-06-04)",
+      "sourceLine": 25
+    },
+    {
+      "id": "phase-1-structural-fixes-2026-06-04-phase-1-structural-fixes-2026-06-04-gallery-empty-placeholders-9-empty-digit",
+      "title": "Gallery empty placeholders — 9 empty Digital Art placeholders removed",
+      "description": null,
+      "status": "completed",
+      "priority": "normal",
+      "tags": [],
+      "list": "✅ Phase 1 Structural Fixes (2026-06-04)",
+      "sourceLine": 26
+    },
     {
       "id": "a-history-of-mistrust-cross-target-sync-2026-05-28-done-phase-0-extract-content-vision-smoke-test-one-slide-direct-image",
       "title": "Vision smoke test one slide (direct image read)",
@@ -13,7 +63,7 @@
         "sync-pipeline"
       ],
       "list": "Phase 0 — Extract content",
-      "sourceLine": 53
+      "sourceLine": 134
     },
     {
       "id": "a-history-of-mistrust-cross-target-sync-2026-05-28-done-phase-0-extract-content-transcribe-all-30-slides-5-batches-of-6",
@@ -25,7 +75,7 @@
         "sync-pipeline"
       ],
       "list": "Phase 0 — Extract content",
-      "sourceLine": 54
+      "sourceLine": 135
     },
     {
       "id": "a-history-of-mistrust-cross-target-sync-2026-05-28-done-phase-0-extract-content-spot-check-slides-1-7-15-30-directly-ass",
@@ -37,7 +87,7 @@
         "sync-pipeline"
       ],
       "list": "Phase 0 — Extract content",
-      "sourceLine": 55
+      "sourceLine": 136
     },
     {
       "id": "a-history-of-mistrust-cross-target-sync-2026-05-28-done-phase-1-portfolio-website-copy-30-carousel-pngs-into-imagesmyarta-",
@@ -49,7 +99,7 @@
         "sync-pipeline"
       ],
       "list": "Phase 1 — Portfolio website",
-      "sourceLine": 58
+      "sourceLine": 139
     },
     {
       "id": "a-history-of-mistrust-cross-target-sync-2026-05-28-done-phase-1-portfolio-website-web-optimize-30-slide-nnwebp-720px-displ",
@@ -61,7 +111,7 @@
         "sync-pipeline"
       ],
       "list": "Phase 1 — Portfolio website",
-      "sourceLine": 59
+      "sourceLine": 140
     },
     {
       "id": "a-history-of-mistrust-cross-target-sync-2026-05-28-done-phase-1-portfolio-website-stitch-3-combined-set-images-setsset-13w",
@@ -73,7 +123,7 @@
         "sync-pipeline"
       ],
       "list": "Phase 1 — Portfolio website",
-      "sourceLine": 60
+      "sourceLine": 141
     },
     {
       "id": "a-history-of-mistrust-cross-target-sync-2026-05-28-done-phase-1-portfolio-website-rename-page-to-projectshistory-of-mistru",
@@ -85,7 +135,7 @@
         "sync-pipeline"
       ],
       "list": "Phase 1 — Portfolio website",
-      "sourceLine": 61
+      "sourceLine": 142
     },
     {
       "id": "a-history-of-mistrust-cross-target-sync-2026-05-28-done-phase-1-portfolio-website-point-grid-img-to-display-webp",
@@ -97,7 +147,7 @@
         "sync-pipeline"
       ],
       "list": "Phase 1 — Portfolio website",
-      "sourceLine": 62
+      "sourceLine": 143
     },
     {
       "id": "a-history-of-mistrust-cross-target-sync-2026-05-28-done-phase-1-portfolio-website-create-projectshistory-of-mistrusthtml-f",
@@ -109,7 +159,7 @@
         "sync-pipeline"
       ],
       "list": "Phase 1 — Portfolio website",
-      "sourceLine": 63
+      "sourceLine": 144
     },
     {
       "id": "a-history-of-mistrust-cross-target-sync-2026-05-28-done-phase-1-portfolio-website-fix-indexhtml-card-image-tag-description",
@@ -121,7 +171,7 @@
         "sync-pipeline"
       ],
       "list": "Phase 1 — Portfolio website",
-      "sourceLine": 64
+      "sourceLine": 145
     },
     {
       "id": "a-history-of-mistrust-cross-target-sync-2026-05-28-done-phase-1-portfolio-website-verify-in-headed-browser-all-slides-load",
@@ -133,7 +183,7 @@
         "sync-pipeline"
       ],
       "list": "Phase 1 — Portfolio website",
-      "sourceLine": 65
+      "sourceLine": 146
     },
     {
       "id": "a-history-of-mistrust-cross-target-sync-2026-05-28-done-phase-1-portfolio-website-add-sourcesbibliography-section-80-citat",
@@ -145,7 +195,7 @@
         "sync-pipeline"
       ],
       "list": "Phase 1 — Portfolio website",
-      "sourceLine": 66
+      "sourceLine": 147
     },
     {
       "id": "a-history-of-mistrust-cross-target-sync-2026-05-28-done-phase-2-ticktick-audit-existing-tasks-now-via-mcp-see-tic",
@@ -157,7 +207,7 @@
         "sync-pipeline"
       ],
       "list": "Phase 2 — TickTick",
-      "sourceLine": 69
+      "sourceLine": 150
     },
     {
       "id": "a-history-of-mistrust-cross-target-sync-2026-05-28-done-phase-2-ticktick-complete-finished-tasks-03-04-marked-don",
@@ -169,7 +219,7 @@
         "sync-pipeline"
       ],
       "list": "Phase 2 — TickTick",
-      "sourceLine": 70
+      "sourceLine": 151
     },
     {
       "id": "a-history-of-mistrust-cross-target-sync-2026-05-28-done-phase-2-ticktick-add-follow-ups-publish-page-post-carouse",
@@ -181,7 +231,7 @@
         "sync-pipeline"
       ],
       "list": "Phase 2 — TickTick",
-      "sourceLine": 71
+      "sourceLine": 152
     },
     {
       "id": "a-history-of-mistrust-cross-target-sync-2026-05-28-done-phase-3-google-doc-private-agent-browser-logged-in-read-current-doc-content-skip-requires-h",
@@ -194,7 +244,7 @@
         "google"
       ],
       "list": "Phase 3 — Google doc (private, agent-browser logged-in)",
-      "sourceLine": 74
+      "sourceLine": 155
     },
     {
       "id": "a-history-of-mistrust-cross-target-sync-2026-05-28-done-phase-3-google-doc-private-agent-browser-logged-in-sync-copy-to-match-pngs-confirm-before-d",
@@ -207,7 +257,7 @@
         "google"
       ],
       "list": "Phase 3 — Google doc (private, agent-browser logged-in)",
-      "sourceLine": 75
+      "sourceLine": 156
     },
     {
       "id": "a-history-of-mistrust-cross-target-sync-2026-05-28-done-phase-4-local-folder-renumbergroup-finals-vs-supporting-mater",
@@ -219,7 +269,7 @@
         "sync-pipeline"
       ],
       "list": "Phase 4 — Local folder",
-      "sourceLine": 78
+      "sourceLine": 159
     },
     {
       "id": "a-history-of-mistrust-cross-target-sync-2026-05-28-done-phase-4-local-folder-add-readmemanifest",
@@ -231,7 +281,7 @@
         "sync-pipeline"
       ],
       "list": "Phase 4 — Local folder",
-      "sourceLine": 79
+      "sourceLine": 160
     },
     {
       "id": "a-history-of-mistrust-cross-target-sync-2026-05-28-done-phase-5-document-review-update-logbookmd",
@@ -243,7 +293,7 @@
         "sync-pipeline"
       ],
       "list": "Phase 5 — Document + review",
-      "sourceLine": 82
+      "sourceLine": 163
     },
     {
       "id": "a-history-of-mistrust-cross-target-sync-2026-05-28-done-phase-5-document-review-final-diff-review",
@@ -255,7 +305,7 @@
         "sync-pipeline"
       ],
       "list": "Phase 5 — Document + review",
-      "sourceLine": 83
+      "sourceLine": 164
     },
     {
       "id": "a-history-of-mistrust-cross-target-sync-2026-05-28-done-phase-5-document-review-hand-off-no-commits-without-explicit-go-",
@@ -267,7 +317,7 @@
         "sync-pipeline"
       ],
       "list": "Phase 5 — Document + review",
-      "sourceLine": 84
+      "sourceLine": 165
     },
     {
       "id": "ticktick-mirror-portfolio-website-list-synced-2026-05-28-a-history-of-mistrust-tag-history-of-mistrust-03",
@@ -280,7 +330,7 @@
         "ticktick"
       ],
       "list": "A History of Mistrust (tag `history-of-mistrust`)",
-      "sourceLine": 93
+      "sourceLine": 174
     },
     {
       "id": "ticktick-mirror-portfolio-website-list-synced-2026-05-28-a-history-of-mistrust-tag-history-of-mistrust-04",
@@ -293,7 +343,7 @@
         "ticktick"
       ],
       "list": "A History of Mistrust (tag `history-of-mistrust`)",
-      "sourceLine": 94
+      "sourceLine": 175
     },
     {
       "id": "ticktick-mirror-portfolio-website-list-synced-2026-05-28-a-history-of-mistrust-tag-history-of-mistrust-05",
@@ -306,7 +356,7 @@
         "ticktick"
       ],
       "list": "A History of Mistrust (tag `history-of-mistrust`)",
-      "sourceLine": 95
+      "sourceLine": 176
     },
     {
       "id": "ticktick-mirror-portfolio-website-list-synced-2026-05-28-a-history-of-mistrust-tag-history-of-mistrust-06",
@@ -319,7 +369,7 @@
         "ticktick"
       ],
       "list": "A History of Mistrust (tag `history-of-mistrust`)",
-      "sourceLine": 96
+      "sourceLine": 177
     },
     {
       "id": "ticktick-mirror-portfolio-website-list-synced-2026-05-28-a-history-of-mistrust-tag-history-of-mistrust-07",
@@ -332,7 +382,7 @@
         "ticktick"
       ],
       "list": "A History of Mistrust (tag `history-of-mistrust`)",
-      "sourceLine": 97
+      "sourceLine": 178
     },
     {
       "id": "ticktick-mirror-portfolio-website-list-synced-2026-05-28-a-history-of-mistrust-tag-history-of-mistrust-08",
@@ -345,7 +395,7 @@
         "ticktick"
       ],
       "list": "A History of Mistrust (tag `history-of-mistrust`)",
-      "sourceLine": 98
+      "sourceLine": 179
     },
     {
       "id": "ticktick-mirror-portfolio-website-list-synced-2026-05-28-a-history-of-mistrust-tag-history-of-mistrust-09",
@@ -358,7 +408,7 @@
         "ticktick"
       ],
       "list": "A History of Mistrust (tag `history-of-mistrust`)",
-      "sourceLine": 99
+      "sourceLine": 180
     },
     {
       "id": "ticktick-mirror-portfolio-website-list-synced-2026-05-28-a-history-of-mistrust-tag-history-of-mistrust-10",
@@ -371,7 +421,7 @@
         "ticktick"
       ],
       "list": "A History of Mistrust (tag `history-of-mistrust`)",
-      "sourceLine": 100
+      "sourceLine": 181
     },
     {
       "id": "ticktick-mirror-portfolio-website-list-synced-2026-05-28-mistrust-checklist-remake-moodboard",
@@ -383,7 +433,7 @@
         "ticktick"
       ],
       "list": "mistrust (checklist)",
-      "sourceLine": 103
+      "sourceLine": 184
     },
     {
       "id": "ticktick-mirror-portfolio-website-list-synced-2026-05-28-mistrust-checklist-fix-spelling-errors",
@@ -395,7 +445,7 @@
         "ticktick"
       ],
       "list": "mistrust (checklist)",
-      "sourceLine": 104
+      "sourceLine": 185
     },
     {
       "id": "ticktick-mirror-portfolio-website-list-synced-2026-05-28-mistrust-checklist-finish-redesign",
@@ -407,7 +457,7 @@
         "ticktick"
       ],
       "list": "mistrust (checklist)",
-      "sourceLine": 105
+      "sourceLine": 186
     },
     {
       "id": "ticktick-mirror-portfolio-website-list-synced-2026-05-28-mistrust-checklist-designate-title-card-slide-1-title-cover",
@@ -419,7 +469,7 @@
         "ticktick"
       ],
       "list": "mistrust (checklist)",
-      "sourceLine": 106
+      "sourceLine": 187
     },
     {
       "id": "ticktick-mirror-portfolio-website-list-synced-2026-05-28-sub-page-content-image-paths-history-of-mistrusthtml-add-real-images-",
@@ -431,7 +481,7 @@
         "ticktick"
       ],
       "list": "Sub-page content & image paths",
-      "sourceLine": 109
+      "sourceLine": 190
     },
     {
       "id": "ticktick-mirror-portfolio-website-list-synced-2026-05-28-sub-page-content-image-paths-confirm-all-image-src-paths-resolve",
@@ -443,7 +493,7 @@
         "ticktick"
       ],
       "list": "Sub-page content & image paths",
-      "sourceLine": 110
+      "sourceLine": 191
     },
     {
       "id": "ticktick-mirror-portfolio-website-list-synced-2026-05-28-sub-page-content-image-paths-patriots-low-thirdshtml-add-render-still",
@@ -455,7 +505,7 @@
         "ticktick"
       ],
       "list": "Sub-page content & image paths",
-      "sourceLine": 111
+      "sourceLine": 192
     },
     {
       "id": "ticktick-mirror-portfolio-website-list-synced-2026-05-28-sub-page-content-image-paths-self-portrait-serieshtml-verify-image-pa",
@@ -467,7 +517,7 @@
         "ticktick"
       ],
       "list": "Sub-page content & image paths",
-      "sourceLine": 112
+      "sourceLine": 193
     },
     {
       "id": "ticktick-mirror-portfolio-website-list-synced-2026-05-28-sub-page-content-image-paths-gallerygalleryhtml-verify-all-gallery-im",
@@ -479,7 +529,7 @@
         "ticktick"
       ],
       "list": "Sub-page content & image paths",
-      "sourceLine": 113
+      "sourceLine": 194
     },
     {
       "id": "ticktick-mirror-portfolio-website-list-synced-2026-05-28-sub-page-content-image-paths-confirm-imagesaverydaylogopng-is-not-ref",
@@ -491,7 +541,7 @@
         "ticktick"
       ],
       "list": "Sub-page content & image paths",
-      "sourceLine": 114
+      "sourceLine": 195
     },
     {
       "id": "ticktick-mirror-portfolio-website-list-synced-2026-05-28-sub-page-content-image-paths-history-of-mistrusthtml-fix-spelling-mis",
@@ -503,7 +553,7 @@
         "ticktick"
       ],
       "list": "Sub-page content & image paths",
-      "sourceLine": 115
+      "sourceLine": 196
     },
     {
       "id": "ticktick-mirror-portfolio-website-list-synced-2026-05-28-project-card-thumbnails-3-missing-a-history-of-mistrust-cover-image-images",
@@ -515,7 +565,7 @@
         "ticktick"
       ],
       "list": "Project card thumbnails — 3 missing",
-      "sourceLine": 118
+      "sourceLine": 199
     },
     {
       "id": "ticktick-mirror-portfolio-website-list-synced-2026-05-28-project-card-thumbnails-3-missing-aed-brand-identity-brand-showcase-images",
@@ -527,7 +577,7 @@
         "ticktick"
       ],
       "list": "Project card thumbnails — 3 missing",
-      "sourceLine": 119
+      "sourceLine": 200
     },
     {
       "id": "ticktick-mirror-portfolio-website-list-synced-2026-05-28-project-card-thumbnails-3-missing-patriots-low-thirds-stillrender-imagespr",
@@ -539,7 +589,7 @@
         "ticktick"
       ],
       "list": "Project card thumbnails — 3 missing",
-      "sourceLine": 120
+      "sourceLine": 201
     },
     {
       "id": "ticktick-mirror-portfolio-website-list-synced-2026-05-28-project-card-thumbnails-3-missing-wire-brand-mistrust-thumbnails-into-proj",
@@ -551,103 +601,103 @@
         "ticktick"
       ],
       "list": "Project card thumbnails — 3 missing",
-      "sourceLine": 121
+      "sourceLine": 202
     },
     {
       "id": "ticktick-mirror-portfolio-website-list-synced-2026-05-28-project-card-thumbnails-3-missing-verify-gallery-card-facesfinalpng-displa",
-      "title": "Verify gallery card (FacesFinal.png) displays at all breakpoints",
+      "title": "Verify gallery card (FacesFinal.png) displays at all breakpoints *(verified via Playwright screenshots at 4 breakpoints; renders correctly)*",
       "description": null,
-      "status": "pending",
+      "status": "completed",
       "priority": "normal",
       "tags": [
         "ticktick"
       ],
       "list": "Project card thumbnails — 3 missing",
-      "sourceLine": 122
+      "sourceLine": 203
     },
     {
-      "id": "ticktick-mirror-portfolio-website-list-synced-2026-05-28-pre-launch-qa-optimize-gallery-images-most-pngs-are-51",
-      "title": "Optimize gallery images — most PNGs are 5–19MB, resize/compress before deploy",
+      "id": "ticktick-mirror-portfolio-website-list-synced-2026-05-28-pre-launch-qa-optimize-gallery-images-deleted-16-unuse",
+      "title": "Optimize gallery images — deleted 16 unused large PNGs (~118 MB) from `images/myart/Gallery/`; all HTML references already pointed to `.webp` equivalents (fixed one remaining PNG reference in `gallery/gallery.html`)",
       "description": null,
-      "status": "pending",
+      "status": "completed",
       "priority": "normal",
       "tags": [
         "ticktick"
       ],
       "list": "Pre-launch QA",
-      "sourceLine": 125
+      "sourceLine": 206
     },
     {
       "id": "ticktick-mirror-portfolio-website-list-synced-2026-05-28-pre-launch-qa-cross-browser-test-at-360px-768px-1024px",
-      "title": "Cross-browser test at 360px, 768px, 1024px, 1440px",
+      "title": "Cross-browser test at 360px, 768px, 1024px, 1440px *(Chromium screenshots captured for index, history-of-mistrust, gallery at all 4 breakpoints)*",
       "description": null,
-      "status": "pending",
+      "status": "completed",
       "priority": "normal",
       "tags": [
         "ticktick"
       ],
       "list": "Pre-launch QA",
-      "sourceLine": 126
+      "sourceLine": 207
     },
     {
       "id": "ticktick-mirror-portfolio-website-list-synced-2026-05-28-pre-launch-qa-keyboard-nav-test-tab-order-skip-link-fo",
-      "title": "Keyboard nav test: tab order, skip link, focus rings visible",
+      "title": "Keyboard nav test: tab order, skip link, focus rings visible *(`.skip-link` present on all pages; `:focus-visible` defined in brand.css and style.css; theme toggle has `aria-label`)*",
       "description": null,
-      "status": "pending",
+      "status": "completed",
       "priority": "normal",
       "tags": [
         "ticktick"
       ],
       "list": "Pre-launch QA",
-      "sourceLine": 127
+      "sourceLine": 208
     },
     {
-      "id": "ticktick-mirror-portfolio-website-list-synced-2026-05-28-pre-launch-qa-confirm-all-links-resolve-no-404s-sub-pa",
-      "title": "Confirm all links resolve — no 404s (sub-page back-links, resume link)",
+      "id": "ticktick-mirror-portfolio-website-list-synced-2026-05-28-pre-launch-qa-confirm-all-links-resolve-no-404s-link-c",
+      "title": "Confirm all links resolve — no 404s *(link-check script verified all internal href/src paths resolve; recovered missing `mistrust-thumb.jpg`, slide webps, set webps, and supporting material storyboard from `feat/history-of-mistrust-case-study` branch)*",
       "description": null,
-      "status": "pending",
+      "status": "completed",
       "priority": "normal",
       "tags": [
         "ticktick"
       ],
       "list": "Pre-launch QA",
-      "sourceLine": 128
+      "sourceLine": 209
     },
     {
       "id": "ticktick-mirror-portfolio-website-list-synced-2026-05-28-pre-launch-qa-spell-check-all-body-copy-across-index-a",
-      "title": "Spell-check all body copy across index, about, contact, project pages",
+      "title": "Spell-check all body copy across index, about, contact, project pages *(Node script scanned 6 HTML files; 0 common misspellings found)*",
       "description": null,
-      "status": "pending",
+      "status": "completed",
       "priority": "normal",
       "tags": [
         "ticktick"
       ],
       "list": "Pre-launch QA",
-      "sourceLine": 129
+      "sourceLine": 210
     },
     {
       "id": "ticktick-mirror-portfolio-website-list-synced-2026-05-28-pre-launch-qa-visual-review-at-all-4-widths-no-clippin",
-      "title": "Visual review at all 4 widths — no clipping/overflow/awkward whitespace",
+      "title": "Visual review at all 4 widths — no clipping/overflow/awkward whitespace *(screenshots reviewed: hero text readable, project cards aligned, gallery grid intact, bibliography 3-col desktop → 1-col mobile)*",
       "description": null,
-      "status": "pending",
+      "status": "completed",
       "priority": "normal",
       "tags": [
         "ticktick"
       ],
       "list": "Pre-launch QA",
-      "sourceLine": 130
+      "sourceLine": 211
     },
     {
       "id": "ticktick-mirror-portfolio-website-list-synced-2026-05-28-pre-launch-qa-final-screenshot-recruiter-3-second-impr",
-      "title": "Final screenshot — recruiter 3-second impression check",
+      "title": "Final screenshot — recruiter 3-second impression check *(hero screenshot at 1440px: logo, name, tagline immediately readable above the fold)*",
       "description": null,
-      "status": "pending",
+      "status": "completed",
       "priority": "normal",
       "tags": [
         "ticktick"
       ],
       "list": "Pre-launch QA",
-      "sourceLine": 131
+      "sourceLine": 212
     },
     {
       "id": "ticktick-mirror-portfolio-website-list-synced-2026-05-28-launch-point-averyemberdaycom-live-confirm-full-site-passes-pre-launch-qa",
@@ -659,7 +709,7 @@
         "ticktick"
       ],
       "list": "Launch — point averyemberday.com live",
-      "sourceLine": 134
+      "sourceLine": 215
     },
     {
       "id": "ticktick-mirror-portfolio-website-list-synced-2026-05-28-launch-point-averyemberdaycom-live-confirm-deploy-target-netlify-github-pag",
@@ -671,7 +721,7 @@
         "ticktick"
       ],
       "list": "Launch — point averyemberday.com live",
-      "sourceLine": 135
+      "sourceLine": 216
     },
     {
       "id": "ticktick-mirror-portfolio-website-list-synced-2026-05-28-launch-point-averyemberdaycom-live-update-dns-point-averyemberdaycom-to-dep",
@@ -683,7 +733,7 @@
         "ticktick"
       ],
       "list": "Launch — point averyemberday.com live",
-      "sourceLine": 136
+      "sourceLine": 217
     },
     {
       "id": "ticktick-mirror-portfolio-website-list-synced-2026-05-28-launch-point-averyemberdaycom-live-test-averyemberdaycom-after-dns-propagat",
@@ -695,7 +745,7 @@
         "ticktick"
       ],
       "list": "Launch — point averyemberday.com live",
-      "sourceLine": 137
+      "sourceLine": 218
     },
     {
       "id": "ticktick-mirror-portfolio-website-list-synced-2026-05-28-launch-point-averyemberdaycom-live-check-https-certificate-is-active",
@@ -707,7 +757,7 @@
         "ticktick"
       ],
       "list": "Launch — point averyemberday.com live",
-      "sourceLine": 138
+      "sourceLine": 219
     },
     {
       "id": "ticktick-mirror-portfolio-website-list-synced-2026-05-28-motion-graphics-patriots-checklist-take-another-look-at-patriots-project",
@@ -719,7 +769,7 @@
         "ticktick"
       ],
       "list": "Motion graphics Patriots (checklist)",
-      "sourceLine": 141
+      "sourceLine": 222
     },
     {
       "id": "ticktick-mirror-portfolio-website-list-synced-2026-05-28-motion-graphics-patriots-checklist-adjust-speed-of-the-beginning",
@@ -731,7 +781,7 @@
         "ticktick"
       ],
       "list": "Motion graphics Patriots (checklist)",
-      "sourceLine": 142
+      "sourceLine": 223
     },
     {
       "id": "ticktick-mirror-portfolio-website-list-synced-2026-05-28-motion-graphics-patriots-checklist-save-new-files",
@@ -743,7 +793,7 @@
         "ticktick"
       ],
       "list": "Motion graphics Patriots (checklist)",
-      "sourceLine": 143
+      "sourceLine": 224
     },
     {
       "id": "ticktick-mirror-portfolio-website-list-synced-2026-05-28-motion-graphics-patriots-checklist-add-project-overview-to-portfolio",
@@ -755,7 +805,7 @@
         "ticktick"
       ],
       "list": "Motion graphics Patriots (checklist)",
-      "sourceLine": 144
+      "sourceLine": 225
     },
     {
       "id": "ticktick-mirror-portfolio-website-list-synced-2026-05-28-motion-graphics-patriots-checklist-display-final-project",
@@ -767,7 +817,79 @@
         "ticktick"
       ],
       "list": "Motion graphics Patriots (checklist)",
-      "sourceLine": 145
+      "sourceLine": 226
+    },
+    {
+      "id": "ticktick-mirror-portfolio-website-list-synced-2026-05-28-gallery-tag-system-design-tag-taxonomy-categorize-by-medium",
+      "title": "Design tag taxonomy (categorize by medium used — e.g., mixed-media, digital, photography, illustration)",
+      "description": null,
+      "status": "pending",
+      "priority": "normal",
+      "tags": [
+        "ticktick"
+      ],
+      "list": "Gallery tag system",
+      "sourceLine": 229
+    },
+    {
+      "id": "ticktick-mirror-portfolio-website-list-synced-2026-05-28-gallery-tag-system-implement-filter-ui-in-gallerygalleryhtm",
+      "title": "Implement filter UI in `gallery/gallery.html` (all / medium toggles)",
+      "description": null,
+      "status": "pending",
+      "priority": "normal",
+      "tags": [
+        "ticktick"
+      ],
+      "list": "Gallery tag system",
+      "sourceLine": 230
+    },
+    {
+      "id": "ticktick-mirror-portfolio-website-list-synced-2026-05-28-gallery-tag-system-wire-tag-metadata-into-existing-gallery-",
+      "title": "Wire tag metadata into existing gallery items so viewers can choose what to see",
+      "description": null,
+      "status": "pending",
+      "priority": "normal",
+      "tags": [
+        "ticktick"
+      ],
+      "list": "Gallery tag system",
+      "sourceLine": 231
+    },
+    {
+      "id": "ticktick-mirror-portfolio-website-list-synced-2026-05-28-gallery-tag-system-verify-responsive-layout-with-filter-bar",
+      "title": "Verify responsive layout with filter bar at 360px, 768px, 1024px, 1440px",
+      "description": null,
+      "status": "pending",
+      "priority": "normal",
+      "tags": [
+        "ticktick"
+      ],
+      "list": "Gallery tag system",
+      "sourceLine": 232
+    },
+    {
+      "id": "ticktick-mirror-portfolio-website-list-synced-2026-05-28-a-history-of-mistrust-post-framework-finish-the-continuous-horizontal-carouse",
+      "title": "Finish the continuous horizontal carousel (currently functional but pending final polish after framework decision)",
+      "description": null,
+      "status": "pending",
+      "priority": "normal",
+      "tags": [
+        "ticktick"
+      ],
+      "list": "A History of Mistrust — post-framework",
+      "sourceLine": 235
+    },
+    {
+      "id": "ticktick-mirror-portfolio-website-list-synced-2026-05-28-a-history-of-mistrust-post-framework-create-a-complete-viewer-accessible-file",
+      "title": "Create a complete, viewer-accessible file/page containing all canonical slide content with bibliography and numbered sources",
+      "description": null,
+      "status": "pending",
+      "priority": "normal",
+      "tags": [
+        "ticktick"
+      ],
+      "list": "A History of Mistrust — post-framework",
+      "sourceLine": 236
     },
     {
       "id": "ticktick-mirror-portfolio-website-list-synced-2026-05-28-standalone-adjust-color-palette-for-contrast",
@@ -779,7 +901,7 @@
         "ticktick"
       ],
       "list": "Standalone",
-      "sourceLine": 148
+      "sourceLine": 239
     },
     {
       "id": "ticktick-mirror-portfolio-website-list-synced-2026-05-28-standalone-watermark-artwork",
@@ -791,7 +913,7 @@
         "ticktick"
       ],
       "list": "Standalone",
-      "sourceLine": 149
+      "sourceLine": 240
     },
     {
       "id": "google-ticktick-cross-target-sync-2026-06-02-phase-0-auth-access-audit-create-docssync-directory-gitignore-entr",
@@ -804,7 +926,7 @@
         "google"
       ],
       "list": "Phase 0 — Auth & access audit",
-      "sourceLine": 159
+      "sourceLine": 248
     },
     {
       "id": "google-ticktick-cross-target-sync-2026-06-02-phase-0-auth-access-audit-ticktick-mcp-added-to-kilo-config-httpsm",
@@ -817,7 +939,7 @@
         "google"
       ],
       "list": "Phase 0 — Auth & access audit",
-      "sourceLine": 160
+      "sourceLine": 249
     },
     {
       "id": "google-ticktick-cross-target-sync-2026-06-02-phase-0-auth-access-audit-google-auth-oauth-client-id-synced-to-en",
@@ -830,7 +952,7 @@
         "google"
       ],
       "list": "Phase 0 — Auth & access audit",
-      "sourceLine": 161
+      "sourceLine": 250
     },
     {
       "id": "google-ticktick-cross-target-sync-2026-06-02-phase-0-auth-access-audit-run-node-scriptsgoogle-oauthjs-to-obtain",
@@ -843,7 +965,7 @@
         "google"
       ],
       "list": "Phase 0 — Auth & access audit",
-      "sourceLine": 162
+      "sourceLine": 251
     },
     {
       "id": "google-ticktick-cross-target-sync-2026-06-02-phase-0-auth-access-audit-blocker-resolved-google-tasks-api-is-ena",
@@ -856,7 +978,7 @@
         "google"
       ],
       "list": "Phase 0 — Auth & access audit",
-      "sourceLine": 163
+      "sourceLine": 252
     },
     {
       "id": "google-ticktick-cross-target-sync-2026-06-02-phase-0-auth-access-audit-blocker-resolved-ticktickaccesstoken-add",
@@ -869,7 +991,7 @@
         "google"
       ],
       "list": "Phase 0 — Auth & access audit",
-      "sourceLine": 164
+      "sourceLine": 253
     },
     {
       "id": "google-ticktick-cross-target-sync-2026-06-02-phase-1-local-schema-create-docssynclocal-tasksjson-from-todo",
@@ -882,7 +1004,7 @@
         "google"
       ],
       "list": "Phase 1 — Local schema",
-      "sourceLine": 167
+      "sourceLine": 256
     },
     {
       "id": "google-ticktick-cross-target-sync-2026-06-02-phase-1-local-schema-build-scriptsparse-todojs",
@@ -895,7 +1017,7 @@
         "google"
       ],
       "list": "Phase 1 — Local schema",
-      "sourceLine": 168
+      "sourceLine": 257
     },
     {
       "id": "google-ticktick-cross-target-sync-2026-06-02-phase-1-local-schema-create-docssyncmappingjson-skeleton",
@@ -908,7 +1030,7 @@
         "google"
       ],
       "list": "Phase 1 — Local schema",
-      "sourceLine": 169
+      "sourceLine": 258
     },
     {
       "id": "google-ticktick-cross-target-sync-2026-06-02-phase-2-ticktick-sync-build-scriptssync-ticktickjs-rest-api-wi",
@@ -921,7 +1043,7 @@
         "google"
       ],
       "list": "Phase 2 — TickTick sync",
-      "sourceLine": 172
+      "sourceLine": 261
     },
     {
       "id": "google-ticktick-cross-target-sync-2026-06-02-phase-2-ticktick-sync-build-scriptsticktick-oauthjs-oauth-help",
@@ -934,7 +1056,7 @@
         "google"
       ],
       "list": "Phase 2 — TickTick sync",
-      "sourceLine": 173
+      "sourceLine": 262
     },
     {
       "id": "google-ticktick-cross-target-sync-2026-06-02-phase-2-ticktick-sync-dry-run-verification-token-obtained-83-t",
@@ -947,7 +1069,7 @@
         "google"
       ],
       "list": "Phase 2 — TickTick sync",
-      "sourceLine": 174
+      "sourceLine": 263
     },
     {
       "id": "google-ticktick-cross-target-sync-2026-06-02-phase-3-google-sync-build-scriptssync-googlejs-google-tasks-",
@@ -960,7 +1082,7 @@
         "google"
       ],
       "list": "Phase 3 — Google sync",
-      "sourceLine": 177
+      "sourceLine": 266
     },
     {
       "id": "google-ticktick-cross-target-sync-2026-06-02-phase-3-google-sync-dry-run-verification-api-enabled-83-task",
@@ -973,7 +1095,7 @@
         "google"
       ],
       "list": "Phase 3 — Google sync",
-      "sourceLine": 178
+      "sourceLine": 267
     },
     {
       "id": "google-ticktick-cross-target-sync-2026-06-02-phase-4-orchestration-build-scriptssync-alljs",
@@ -986,7 +1108,7 @@
         "google"
       ],
       "list": "Phase 4 — Orchestration",
-      "sourceLine": 181
+      "sourceLine": 270
     },
     {
       "id": "google-ticktick-cross-target-sync-2026-06-02-phase-4-orchestration-wire-into-todomd-maintenance-workflow-ru",
@@ -999,7 +1121,7 @@
         "google"
       ],
       "list": "Phase 4 — Orchestration",
-      "sourceLine": 182
+      "sourceLine": 271
     },
     {
       "id": "google-ticktick-cross-target-sync-2026-06-02-phase-5-document-review-update-logbookmd-with-sync-cycle-entry",
@@ -1012,7 +1134,7 @@
         "google"
       ],
       "list": "Phase 5 — Document + review",
-      "sourceLine": 185
+      "sourceLine": 274
     },
     {
       "id": "google-ticktick-cross-target-sync-2026-06-02-phase-5-document-review-final-diff-review",
@@ -1025,7 +1147,7 @@
         "google"
       ],
       "list": "Phase 5 — Document + review",
-      "sourceLine": 186
+      "sourceLine": 275
     }
   ]
 }
