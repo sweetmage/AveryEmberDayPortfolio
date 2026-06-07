@@ -1,3 +1,47 @@
+## Entry 038 — 2026-06-07
+
+**Agent:** kimi-k2.6 (kilo, shxdow-flow)
+**Cycle:** work-nav-submenu
+**Task:** Add a click-triggered submenu under the "Work" nav item across all pages, linking to each project/section.
+
+### Changes
+
+- **`index.html`** — Converted Work nav `<li>` to `.has-submenu` with `.submenu` containing Brand Identity, A History of Mistrust, and Art Gallery links.
+- **`projects/brand-avery-ember-day.html`** — Same nav submenu markup with relative paths corrected for the `projects/` directory.
+- **`projects/history-of-mistrust.html`** — Same nav submenu markup with relative paths corrected.
+- **`projects/patriots-low-thirds.html`** — Same nav submenu markup with relative paths corrected.
+- **`gallery/gallery.html`** — Same nav submenu markup with relative paths corrected for the `gallery/` directory.
+- **`brand.css`** — Added `.has-submenu`, `.submenu`, and `.submenu a` styles:
+  - Positioned absolutely below the nav link with centered alignment
+  - Background: `color-mix` of `--brand-surface-1` + `backdrop-filter: blur(12px)`
+  - Hidden by default (`opacity`, `visibility`, `pointer-events`); shown on `.open` or `:focus-within`
+  - Explicitly set `display: block` on `.submenu` and reset `border`/`margin` on `.submenu li` to override aggressive `nav ul li` rules in `style.css`
+  - Hover/focus-visible states use `--brand-surface-2`
+- **`style.css`** — Added `.submenu a:focus-visible` to the existing focus-visible rule.
+- **`Script.js`** — Added submenu toggle logic:
+  - First click on `.submenu-trigger` opens the menu and prevents default (no scroll)
+  - Second click follows the link (smooth scroll to `#work`) and closes the menu
+  - Click outside any `.has-submenu` closes all open submenus
+  - `Escape` key closes all open submenus
+  - Modified smooth-scroll handler to skip `.submenu-trigger` so it doesn't conflict with toggle logic
+- **`docs/plans/2026-06-07-work-submenu.md`** — Implementation plan for this cycle.
+
+### Verification
+
+- Screenshot verification at 1280×720: submenu hidden by default, opens on click, vertical list with correct labels
+- Navigation test: clicking "Brand Identity" from `index.html` navigates to `projects/brand-avery-ember-day.html`
+- Behavior tests: first click opens, second click scrolls to `#work`, Escape closes, outside click closes, works on sub-pages
+- No visual regressions on mobile (nav links hidden below 768px as before)
+- Zero console errors during verification
+
+### Notes
+
+- Motion Graphics project card remains hidden and is omitted from the submenu.
+- The existing `nav ul li` and `nav ul` rules in `style.css` were aggressively styling all nav lists; `.submenu` required explicit resets (`display: block`, `border: none`, `margin: 0`) to avoid inheriting pill borders and horizontal flex layout.
+- No commits performed per shxdow-flow policy.
+
+---
+
 ## Entry 037 — 2026-06-07
 
 **Agent:** kimi-k2.6 (kilo, shxdow-flow)

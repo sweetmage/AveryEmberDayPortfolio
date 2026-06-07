@@ -588,6 +588,71 @@
     gap: 12px;
 }
 
+/* ── Submenu ─────────────────────────────────────────────────────── */
+.has-submenu {
+    position: relative;
+}
+
+.submenu {
+    position: absolute;
+    top: calc(100% + 6px);
+    left: 50%;
+    transform: translateX(-50%) translateY(-4px);
+    min-width: 200px;
+    padding: 6px;
+    list-style: none;
+    display: block;
+    background: color-mix(in srgb, var(--brand-surface-1) 92%, transparent);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--brand-border);
+    border-radius: 10px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: opacity var(--brand-transition-fast),
+                transform var(--brand-transition-fast),
+                visibility var(--brand-transition-fast);
+    z-index: 60;
+}
+
+.has-submenu.open > .submenu,
+.has-submenu:focus-within > .submenu {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    transform: translateX(-50%) translateY(0);
+}
+
+.submenu li {
+    margin: 0;
+    display: block;
+    border: none;
+    border-radius: 0;
+}
+
+.submenu a {
+    display: block;
+    padding: 8px 14px;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: normal;
+    text-transform: none;
+    letter-spacing: normal;
+    color: var(--brand-text);
+    text-decoration: none;
+    white-space: nowrap;
+    transition: background-color var(--brand-transition-fast),
+                color var(--brand-transition-fast);
+}
+
+.submenu a:hover,
+.submenu a:focus-visible {
+    background: var(--brand-surface-2);
+    color: var(--brand-text);
+}
+
 /* ── brand-theme-toggle mirrors #theme-toggle ────────────────────── */
 .brand-theme-toggle {
     display: flex;

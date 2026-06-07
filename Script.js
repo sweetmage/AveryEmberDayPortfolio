@@ -52,9 +52,51 @@ if (btn) {
   onScroll();
 })();
 
+// ── Submenu toggle ────────────────────────────────────────────────
+(function () {
+  var triggers = document.querySelectorAll('.submenu-trigger');
+  if (!triggers.length) return;
+
+  function closeAllSubmenus() {
+    document.querySelectorAll('.has-submenu.open').forEach(function (el) {
+      el.classList.remove('open');
+    });
+  }
+
+  triggers.forEach(function (trigger) {
+    trigger.addEventListener('click', function (e) {
+      var li = trigger.closest('.has-submenu');
+      if (!li) return;
+      var isOpen = li.classList.contains('open');
+      if (!isOpen) {
+        e.preventDefault();
+        closeAllSubmenus();
+        li.classList.add('open');
+      } else {
+        li.classList.remove('open');
+        // allow default smooth-scroll behavior
+      }
+    });
+  });
+
+  document.addEventListener('click', function (e) {
+    if (!e.target.closest('.has-submenu')) {
+      closeAllSubmenus();
+    }
+  });
+
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') {
+      closeAllSubmenus();
+    }
+  });
+})();
+
 // ── Smooth scroll for anchor links ────────────────────────────────
 document.querySelectorAll('a[href^="#"]').forEach(function (anchor) {
   anchor.addEventListener('click', function (e) {
+    var li = anchor.closest('.has-submenu');
+    if (li && !li.classList.contains('open')) return;
     var target = document.querySelector(this.getAttribute('href'));
     if (target) {
       e.preventDefault();
