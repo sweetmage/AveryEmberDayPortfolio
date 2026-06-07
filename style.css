@@ -198,7 +198,6 @@ h2 {
 #about h2,
 #contact h2 {
     color: var(--brand-text-muted);
-    border-bottom-color: var(--brand-ir-4);
 }
 
 h3 {
@@ -260,12 +259,12 @@ footer p {
 }
 
 [data-theme="light"] .brand-nav-logo {
-    color: var(--brand-text-base);
+    color: var(--brand-text);
 }
 
 @media (prefers-color-scheme: light) {
     :root:not([data-theme="dark"]) .brand-nav-logo {
-        color: var(--brand-text-base);
+        color: var(--brand-text);
     }
 }
 

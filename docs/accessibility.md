@@ -2,7 +2,9 @@
 
 **Last updated:** 2026-06-04  
 **Scope:** `brand.css` token system and component library  
-**Standard:** WCAG 2.1 (AA baseline), AudioEye guidelines  
+**Standard:** WCAG 2.1 (AA baseline), AudioEye guidelines
+
+> **2026-06-04 correction:** Recalculated all light-mode accent and faint values. Previous doc incorrectly stated light `--brand-gold` (~5.3:1) and `--brand-neon` ("adequate"); actual ratios were 3.50:1 and 3.39:1 respectively. Tokens have been adjusted to Option B values that pass AA in both themes.  
 
 > **Important:** Contrast ratios below are calculated from the WCAG relative luminance formula against exact token hex values. Validate with a live tool (axe DevTools, WAVE, or Colour Contrast Analyser) before publishing a formal accessibility conformance statement.
 
@@ -52,8 +54,8 @@ All primary text pairings in dark mode exceed the WCAG AAA 7:1 threshold.
 | Token | Dark value | Light value | Why it shifts |
 |-------|-----------|-------------|---------------|
 | `--brand-accent` | `#CC44FF` | `#8B22E0` | `#CC44FF` on `#F2F0EC` ≈ 3.1:1 (fails AA); `#8B22E0` on `#F2F0EC` ≈ 5.6:1 (passes AA) |
-| `--brand-neon` | `#00FFFF` | `#008EAA` | Cyan on white is near-invisible; shifted to teal with adequate contrast |
-| `--brand-gold` | `#f5b96a` | `#B86E10` | Light gold fails on warm-white bg; deep amber passes |
+| `--brand-neon` | `#00FFFF` | `#006e82` | Cyan on white is near-invisible; shifted to deeper teal (~5.2:1, passes AA) |
+| `--brand-gold` | `#f5b96a` | `#995008` | Light gold fails on warm-white bg; deep amber passes (~5.3:1, passes AA) |
 
 ### Surface text pairs (light)
 
@@ -76,7 +78,7 @@ The token system defines four text tiers. Their accessibility status differs and
 | `--brand-text` | `#f3f3ee` | ~18.7:1 | Body copy, headings, all essential content |
 | `--brand-text-soft` | `#d7d7d1` | ~12.6:1 | Secondary body copy, subheadings |
 | `--brand-text-muted` | `#a2a29a` | ~6.2:1 | Labels, captions, nav links, metadata (passes AA) |
-| `--brand-text-faint` | `#72726b` | ~3.5:1 | **Decorative only** — eyebrows, timestamps, section labels (fails AA for normal text) |
+| `--brand-text-faint` | `#82827a` | ~5.1:1 | Labels, captions, nav links, metadata (passes AA) |
 
 ### Light mode tiers
 
@@ -85,7 +87,7 @@ The token system defines four text tiers. Their accessibility status differs and
 | `--brand-text` | `#1C1C1A` | ~16.8:1 | Body copy, headings, all essential content |
 | `--brand-text-soft` | `#313130` | ~12.3:1 | Secondary body copy, subheadings |
 | `--brand-text-muted` | `#6A6860` | ~4.9:1 | Labels, captions, nav links, metadata (passes AA) |
-| `--brand-text-faint` | `#9A9890` | ~2.8:1 | **Decorative only** — fails AA for normal text; never use for body copy or instructions |
+| `--brand-text-faint` | `#5A5850` | ~6.3:1 | Labels, captions, nav links, metadata (passes AA) |
 
 ### Usage rules
 
@@ -96,7 +98,7 @@ The token system defines four text tiers. Their accessibility status differs and
 - Section labels (`.brand-section-label` at `brand.css:794`)
 - Theme toggle icon fill (decorative, not text)
 
-**`--brand-text-faint` is strictly decorative.** Never assign it to:
+**`--brand-text-faint` passes AA in both themes after the 2026-06-04 adjustment, but it should still be reserved for lower-priority text.** Avoid assigning it to:
 - Body paragraph text
 - Error messages or form validation feedback
 - Button labels
@@ -204,13 +206,13 @@ When adding any new CSS animation to `brand.css` or a page stylesheet:
 ## Known Gaps & Risks
 
 | # | Issue | Severity | Location | Mitigation |
-|---|-------|----------|----------|------------|
-| 1 | **`--brand-text-faint` misuse risk** | Medium | Any HTML page | Enforce "decorative only" rule (see §3 above). Audit with axe before each deploy. |
+|---|---|-------|----------|----------|------------|
+| 1 | **`--brand-text-faint` still reserved for lower-priority text** | Low | Any HTML page | Passes AA after 2026-06-04 adjustment, but keep usage constrained to labels/captions to preserve hierarchy. |
 | 2 | **`.brand-circle-icon` uses `--brand-text-muted`** | Low | `brand.css:934` | Icon content is decorative (not essential text). Acceptable if no text inside the circle is actionable. |
 | 3 | **Iridescent border as sole card state signal** | Low | `brand.css:888–908` | The conic border on `.brand-card-bubble` animates on hover/`:before` opacity — but the `translateY(-4px)` lift is also present. Non-color indicator exists. |
 | 4 | **`--brand-btn-secondary` uses `--brand-text-muted` at rest** | Medium | `brand.css:976` | `--brand-text-muted` in dark mode is ~6.2:1 — passes AA. In light mode ~4.9:1 — passes AA (barely). Acceptable but should not be reduced further. |
 | 5 | **Focus style not extended to nav links, footer links, or cards** | Medium | `brand.css:1098–1103` | `.brand-nav-logo`, `.brand-footer-links a`, `.brand-card-bubble` lack explicit `:focus-visible` rules. They inherit browser defaults, which may be insufficient in some browsers. Add explicit `outline` rules for each. |
-| 6 | **`style.css` not audited** | Medium | `style.css` | This audit covers only `brand.css`. Run a separate pass on `style.css` and all project HTML pages. |
+| 6 | **`style.css` partially audited** | Low | `style.css` | Fixed: `--brand-text-base` (broken var) corrected to `--brand-text`. Run a remaining pass on all hardcoded colors and project HTML pages. |
 
 ---
 
@@ -237,7 +239,7 @@ Before merging CSS changes that affect color, animation, or interactivity:
 | `--brand-text` | `#f3f3ee` | AAA (all text) |
 | `--brand-text-soft` | `#d7d7d1` | AAA (all text) |
 | `--brand-text-muted` | `#a2a29a` | AA (normal text) |
-| `--brand-text-faint` | `#72726b` | Fails AA (normal text) |
+| `--brand-text-faint` | `#82827a` | AA (normal text) |
 
 ### Light mode text tokens (background `#F2F0EC`)
 
@@ -246,7 +248,7 @@ Before merging CSS changes that affect color, animation, or interactivity:
 | `--brand-text` | `#1C1C1A` | AAA (all text) |
 | `--brand-text-soft` | `#313130` | AAA (all text) |
 | `--brand-text-muted` | `#6A6860` | AA (normal text) |
-| `--brand-text-faint` | `#9A9890` | Fails AA (normal text) |
+| `--brand-text-faint` | `#5A5850` | AA (normal text) |
 
 ### Accent tokens — contrast on their respective backgrounds
 
@@ -255,4 +257,6 @@ Before merging CSS changes that affect color, animation, or interactivity:
 | Dark | `--brand-accent` | `#CC44FF` | `#0A0A0A` | ~5.9:1 | AA |
 | Light | `--brand-accent` | `#8B22E0` | `#F2F0EC` | ~5.6:1 | AA |
 | Dark | `--brand-gold` | `#f5b96a` | `#0A0A0A` | ~8.4:1 | AAA |
-| Light | `--brand-gold` | `#B86E10` | `#F2F0EC` | ~5.3:1 | AA |
+| Light | `--brand-gold` | `#995008` | `#F2F0EC` | ~5.3:1 | AA |
+| Dark | `--brand-neon` | `#00FFFF` | `#0A0A0A` | ~15.8:1 | AAA |
+| Light | `--brand-neon` | `#006e82` | `#F2F0EC` | ~5.2:1 | AA |

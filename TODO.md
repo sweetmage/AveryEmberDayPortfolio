@@ -47,9 +47,10 @@ The website is currently vanilla HTML/CSS/JS. User is evaluating a move to a JS 
 
 ## Active Plans
 
+- `docs/plans/2026-06-06-deploy-averyemberday-com.md` — Deploy averyemberday.com → this repo via Netlify. **Awaiting human actions:** merge master, DNS update at registrar.
 - `docs/plans/2026-06-04-hero-bubble-physics.md` — Hero bubble physics (canvas) — awaiting implementation; pending framework decision above.
 
-All other plans are completed and archived under `docs/archives/plans/`.
+All other plans are completed and archived in `docs/archives/plans.md`.
 
 ---
 
@@ -62,64 +63,64 @@ Consolidated reference for finished implementation plans. See original plan file
 **Status:** ✅ DONE  
 **Files:** `brand.css` (hero blob section only)  
 **Key specs:** 5 unique morphing keyframes + 5 unique float path animations; all brand tokens preserved  
-**Plan ref:** [docs/plans/2026-05-20-hero-bubbles-nanoagent-plan.md](docs/plans/2026-05-20-hero-bubbles-nanoagent-plan.md)
+**Plan ref:** [docs/archives/plans.md#2026-05-20-hero-bubbles-nanoagent-plan](docs/archives/plans.md#2026-05-20-hero-bubbles-nanoagent-plan)
 
 ### Branded Resume (2026-05-22)
 **Goal:** Create `resume/AveryEmberDay_Resume_2026_Brand.html` using brand.css token system  
 **Status:** ✅ DONE  
 **Files:** `resume/AveryEmberDay_Resume_2026_Brand.html` (new)  
 **Key specs:** Full brand token integration, light/dark theme toggle, print-friendly single-page layout, BubbleLogo SVG  
-**Plan ref:** [docs/plans/2026-05-22-branded-resume-nanoagent-plan.md](docs/plans/2026-05-22-branded-resume-nanoagent-plan.md)
+**Plan ref:** [docs/archives/plans.md#2026-05-22-branded-resume-nanoagent-plan](docs/archives/plans.md#2026-05-22-branded-resume-nanoagent-plan)
 
 ### A History of Mistrust — Canonical Content (2026-05-28)
 **Goal:** Transcribe all 30 carousel slides as source of truth  
 **Status:** ✅ DONE  
-**Files:** `docs/plans/2026-05-28-history-of-mistrust-canonical-content.md` (canonical content reference)  
+**Files:** `docs/archives/plans.md#2026-05-28-history-of-mistrust-canonical-content` (canonical content reference)  
 **Key specs:** Complete slide transcriptions with text, headings, citations; verified against 4 spot-check slides (1, 7, 15, 30)  
-**Plan ref:** [docs/plans/2026-05-28-history-of-mistrust-canonical-content.md](docs/plans/2026-05-28-history-of-mistrust-canonical-content.md)
+**Plan ref:** [docs/archives/plans.md#2026-05-28-history-of-mistrust-canonical-content](docs/archives/plans.md#2026-05-28-history-of-mistrust-canonical-content)
 
 ### All Plans Cross-Reference Analysis (2026-06-02)
 **Goal:** Analyze all existing implementation plans vs. current codebase state  
 **Status:** ✅ DONE  
-**Plan ref:** [docs/archives/plans/2026-06-02-all-plans-nanoagent-analysis.md](docs/archives/plans/2026-06-02-all-plans-nanoagent-analysis.md)
+**Plan ref:** [docs/archives/plans.md#2026-06-02-all-plans-nanoagent-analysis](docs/archives/plans.md#2026-06-02-all-plans-nanoagent-analysis)
 
 ### Google ↔ TickTick Cross-Target Sync (2026-06-02 → 2026-06-04)
 **Goal:** Local-first task sync pipeline with outbound push to TickTick + Google Tasks  
 **Status:** ✅ DONE — both auth blockers resolved; 24 pending tasks live-synced 2026-06-04 via `scripts/sync-all.js --apply --pending-only`  
 **Files:** `scripts/sync-{ticktick,google,all}.js`, `scripts/{ticktick,google}-oauth.js`, `scripts/parse-todo.js`, `docs/sync/local-tasks.json`, `docs/sync/mapping.json`  
-**Plan refs:** [docs/archives/plans/2026-06-02-google-ticktick-cross-target-sync.md](docs/archives/plans/2026-06-02-google-ticktick-cross-target-sync.md), [docs/archives/plans/2026-06-03-complete-google-ticktick-plan-shxdowloop-nanoagent-plan.md](docs/archives/plans/2026-06-03-complete-google-ticktick-plan-shxdowloop-nanoagent-plan.md)
+**Plan refs:** [docs/archives/plans.md#2026-06-02-google-ticktick-cross-target-sync](docs/archives/plans.md#2026-06-02-google-ticktick-cross-target-sync), [docs/archives/plans.md#2026-06-03-complete-google-ticktick-plan-shxdowloop-nanoagent-plan](docs/archives/plans.md#2026-06-03-complete-google-ticktick-plan-shxdowloop-nanoagent-plan)
 
 ### History of Mistrust — Page Rework (2026-06-03)
 **Goal:** Reorder sections, drop double headers, per-set slideshows (3 cols), match moodboard crop to storyboard, real alt text  
 **Status:** ✅ DONE  
 **Files:** `projects/history-of-mistrust.html`, `images/myart/A History of Mistrust/supporting material/HistoryofMistrustMoodboard-cropped.png`  
-**Plan ref:** [docs/archives/plans/2026-06-03-history-of-mistrust-rework.md](docs/archives/plans/2026-06-03-history-of-mistrust-rework.md)
+**Plan ref:** [docs/archives/plans.md#2026-06-03-history-of-mistrust-rework](docs/archives/plans.md#2026-06-03-history-of-mistrust-rework)
 
 ### All Slides — Full-Width Stacked Sets (2026-06-03)
 **Goal:** Polish All Slides section with consistent card styling and remove dead grid CSS  
 **Status:** ✅ DONE  
 **Files:** `projects/history-of-mistrust.html` (embedded CSS + JS only)  
-**Plan ref:** [docs/archives/plans/2026-06-03-all-slides-fullwidth-stacked-sets.md](docs/archives/plans/2026-06-03-all-slides-fullwidth-stacked-sets.md)
+**Plan ref:** [docs/archives/plans.md#2026-06-03-all-slides-fullwidth-stacked-sets](docs/archives/plans.md#2026-06-03-all-slides-fullwidth-stacked-sets)
 
 ### Phase 1 Structural Fixes (2026-06-04)
 **Goal:** Unify nav/footer across all sub-pages, update resume links, wire Upwork icon, clean placeholders  
 **Status:** ✅ DONE  
 **Files:** `projects/history-of-mistrust.html`, `projects/brand-avery-ember-day.html`, `projects/patriots-low-thirds.html`, `gallery/gallery.html`, `index.html`, `images/icons/upworkicon.svg`, `style.css`  
 **Key specs:** Full brand token integration, light/dark theme toggle, print-friendly single-page layout, BubbleLogo SVG  
-**Plan ref:** [docs/archives/plans/2026-06-04-phase-1-structural-fixes-shxdowloop.md](docs/archives/plans/2026-06-04-phase-1-structural-fixes-shxdowloop.md)
+**Plan ref:** [docs/archives/plans.md#2026-06-04-phase-1-structural-fixes-shxdowloop](docs/archives/plans.md#2026-06-04-phase-1-structural-fixes-shxdowloop)
 
 ### Accessibility Documentation — brand.css (2026-06-04)
 **Goal:** Document how the brand.css token system satisfies WCAG 2.1 / AudioEye guidelines; record known gaps and contributor rules  
 **Status:** ✅ DONE  
 **Files:** `docs/accessibility.md` (new), `docs/plans/2026-06-04-accessibility-docs.md` (new)  
 **Key specs:** Contrast ratio tables (dark + light), muted token usage rules, focus indicator contract, reduced-motion contracts, known gap register, future contributor checklist  
-**Plan ref:** [docs/archives/plans/2026-06-04-accessibility-docs.md](docs/archives/plans/2026-06-04-accessibility-docs.md)
+**Plan ref:** [docs/archives/plans.md#2026-06-04-accessibility-docs](docs/archives/plans.md#2026-06-04-accessibility-docs)
 
 ---
 
 ## ✅ Plan Files Archived (2026-06-04)
 
-All completed plan files moved to `docs/archives/plans/`. Only active plans remain in `docs/plans/`.
+All completed plan files consolidated into `docs/archives/plans.md`. Only active plans remain in `docs/plans/`.
 
 ---
 
@@ -236,7 +237,8 @@ Project id `69c8addc8f0823c509e1979f`. Mirrors TickTick task/checklist state; `*
 - [ ] Create a complete, viewer-accessible file/page containing all canonical slide content with bibliography and numbered sources
 
 ### Standalone
-- [ ] adjust color palette for contrast
+- [x] adjust color palette for contrast
+- [x] apply color changes to all .html files following accessibility guidelines
 - [ ] Watermark artwork
 
 ## Google ↔ TickTick cross-target sync (2026-06-02)

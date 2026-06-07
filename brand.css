@@ -124,7 +124,7 @@
     --brand-text:       #f3f3ee;
     --brand-text-soft:  #d7d7d1;
     --brand-text-muted: #a2a29a;
-    --brand-text-faint: #72726b;
+    --brand-text-faint: #82827a;
 
     /* Accents */
     --brand-accent:         #CC44FF;
@@ -197,23 +197,23 @@
     --brand-text:       #1C1C1A;
     --brand-text-soft:  #313130;
     --brand-text-muted: #6A6860;
-    --brand-text-faint: #9A9890;
+    --brand-text-faint: #5A5850;
 
     /* Accents — shifted for light-bg contrast */
     --brand-accent:         #8B22E0;
     --brand-accent-dim:     rgba(139, 34, 224, 0.14);
-    --brand-neon:           #008EAA;
-    --brand-gold:           #B86E10;
+    --brand-neon:           #006e82;
+    --brand-gold:           #995008;
     --brand-gold-dim:       rgba(184, 110, 16, 0.18);
     --brand-active-outline: var(--brand-accent);
 
     /* Iridescent spectrum — deeper/richer for light bg */
     --brand-ir-1: #8B22E0;
     --brand-ir-2: #6A44CC;
-    --brand-ir-3: #B86E10;
+    --brand-ir-3: #995008;
     --brand-ir-4: #1A7ACC;
     --brand-ir-5: #0A9EAA;
-    --brand-ir-6: #008EAA;
+    --brand-ir-6: #006e82;
 
     /* Borders */
     --brand-border:       rgba(0, 0, 0, 0.09);
@@ -232,9 +232,9 @@
 :root[data-theme="light"] .brand-page-bg {
     background:
         radial-gradient(900px 480px at 50% -8%,  rgba(139, 34, 224, 0.10), transparent 58%),
-        radial-gradient(600px 400px at 85% 70%,  rgba(0, 142, 170, 0.09),  transparent 55%),
+        radial-gradient(600px 400px at 85% 70%,  rgba(0, 110, 130, 0.09),  transparent 55%),
         radial-gradient(500px 500px at 15% 40%,  rgba(106, 68, 204, 0.07), transparent 60%),
-        radial-gradient(400px 350px at 70% 20%,  rgba(184, 110, 16, 0.10), transparent 55%);
+        radial-gradient(400px 350px at 70% 20%,  rgba(153, 80, 8, 0.10), transparent 55%);
 }
 
 /* light mode — noise slightly more visible on warm bg */
@@ -265,19 +265,19 @@
         --brand-text:       #1C1C1A;
         --brand-text-soft:  #313130;
         --brand-text-muted: #6A6860;
-        --brand-text-faint: #9A9890;
+        --brand-text-faint: #5A5850;
         --brand-accent:         #8B22E0;
         --brand-accent-dim:     rgba(139, 34, 224, 0.14);
-        --brand-neon:           #008EAA;
-        --brand-gold:           #B86E10;
+        --brand-neon:           #006e82;
+        --brand-gold:           #995008;
         --brand-gold-dim:       rgba(184, 110, 16, 0.18);
         --brand-active-outline: var(--brand-accent);
         --brand-ir-1: #8B22E0;
         --brand-ir-2: #6A44CC;
-        --brand-ir-3: #B86E10;
+        --brand-ir-3: #995008;
         --brand-ir-4: #1A7ACC;
         --brand-ir-5: #0A9EAA;
-        --brand-ir-6: #008EAA;
+        --brand-ir-6: #006e82;
         --brand-border:       rgba(0, 0, 0, 0.09);
         --brand-border-mid:   rgba(0, 0, 0, 0.14);
         --brand-border-focus: rgba(0, 0, 0, 0.26);

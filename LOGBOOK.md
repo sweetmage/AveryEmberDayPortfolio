@@ -1,3 +1,117 @@
+## Entry 034 — 2026-06-06
+
+**Agent:** Claude Sonnet 4.6 (shxdow-flow)  
+**Cycle:** deploy-averyemberday-com  
+**Task:** Create deployment plan to point averyemberday.com at this repo via Netlify.
+
+### Changes
+
+- **`docs/plans/2026-06-06-deploy-averyemberday-com.md`** — Full deployment plan: host choice rationale, step-by-step Netlify setup, DNS options (Netlify nameservers vs external A record), smoke test checklist, risk table, human decision points.
+- **`netlify.toml`** — Created. Publish directory `.`, security headers (X-Frame-Options, X-Content-Type-Options, Referrer-Policy). No build command needed for static site.
+- **`CNAME`** — Created. Single line `averyemberday.com` for self-documentation.
+- **`TODO.md`** — Added plan to Active Plans section.
+
+### Verification
+
+- No code changes; plan + config files only.
+- `netlify.toml` validated manually — correct TOML syntax, publish dir set to `.`.
+
+### Notes
+
+- `netlify.toml` and `CNAME` are ready to commit and push. Netlify will read them automatically on first connect.
+- Two human decision points before DNS cut: (1) merge `shxdowloop/2026-06-04/phase-1-structural-fixes` → master, (2) choose DNS method at registrar.
+- No commits performed per shxdow-flow policy.
+
+---
+
+## Entry 033 — 2026-06-04
+
+**Agent:** Kilo (Claude route, shxdow-flow)  
+**Cycle:** apply-color-changes-html  
+**Task:** Apply the accessible palette changes from Entry 032 to all `.html` files and fix known accessibility gaps in project page inline styles.
+
+### Changes
+
+- **`docs/color-contrast-preview.html`** — Updated from a pre-decision "alternate options" page to a "verification" page showing the final chosen values as Current (passing) and the old values as Previous (failing). Summary table updated with actual deltas. Fixed light-mode `.badge-warn` text color from `#b86e10` (3.75:1 on `#fff8e1`, fails AA) to `#995008` (5.64:1, passes AA).
+- **`projects/history-of-mistrust.html`** — `.section-title` hardcoded `color: #7eb8ff;` → `var(--brand-ir-4)`. Old value was 1.81:1 on light bg (`#F2F0EC`), failing AA even for large text. New token gives `#9acdff` (11.83:1 dark) / `#1A7ACC` (3.93:1 light, passes AA for large text at 1.5rem bold).
+- **`projects/brand-avery-ember-day.html`** — `.section-title` same fix. Literal brand color swatch references (backgrounds, hex labels) retained as they document the actual brand palette.
+- **`projects/patriots-low-thirds.html`** — `.section-title` same fix.
+- **`docs/plans/2026-06-04-apply-color-changes-html.md`** — New implementation plan documenting scope, files, risks, and verification steps.
+
+### Verification
+
+- Grep for old failing hex values (`#72726b`, `#9A9890`, `#B86E10`, `#008EAA`) across all HTML files → only remain in `docs/color-contrast-preview.html` as "Previous" documentation labels.
+- Grep for `var(--brand-text-base)` across all HTML → zero hits.
+- Grep for `#7eb8ff` as text color in project pages → zero hits.
+- Contrast recalculated for `var(--brand-ir-4)` in both themes: passes AA for large text.
+
+### Notes
+
+- The `#7eb8ff` → `var(--brand-ir-4)` shift is visible in light mode (sky blue → navy blue) but is necessary for accessibility and theme consistency. In dark mode the visual change is minimal (`#7eb8ff` → `#9acdff`).
+- No commits performed per shxdow-flow policy.
+
+---
+
+## Entry 032 — 2026-06-04
+
+**Agent:** Kilo (Claude route, shxdow-flow)  
+**Cycle:** color-contrast-adjustment  
+**Task:** Adjust brand token palette for WCAG 2.1 AA contrast across dark and light themes.
+
+### Changes
+
+- **`brand.css`** — Updated 5 hex values:
+  - Dark `--brand-text-faint`: `#72726b` → `#82827a` (5.11:1, passes AA)
+  - Light `--brand-text-faint`: `#9A9890` → `#5A5850` (6.26:1, passes AA)
+  - Light `--brand-neon`: `#008EAA` → `#006e82` (5.19:1, passes AA)
+  - Light `--brand-gold`: `#B86E10` → `#995008` (5.26:1, passes AA)
+  - Synced iridescent tokens `--brand-ir-3` and `--brand-ir-6` to match new gold/neon values
+  - Synced light-mode page glow radial-gradient rgba values to match new neon/gold hues
+  - Applied changes to both `[data-theme="light"]` block and `@media (prefers-color-scheme: light)` fallback block
+- **`style.css`** — Fixed broken `var(--brand-text-base)` → `var(--brand-text)` in nav logo light-mode rules (lines 263, 268)
+- **`docs/accessibility.md`** — Corrected contrast tables; removed two incorrect ratio claims (light gold and neon); updated Known Gaps; added neon accent to quick-lookup table
+- **`resume/AveryEmberDay_Resume_2026_Brand.html`** — Updated print-media overrides (`--brand-text-faint`, `--brand-neon`, `--brand-gold`, `--brand-ir-3`, `--brand-ir-6`) to match new brand values
+- **`TODO.md`** — Marked "adjust color palette for contrast" complete
+
+### Verification
+
+- Recalculated all four adjusted pairs with WCAG relative luminance formula; all exceed 4.5:1 (AA threshold).
+- Confirmed no old failing hex values (`#72726b`, `#9A9890`, `#B86E10`, `#008EAA`) remain in `brand.css`.
+- Confirmed no `var(--brand-text-base)` references remain in `style.css`.
+
+### Notes
+
+- The light faint shift (`#5A5850`) is significant; the token now reads as a muted charcoal rather than a pale gray. This is intentional per the Option B selection and preserves AA compliance with a safety buffer.
+- The resume print overrides were previously close (`#9a5c00`, `#007a8a`) but are now fully aligned with the canonical brand tokens.
+
+---
+
+## Entry 031 — 2026-06-04
+
+**Agent:** Kilo (Claude route, shxdow-flow)
+**Cycle:** archive-consolidation
+**Task:** Consolidate 14 individual archived plan files in `docs/archives/plans/` into a single `docs/archives/plans.md` reference file.
+
+### Changes
+
+- **`docs/archives/plans.md`** (new) — Consolidated archive containing all 14 completed/cancelled/superseded implementation plans, ordered chronologically with a table of contents. UTF-8 preserved via Node.js concatenation.
+- **`docs/archives/plans/*.md`** (deleted) — 14 individual plan files removed after consolidation.
+- **`TODO.md`** — Updated all 7 "Plan ref" links in the Completed Plans Archive section to point to section anchors within `docs/archives/plans.md`. Updated the archive note from "moved to `docs/archives/plans/`" to "consolidated into `docs/archives/plans.md`".
+- **`docs/archives/plans.md`** — Updated 5 internal cross-references (originally pointing to `docs/plans/` or `docs/archives/plans/` files) to use in-file section anchors.
+
+### Verification
+
+- `docs/archives/plans.md` renders correctly: 1,785 lines, table of contents at top, each of the 14 plans separated by `---`.
+- All TODO.md plan ref links resolve to section anchors in the consolidated file.
+- Zero remaining `.md` references to `docs/archives/plans/` individual files in tracked markdown.
+
+### Notes
+
+- Historical LOGBOOK references to `docs/archives/plans/` (e.g., Entry 028) were left intact as they describe past state accurately.
+- Active plans remain in `docs/plans/` (`2026-06-04-prelaunch-qa.md`, `2026-06-04-hero-bubble-physics.md`) and are not part of this archive.
+
+---
+
 ## Entry 030 — 2026-06-04
 
 **Agent:** Kilo (Claude route, shxdow-flow)
