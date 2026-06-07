@@ -1,3 +1,28 @@
+## Entry 037 — 2026-06-07
+
+**Agent:** kimi-k2.6 (kilo, shxdow-flow)
+**Cycle:** ticktick-sync-update
+**Task:** Update TickTick to reflect current local files (TODO.md). Full sync after multiple TODO.md edits.
+
+### Changes
+
+- **`docs/sync/local-tasks.json`** — Regenerated via `node scripts/parse-todo.js`. 95 tasks (78 completed, 17 pending).
+- **`docs/sync/mapping.json`** — Updated with 75 new TickTick mappings after apply, plus cleanup of 2 orphaned mappings.
+
+### Verification
+
+- `node scripts/parse-todo.js` → 95 tasks parsed successfully.
+- `node scripts/sync-all.js --dry-run` → 75 creates, 0 updates, 9 completes, 2 deletes.
+- `node scripts/sync-all.js --apply` → 75 tasks created, 9 tasks marked completed in TickTick project `69c8addc8f0823c509e1979f`, 2 orphaned mappings removed. Zero API failures.
+- `mapping.json` validated as proper JSON with 95 ticktick mappings.
+
+### Notes
+
+- High create count is expected: Phase 1 Structural Fixes tasks (5 items) and Google ↔ TickTick cross-target sync tasks (20+ items) had never been pushed to TickTick in prior `--pending-only` syncs. Additionally, some task title edits in TODO.md caused ID drift, orphaning old mappings (2 deletes) and creating new entries for the updated titles.
+- Google Tasks sync remains retired; only TickTick sync executed.
+
+---
+
 ## Entry 036 — 2026-06-06
 
 **Agent:** kimi-k2.6 (kilo, shxdow-flow)

@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "generatedAt": "2026-06-05T01:50:50.681Z",
+  "generatedAt": "2026-06-07T07:44:03.307Z",
   "source": "TODO.md",
   "tasks": [
     {
@@ -24,8 +24,8 @@
       "sourceLine": 23
     },
     {
-      "id": "phase-1-structural-fixes-2026-06-04-phase-1-structural-fixes-2026-06-04-upwork-icon-wired-into-indexhtml-contact",
-      "title": "Upwork icon — wired into `index.html` Contact section; SVG updated to `currentColor` fill",
+      "id": "phase-1-structural-fixes-2026-06-04-phase-1-structural-fixes-2026-06-04-upwork-icon-removed-from-indexhtml-conta",
+      "title": "Upwork icon — removed from `index.html` Contact section and deleted `images/icons/upworkicon.svg`",
       "description": null,
       "status": "completed",
       "priority": "normal",
@@ -63,7 +63,7 @@
         "sync-pipeline"
       ],
       "list": "Phase 0 — Extract content",
-      "sourceLine": 134
+      "sourceLine": 135
     },
     {
       "id": "a-history-of-mistrust-cross-target-sync-2026-05-28-done-phase-0-extract-content-transcribe-all-30-slides-5-batches-of-6",
@@ -75,7 +75,7 @@
         "sync-pipeline"
       ],
       "list": "Phase 0 — Extract content",
-      "sourceLine": 135
+      "sourceLine": 136
     },
     {
       "id": "a-history-of-mistrust-cross-target-sync-2026-05-28-done-phase-0-extract-content-spot-check-slides-1-7-15-30-directly-ass",
@@ -87,7 +87,7 @@
         "sync-pipeline"
       ],
       "list": "Phase 0 — Extract content",
-      "sourceLine": 136
+      "sourceLine": 137
     },
     {
       "id": "a-history-of-mistrust-cross-target-sync-2026-05-28-done-phase-1-portfolio-website-copy-30-carousel-pngs-into-imagesmyarta-",
@@ -99,7 +99,7 @@
         "sync-pipeline"
       ],
       "list": "Phase 1 — Portfolio website",
-      "sourceLine": 139
+      "sourceLine": 140
     },
     {
       "id": "a-history-of-mistrust-cross-target-sync-2026-05-28-done-phase-1-portfolio-website-web-optimize-30-slide-nnwebp-720px-displ",
@@ -111,7 +111,7 @@
         "sync-pipeline"
       ],
       "list": "Phase 1 — Portfolio website",
-      "sourceLine": 140
+      "sourceLine": 141
     },
     {
       "id": "a-history-of-mistrust-cross-target-sync-2026-05-28-done-phase-1-portfolio-website-stitch-3-combined-set-images-setsset-13w",
@@ -123,7 +123,7 @@
         "sync-pipeline"
       ],
       "list": "Phase 1 — Portfolio website",
-      "sourceLine": 141
+      "sourceLine": 142
     },
     {
       "id": "a-history-of-mistrust-cross-target-sync-2026-05-28-done-phase-1-portfolio-website-rename-page-to-projectshistory-of-mistru",
@@ -135,7 +135,7 @@
         "sync-pipeline"
       ],
       "list": "Phase 1 — Portfolio website",
-      "sourceLine": 142
+      "sourceLine": 143
     },
     {
       "id": "a-history-of-mistrust-cross-target-sync-2026-05-28-done-phase-1-portfolio-website-point-grid-img-to-display-webp",
@@ -147,7 +147,7 @@
         "sync-pipeline"
       ],
       "list": "Phase 1 — Portfolio website",
-      "sourceLine": 143
+      "sourceLine": 144
     },
     {
       "id": "a-history-of-mistrust-cross-target-sync-2026-05-28-done-phase-1-portfolio-website-create-projectshistory-of-mistrusthtml-f",
@@ -159,7 +159,7 @@
         "sync-pipeline"
       ],
       "list": "Phase 1 — Portfolio website",
-      "sourceLine": 144
+      "sourceLine": 145
     },
     {
       "id": "a-history-of-mistrust-cross-target-sync-2026-05-28-done-phase-1-portfolio-website-fix-indexhtml-card-image-tag-description",
@@ -171,7 +171,7 @@
         "sync-pipeline"
       ],
       "list": "Phase 1 — Portfolio website",
-      "sourceLine": 145
+      "sourceLine": 146
     },
     {
       "id": "a-history-of-mistrust-cross-target-sync-2026-05-28-done-phase-1-portfolio-website-verify-in-headed-browser-all-slides-load",
@@ -183,7 +183,7 @@
         "sync-pipeline"
       ],
       "list": "Phase 1 — Portfolio website",
-      "sourceLine": 146
+      "sourceLine": 147
     },
     {
       "id": "a-history-of-mistrust-cross-target-sync-2026-05-28-done-phase-1-portfolio-website-add-sourcesbibliography-section-80-citat",
@@ -195,7 +195,7 @@
         "sync-pipeline"
       ],
       "list": "Phase 1 — Portfolio website",
-      "sourceLine": 147
+      "sourceLine": 148
     },
     {
       "id": "a-history-of-mistrust-cross-target-sync-2026-05-28-done-phase-2-ticktick-audit-existing-tasks-now-via-mcp-see-tic",
@@ -207,7 +207,7 @@
         "sync-pipeline"
       ],
       "list": "Phase 2 — TickTick",
-      "sourceLine": 150
+      "sourceLine": 151
     },
     {
       "id": "a-history-of-mistrust-cross-target-sync-2026-05-28-done-phase-2-ticktick-complete-finished-tasks-03-04-marked-don",
@@ -219,7 +219,7 @@
         "sync-pipeline"
       ],
       "list": "Phase 2 — TickTick",
-      "sourceLine": 151
+      "sourceLine": 152
     },
     {
       "id": "a-history-of-mistrust-cross-target-sync-2026-05-28-done-phase-2-ticktick-add-follow-ups-publish-page-post-carouse",
@@ -231,7 +231,7 @@
         "sync-pipeline"
       ],
       "list": "Phase 2 — TickTick",
-      "sourceLine": 152
+      "sourceLine": 153
     },
     {
       "id": "a-history-of-mistrust-cross-target-sync-2026-05-28-done-phase-3-google-doc-private-agent-browser-logged-in-read-current-doc-content-skip-requires-h",
@@ -244,7 +244,7 @@
         "google"
       ],
       "list": "Phase 3 — Google doc (private, agent-browser logged-in)",
-      "sourceLine": 155
+      "sourceLine": 156
     },
     {
       "id": "a-history-of-mistrust-cross-target-sync-2026-05-28-done-phase-3-google-doc-private-agent-browser-logged-in-sync-copy-to-match-pngs-confirm-before-d",
@@ -257,7 +257,7 @@
         "google"
       ],
       "list": "Phase 3 — Google doc (private, agent-browser logged-in)",
-      "sourceLine": 156
+      "sourceLine": 157
     },
     {
       "id": "a-history-of-mistrust-cross-target-sync-2026-05-28-done-phase-4-local-folder-renumbergroup-finals-vs-supporting-mater",
@@ -269,7 +269,7 @@
         "sync-pipeline"
       ],
       "list": "Phase 4 — Local folder",
-      "sourceLine": 159
+      "sourceLine": 160
     },
     {
       "id": "a-history-of-mistrust-cross-target-sync-2026-05-28-done-phase-4-local-folder-add-readmemanifest",
@@ -281,7 +281,7 @@
         "sync-pipeline"
       ],
       "list": "Phase 4 — Local folder",
-      "sourceLine": 160
+      "sourceLine": 161
     },
     {
       "id": "a-history-of-mistrust-cross-target-sync-2026-05-28-done-phase-5-document-review-update-logbookmd",
@@ -293,7 +293,7 @@
         "sync-pipeline"
       ],
       "list": "Phase 5 — Document + review",
-      "sourceLine": 163
+      "sourceLine": 164
     },
     {
       "id": "a-history-of-mistrust-cross-target-sync-2026-05-28-done-phase-5-document-review-final-diff-review",
@@ -305,7 +305,7 @@
         "sync-pipeline"
       ],
       "list": "Phase 5 — Document + review",
-      "sourceLine": 164
+      "sourceLine": 165
     },
     {
       "id": "a-history-of-mistrust-cross-target-sync-2026-05-28-done-phase-5-document-review-hand-off-no-commits-without-explicit-go-",
@@ -317,7 +317,7 @@
         "sync-pipeline"
       ],
       "list": "Phase 5 — Document + review",
-      "sourceLine": 165
+      "sourceLine": 166
     },
     {
       "id": "ticktick-mirror-portfolio-website-list-synced-2026-05-28-a-history-of-mistrust-tag-history-of-mistrust-03",
@@ -330,7 +330,7 @@
         "ticktick"
       ],
       "list": "A History of Mistrust (tag `history-of-mistrust`)",
-      "sourceLine": 174
+      "sourceLine": 175
     },
     {
       "id": "ticktick-mirror-portfolio-website-list-synced-2026-05-28-a-history-of-mistrust-tag-history-of-mistrust-04",
@@ -343,7 +343,7 @@
         "ticktick"
       ],
       "list": "A History of Mistrust (tag `history-of-mistrust`)",
-      "sourceLine": 175
+      "sourceLine": 176
     },
     {
       "id": "ticktick-mirror-portfolio-website-list-synced-2026-05-28-a-history-of-mistrust-tag-history-of-mistrust-05",
@@ -356,7 +356,7 @@
         "ticktick"
       ],
       "list": "A History of Mistrust (tag `history-of-mistrust`)",
-      "sourceLine": 176
+      "sourceLine": 177
     },
     {
       "id": "ticktick-mirror-portfolio-website-list-synced-2026-05-28-a-history-of-mistrust-tag-history-of-mistrust-06",
@@ -369,7 +369,7 @@
         "ticktick"
       ],
       "list": "A History of Mistrust (tag `history-of-mistrust`)",
-      "sourceLine": 177
+      "sourceLine": 178
     },
     {
       "id": "ticktick-mirror-portfolio-website-list-synced-2026-05-28-a-history-of-mistrust-tag-history-of-mistrust-07",
@@ -382,7 +382,7 @@
         "ticktick"
       ],
       "list": "A History of Mistrust (tag `history-of-mistrust`)",
-      "sourceLine": 178
+      "sourceLine": 179
     },
     {
       "id": "ticktick-mirror-portfolio-website-list-synced-2026-05-28-a-history-of-mistrust-tag-history-of-mistrust-08",
@@ -395,7 +395,7 @@
         "ticktick"
       ],
       "list": "A History of Mistrust (tag `history-of-mistrust`)",
-      "sourceLine": 179
+      "sourceLine": 180
     },
     {
       "id": "ticktick-mirror-portfolio-website-list-synced-2026-05-28-a-history-of-mistrust-tag-history-of-mistrust-09",
@@ -408,7 +408,7 @@
         "ticktick"
       ],
       "list": "A History of Mistrust (tag `history-of-mistrust`)",
-      "sourceLine": 180
+      "sourceLine": 181
     },
     {
       "id": "ticktick-mirror-portfolio-website-list-synced-2026-05-28-a-history-of-mistrust-tag-history-of-mistrust-10",
@@ -421,7 +421,7 @@
         "ticktick"
       ],
       "list": "A History of Mistrust (tag `history-of-mistrust`)",
-      "sourceLine": 181
+      "sourceLine": 182
     },
     {
       "id": "ticktick-mirror-portfolio-website-list-synced-2026-05-28-mistrust-checklist-remake-moodboard",
@@ -433,7 +433,7 @@
         "ticktick"
       ],
       "list": "mistrust (checklist)",
-      "sourceLine": 184
+      "sourceLine": 185
     },
     {
       "id": "ticktick-mirror-portfolio-website-list-synced-2026-05-28-mistrust-checklist-fix-spelling-errors",
@@ -445,7 +445,7 @@
         "ticktick"
       ],
       "list": "mistrust (checklist)",
-      "sourceLine": 185
+      "sourceLine": 186
     },
     {
       "id": "ticktick-mirror-portfolio-website-list-synced-2026-05-28-mistrust-checklist-finish-redesign",
@@ -457,7 +457,7 @@
         "ticktick"
       ],
       "list": "mistrust (checklist)",
-      "sourceLine": 186
+      "sourceLine": 187
     },
     {
       "id": "ticktick-mirror-portfolio-website-list-synced-2026-05-28-mistrust-checklist-designate-title-card-slide-1-title-cover",
@@ -469,7 +469,7 @@
         "ticktick"
       ],
       "list": "mistrust (checklist)",
-      "sourceLine": 187
+      "sourceLine": 188
     },
     {
       "id": "ticktick-mirror-portfolio-website-list-synced-2026-05-28-sub-page-content-image-paths-history-of-mistrusthtml-add-real-images-",
@@ -481,7 +481,7 @@
         "ticktick"
       ],
       "list": "Sub-page content & image paths",
-      "sourceLine": 190
+      "sourceLine": 191
     },
     {
       "id": "ticktick-mirror-portfolio-website-list-synced-2026-05-28-sub-page-content-image-paths-confirm-all-image-src-paths-resolve",
@@ -493,7 +493,7 @@
         "ticktick"
       ],
       "list": "Sub-page content & image paths",
-      "sourceLine": 191
+      "sourceLine": 192
     },
     {
       "id": "ticktick-mirror-portfolio-website-list-synced-2026-05-28-sub-page-content-image-paths-patriots-low-thirdshtml-add-render-still",
@@ -505,7 +505,7 @@
         "ticktick"
       ],
       "list": "Sub-page content & image paths",
-      "sourceLine": 192
+      "sourceLine": 193
     },
     {
       "id": "ticktick-mirror-portfolio-website-list-synced-2026-05-28-sub-page-content-image-paths-self-portrait-serieshtml-verify-image-pa",
@@ -517,7 +517,7 @@
         "ticktick"
       ],
       "list": "Sub-page content & image paths",
-      "sourceLine": 193
+      "sourceLine": 194
     },
     {
       "id": "ticktick-mirror-portfolio-website-list-synced-2026-05-28-sub-page-content-image-paths-gallerygalleryhtml-verify-all-gallery-im",
@@ -529,7 +529,7 @@
         "ticktick"
       ],
       "list": "Sub-page content & image paths",
-      "sourceLine": 194
+      "sourceLine": 195
     },
     {
       "id": "ticktick-mirror-portfolio-website-list-synced-2026-05-28-sub-page-content-image-paths-confirm-imagesaverydaylogopng-is-not-ref",
@@ -541,7 +541,7 @@
         "ticktick"
       ],
       "list": "Sub-page content & image paths",
-      "sourceLine": 195
+      "sourceLine": 196
     },
     {
       "id": "ticktick-mirror-portfolio-website-list-synced-2026-05-28-sub-page-content-image-paths-history-of-mistrusthtml-fix-spelling-mis",
@@ -553,7 +553,7 @@
         "ticktick"
       ],
       "list": "Sub-page content & image paths",
-      "sourceLine": 196
+      "sourceLine": 197
     },
     {
       "id": "ticktick-mirror-portfolio-website-list-synced-2026-05-28-project-card-thumbnails-3-missing-a-history-of-mistrust-cover-image-images",
@@ -565,7 +565,7 @@
         "ticktick"
       ],
       "list": "Project card thumbnails — 3 missing",
-      "sourceLine": 199
+      "sourceLine": 200
     },
     {
       "id": "ticktick-mirror-portfolio-website-list-synced-2026-05-28-project-card-thumbnails-3-missing-aed-brand-identity-brand-showcase-images",
@@ -577,7 +577,7 @@
         "ticktick"
       ],
       "list": "Project card thumbnails — 3 missing",
-      "sourceLine": 200
+      "sourceLine": 201
     },
     {
       "id": "ticktick-mirror-portfolio-website-list-synced-2026-05-28-project-card-thumbnails-3-missing-patriots-low-thirds-stillrender-imagespr",
@@ -589,7 +589,7 @@
         "ticktick"
       ],
       "list": "Project card thumbnails — 3 missing",
-      "sourceLine": 201
+      "sourceLine": 202
     },
     {
       "id": "ticktick-mirror-portfolio-website-list-synced-2026-05-28-project-card-thumbnails-3-missing-wire-brand-mistrust-thumbnails-into-proj",
@@ -601,7 +601,7 @@
         "ticktick"
       ],
       "list": "Project card thumbnails — 3 missing",
-      "sourceLine": 202
+      "sourceLine": 203
     },
     {
       "id": "ticktick-mirror-portfolio-website-list-synced-2026-05-28-project-card-thumbnails-3-missing-verify-gallery-card-facesfinalpng-displa",
@@ -613,7 +613,7 @@
         "ticktick"
       ],
       "list": "Project card thumbnails — 3 missing",
-      "sourceLine": 203
+      "sourceLine": 204
     },
     {
       "id": "ticktick-mirror-portfolio-website-list-synced-2026-05-28-pre-launch-qa-optimize-gallery-images-deleted-16-unuse",
@@ -625,7 +625,7 @@
         "ticktick"
       ],
       "list": "Pre-launch QA",
-      "sourceLine": 206
+      "sourceLine": 207
     },
     {
       "id": "ticktick-mirror-portfolio-website-list-synced-2026-05-28-pre-launch-qa-cross-browser-test-at-360px-768px-1024px",
@@ -637,7 +637,7 @@
         "ticktick"
       ],
       "list": "Pre-launch QA",
-      "sourceLine": 207
+      "sourceLine": 208
     },
     {
       "id": "ticktick-mirror-portfolio-website-list-synced-2026-05-28-pre-launch-qa-keyboard-nav-test-tab-order-skip-link-fo",
@@ -649,7 +649,7 @@
         "ticktick"
       ],
       "list": "Pre-launch QA",
-      "sourceLine": 208
+      "sourceLine": 209
     },
     {
       "id": "ticktick-mirror-portfolio-website-list-synced-2026-05-28-pre-launch-qa-confirm-all-links-resolve-no-404s-link-c",
@@ -661,7 +661,7 @@
         "ticktick"
       ],
       "list": "Pre-launch QA",
-      "sourceLine": 209
+      "sourceLine": 210
     },
     {
       "id": "ticktick-mirror-portfolio-website-list-synced-2026-05-28-pre-launch-qa-spell-check-all-body-copy-across-index-a",
@@ -673,7 +673,7 @@
         "ticktick"
       ],
       "list": "Pre-launch QA",
-      "sourceLine": 210
+      "sourceLine": 211
     },
     {
       "id": "ticktick-mirror-portfolio-website-list-synced-2026-05-28-pre-launch-qa-visual-review-at-all-4-widths-no-clippin",
@@ -685,7 +685,7 @@
         "ticktick"
       ],
       "list": "Pre-launch QA",
-      "sourceLine": 211
+      "sourceLine": 212
     },
     {
       "id": "ticktick-mirror-portfolio-website-list-synced-2026-05-28-pre-launch-qa-final-screenshot-recruiter-3-second-impr",
@@ -697,7 +697,7 @@
         "ticktick"
       ],
       "list": "Pre-launch QA",
-      "sourceLine": 212
+      "sourceLine": 213
     },
     {
       "id": "ticktick-mirror-portfolio-website-list-synced-2026-05-28-launch-point-averyemberdaycom-live-confirm-full-site-passes-pre-launch-qa",
@@ -709,7 +709,7 @@
         "ticktick"
       ],
       "list": "Launch — point averyemberday.com live",
-      "sourceLine": 215
+      "sourceLine": 216
     },
     {
       "id": "ticktick-mirror-portfolio-website-list-synced-2026-05-28-launch-point-averyemberdaycom-live-confirm-deploy-target-netlify-github-pag",
@@ -721,7 +721,7 @@
         "ticktick"
       ],
       "list": "Launch — point averyemberday.com live",
-      "sourceLine": 216
+      "sourceLine": 217
     },
     {
       "id": "ticktick-mirror-portfolio-website-list-synced-2026-05-28-launch-point-averyemberdaycom-live-update-dns-point-averyemberdaycom-to-dep",
@@ -733,7 +733,7 @@
         "ticktick"
       ],
       "list": "Launch — point averyemberday.com live",
-      "sourceLine": 217
+      "sourceLine": 218
     },
     {
       "id": "ticktick-mirror-portfolio-website-list-synced-2026-05-28-launch-point-averyemberdaycom-live-test-averyemberdaycom-after-dns-propagat",
@@ -745,7 +745,7 @@
         "ticktick"
       ],
       "list": "Launch — point averyemberday.com live",
-      "sourceLine": 218
+      "sourceLine": 219
     },
     {
       "id": "ticktick-mirror-portfolio-website-list-synced-2026-05-28-launch-point-averyemberdaycom-live-check-https-certificate-is-active",
@@ -757,7 +757,7 @@
         "ticktick"
       ],
       "list": "Launch — point averyemberday.com live",
-      "sourceLine": 219
+      "sourceLine": 220
     },
     {
       "id": "ticktick-mirror-portfolio-website-list-synced-2026-05-28-motion-graphics-patriots-checklist-take-another-look-at-patriots-project",
@@ -769,7 +769,7 @@
         "ticktick"
       ],
       "list": "Motion graphics Patriots (checklist)",
-      "sourceLine": 222
+      "sourceLine": 223
     },
     {
       "id": "ticktick-mirror-portfolio-website-list-synced-2026-05-28-motion-graphics-patriots-checklist-adjust-speed-of-the-beginning",
@@ -781,7 +781,7 @@
         "ticktick"
       ],
       "list": "Motion graphics Patriots (checklist)",
-      "sourceLine": 223
+      "sourceLine": 224
     },
     {
       "id": "ticktick-mirror-portfolio-website-list-synced-2026-05-28-motion-graphics-patriots-checklist-save-new-files",
@@ -793,7 +793,7 @@
         "ticktick"
       ],
       "list": "Motion graphics Patriots (checklist)",
-      "sourceLine": 224
+      "sourceLine": 225
     },
     {
       "id": "ticktick-mirror-portfolio-website-list-synced-2026-05-28-motion-graphics-patriots-checklist-add-project-overview-to-portfolio",
@@ -805,7 +805,7 @@
         "ticktick"
       ],
       "list": "Motion graphics Patriots (checklist)",
-      "sourceLine": 225
+      "sourceLine": 226
     },
     {
       "id": "ticktick-mirror-portfolio-website-list-synced-2026-05-28-motion-graphics-patriots-checklist-display-final-project",
@@ -817,7 +817,7 @@
         "ticktick"
       ],
       "list": "Motion graphics Patriots (checklist)",
-      "sourceLine": 226
+      "sourceLine": 227
     },
     {
       "id": "ticktick-mirror-portfolio-website-list-synced-2026-05-28-gallery-tag-system-design-tag-taxonomy-categorize-by-medium",
@@ -829,7 +829,7 @@
         "ticktick"
       ],
       "list": "Gallery tag system",
-      "sourceLine": 229
+      "sourceLine": 230
     },
     {
       "id": "ticktick-mirror-portfolio-website-list-synced-2026-05-28-gallery-tag-system-implement-filter-ui-in-gallerygalleryhtm",
@@ -841,7 +841,7 @@
         "ticktick"
       ],
       "list": "Gallery tag system",
-      "sourceLine": 230
+      "sourceLine": 231
     },
     {
       "id": "ticktick-mirror-portfolio-website-list-synced-2026-05-28-gallery-tag-system-wire-tag-metadata-into-existing-gallery-",
@@ -853,7 +853,7 @@
         "ticktick"
       ],
       "list": "Gallery tag system",
-      "sourceLine": 231
+      "sourceLine": 232
     },
     {
       "id": "ticktick-mirror-portfolio-website-list-synced-2026-05-28-gallery-tag-system-verify-responsive-layout-with-filter-bar",
@@ -865,7 +865,7 @@
         "ticktick"
       ],
       "list": "Gallery tag system",
-      "sourceLine": 232
+      "sourceLine": 233
     },
     {
       "id": "ticktick-mirror-portfolio-website-list-synced-2026-05-28-a-history-of-mistrust-post-framework-finish-the-continuous-horizontal-carouse",
@@ -877,7 +877,7 @@
         "ticktick"
       ],
       "list": "A History of Mistrust — post-framework",
-      "sourceLine": 235
+      "sourceLine": 236
     },
     {
       "id": "ticktick-mirror-portfolio-website-list-synced-2026-05-28-a-history-of-mistrust-post-framework-create-a-complete-viewer-accessible-file",
@@ -889,19 +889,31 @@
         "ticktick"
       ],
       "list": "A History of Mistrust — post-framework",
-      "sourceLine": 236
+      "sourceLine": 237
     },
     {
       "id": "ticktick-mirror-portfolio-website-list-synced-2026-05-28-standalone-adjust-color-palette-for-contrast",
       "title": "adjust color palette for contrast",
       "description": null,
-      "status": "pending",
+      "status": "completed",
       "priority": "normal",
       "tags": [
         "ticktick"
       ],
       "list": "Standalone",
-      "sourceLine": 239
+      "sourceLine": 240
+    },
+    {
+      "id": "ticktick-mirror-portfolio-website-list-synced-2026-05-28-standalone-apply-color-changes-to-all-html-files-fo",
+      "title": "apply color changes to all .html files following accessibility guidelines",
+      "description": null,
+      "status": "completed",
+      "priority": "normal",
+      "tags": [
+        "ticktick"
+      ],
+      "list": "Standalone",
+      "sourceLine": 241
     },
     {
       "id": "ticktick-mirror-portfolio-website-list-synced-2026-05-28-standalone-watermark-artwork",
@@ -913,7 +925,7 @@
         "ticktick"
       ],
       "list": "Standalone",
-      "sourceLine": 240
+      "sourceLine": 242
     },
     {
       "id": "google-ticktick-cross-target-sync-2026-06-02-phase-0-auth-access-audit-create-docssync-directory-gitignore-entr",
@@ -926,7 +938,7 @@
         "google"
       ],
       "list": "Phase 0 — Auth & access audit",
-      "sourceLine": 248
+      "sourceLine": 250
     },
     {
       "id": "google-ticktick-cross-target-sync-2026-06-02-phase-0-auth-access-audit-ticktick-mcp-added-to-kilo-config-httpsm",
@@ -939,7 +951,7 @@
         "google"
       ],
       "list": "Phase 0 — Auth & access audit",
-      "sourceLine": 249
+      "sourceLine": 251
     },
     {
       "id": "google-ticktick-cross-target-sync-2026-06-02-phase-0-auth-access-audit-google-auth-oauth-client-id-synced-to-en",
@@ -952,7 +964,7 @@
         "google"
       ],
       "list": "Phase 0 — Auth & access audit",
-      "sourceLine": 250
+      "sourceLine": 252
     },
     {
       "id": "google-ticktick-cross-target-sync-2026-06-02-phase-0-auth-access-audit-run-node-scriptsgoogle-oauthjs-to-obtain",
@@ -965,7 +977,7 @@
         "google"
       ],
       "list": "Phase 0 — Auth & access audit",
-      "sourceLine": 251
+      "sourceLine": 253
     },
     {
       "id": "google-ticktick-cross-target-sync-2026-06-02-phase-0-auth-access-audit-blocker-resolved-google-tasks-api-is-ena",
@@ -978,7 +990,7 @@
         "google"
       ],
       "list": "Phase 0 — Auth & access audit",
-      "sourceLine": 252
+      "sourceLine": 254
     },
     {
       "id": "google-ticktick-cross-target-sync-2026-06-02-phase-0-auth-access-audit-blocker-resolved-ticktickaccesstoken-add",
@@ -991,7 +1003,7 @@
         "google"
       ],
       "list": "Phase 0 — Auth & access audit",
-      "sourceLine": 253
+      "sourceLine": 255
     },
     {
       "id": "google-ticktick-cross-target-sync-2026-06-02-phase-1-local-schema-create-docssynclocal-tasksjson-from-todo",
@@ -1004,7 +1016,7 @@
         "google"
       ],
       "list": "Phase 1 — Local schema",
-      "sourceLine": 256
+      "sourceLine": 258
     },
     {
       "id": "google-ticktick-cross-target-sync-2026-06-02-phase-1-local-schema-build-scriptsparse-todojs",
@@ -1017,7 +1029,7 @@
         "google"
       ],
       "list": "Phase 1 — Local schema",
-      "sourceLine": 257
+      "sourceLine": 259
     },
     {
       "id": "google-ticktick-cross-target-sync-2026-06-02-phase-1-local-schema-create-docssyncmappingjson-skeleton",
@@ -1030,7 +1042,7 @@
         "google"
       ],
       "list": "Phase 1 — Local schema",
-      "sourceLine": 258
+      "sourceLine": 260
     },
     {
       "id": "google-ticktick-cross-target-sync-2026-06-02-phase-2-ticktick-sync-build-scriptssync-ticktickjs-rest-api-wi",
@@ -1043,7 +1055,7 @@
         "google"
       ],
       "list": "Phase 2 — TickTick sync",
-      "sourceLine": 261
+      "sourceLine": 263
     },
     {
       "id": "google-ticktick-cross-target-sync-2026-06-02-phase-2-ticktick-sync-build-scriptsticktick-oauthjs-oauth-help",
@@ -1056,7 +1068,7 @@
         "google"
       ],
       "list": "Phase 2 — TickTick sync",
-      "sourceLine": 262
+      "sourceLine": 264
     },
     {
       "id": "google-ticktick-cross-target-sync-2026-06-02-phase-2-ticktick-sync-dry-run-verification-token-obtained-83-t",
@@ -1069,7 +1081,7 @@
         "google"
       ],
       "list": "Phase 2 — TickTick sync",
-      "sourceLine": 263
+      "sourceLine": 265
     },
     {
       "id": "google-ticktick-cross-target-sync-2026-06-02-phase-3-google-sync-build-scriptssync-googlejs-google-tasks-",
@@ -1082,7 +1094,7 @@
         "google"
       ],
       "list": "Phase 3 — Google sync",
-      "sourceLine": 266
+      "sourceLine": 268
     },
     {
       "id": "google-ticktick-cross-target-sync-2026-06-02-phase-3-google-sync-dry-run-verification-api-enabled-83-task",
@@ -1095,7 +1107,7 @@
         "google"
       ],
       "list": "Phase 3 — Google sync",
-      "sourceLine": 267
+      "sourceLine": 269
     },
     {
       "id": "google-ticktick-cross-target-sync-2026-06-02-phase-4-orchestration-build-scriptssync-alljs",
@@ -1108,7 +1120,7 @@
         "google"
       ],
       "list": "Phase 4 — Orchestration",
-      "sourceLine": 270
+      "sourceLine": 272
     },
     {
       "id": "google-ticktick-cross-target-sync-2026-06-02-phase-4-orchestration-wire-into-todomd-maintenance-workflow-ru",
@@ -1121,7 +1133,7 @@
         "google"
       ],
       "list": "Phase 4 — Orchestration",
-      "sourceLine": 271
+      "sourceLine": 273
     },
     {
       "id": "google-ticktick-cross-target-sync-2026-06-02-phase-5-document-review-update-logbookmd-with-sync-cycle-entry",
@@ -1134,7 +1146,7 @@
         "google"
       ],
       "list": "Phase 5 — Document + review",
-      "sourceLine": 274
+      "sourceLine": 276
     },
     {
       "id": "google-ticktick-cross-target-sync-2026-06-02-phase-5-document-review-final-diff-review",
@@ -1147,7 +1159,7 @@
         "google"
       ],
       "list": "Phase 5 — Document + review",
-      "sourceLine": 275
+      "sourceLine": 277
     }
   ]
 }
