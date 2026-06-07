@@ -1,0 +1,1153 @@
+{
+  "version": "1.0",
+  "generatedAt": "2026-06-05T01:50:50.681Z",
+  "source": "TODO.md",
+  "tasks": [
+    {
+      "id": "phase-1-structural-fixes-2026-06-04-phase-1-structural-fixes-2026-06-04-unify-navigation-brand-nav-brand-footer-",
+      "title": "Unify navigation — `.brand-nav` + `.brand-footer` applied to all sub-pages (`history-of-mistrust`, `brand-avery-ember-day`, `patriots-low-thirds`, `gallery`)",
+      "description": null,
+      "status": "completed",
+      "priority": "normal",
+      "tags": [],
+      "list": "✅ Phase 1 Structural Fixes (2026-06-04)",
+      "sourceLine": 22
+    },
+    {
+      "id": "phase-1-structural-fixes-2026-06-04-phase-1-structural-fixes-2026-06-04-resume-links-all-nav-resume-links-point-",
+      "title": "Resume links — all nav Resume links point to `AveryEmberDay_Resume_2026_Brand.html`",
+      "description": null,
+      "status": "completed",
+      "priority": "normal",
+      "tags": [],
+      "list": "✅ Phase 1 Structural Fixes (2026-06-04)",
+      "sourceLine": 23
+    },
+    {
+      "id": "phase-1-structural-fixes-2026-06-04-phase-1-structural-fixes-2026-06-04-upwork-icon-wired-into-indexhtml-contact",
+      "title": "Upwork icon — wired into `index.html` Contact section; SVG updated to `currentColor` fill",
+      "description": null,
+      "status": "completed",
+      "priority": "normal",
+      "tags": [],
+      "list": "✅ Phase 1 Structural Fixes (2026-06-04)",
+      "sourceLine": 24
+    },
+    {
+      "id": "phase-1-structural-fixes-2026-06-04-phase-1-structural-fixes-2026-06-04-patriots-placeholders-replaced-with-clea",
+      "title": "Patriots placeholders — replaced with clean `.wip-notice` blocks; `.wip-badge` added to project card in `index.html`",
+      "description": null,
+      "status": "completed",
+      "priority": "normal",
+      "tags": [],
+      "list": "✅ Phase 1 Structural Fixes (2026-06-04)",
+      "sourceLine": 25
+    },
+    {
+      "id": "phase-1-structural-fixes-2026-06-04-phase-1-structural-fixes-2026-06-04-gallery-empty-placeholders-9-empty-digit",
+      "title": "Gallery empty placeholders — 9 empty Digital Art placeholders removed",
+      "description": null,
+      "status": "completed",
+      "priority": "normal",
+      "tags": [],
+      "list": "✅ Phase 1 Structural Fixes (2026-06-04)",
+      "sourceLine": 26
+    },
+    {
+      "id": "a-history-of-mistrust-cross-target-sync-2026-05-28-done-phase-0-extract-content-vision-smoke-test-one-slide-direct-image",
+      "title": "Vision smoke test one slide (direct image read)",
+      "description": null,
+      "status": "completed",
+      "priority": "normal",
+      "tags": [
+        "sync-pipeline"
+      ],
+      "list": "Phase 0 — Extract content",
+      "sourceLine": 134
+    },
+    {
+      "id": "a-history-of-mistrust-cross-target-sync-2026-05-28-done-phase-0-extract-content-transcribe-all-30-slides-5-batches-of-6",
+      "title": "Transcribe all 30 slides (5 batches of 6)",
+      "description": null,
+      "status": "completed",
+      "priority": "normal",
+      "tags": [
+        "sync-pipeline"
+      ],
+      "list": "Phase 0 — Extract content",
+      "sourceLine": 135
+    },
+    {
+      "id": "a-history-of-mistrust-cross-target-sync-2026-05-28-done-phase-0-extract-content-spot-check-slides-1-7-15-30-directly-ass",
+      "title": "Spot-check slides 1, 7, 15, 30 directly; assemble canonical content doc",
+      "description": null,
+      "status": "completed",
+      "priority": "normal",
+      "tags": [
+        "sync-pipeline"
+      ],
+      "list": "Phase 0 — Extract content",
+      "sourceLine": 136
+    },
+    {
+      "id": "a-history-of-mistrust-cross-target-sync-2026-05-28-done-phase-1-portfolio-website-copy-30-carousel-pngs-into-imagesmyarta-",
+      "title": "Copy 30 carousel PNGs into `images/myart/A History of Mistrust/slides/`",
+      "description": null,
+      "status": "completed",
+      "priority": "normal",
+      "tags": [
+        "sync-pipeline"
+      ],
+      "list": "Phase 1 — Portfolio website",
+      "sourceLine": 139
+    },
+    {
+      "id": "a-history-of-mistrust-cross-target-sync-2026-05-28-done-phase-1-portfolio-website-web-optimize-30-slide-nnwebp-720px-displ",
+      "title": "Web-optimize: 30 `slide-NN.webp` (720px display) + `slide-NN@2x.webp` (1080px full) [TickTick 03]",
+      "description": null,
+      "status": "completed",
+      "priority": "normal",
+      "tags": [
+        "sync-pipeline"
+      ],
+      "list": "Phase 1 — Portfolio website",
+      "sourceLine": 140
+    },
+    {
+      "id": "a-history-of-mistrust-cross-target-sync-2026-05-28-done-phase-1-portfolio-website-stitch-3-combined-set-images-setsset-13w",
+      "title": "Stitch 3 combined set images `sets/set-1..3.webp` (10 slides each, native widths) [TickTick 04]",
+      "description": null,
+      "status": "completed",
+      "priority": "normal",
+      "tags": [
+        "sync-pipeline"
+      ],
+      "list": "Phase 1 — Portfolio website",
+      "sourceLine": 141
+    },
+    {
+      "id": "a-history-of-mistrust-cross-target-sync-2026-05-28-done-phase-1-portfolio-website-rename-page-to-projectshistory-of-mistru",
+      "title": "Rename page to `projects/history-of-mistrust.html` (match TickTick 05 spec); update index link",
+      "description": null,
+      "status": "completed",
+      "priority": "normal",
+      "tags": [
+        "sync-pipeline"
+      ],
+      "list": "Phase 1 — Portfolio website",
+      "sourceLine": 142
+    },
+    {
+      "id": "a-history-of-mistrust-cross-target-sync-2026-05-28-done-phase-1-portfolio-website-point-grid-img-to-display-webp",
+      "title": "Point grid `<img>` to display webp",
+      "description": null,
+      "status": "completed",
+      "priority": "normal",
+      "tags": [
+        "sync-pipeline"
+      ],
+      "list": "Phase 1 — Portfolio website",
+      "sourceLine": 143
+    },
+    {
+      "id": "a-history-of-mistrust-cross-target-sync-2026-05-28-done-phase-1-portfolio-website-create-projectshistory-of-mistrusthtml-f",
+      "title": "Create `projects/history-of-mistrust.html` from brand template",
+      "description": null,
+      "status": "completed",
+      "priority": "normal",
+      "tags": [
+        "sync-pipeline"
+      ],
+      "list": "Phase 1 — Portfolio website",
+      "sourceLine": 144
+    },
+    {
+      "id": "a-history-of-mistrust-cross-target-sync-2026-05-28-done-phase-1-portfolio-website-fix-indexhtml-card-image-tag-description",
+      "title": "Fix `index.html` card (image, tag, description)",
+      "description": null,
+      "status": "completed",
+      "priority": "normal",
+      "tags": [
+        "sync-pipeline"
+      ],
+      "list": "Phase 1 — Portfolio website",
+      "sourceLine": 145
+    },
+    {
+      "id": "a-history-of-mistrust-cross-target-sync-2026-05-28-done-phase-1-portfolio-website-verify-in-headed-browser-all-slides-load",
+      "title": "Verify in headed browser: all slides load, links, both themes, responsive",
+      "description": null,
+      "status": "completed",
+      "priority": "normal",
+      "tags": [
+        "sync-pipeline"
+      ],
+      "list": "Phase 1 — Portfolio website",
+      "sourceLine": 146
+    },
+    {
+      "id": "a-history-of-mistrust-cross-target-sync-2026-05-28-done-phase-1-portfolio-website-add-sourcesbibliography-section-80-citat",
+      "title": "Add Sources/Bibliography section (80+ citations, replaced Wikipedia with peer-reviewed sources)",
+      "description": null,
+      "status": "completed",
+      "priority": "normal",
+      "tags": [
+        "sync-pipeline"
+      ],
+      "list": "Phase 1 — Portfolio website",
+      "sourceLine": 147
+    },
+    {
+      "id": "a-history-of-mistrust-cross-target-sync-2026-05-28-done-phase-2-ticktick-audit-existing-tasks-now-via-mcp-see-tic",
+      "title": "Audit existing tasks (now via MCP) — see \"TickTick mirror\" section below",
+      "description": null,
+      "status": "completed",
+      "priority": "normal",
+      "tags": [
+        "sync-pipeline"
+      ],
+      "list": "Phase 2 — TickTick",
+      "sourceLine": 150
+    },
+    {
+      "id": "a-history-of-mistrust-cross-target-sync-2026-05-28-done-phase-2-ticktick-complete-finished-tasks-03-04-marked-don",
+      "title": "Complete finished tasks (03, 04 marked done in TickTick)",
+      "description": null,
+      "status": "completed",
+      "priority": "normal",
+      "tags": [
+        "sync-pipeline"
+      ],
+      "list": "Phase 2 — TickTick",
+      "sourceLine": 151
+    },
+    {
+      "id": "a-history-of-mistrust-cross-target-sync-2026-05-28-done-phase-2-ticktick-add-follow-ups-publish-page-post-carouse",
+      "title": "Add follow-ups (publish page, post carousel, sync doc) — tracked as human-action items below; no automated TickTick writes performed",
+      "description": null,
+      "status": "completed",
+      "priority": "normal",
+      "tags": [
+        "sync-pipeline"
+      ],
+      "list": "Phase 2 — TickTick",
+      "sourceLine": 152
+    },
+    {
+      "id": "a-history-of-mistrust-cross-target-sync-2026-05-28-done-phase-3-google-doc-private-agent-browser-logged-in-read-current-doc-content-skip-requires-h",
+      "title": "Read current doc content (SKIP — requires human login; deferred to user)",
+      "description": null,
+      "status": "completed",
+      "priority": "normal",
+      "tags": [
+        "sync-pipeline",
+        "google"
+      ],
+      "list": "Phase 3 — Google doc (private, agent-browser logged-in)",
+      "sourceLine": 155
+    },
+    {
+      "id": "a-history-of-mistrust-cross-target-sync-2026-05-28-done-phase-3-google-doc-private-agent-browser-logged-in-sync-copy-to-match-pngs-confirm-before-d",
+      "title": "Sync copy to match PNGs (confirm before destructive rewrite) (SKIP — requires human login; deferred to user)",
+      "description": null,
+      "status": "completed",
+      "priority": "normal",
+      "tags": [
+        "sync-pipeline",
+        "google"
+      ],
+      "list": "Phase 3 — Google doc (private, agent-browser logged-in)",
+      "sourceLine": 156
+    },
+    {
+      "id": "a-history-of-mistrust-cross-target-sync-2026-05-28-done-phase-4-local-folder-renumbergroup-finals-vs-supporting-mater",
+      "title": "Renumber/group finals vs supporting material (`finals/slide-01.png` … `slide-30.png`)",
+      "description": null,
+      "status": "completed",
+      "priority": "normal",
+      "tags": [
+        "sync-pipeline"
+      ],
+      "list": "Phase 4 — Local folder",
+      "sourceLine": 159
+    },
+    {
+      "id": "a-history-of-mistrust-cross-target-sync-2026-05-28-done-phase-4-local-folder-add-readmemanifest",
+      "title": "Add README/manifest",
+      "description": null,
+      "status": "completed",
+      "priority": "normal",
+      "tags": [
+        "sync-pipeline"
+      ],
+      "list": "Phase 4 — Local folder",
+      "sourceLine": 160
+    },
+    {
+      "id": "a-history-of-mistrust-cross-target-sync-2026-05-28-done-phase-5-document-review-update-logbookmd",
+      "title": "Update LOGBOOK.md",
+      "description": null,
+      "status": "completed",
+      "priority": "normal",
+      "tags": [
+        "sync-pipeline"
+      ],
+      "list": "Phase 5 — Document + review",
+      "sourceLine": 163
+    },
+    {
+      "id": "a-history-of-mistrust-cross-target-sync-2026-05-28-done-phase-5-document-review-final-diff-review",
+      "title": "Final diff review",
+      "description": null,
+      "status": "completed",
+      "priority": "normal",
+      "tags": [
+        "sync-pipeline"
+      ],
+      "list": "Phase 5 — Document + review",
+      "sourceLine": 164
+    },
+    {
+      "id": "a-history-of-mistrust-cross-target-sync-2026-05-28-done-phase-5-document-review-hand-off-no-commits-without-explicit-go-",
+      "title": "Hand off (no commits without explicit go-ahead)",
+      "description": null,
+      "status": "completed",
+      "priority": "normal",
+      "tags": [
+        "sync-pipeline"
+      ],
+      "list": "Phase 5 — Document + review",
+      "sourceLine": 165
+    },
+    {
+      "id": "ticktick-mirror-portfolio-website-list-synced-2026-05-28-a-history-of-mistrust-tag-history-of-mistrust-03",
+      "title": "03. Export 30 frames as web-optimized images (webp display + hi-res)",
+      "description": null,
+      "status": "completed",
+      "priority": "normal",
+      "tags": [
+        "history-of-mistrust",
+        "ticktick"
+      ],
+      "list": "A History of Mistrust (tag `history-of-mistrust`)",
+      "sourceLine": 174
+    },
+    {
+      "id": "ticktick-mirror-portfolio-website-list-synced-2026-05-28-a-history-of-mistrust-tag-history-of-mistrust-04",
+      "title": "04. Export 3 combined set images (sets of 10, stitched wide)",
+      "description": null,
+      "status": "completed",
+      "priority": "normal",
+      "tags": [
+        "history-of-mistrust",
+        "ticktick"
+      ],
+      "list": "A History of Mistrust (tag `history-of-mistrust`)",
+      "sourceLine": 175
+    },
+    {
+      "id": "ticktick-mirror-portfolio-website-list-synced-2026-05-28-a-history-of-mistrust-tag-history-of-mistrust-05",
+      "title": "05. Create project page from template *(done in repo: `projects/history-of-mistrust.html`)*",
+      "description": null,
+      "status": "completed",
+      "priority": "normal",
+      "tags": [
+        "history-of-mistrust",
+        "ticktick"
+      ],
+      "list": "A History of Mistrust (tag `history-of-mistrust`)",
+      "sourceLine": 176
+    },
+    {
+      "id": "ticktick-mirror-portfolio-website-list-synced-2026-05-28-a-history-of-mistrust-tag-history-of-mistrust-06",
+      "title": "06. Build continuous horizontal carousel (3 sets of 10, no gaps, seamless)",
+      "description": null,
+      "status": "completed",
+      "priority": "normal",
+      "tags": [
+        "history-of-mistrust",
+        "ticktick"
+      ],
+      "list": "A History of Mistrust (tag `history-of-mistrust`)",
+      "sourceLine": 177
+    },
+    {
+      "id": "ticktick-mirror-portfolio-website-list-synced-2026-05-28-a-history-of-mistrust-tag-history-of-mistrust-07",
+      "title": "07. Per-set slideshow (one at a time) + combined set image after each set",
+      "description": null,
+      "status": "completed",
+      "priority": "normal",
+      "tags": [
+        "history-of-mistrust",
+        "ticktick"
+      ],
+      "list": "A History of Mistrust (tag `history-of-mistrust`)",
+      "sourceLine": 178
+    },
+    {
+      "id": "ticktick-mirror-portfolio-website-list-synced-2026-05-28-a-history-of-mistrust-tag-history-of-mistrust-08",
+      "title": "08. Click-to-fullscreen lightbox (keyboard + close, accessible)",
+      "description": null,
+      "status": "completed",
+      "priority": "normal",
+      "tags": [
+        "history-of-mistrust",
+        "ticktick"
+      ],
+      "list": "A History of Mistrust (tag `history-of-mistrust`)",
+      "sourceLine": 179
+    },
+    {
+      "id": "ticktick-mirror-portfolio-website-list-synced-2026-05-28-a-history-of-mistrust-tag-history-of-mistrust-09",
+      "title": "09. Add project card to index.html Work section *(done in repo: card + cover image)*",
+      "description": null,
+      "status": "completed",
+      "priority": "normal",
+      "tags": [
+        "history-of-mistrust",
+        "ticktick"
+      ],
+      "list": "A History of Mistrust (tag `history-of-mistrust`)",
+      "sourceLine": 180
+    },
+    {
+      "id": "ticktick-mirror-portfolio-website-list-synced-2026-05-28-a-history-of-mistrust-tag-history-of-mistrust-10",
+      "title": "10. Verify: responsive, theme, a11y, keyboard nav, browser test",
+      "description": null,
+      "status": "completed",
+      "priority": "normal",
+      "tags": [
+        "history-of-mistrust",
+        "ticktick"
+      ],
+      "list": "A History of Mistrust (tag `history-of-mistrust`)",
+      "sourceLine": 181
+    },
+    {
+      "id": "ticktick-mirror-portfolio-website-list-synced-2026-05-28-mistrust-checklist-remake-moodboard",
+      "title": "Remake moodboard",
+      "description": null,
+      "status": "completed",
+      "priority": "normal",
+      "tags": [
+        "ticktick"
+      ],
+      "list": "mistrust (checklist)",
+      "sourceLine": 184
+    },
+    {
+      "id": "ticktick-mirror-portfolio-website-list-synced-2026-05-28-mistrust-checklist-fix-spelling-errors",
+      "title": "Fix spelling errors",
+      "description": null,
+      "status": "completed",
+      "priority": "normal",
+      "tags": [
+        "ticktick"
+      ],
+      "list": "mistrust (checklist)",
+      "sourceLine": 185
+    },
+    {
+      "id": "ticktick-mirror-portfolio-website-list-synced-2026-05-28-mistrust-checklist-finish-redesign",
+      "title": "Finish redesign",
+      "description": null,
+      "status": "completed",
+      "priority": "normal",
+      "tags": [
+        "ticktick"
+      ],
+      "list": "mistrust (checklist)",
+      "sourceLine": 186
+    },
+    {
+      "id": "ticktick-mirror-portfolio-website-list-synced-2026-05-28-mistrust-checklist-designate-title-card-slide-1-title-cover",
+      "title": "Designate title card *(Slide 1 — title cover)*",
+      "description": null,
+      "status": "completed",
+      "priority": "normal",
+      "tags": [
+        "ticktick"
+      ],
+      "list": "mistrust (checklist)",
+      "sourceLine": 187
+    },
+    {
+      "id": "ticktick-mirror-portfolio-website-list-synced-2026-05-28-sub-page-content-image-paths-history-of-mistrusthtml-add-real-images-",
+      "title": "history-of-mistrust.html: add real images (storyboard, spreads) from Process.pdf",
+      "description": null,
+      "status": "completed",
+      "priority": "normal",
+      "tags": [
+        "ticktick"
+      ],
+      "list": "Sub-page content & image paths",
+      "sourceLine": 190
+    },
+    {
+      "id": "ticktick-mirror-portfolio-website-list-synced-2026-05-28-sub-page-content-image-paths-confirm-all-image-src-paths-resolve",
+      "title": "confirm all image src paths resolve",
+      "description": null,
+      "status": "completed",
+      "priority": "normal",
+      "tags": [
+        "ticktick"
+      ],
+      "list": "Sub-page content & image paths",
+      "sourceLine": 191
+    },
+    {
+      "id": "ticktick-mirror-portfolio-website-list-synced-2026-05-28-sub-page-content-image-paths-patriots-low-thirdshtml-add-render-still",
+      "title": "patriots-low-thirds.html: add render still or embed video *(skeleton page created; real assets pending)*",
+      "description": null,
+      "status": "completed",
+      "priority": "normal",
+      "tags": [
+        "ticktick"
+      ],
+      "list": "Sub-page content & image paths",
+      "sourceLine": 192
+    },
+    {
+      "id": "ticktick-mirror-portfolio-website-list-synced-2026-05-28-sub-page-content-image-paths-self-portrait-serieshtml-verify-image-pa",
+      "title": "self-portrait-series.html: verify image paths *(page removed in BrandForge-v2 migration — placeholders only, no real images)*",
+      "description": null,
+      "status": "completed",
+      "priority": "normal",
+      "tags": [
+        "ticktick"
+      ],
+      "list": "Sub-page content & image paths",
+      "sourceLine": 193
+    },
+    {
+      "id": "ticktick-mirror-portfolio-website-list-synced-2026-05-28-sub-page-content-image-paths-gallerygalleryhtml-verify-all-gallery-im",
+      "title": "gallery/gallery.html: verify all gallery image paths load",
+      "description": null,
+      "status": "completed",
+      "priority": "normal",
+      "tags": [
+        "ticktick"
+      ],
+      "list": "Sub-page content & image paths",
+      "sourceLine": 194
+    },
+    {
+      "id": "ticktick-mirror-portfolio-website-list-synced-2026-05-28-sub-page-content-image-paths-confirm-imagesaverydaylogopng-is-not-ref",
+      "title": "Confirm images/AveryDayLogo.png is not referenced anywhere",
+      "description": null,
+      "status": "completed",
+      "priority": "normal",
+      "tags": [
+        "ticktick"
+      ],
+      "list": "Sub-page content & image paths",
+      "sourceLine": 195
+    },
+    {
+      "id": "ticktick-mirror-portfolio-website-list-synced-2026-05-28-sub-page-content-image-paths-history-of-mistrusthtml-fix-spelling-mis",
+      "title": "history-of-mistrust.html: fix spelling mistakes",
+      "description": null,
+      "status": "completed",
+      "priority": "normal",
+      "tags": [
+        "ticktick"
+      ],
+      "list": "Sub-page content & image paths",
+      "sourceLine": 196
+    },
+    {
+      "id": "ticktick-mirror-portfolio-website-list-synced-2026-05-28-project-card-thumbnails-3-missing-a-history-of-mistrust-cover-image-images",
+      "title": "A History of Mistrust: cover image → images/projects/mistrust-thumb.jpg",
+      "description": null,
+      "status": "completed",
+      "priority": "normal",
+      "tags": [
+        "ticktick"
+      ],
+      "list": "Project card thumbnails — 3 missing",
+      "sourceLine": 199
+    },
+    {
+      "id": "ticktick-mirror-portfolio-website-list-synced-2026-05-28-project-card-thumbnails-3-missing-aed-brand-identity-brand-showcase-images",
+      "title": "AED Brand Identity: brand showcase → images/projects/brand-thumb.jpg *(generated from bubbleLogo-blue.png)*",
+      "description": null,
+      "status": "completed",
+      "priority": "normal",
+      "tags": [
+        "ticktick"
+      ],
+      "list": "Project card thumbnails — 3 missing",
+      "sourceLine": 200
+    },
+    {
+      "id": "ticktick-mirror-portfolio-website-list-synced-2026-05-28-project-card-thumbnails-3-missing-patriots-low-thirds-stillrender-imagespr",
+      "title": "Patriots Low Thirds: still/render → images/projects/patriots-thumb.jpg *(blocked on motion graphics assets)*",
+      "description": null,
+      "status": "pending",
+      "priority": "normal",
+      "tags": [
+        "ticktick"
+      ],
+      "list": "Project card thumbnails — 3 missing",
+      "sourceLine": 201
+    },
+    {
+      "id": "ticktick-mirror-portfolio-website-list-synced-2026-05-28-project-card-thumbnails-3-missing-wire-brand-mistrust-thumbnails-into-proj",
+      "title": "Wire brand + mistrust thumbnails into `.project-card-img` divs in index.html *(patriots placeholder until thumb available)*",
+      "description": null,
+      "status": "completed",
+      "priority": "normal",
+      "tags": [
+        "ticktick"
+      ],
+      "list": "Project card thumbnails — 3 missing",
+      "sourceLine": 202
+    },
+    {
+      "id": "ticktick-mirror-portfolio-website-list-synced-2026-05-28-project-card-thumbnails-3-missing-verify-gallery-card-facesfinalpng-displa",
+      "title": "Verify gallery card (FacesFinal.png) displays at all breakpoints *(verified via Playwright screenshots at 4 breakpoints; renders correctly)*",
+      "description": null,
+      "status": "completed",
+      "priority": "normal",
+      "tags": [
+        "ticktick"
+      ],
+      "list": "Project card thumbnails — 3 missing",
+      "sourceLine": 203
+    },
+    {
+      "id": "ticktick-mirror-portfolio-website-list-synced-2026-05-28-pre-launch-qa-optimize-gallery-images-deleted-16-unuse",
+      "title": "Optimize gallery images — deleted 16 unused large PNGs (~118 MB) from `images/myart/Gallery/`; all HTML references already pointed to `.webp` equivalents (fixed one remaining PNG reference in `gallery/gallery.html`)",
+      "description": null,
+      "status": "completed",
+      "priority": "normal",
+      "tags": [
+        "ticktick"
+      ],
+      "list": "Pre-launch QA",
+      "sourceLine": 206
+    },
+    {
+      "id": "ticktick-mirror-portfolio-website-list-synced-2026-05-28-pre-launch-qa-cross-browser-test-at-360px-768px-1024px",
+      "title": "Cross-browser test at 360px, 768px, 1024px, 1440px *(Chromium screenshots captured for index, history-of-mistrust, gallery at all 4 breakpoints)*",
+      "description": null,
+      "status": "completed",
+      "priority": "normal",
+      "tags": [
+        "ticktick"
+      ],
+      "list": "Pre-launch QA",
+      "sourceLine": 207
+    },
+    {
+      "id": "ticktick-mirror-portfolio-website-list-synced-2026-05-28-pre-launch-qa-keyboard-nav-test-tab-order-skip-link-fo",
+      "title": "Keyboard nav test: tab order, skip link, focus rings visible *(`.skip-link` present on all pages; `:focus-visible` defined in brand.css and style.css; theme toggle has `aria-label`)*",
+      "description": null,
+      "status": "completed",
+      "priority": "normal",
+      "tags": [
+        "ticktick"
+      ],
+      "list": "Pre-launch QA",
+      "sourceLine": 208
+    },
+    {
+      "id": "ticktick-mirror-portfolio-website-list-synced-2026-05-28-pre-launch-qa-confirm-all-links-resolve-no-404s-link-c",
+      "title": "Confirm all links resolve — no 404s *(link-check script verified all internal href/src paths resolve; recovered missing `mistrust-thumb.jpg`, slide webps, set webps, and supporting material storyboard from `feat/history-of-mistrust-case-study` branch)*",
+      "description": null,
+      "status": "completed",
+      "priority": "normal",
+      "tags": [
+        "ticktick"
+      ],
+      "list": "Pre-launch QA",
+      "sourceLine": 209
+    },
+    {
+      "id": "ticktick-mirror-portfolio-website-list-synced-2026-05-28-pre-launch-qa-spell-check-all-body-copy-across-index-a",
+      "title": "Spell-check all body copy across index, about, contact, project pages *(Node script scanned 6 HTML files; 0 common misspellings found)*",
+      "description": null,
+      "status": "completed",
+      "priority": "normal",
+      "tags": [
+        "ticktick"
+      ],
+      "list": "Pre-launch QA",
+      "sourceLine": 210
+    },
+    {
+      "id": "ticktick-mirror-portfolio-website-list-synced-2026-05-28-pre-launch-qa-visual-review-at-all-4-widths-no-clippin",
+      "title": "Visual review at all 4 widths — no clipping/overflow/awkward whitespace *(screenshots reviewed: hero text readable, project cards aligned, gallery grid intact, bibliography 3-col desktop → 1-col mobile)*",
+      "description": null,
+      "status": "completed",
+      "priority": "normal",
+      "tags": [
+        "ticktick"
+      ],
+      "list": "Pre-launch QA",
+      "sourceLine": 211
+    },
+    {
+      "id": "ticktick-mirror-portfolio-website-list-synced-2026-05-28-pre-launch-qa-final-screenshot-recruiter-3-second-impr",
+      "title": "Final screenshot — recruiter 3-second impression check *(hero screenshot at 1440px: logo, name, tagline immediately readable above the fold)*",
+      "description": null,
+      "status": "completed",
+      "priority": "normal",
+      "tags": [
+        "ticktick"
+      ],
+      "list": "Pre-launch QA",
+      "sourceLine": 212
+    },
+    {
+      "id": "ticktick-mirror-portfolio-website-list-synced-2026-05-28-launch-point-averyemberdaycom-live-confirm-full-site-passes-pre-launch-qa",
+      "title": "Confirm full site passes Pre-launch QA",
+      "description": null,
+      "status": "pending",
+      "priority": "normal",
+      "tags": [
+        "ticktick"
+      ],
+      "list": "Launch — point averyemberday.com live",
+      "sourceLine": 215
+    },
+    {
+      "id": "ticktick-mirror-portfolio-website-list-synced-2026-05-28-launch-point-averyemberdaycom-live-confirm-deploy-target-netlify-github-pag",
+      "title": "Confirm deploy target (Netlify / GitHub Pages) wired to CometGit/portfoliowebsite",
+      "description": null,
+      "status": "pending",
+      "priority": "normal",
+      "tags": [
+        "ticktick"
+      ],
+      "list": "Launch — point averyemberday.com live",
+      "sourceLine": 216
+    },
+    {
+      "id": "ticktick-mirror-portfolio-website-list-synced-2026-05-28-launch-point-averyemberdaycom-live-update-dns-point-averyemberdaycom-to-dep",
+      "title": "Update DNS — point averyemberday.com to deploy target",
+      "description": null,
+      "status": "pending",
+      "priority": "normal",
+      "tags": [
+        "ticktick"
+      ],
+      "list": "Launch — point averyemberday.com live",
+      "sourceLine": 217
+    },
+    {
+      "id": "ticktick-mirror-portfolio-website-list-synced-2026-05-28-launch-point-averyemberdaycom-live-test-averyemberdaycom-after-dns-propagat",
+      "title": "Test averyemberday.com after DNS propagates (all pages, all links)",
+      "description": null,
+      "status": "pending",
+      "priority": "normal",
+      "tags": [
+        "ticktick"
+      ],
+      "list": "Launch — point averyemberday.com live",
+      "sourceLine": 218
+    },
+    {
+      "id": "ticktick-mirror-portfolio-website-list-synced-2026-05-28-launch-point-averyemberdaycom-live-check-https-certificate-is-active",
+      "title": "Check HTTPS certificate is active",
+      "description": null,
+      "status": "pending",
+      "priority": "normal",
+      "tags": [
+        "ticktick"
+      ],
+      "list": "Launch — point averyemberday.com live",
+      "sourceLine": 219
+    },
+    {
+      "id": "ticktick-mirror-portfolio-website-list-synced-2026-05-28-motion-graphics-patriots-checklist-take-another-look-at-patriots-project",
+      "title": "Take another look at patriots project",
+      "description": null,
+      "status": "completed",
+      "priority": "normal",
+      "tags": [
+        "ticktick"
+      ],
+      "list": "Motion graphics Patriots (checklist)",
+      "sourceLine": 222
+    },
+    {
+      "id": "ticktick-mirror-portfolio-website-list-synced-2026-05-28-motion-graphics-patriots-checklist-adjust-speed-of-the-beginning",
+      "title": "adjust speed of the beginning",
+      "description": null,
+      "status": "pending",
+      "priority": "normal",
+      "tags": [
+        "ticktick"
+      ],
+      "list": "Motion graphics Patriots (checklist)",
+      "sourceLine": 223
+    },
+    {
+      "id": "ticktick-mirror-portfolio-website-list-synced-2026-05-28-motion-graphics-patriots-checklist-save-new-files",
+      "title": "save new files",
+      "description": null,
+      "status": "pending",
+      "priority": "normal",
+      "tags": [
+        "ticktick"
+      ],
+      "list": "Motion graphics Patriots (checklist)",
+      "sourceLine": 224
+    },
+    {
+      "id": "ticktick-mirror-portfolio-website-list-synced-2026-05-28-motion-graphics-patriots-checklist-add-project-overview-to-portfolio",
+      "title": "add project overview to portfolio",
+      "description": null,
+      "status": "pending",
+      "priority": "normal",
+      "tags": [
+        "ticktick"
+      ],
+      "list": "Motion graphics Patriots (checklist)",
+      "sourceLine": 225
+    },
+    {
+      "id": "ticktick-mirror-portfolio-website-list-synced-2026-05-28-motion-graphics-patriots-checklist-display-final-project",
+      "title": "display final project",
+      "description": null,
+      "status": "pending",
+      "priority": "normal",
+      "tags": [
+        "ticktick"
+      ],
+      "list": "Motion graphics Patriots (checklist)",
+      "sourceLine": 226
+    },
+    {
+      "id": "ticktick-mirror-portfolio-website-list-synced-2026-05-28-gallery-tag-system-design-tag-taxonomy-categorize-by-medium",
+      "title": "Design tag taxonomy (categorize by medium used — e.g., mixed-media, digital, photography, illustration)",
+      "description": null,
+      "status": "pending",
+      "priority": "normal",
+      "tags": [
+        "ticktick"
+      ],
+      "list": "Gallery tag system",
+      "sourceLine": 229
+    },
+    {
+      "id": "ticktick-mirror-portfolio-website-list-synced-2026-05-28-gallery-tag-system-implement-filter-ui-in-gallerygalleryhtm",
+      "title": "Implement filter UI in `gallery/gallery.html` (all / medium toggles)",
+      "description": null,
+      "status": "pending",
+      "priority": "normal",
+      "tags": [
+        "ticktick"
+      ],
+      "list": "Gallery tag system",
+      "sourceLine": 230
+    },
+    {
+      "id": "ticktick-mirror-portfolio-website-list-synced-2026-05-28-gallery-tag-system-wire-tag-metadata-into-existing-gallery-",
+      "title": "Wire tag metadata into existing gallery items so viewers can choose what to see",
+      "description": null,
+      "status": "pending",
+      "priority": "normal",
+      "tags": [
+        "ticktick"
+      ],
+      "list": "Gallery tag system",
+      "sourceLine": 231
+    },
+    {
+      "id": "ticktick-mirror-portfolio-website-list-synced-2026-05-28-gallery-tag-system-verify-responsive-layout-with-filter-bar",
+      "title": "Verify responsive layout with filter bar at 360px, 768px, 1024px, 1440px",
+      "description": null,
+      "status": "pending",
+      "priority": "normal",
+      "tags": [
+        "ticktick"
+      ],
+      "list": "Gallery tag system",
+      "sourceLine": 232
+    },
+    {
+      "id": "ticktick-mirror-portfolio-website-list-synced-2026-05-28-a-history-of-mistrust-post-framework-finish-the-continuous-horizontal-carouse",
+      "title": "Finish the continuous horizontal carousel (currently functional but pending final polish after framework decision)",
+      "description": null,
+      "status": "pending",
+      "priority": "normal",
+      "tags": [
+        "ticktick"
+      ],
+      "list": "A History of Mistrust — post-framework",
+      "sourceLine": 235
+    },
+    {
+      "id": "ticktick-mirror-portfolio-website-list-synced-2026-05-28-a-history-of-mistrust-post-framework-create-a-complete-viewer-accessible-file",
+      "title": "Create a complete, viewer-accessible file/page containing all canonical slide content with bibliography and numbered sources",
+      "description": null,
+      "status": "pending",
+      "priority": "normal",
+      "tags": [
+        "ticktick"
+      ],
+      "list": "A History of Mistrust — post-framework",
+      "sourceLine": 236
+    },
+    {
+      "id": "ticktick-mirror-portfolio-website-list-synced-2026-05-28-standalone-adjust-color-palette-for-contrast",
+      "title": "adjust color palette for contrast",
+      "description": null,
+      "status": "pending",
+      "priority": "normal",
+      "tags": [
+        "ticktick"
+      ],
+      "list": "Standalone",
+      "sourceLine": 239
+    },
+    {
+      "id": "ticktick-mirror-portfolio-website-list-synced-2026-05-28-standalone-watermark-artwork",
+      "title": "Watermark artwork",
+      "description": null,
+      "status": "pending",
+      "priority": "normal",
+      "tags": [
+        "ticktick"
+      ],
+      "list": "Standalone",
+      "sourceLine": 240
+    },
+    {
+      "id": "google-ticktick-cross-target-sync-2026-06-02-phase-0-auth-access-audit-create-docssync-directory-gitignore-entr",
+      "title": "Create `docs/sync/` directory + `.gitignore` entries",
+      "description": null,
+      "status": "completed",
+      "priority": "normal",
+      "tags": [
+        "sync-pipeline",
+        "google"
+      ],
+      "list": "Phase 0 — Auth & access audit",
+      "sourceLine": 248
+    },
+    {
+      "id": "google-ticktick-cross-target-sync-2026-06-02-phase-0-auth-access-audit-ticktick-mcp-added-to-kilo-config-httpsm",
+      "title": "TickTick MCP added to Kilo config (`https://mcp.ticktick.com`)",
+      "description": null,
+      "status": "completed",
+      "priority": "normal",
+      "tags": [
+        "sync-pipeline",
+        "google"
+      ],
+      "list": "Phase 0 — Auth & access audit",
+      "sourceLine": 249
+    },
+    {
+      "id": "google-ticktick-cross-target-sync-2026-06-02-phase-0-auth-access-audit-google-auth-oauth-client-id-synced-to-en",
+      "title": "Google auth: OAuth client ID synced to `.env` + Claude/Codex/Kilo configs, `scripts/google-oauth.js` ready for refresh token",
+      "description": null,
+      "status": "completed",
+      "priority": "normal",
+      "tags": [
+        "sync-pipeline",
+        "google"
+      ],
+      "list": "Phase 0 — Auth & access audit",
+      "sourceLine": 250
+    },
+    {
+      "id": "google-ticktick-cross-target-sync-2026-06-02-phase-0-auth-access-audit-run-node-scriptsgoogle-oauthjs-to-obtain",
+      "title": "Run `node scripts/google-oauth.js` to obtain Google refresh token *(token present in `.env`; refresh verified working)*",
+      "description": null,
+      "status": "completed",
+      "priority": "normal",
+      "tags": [
+        "sync-pipeline",
+        "google"
+      ],
+      "list": "Phase 0 — Auth & access audit",
+      "sourceLine": 251
+    },
+    {
+      "id": "google-ticktick-cross-target-sync-2026-06-02-phase-0-auth-access-audit-blocker-resolved-google-tasks-api-is-ena",
+      "title": "**BLOCKER RESOLVED:** Google Tasks API is enabled. `tasks.list` returns 200, token refresh works.",
+      "description": null,
+      "status": "completed",
+      "priority": "normal",
+      "tags": [
+        "sync-pipeline",
+        "google"
+      ],
+      "list": "Phase 0 — Auth & access audit",
+      "sourceLine": 252
+    },
+    {
+      "id": "google-ticktick-cross-target-sync-2026-06-02-phase-0-auth-access-audit-blocker-resolved-ticktickaccesstoken-add",
+      "title": "**BLOCKER RESOLVED:** `TICKTICK_ACCESS_TOKEN` added to `.env`. Dry-run verified: project reachable, 80 tasks queued for creation.",
+      "description": null,
+      "status": "completed",
+      "priority": "normal",
+      "tags": [
+        "sync-pipeline",
+        "google"
+      ],
+      "list": "Phase 0 — Auth & access audit",
+      "sourceLine": 253
+    },
+    {
+      "id": "google-ticktick-cross-target-sync-2026-06-02-phase-1-local-schema-create-docssynclocal-tasksjson-from-todo",
+      "title": "Create `docs/sync/local-tasks.json` from TODO.md *(83 tasks: 59 completed, 24 pending)*",
+      "description": null,
+      "status": "completed",
+      "priority": "normal",
+      "tags": [
+        "sync-pipeline",
+        "google"
+      ],
+      "list": "Phase 1 — Local schema",
+      "sourceLine": 256
+    },
+    {
+      "id": "google-ticktick-cross-target-sync-2026-06-02-phase-1-local-schema-build-scriptsparse-todojs",
+      "title": "Build `scripts/parse-todo.js`",
+      "description": null,
+      "status": "completed",
+      "priority": "normal",
+      "tags": [
+        "sync-pipeline",
+        "google"
+      ],
+      "list": "Phase 1 — Local schema",
+      "sourceLine": 257
+    },
+    {
+      "id": "google-ticktick-cross-target-sync-2026-06-02-phase-1-local-schema-create-docssyncmappingjson-skeleton",
+      "title": "Create `docs/sync/mapping.json` skeleton",
+      "description": null,
+      "status": "completed",
+      "priority": "normal",
+      "tags": [
+        "sync-pipeline",
+        "google"
+      ],
+      "list": "Phase 1 — Local schema",
+      "sourceLine": 258
+    },
+    {
+      "id": "google-ticktick-cross-target-sync-2026-06-02-phase-2-ticktick-sync-build-scriptssync-ticktickjs-rest-api-wi",
+      "title": "Build `scripts/sync-ticktick.js` *(REST API with auth abstraction; endpoints based on TickTick Open API v1)*",
+      "description": null,
+      "status": "completed",
+      "priority": "normal",
+      "tags": [
+        "sync-pipeline",
+        "google"
+      ],
+      "list": "Phase 2 — TickTick sync",
+      "sourceLine": 261
+    },
+    {
+      "id": "google-ticktick-cross-target-sync-2026-06-02-phase-2-ticktick-sync-build-scriptsticktick-oauthjs-oauth-help",
+      "title": "Build `scripts/ticktick-oauth.js` *(OAuth helper mirroring `google-oauth.js`)*",
+      "description": null,
+      "status": "completed",
+      "priority": "normal",
+      "tags": [
+        "sync-pipeline",
+        "google"
+      ],
+      "list": "Phase 2 — TickTick sync",
+      "sourceLine": 262
+    },
+    {
+      "id": "google-ticktick-cross-target-sync-2026-06-02-phase-2-ticktick-sync-dry-run-verification-token-obtained-83-t",
+      "title": "Dry-run verification *(token obtained, 83 tasks verified)*",
+      "description": null,
+      "status": "completed",
+      "priority": "normal",
+      "tags": [
+        "sync-pipeline",
+        "google"
+      ],
+      "list": "Phase 2 — TickTick sync",
+      "sourceLine": 263
+    },
+    {
+      "id": "google-ticktick-cross-target-sync-2026-06-02-phase-3-google-sync-build-scriptssync-googlejs-google-tasks-",
+      "title": "Build `scripts/sync-google.js` *(Google Tasks API v1 with auto token refresh)*",
+      "description": null,
+      "status": "completed",
+      "priority": "normal",
+      "tags": [
+        "sync-pipeline",
+        "google"
+      ],
+      "list": "Phase 3 — Google sync",
+      "sourceLine": 266
+    },
+    {
+      "id": "google-ticktick-cross-target-sync-2026-06-02-phase-3-google-sync-dry-run-verification-api-enabled-83-task",
+      "title": "Dry-run verification *(API enabled, 83 tasks verified)*",
+      "description": null,
+      "status": "completed",
+      "priority": "normal",
+      "tags": [
+        "sync-pipeline",
+        "google"
+      ],
+      "list": "Phase 3 — Google sync",
+      "sourceLine": 267
+    },
+    {
+      "id": "google-ticktick-cross-target-sync-2026-06-02-phase-4-orchestration-build-scriptssync-alljs",
+      "title": "Build `scripts/sync-all.js`",
+      "description": null,
+      "status": "completed",
+      "priority": "normal",
+      "tags": [
+        "sync-pipeline",
+        "google"
+      ],
+      "list": "Phase 4 — Orchestration",
+      "sourceLine": 270
+    },
+    {
+      "id": "google-ticktick-cross-target-sync-2026-06-02-phase-4-orchestration-wire-into-todomd-maintenance-workflow-ru",
+      "title": "Wire into TODO.md maintenance workflow — run `node scripts/sync-all.js --dry-run` after TODO.md edits",
+      "description": null,
+      "status": "completed",
+      "priority": "normal",
+      "tags": [
+        "sync-pipeline",
+        "google"
+      ],
+      "list": "Phase 4 — Orchestration",
+      "sourceLine": 271
+    },
+    {
+      "id": "google-ticktick-cross-target-sync-2026-06-02-phase-5-document-review-update-logbookmd-with-sync-cycle-entry",
+      "title": "Update LOGBOOK.md with sync cycle entry",
+      "description": null,
+      "status": "completed",
+      "priority": "normal",
+      "tags": [
+        "sync-pipeline",
+        "google"
+      ],
+      "list": "Phase 5 — Document + review",
+      "sourceLine": 274
+    },
+    {
+      "id": "google-ticktick-cross-target-sync-2026-06-02-phase-5-document-review-final-diff-review",
+      "title": "Final diff review",
+      "description": null,
+      "status": "completed",
+      "priority": "normal",
+      "tags": [
+        "sync-pipeline",
+        "google"
+      ],
+      "list": "Phase 5 — Document + review",
+      "sourceLine": 275
+    }
+  ]
+}

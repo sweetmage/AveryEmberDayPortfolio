@@ -62,47 +62,31 @@
         margin: 0 auto;
         padding: 0 24px 80px;
       }
-      .section-label {
-        font-family: var(--brand-font-body);
-        font-size: 0.75rem;
-        font-weight: 600;
-        letter-spacing: 0.1em;
-        text-transform: uppercase;
-        color: var(--brand-text-muted);
-        margin: 0 0 24px;
-      }
       .section-title {
         font-family: var(--brand-font-heading);
         font-size: 1.5rem;
         font-weight: 600;
-        color: #7eb8ff;
+        color: var(--brand-ir-4);
         margin: 0 0 32px;
       }
 
-      /* Slide grid */
-      .slide-grid {
-        display: grid;
-        grid-template-columns: 1fr;
+      .all-sets-full {
+        display: flex;
+        flex-direction: column;
         gap: 24px;
+        width: 100%;
       }
-      .slide-card {
+      .all-sets-full .carousel-set {
+        width: 100%;
         border-radius: var(--brand-radius-lg);
         overflow: hidden;
         border: 1px solid var(--brand-border);
         background: var(--brand-surface-1);
+        cursor: pointer;
+        transition: border-color var(--brand-transition-fast);
       }
-      .slide-card img {
-        width: 100%;
-        height: auto;
-        display: block;
-      }
-      .slide-card-label {
-        padding: 10px 16px;
-        font-family: var(--brand-font-body);
-        font-size: 0.8rem;
-        color: var(--brand-text-muted);
-        text-align: center;
-        border-top: 1px solid var(--brand-border);
+      .all-sets-full .carousel-set:hover {
+        border-color: var(--brand-accent-dim);
       }
 
       /* Supporting material */
@@ -175,33 +159,11 @@
       }
 
       @media screen and (min-width: 600px) {
-        .slide-grid { grid-template-columns: repeat(2, 1fr); }
         .supporting-grid { grid-template-columns: repeat(2, 1fr); }
       }
-      @media screen and (min-width: 900px) {
-        .slide-grid { grid-template-columns: repeat(3, 1fr); }
-      }
 
-      /* ── Carousel ── */
-      .carousel-wrap { position: relative; }
-      .carousel-track {
-        display: flex;
-        gap: 0;
-        overflow-x: auto;
-        scroll-snap-type: x mandatory;
-        scroll-behavior: smooth;
-        overscroll-behavior-x: contain;
-        -webkit-overflow-scrolling: touch;
-        border-radius: var(--brand-radius-lg);
-        border: 1px solid var(--brand-border);
-        background: var(--brand-surface-1);
-      }
-      @media (prefers-reduced-motion: reduce) {
-        .carousel-track { scroll-behavior: auto; }
-      }
+      /* ── Carousel sets ── */
       .carousel-set {
-        flex: 0 0 100%;
-        scroll-snap-align: start;
         position: relative;
       }
       .carousel-set img {
@@ -209,124 +171,83 @@
         height: auto;
         display: block;
       }
-      .carousel-set-label {
-        position: absolute;
-        bottom: 12px;
-        left: 12px;
-        background: rgba(10,10,10,0.75);
-        color: #fff;
-        font-family: var(--brand-font-body);
-        font-size: 0.75rem;
-        padding: 4px 10px;
-        border-radius: var(--brand-radius-sm);
-        pointer-events: none;
-      }
-      .carousel-arrow {
-        position: absolute;
-        top: 50%;
-        transform: translateY(-50%);
-        z-index: 2;
-        width: 40px;
-        height: 40px;
-        border-radius: 50%;
-        border: 1px solid var(--brand-border);
-        background: var(--brand-surface-2);
-        color: var(--brand-text);
-        font-size: 1.1rem;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        transition: background var(--brand-transition-fast), border-color var(--brand-transition-fast);
-      }
-      .carousel-arrow:hover { background: var(--brand-accent-dim); border-color: var(--brand-accent); }
-      .carousel-arrow:focus-visible { outline: 2px solid var(--brand-accent); outline-offset: 2px; }
-      .carousel-prev { left: 8px; }
-      .carousel-next { right: 8px; }
-      .carousel-dots {
-        display: flex;
-        justify-content: center;
-        gap: 8px;
-        margin-top: 12px;
-      }
-      .carousel-dots button {
-        width: 10px;
-        height: 10px;
-        border-radius: 50%;
-        border: 1px solid var(--brand-border-mid);
-        background: var(--brand-surface-2);
-        cursor: pointer;
-        padding: 0;
-        transition: background var(--brand-transition-fast), border-color var(--brand-transition-fast);
-      }
-      .carousel-dots button[aria-selected="true"] {
-        background: var(--brand-accent);
-        border-color: var(--brand-accent);
-      }
-      .carousel-dots button:focus-visible { outline: 2px solid var(--brand-accent); outline-offset: 2px; }
 
-      /* ── Slideshow ── */
-      .slideshow-wrap { max-width: 720px; margin: 0 auto; }
-      .slideshow-set-tabs {
+      /* ── Per-set slideshows ── */
+      .set-slideshows {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 32px;
+      }
+      @media screen and (min-width: 900px) {
+        .set-slideshows { grid-template-columns: repeat(3, 1fr); gap: 24px; }
+      }
+      .set-slideshow {
         display: flex;
-        gap: 8px;
-        justify-content: center;
-        margin-bottom: 16px;
+        flex-direction: column;
+        min-width: 0;
       }
-      .slideshow-set-tabs button {
+      .set-ss-label {
         font-family: var(--brand-font-body);
-        font-size: 0.82rem;
-        font-weight: 500;
-        padding: 6px 16px;
-        border-radius: var(--brand-radius-sm);
-        border: 1px solid var(--brand-border);
-        background: var(--brand-surface-2);
-        color: var(--brand-text-muted);
-        cursor: pointer;
-        transition: background var(--brand-transition-fast), border-color var(--brand-transition-fast), color var(--brand-transition-fast);
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: var(--brand-text-soft);
+        margin: 0 0 12px;
+        text-align: center;
       }
-      .slideshow-set-tabs button[aria-selected="true"] {
-        background: var(--brand-accent-dim);
-        border-color: var(--brand-accent);
-        color: var(--brand-accent);
-      }
-      .slideshow-set-tabs button:focus-visible { outline: 2px solid var(--brand-accent); outline-offset: 2px; }
-      .slideshow-viewer {
+      .set-ss-viewer {
         border-radius: var(--brand-radius-lg);
         overflow: hidden;
         border: 1px solid var(--brand-border);
         background: var(--brand-surface-1);
         position: relative;
         aspect-ratio: 1 / 1;
+        cursor: pointer;
+      }
+      .set-ss-track {
+        display: flex;
+        width: 100%;
+        height: 100%;
+        transform: translateX(0);
+        transition: transform 300ms cubic-bezier(0.34, 1.56, 0.64, 1);
+      }
+      .set-ss-track.no-transition { transition: none; }
+      @media (prefers-reduced-motion: reduce) {
+        .set-ss-track { transition: none; }
+      }
+      .set-ss-slide {
+        min-width: 100%;
+        width: 100%;
+        height: 100%;
         display: flex;
         align-items: center;
         justify-content: center;
+        flex-shrink: 0;
       }
-      .slideshow-viewer img {
+      .set-ss-slide img {
         max-width: 100%;
         max-height: 100%;
         object-fit: contain;
         display: block;
       }
-      .slideshow-caption {
+      .set-ss-caption {
         text-align: center;
         font-family: var(--brand-font-body);
-        font-size: 0.85rem;
+        font-size: 0.82rem;
         color: var(--brand-text-muted);
         margin-top: 10px;
         min-height: 1.4em;
       }
-      .slideshow-controls {
+      .set-ss-controls {
         display: flex;
         align-items: center;
         justify-content: center;
-        gap: 16px;
-        margin-top: 16px;
+        gap: 12px;
+        margin-top: 12px;
       }
-      .slideshow-controls button {
+      .set-ss-controls button {
         font-family: var(--brand-font-body);
-        font-size: 0.85rem;
-        padding: 6px 14px;
+        font-size: 0.82rem;
+        padding: 6px 12px;
         border-radius: var(--brand-radius-sm);
         border: 1px solid var(--brand-border);
         background: var(--brand-surface-2);
@@ -334,19 +255,19 @@
         cursor: pointer;
         transition: background var(--brand-transition-fast), border-color var(--brand-transition-fast);
       }
-      .slideshow-controls button:hover { background: var(--brand-accent-dim); border-color: var(--brand-accent); }
-      .slideshow-controls button:focus-visible { outline: 2px solid var(--brand-accent); outline-offset: 2px; }
-      .slideshow-controls button:disabled {
+      .set-ss-controls button:hover { background: var(--brand-accent-dim); border-color: var(--brand-accent); }
+      .set-ss-controls button:focus-visible { outline: 2px solid var(--brand-accent); outline-offset: 2px; }
+      .set-ss-controls button:disabled {
         opacity: 0.4;
         cursor: not-allowed;
         background: var(--brand-surface-2);
         border-color: var(--brand-border);
       }
-      #slideshow-counter {
+      .set-ss-counter {
         font-family: var(--brand-font-body);
-        font-size: 0.82rem;
+        font-size: 0.8rem;
         color: var(--brand-text-muted);
-        min-width: 100px;
+        min-width: 84px;
         text-align: center;
       }
 
@@ -371,11 +292,35 @@
         opacity: 1;
         visibility: visible;
       }
-      .lightbox-overlay img {
-        max-width: 100%;
-        max-height: calc(100vh - 96px);
-        object-fit: contain;
+      .lightbox-frame {
+        position: relative;
+        width: 100%;
+        max-width: 1080px;
+        overflow: hidden;
         border-radius: var(--brand-radius-sm);
+        touch-action: pan-y;
+        cursor: grab;
+      }
+      .lightbox-frame.dragging {
+        cursor: grabbing;
+      }
+      .lightbox-track {
+        display: flex;
+        transform: translateX(0);
+        transition: transform 240ms ease;
+        width: 100%;
+      }
+      .lightbox-slide {
+        min-width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .lightbox-slide img {
+        width: 100%;
+        max-height: calc(100vh - 160px);
+        object-fit: contain;
+        display: block;
       }
       .lightbox-close {
         position: absolute;
@@ -437,24 +382,25 @@
     <div class="brand-page-bg" aria-hidden="true"></div>
     <div class="brand-page-noise" aria-hidden="true"></div>
 
-    <header>
-      <div id="logoContainer">
-        <img src="../images/icons/BubbleLogo/bubbleLogo-white-notxt.svg" alt="Avery Ember Day Logo" id="logo" />
-        <span id="logoText">Avery Ember Day</span>
-      </div>
-      <nav aria-label="Primary navigation">
-        <ul>
+    <nav class="brand-nav" id="brandNav" aria-label="Primary navigation">
+      <div class="brand-container brand-nav-inner">
+        <a href="../index.html" class="brand-nav-logo">
+          <img src="../images/icons/BubbleLogo/bubbleLogo-white-notxt.svg" alt="" width="32" height="32" />
+          Avery Ember Day
+        </a>
+        <ul class="brand-nav-links">
           <li><a href="../index.html#work">Work</a></li>
           <li><a href="../index.html#about">About</a></li>
-          <li><a href="../resume/AveryEmberDay_Resume_2026.html" target="_blank">Resume</a></li>
           <li><a href="../index.html#contact">Contact</a></li>
         </ul>
-        <button id="theme-toggle" aria-label="Toggle light/dark mode">
-          <svg class="icon-sun" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 17a5 5 0 1 0 0-10 5 5 0 0 0 0 10zm0 2a1 1 0 0 1 1 1v1a1 1 0 1 1-2 0v-1a1 1 0 0 1 1-1zm0-14a1 1 0 0 1-1-1V3a1 1 0 1 1 2 0v1a1 1 0 0 1-1 1zM4.22 5.64a1 1 0 0 1 1.42-1.42l.7.71a1 1 0 0 1-1.41 1.41l-.71-.7zm14.14 12.72a1 1 0 0 1 1.42 1.42l-.71.7a1 1 0 1 1-1.41-1.41l.7-.71zM3 12a1 1 0 0 1 1-1h1a1 1 0 1 1 0 2H4a1 1 0 0 1-1-1zm16 0a1 1 0 0 1 1-1h1a1 1 0 1 1 0 2h-1a1 1 0 0 1-1-1zM5.64 19.78l-.7.71a1 1 0 1 1-1.42-1.42l.71-.7a1 1 0 0 1 1.41 1.41zm12.72-14.14.71-.71a1 1 0 1 1 1.42 1.42l-.71.7a1 1 0 0 1-1.42-1.41z"/></svg>
-          <svg class="icon-moon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M21 12.79A9 9 0 1 1 11.21 3a7 7 0 0 0 9.79 9.79z"/></svg>
-        </button>
-      </nav>
-    </header>
+        <div class="brand-nav-actions">
+          <button class="brand-theme-toggle" id="theme-toggle" aria-label="Toggle light/dark mode">
+            <svg class="icon-sun" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 17a5 5 0 1 0 0-10 5 5 0 0 0 0 10zm0 2a1 1 0 0 1 1 1v1a1 1 0 1 1-2 0v-1a1 1 0 0 1 1-1zm0-14a1 1 0 0 1-1-1V3a1 1 0 1 1 2 0v1a1 1 0 0 1-1 1zM4.22 5.64a1 1 0 0 1 1.42-1.42l.7.71a1 1 0 0 1-1.41 1.41l-.71-.7zm14.14 12.72a1 1 0 0 1 1.42 1.42l-.71.7a1 1 0 1 1-1.41-1.41l.7-.71zM3 12a1 1 0 0 1 1-1h1a1 1 0 1 1 0 2H4a1 1 0 0 1-1-1zm16 0a1 1 0 0 1 1-1h1a1 1 0 1 1 0 2h-1a1 1 0 0 1-1-1zM5.64 19.78l-.7.71a1 1 0 1 1-1.42-1.42l.71-.7a1 1 0 0 1 1.41 1.41zm12.72-14.14.71-.71a1 1 0 1 1 1.42 1.42l-.71.7a1 1 0 0 1-1.42-1.41z"/></svg>
+            <svg class="icon-moon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M21 12.79A9 9 0 1 1 11.21 3a7 7 0 0 0 9.79 9.79z"/></svg>
+          </button>
+        </div>
+      </div>
+    </nav>
 
     <main id="main">
       <!-- Hero -->
@@ -463,212 +409,70 @@
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M5 12l7-7M5 12l7 7"/></svg>
           Back to Work
         </a>
-        <span class="project-tag">Editorial / Infographic</span>
         <h1 class="project-title">A History of Mistrust</h1>
-        <p class="project-desc">A 30-slide Instagram carousel exploring medical mistrust in marginalized communities — from HIV/AIDS stigma and the Tuskegee study to LGBTQ+ health disparities and community-led solutions. Full preproduction included: storyboards, moodboard, and process documentation.</p>
       </div>
 
-      <!-- Carousel Slides -->
+
+      <!-- Description -->
       <section class="project-section">
-        <p class="section-label">Social Campaign</p>
-        <h2 class="section-title">Carousel Slides</h2>
-        <div class="slide-grid">
-
-          <div class="slide-card">
-            <img src="../images/myart/A History of Mistrust/slides/slide-01.webp" alt="Slide 1 — Title cover" loading="lazy" />
-            <div class="slide-card-label">Slide 1</div>
-          </div>
-          <div class="slide-card">
-            <img src="../images/myart/A History of Mistrust/slides/slide-02.webp" alt="Slide 2" loading="lazy" />
-            <div class="slide-card-label">Slide 2</div>
-          </div>
-          <div class="slide-card">
-            <img src="../images/myart/A History of Mistrust/slides/slide-03.webp" alt="Slide 3" loading="lazy" />
-            <div class="slide-card-label">Slide 3</div>
-          </div>
-          <div class="slide-card">
-            <img src="../images/myart/A History of Mistrust/slides/slide-04.webp" alt="Slide 4" loading="lazy" />
-            <div class="slide-card-label">Slide 4</div>
-          </div>
-          <div class="slide-card">
-            <img src="../images/myart/A History of Mistrust/slides/slide-05.webp" alt="Slide 5" loading="lazy" />
-            <div class="slide-card-label">Slide 5</div>
-          </div>
-          <div class="slide-card">
-            <img src="../images/myart/A History of Mistrust/slides/slide-06.webp" alt="Slide 6" loading="lazy" />
-            <div class="slide-card-label">Slide 6</div>
-          </div>
-          <div class="slide-card">
-            <img src="../images/myart/A History of Mistrust/slides/slide-07.webp" alt="Slide 7" loading="lazy" />
-            <div class="slide-card-label">Slide 7</div>
-          </div>
-          <div class="slide-card">
-            <img src="../images/myart/A History of Mistrust/slides/slide-08.webp" alt="Slide 8" loading="lazy" />
-            <div class="slide-card-label">Slide 8</div>
-          </div>
-          <div class="slide-card">
-            <img src="../images/myart/A History of Mistrust/slides/slide-09.webp" alt="Slide 9" loading="lazy" />
-            <div class="slide-card-label">Slide 9</div>
-          </div>
-          <div class="slide-card">
-            <img src="../images/myart/A History of Mistrust/slides/slide-10.webp" alt="Slide 10" loading="lazy" />
-            <div class="slide-card-label">Slide 10</div>
-          </div>
-          <div class="slide-card">
-            <img src="../images/myart/A History of Mistrust/slides/slide-11.webp" alt="Slide 11" loading="lazy" />
-            <div class="slide-card-label">Slide 11</div>
-          </div>
-          <div class="slide-card">
-            <img src="../images/myart/A History of Mistrust/slides/slide-12.webp" alt="Slide 12" loading="lazy" />
-            <div class="slide-card-label">Slide 12</div>
-          </div>
-          <div class="slide-card">
-            <img src="../images/myart/A History of Mistrust/slides/slide-13.webp" alt="Slide 13" loading="lazy" />
-            <div class="slide-card-label">Slide 13</div>
-          </div>
-          <div class="slide-card">
-            <img src="../images/myart/A History of Mistrust/slides/slide-14.webp" alt="Slide 14" loading="lazy" />
-            <div class="slide-card-label">Slide 14</div>
-          </div>
-          <div class="slide-card">
-            <img src="../images/myart/A History of Mistrust/slides/slide-15.webp" alt="Slide 15" loading="lazy" />
-            <div class="slide-card-label">Slide 15</div>
-          </div>
-          <div class="slide-card">
-            <img src="../images/myart/A History of Mistrust/slides/slide-16.webp" alt="Slide 16" loading="lazy" />
-            <div class="slide-card-label">Slide 16</div>
-          </div>
-          <div class="slide-card">
-            <img src="../images/myart/A History of Mistrust/slides/slide-17.webp" alt="Slide 17" loading="lazy" />
-            <div class="slide-card-label">Slide 17</div>
-          </div>
-          <div class="slide-card">
-            <img src="../images/myart/A History of Mistrust/slides/slide-18.webp" alt="Slide 18" loading="lazy" />
-            <div class="slide-card-label">Slide 18</div>
-          </div>
-          <div class="slide-card">
-            <img src="../images/myart/A History of Mistrust/slides/slide-19.webp" alt="Slide 19" loading="lazy" />
-            <div class="slide-card-label">Slide 19</div>
-          </div>
-          <div class="slide-card">
-            <img src="../images/myart/A History of Mistrust/slides/slide-20.webp" alt="Slide 20" loading="lazy" />
-            <div class="slide-card-label">Slide 20</div>
-          </div>
-          <div class="slide-card">
-            <img src="../images/myart/A History of Mistrust/slides/slide-21.webp" alt="Slide 21" loading="lazy" />
-            <div class="slide-card-label">Slide 21</div>
-          </div>
-          <div class="slide-card">
-            <img src="../images/myart/A History of Mistrust/slides/slide-22.webp" alt="Slide 22" loading="lazy" />
-            <div class="slide-card-label">Slide 22</div>
-          </div>
-          <div class="slide-card">
-            <img src="../images/myart/A History of Mistrust/slides/slide-23.webp" alt="Slide 23" loading="lazy" />
-            <div class="slide-card-label">Slide 23</div>
-          </div>
-          <div class="slide-card">
-            <img src="../images/myart/A History of Mistrust/slides/slide-24.webp" alt="Slide 24" loading="lazy" />
-            <div class="slide-card-label">Slide 24</div>
-          </div>
-          <div class="slide-card">
-            <img src="../images/myart/A History of Mistrust/slides/slide-25.webp" alt="Slide 25" loading="lazy" />
-            <div class="slide-card-label">Slide 25</div>
-          </div>
-          <div class="slide-card">
-            <img src="../images/myart/A History of Mistrust/slides/slide-26.webp" alt="Slide 26" loading="lazy" />
-            <div class="slide-card-label">Slide 26</div>
-          </div>
-          <div class="slide-card">
-            <img src="../images/myart/A History of Mistrust/slides/slide-27.webp" alt="Slide 27" loading="lazy" />
-            <div class="slide-card-label">Slide 27</div>
-          </div>
-          <div class="slide-card">
-            <img src="../images/myart/A History of Mistrust/slides/slide-28.webp" alt="Slide 28" loading="lazy" />
-            <div class="slide-card-label">Slide 28</div>
-          </div>
-          <div class="slide-card">
-            <img src="../images/myart/A History of Mistrust/slides/slide-29.webp" alt="Slide 29" loading="lazy" />
-            <div class="slide-card-label">Slide 29</div>
-          </div>
-          <div class="slide-card">
-            <img src="../images/myart/A History of Mistrust/slides/slide-30.webp" alt="Slide 30" loading="lazy" />
-            <div class="slide-card-label">Slide 30</div>
-          </div>
-
-        </div>
+        <h2 class="section-title">Description</h2>
+        <p class="project-desc">A long-form Instagram carousel series with 3 sets of 10 slides examining the roots and ripple effects of medical mistrust, spanning the Tuskegee syphilis study, HIV/AIDS-era stigma, contemporary LGBTQ+ health disparities, and the community-led models offering a way forward. Backed by full preproduction including moodboard, storyboards, and process documentation.</p>
       </section>
 
-      <!-- Continuous Carousel -->
+      <!-- Per-set slideshows -->
       <section class="project-section">
-        <p class="section-label">Social Campaign</p>
-        <h2 class="section-title">Continuous Carousel</h2>
-        <div class="carousel-wrap">
-          <button class="carousel-arrow carousel-prev" aria-label="Previous set">&#8249;</button>
-          <div class="carousel-track" role="region" aria-label="Carousel of 3 slide sets" tabindex="0">
-            <div class="carousel-set" data-set="1">
-              <img src="../images/myart/A History of Mistrust/sets/set-1.webp" alt="Set 1 — slides 1 through 10" loading="lazy" decoding="async" />
-              <span class="carousel-set-label">Set 1 · Slides 1–10</span>
+        <h2 class="section-title">Slideshow</h2>
+        <div class="set-slideshows">
+          <div class="set-slideshow" data-set="1">
+            <p class="set-ss-label">Set 1 · Slides 1–10</p>
+            <div class="set-ss-viewer" role="region" aria-label="Set 1 slide viewer">
+              <div class="set-ss-track"></div>
             </div>
-            <div class="carousel-set" data-set="2">
-              <img src="../images/myart/A History of Mistrust/sets/set-2.webp" alt="Set 2 — slides 11 through 20" loading="lazy" decoding="async" />
-              <span class="carousel-set-label">Set 2 · Slides 11–20</span>
-            </div>
-            <div class="carousel-set" data-set="3">
-              <img src="../images/myart/A History of Mistrust/sets/set-3.webp" alt="Set 3 — slides 21 through 30" loading="lazy" decoding="async" />
-              <span class="carousel-set-label">Set 3 · Slides 21–30</span>
+            <p class="set-ss-caption" aria-live="polite"></p>
+            <div class="set-ss-controls">
+              <button class="set-ss-prev" aria-label="Previous slide, set 1">&#8249; Prev</button>
+              <span class="set-ss-counter">Slide 1 of 10</span>
+              <button class="set-ss-next" aria-label="Next slide, set 1">Next &#8250;</button>
             </div>
           </div>
-          <button class="carousel-arrow carousel-next" aria-label="Next set">&#8250;</button>
-          <div class="carousel-dots" role="tablist" aria-label="Carousel sets">
-            <button role="tab" aria-selected="true" aria-label="Go to set 1" data-index="0"></button>
-            <button role="tab" aria-selected="false" aria-label="Go to set 2" data-index="1"></button>
-            <button role="tab" aria-selected="false" aria-label="Go to set 3" data-index="2"></button>
+          <div class="set-slideshow" data-set="2">
+            <p class="set-ss-label">Set 2 · Slides 11–20</p>
+            <div class="set-ss-viewer" role="region" aria-label="Set 2 slide viewer">
+              <div class="set-ss-track"></div>
+            </div>
+            <p class="set-ss-caption" aria-live="polite"></p>
+            <div class="set-ss-controls">
+              <button class="set-ss-prev" aria-label="Previous slide, set 2">&#8249; Prev</button>
+              <span class="set-ss-counter">Slide 1 of 10</span>
+              <button class="set-ss-next" aria-label="Next slide, set 2">Next &#8250;</button>
+            </div>
+          </div>
+          <div class="set-slideshow" data-set="3">
+            <p class="set-ss-label">Set 3 · Slides 21–30</p>
+            <div class="set-ss-viewer" role="region" aria-label="Set 3 slide viewer">
+              <div class="set-ss-track"></div>
+            </div>
+            <p class="set-ss-caption" aria-live="polite"></p>
+            <div class="set-ss-controls">
+              <button class="set-ss-prev" aria-label="Previous slide, set 3">&#8249; Prev</button>
+              <span class="set-ss-counter">Slide 1 of 10</span>
+              <button class="set-ss-next" aria-label="Next slide, set 3">Next &#8250;</button>
+            </div>
           </div>
         </div>
       </section>
 
-      <!-- Per-Set Slideshow -->
+      <!-- Moodboard & Storyboard -->
       <section class="project-section">
-        <p class="section-label">Social Campaign</p>
-        <h2 class="section-title">Per-Set Slideshow</h2>
-        <div class="slideshow-wrap">
-          <div class="slideshow-set-tabs" role="tablist" aria-label="Slide sets">
-            <button role="tab" aria-selected="true" aria-controls="slideshow-panel" id="tab-set1">Set 1</button>
-            <button role="tab" aria-selected="false" aria-controls="slideshow-panel" id="tab-set2">Set 2</button>
-            <button role="tab" aria-selected="false" aria-controls="slideshow-panel" id="tab-set3">Set 3</button>
-          </div>
-          <div class="slideshow-viewer" id="slideshow-panel" role="region" aria-label="Slide viewer">
-            <img id="slideshow-img" src="../images/myart/A History of Mistrust/slides/slide-01.webp" alt="Slide 1 — Title cover" decoding="async" />
-          </div>
-          <p id="slideshow-caption" class="slideshow-caption" aria-live="polite">Slide 1 of 30 — Title cover</p>
-          <div class="slideshow-controls">
-            <button id="slideshow-prev" aria-label="Previous slide">&#8249; Prev</button>
-            <span id="slideshow-counter">Slide 1 of 30</span>
-            <button id="slideshow-next" aria-label="Next slide">Next &#8250;</button>
-          </div>
-        </div>
-      </section>
-
-      <!-- Moodboard -->
-      <section class="project-section">
-        <p class="section-label">Preproduction</p>
-        <h2 class="section-title">Moodboard</h2>
+        <h2 class="section-title">Moodboard & Storyboard</h2>
         <div class="supporting-grid">
           <div class="supporting-card">
-            <img src="../images/myart/A History of Mistrust/supporting material/HistoryofMistrustMoodboard.png" alt="A History of Mistrust moodboard" />
+            <img src="../images/myart/A History of Mistrust/supporting material/HistoryofMistrustMoodboard-cropped.png" alt="A History of Mistrust moodboard" />
             <div class="supporting-card-label">
               <strong>Moodboard</strong>
               <span>Visual research and reference</span>
             </div>
           </div>
-        </div>
-      </section>
-
-      <!-- Storyboard -->
-      <section class="project-section">
-        <p class="section-label">Preproduction</p>
-        <h2 class="section-title">Storyboard</h2>
-        <div class="supporting-grid">
           <div class="supporting-card">
             <img src="../images/myart/A History of Mistrust/supporting material/aHistoryOfMistrustStoryboard.jpg" alt="A History of Mistrust storyboard" />
             <div class="supporting-card-label">
@@ -679,9 +483,24 @@
         </div>
       </section>
 
+      <!-- All Slides -->
+      <section class="project-section">
+        <h2 class="section-title">All Slides</h2>
+        <div class="all-sets-full">
+          <div class="carousel-set" data-set="1">
+            <img src="../images/myart/A History of Mistrust/sets/set-1.webp" alt="A History of Mistrust carousel, slides 1 through 10 combined" loading="lazy" decoding="async" />
+          </div>
+          <div class="carousel-set" data-set="2">
+            <img src="../images/myart/A History of Mistrust/sets/set-2.webp" alt="A History of Mistrust carousel, slides 11 through 20 combined" loading="lazy" decoding="async" />
+          </div>
+          <div class="carousel-set" data-set="3">
+            <img src="../images/myart/A History of Mistrust/sets/set-3.webp" alt="A History of Mistrust carousel, slides 21 through 30 combined" loading="lazy" decoding="async" />
+          </div>
+        </div>
+      </section>
+
       <!-- Sources -->
       <section class="project-section">
-        <p class="section-label">Research</p>
         <h2 class="section-title">Sources & Bibliography</h2>
         <ul class="sources-list">
           <li>AIDSVu. (2024). <em>AIDSVu Releases 2024 PrEP Use Data</em>. Emory University Rollins School of Public Health. <a href="https://aidsvu.org/news-updates/aidsvu-releases-2024-prep-use-data-showing-growing-use-across-the-u-s/" target="_blank">Link</a></li>
@@ -776,13 +595,24 @@
     <div id="lightbox" class="lightbox-overlay" role="dialog" aria-modal="true" aria-label="Image viewer" hidden>
       <button class="lightbox-close" aria-label="Close image viewer">&times;</button>
       <button class="lightbox-arrow lightbox-prev" aria-label="Previous image">&#8249;</button>
-      <img id="lightbox-img" src="" alt="" decoding="async" />
+      <div class="lightbox-frame" tabindex="0">
+        <div class="lightbox-track"></div>
+      </div>
       <button class="lightbox-arrow lightbox-next" aria-label="Next image">&#8250;</button>
       <p id="lightbox-caption" class="lightbox-caption" aria-live="polite"></p>
     </div>
 
-    <footer>
-      <p>&copy; 2026 Avery Ember Day</p>
+    <footer class="brand-footer">
+      <div class="brand-container">
+        <div class="brand-footer-inner">
+          <span class="brand-footer-credit">&copy; 2026 Avery Ember Day</span>
+          <ul class="brand-footer-links">
+            <li><a href="../index.html#work">Work</a></li>
+            <li><a href="../index.html#about">About</a></li>
+            <li><a href="../index.html#contact">Contact</a></li>
+          </ul>
+        </div>
+      </div>
     </footer>
 
     <button id="return-to-top" aria-label="Return to top">
@@ -797,158 +627,111 @@
       'use strict';
 
       /* ── Slide data ── */
+      const BASE = '../images/myart/A History of Mistrust/slides/';
+
+      /* Exact words written on each slide (used as alt text + caption) */
+      const SLIDE_ALT = [
+        "A History of Mistrust: Why Some Communities Struggle to Trust Doctors",
+        "Fun Fact: Being LGBTQ+ is normal and okay",
+        "Un-Fun Fact: Homosexuality was classified as a mental disorder that was treated with harmful conversion therapy or even shock therapy until 1973. Even after guidelines were changed, harmful treatments persisted through the 1980s, and discrimination persists today.",
+        "POC & LGBTQ+ individuals often face systemic discrimination when seeking healthcare.",
+        "Black, Indigenous, and Latinx women have been sterilized without consent as recently as 2013.",
+        "Tuskegee Experiment (1932-1972): American healthcare providers lied to Black men and denied them treatment for syphilis to study the disease, even after a widespread cure was developed.",
+        "AIDS Care in Marginalized Communities",
+        "Black people represent only 12% of the population but bear 38% of new diagnoses (which is a >3x disparity ratio), while Hispanic individuals represent 18% of the population but bear 32% of new diagnoses. Why?",
+        "Systemic barriers prevent access to life-saving treatments like PrEP",
+        "High costs, lack of access to healthcare, stigma & discrimination all contribute to these disparities.",
+        "LGBTQ+ individuals and POC often receive disproportionately inferior treatment and face dismissal of symptoms.",
+        "This discrimination leads to avoidance of crucial treatment.",
+        "This directly leads these communities to later diagnoses & worse health outcomes.",
+        "The AIDS crisis emerged in the early 1980s, claiming the lives of over 44 million people worldwide.",
+        "The US Government's slow response disproportionately harmed LGBTQ+ & POC communities. Current information on the subject has been removed from USA.gov.",
+        "Mistrust leads to: late diagnoses, poorer mental health, non-adherence to necessary treatment, higher mortality rates.",
+        "“Health is more than the absence of disease. Health is about jobs and employment, education, the environment, and all of those things that go into making us healthy.” —Dr. Joycelyn Elders",
+        "The first step to rebuilding trust is understanding why it was broken. Share this series with your community and let's start that conversation together.",
+        "Do your part: get yourself tested, end the stigma behind STDs, educate yourself, encourage your loved ones to get tested.",
+        "Awareness is only effective in numbers. Share this post among your community. Let's work towards a better future together.",
+        "Rebuilding Trust Between Marginalized Communities & Healthcare Providers",
+        "Rebuilding trust is critical to closing the gap in medical care for marginalized communities. Okay sounds cool, but...",
+        "How Do We Start?",
+        "Support Community-led Clinics. Clinics run by LGBTQ+ & POC often provide safe, affirming care.",
+        "Representation Matters. Patients trust providers who reflect their race, culture, & experiences.",
+        "Cultural Competency is Essential. Training doctors and nurses to understand diverse experiences is key to changing how marginalized communities receive care.",
+        "“We do have the power, if we come together, to make change.” —Dr. Karthik Sivashanker",
+        "Advocate for Policy Changes. We need policies that require inclusive care and punish discriminatory practices in healthcare systems.",
+        "Community support for policy changes is necessary to ensure inclusive healthcare for all!",
+        "Share this to spread awareness so we can secure a future with healthcare that is: inclusive, affordable, accessible, culturally competent."
+      ];
+
       const slides = [];
       for (let i = 1; i <= 30; i++) {
         slides.push({
-          src: '../images/myart/A History of Mistrust/slides/slide-' + String(i).padStart(2, '0') + '.webp',
-          full: '../images/myart/A History of Mistrust/slides/slide-' + String(i).padStart(2, '0') + '@2x.webp',
-          alt: i === 1 ? 'Slide 1 — Title cover' : 'Slide ' + i,
-          caption: 'Slide ' + i + ' of 30' + (i === 1 ? ' — Title cover' : '')
-        });
-        if (i === 10 || i === 20 || i === 30) {
-          const setNum = i / 10;
-          slides.push({
-            src: '../images/myart/A History of Mistrust/sets/set-' + setNum + '.webp',
-            full: '../images/myart/A History of Mistrust/sets/set-' + setNum + '.webp',
-            alt: 'End of Set ' + setNum + ' — combined summary',
-            caption: 'End of Set ' + setNum + ' — combined summary',
-            isSetImage: true,
-            setNum: setNum
-          });
-        }
-      }
-
-      /* ── Slideshow ── */
-      const slideshowImg = document.getElementById('slideshow-img');
-      const slideshowCaption = document.getElementById('slideshow-caption');
-      const slideshowCounter = document.getElementById('slideshow-counter');
-      const prevBtn = document.getElementById('slideshow-prev');
-      const nextBtn = document.getElementById('slideshow-next');
-      const setTabs = document.querySelectorAll('.slideshow-set-tabs [role="tab"]');
-      let currentIndex = 0;
-
-      function setBoundaries() {
-        prevBtn.disabled = currentIndex === 0;
-        nextBtn.disabled = currentIndex === slides.length - 1;
-      }
-
-      function showSlide(index) {
-        if (index < 0 || index >= slides.length) return;
-        currentIndex = index;
-        const s = slides[index];
-        slideshowImg.src = s.src;
-        slideshowImg.alt = s.alt;
-        slideshowCaption.textContent = s.caption;
-        slideshowCounter.textContent = s.isSetImage ? s.caption : 'Slide ' + (index < 10 ? index + 1 : index < 21 ? index - 0 : index - 1) + ' of 30';
-        // Update set tab
-        let activeSet = 0;
-        if (index >= 0 && index <= 10) activeSet = 0;
-        else if (index >= 11 && index <= 21) activeSet = 1;
-        else activeSet = 2;
-        setTabs.forEach((tab, i) => {
-          tab.setAttribute('aria-selected', String(i === activeSet));
-        });
-        setBoundaries();
-        preloadAdjacent(index);
-      }
-
-      function preloadAdjacent(index) {
-        [index - 1, index + 1].forEach(i => {
-          if (i >= 0 && i < slides.length) {
-            const img = new Image();
-            img.src = slides[i].src;
-          }
+          src: BASE + 'slide-' + String(i).padStart(2, '0') + '.webp',
+          full: BASE + 'slide-' + String(i).padStart(2, '0') + '@2x.webp',
+          alt: SLIDE_ALT[i - 1],
+          n: i
         });
       }
-
-      prevBtn.addEventListener('click', () => showSlide(currentIndex - 1));
-      nextBtn.addEventListener('click', () => showSlide(currentIndex + 1));
-
-      setTabs.forEach((tab, i) => {
-        tab.addEventListener('click', () => {
-          const targets = [0, 11, 22];
-          showSlide(targets[i]);
-        });
-      });
-
-      document.addEventListener('keydown', (e) => {
-        if (lightbox.classList.contains('active')) return; // lightbox handles its own keys
-        const active = document.activeElement;
-        const inSlideshow = active && (active.closest('.slideshow-wrap') || active.id === 'slideshow-img');
-        if (!inSlideshow) return;
-        if (e.key === 'ArrowLeft') { e.preventDefault(); showSlide(currentIndex - 1); }
-        if (e.key === 'ArrowRight') { e.preventDefault(); showSlide(currentIndex + 1); }
-      });
-
-      setBoundaries();
-      preloadAdjacent(0);
-
-      /* ── Carousel ── */
-      const track = document.querySelector('.carousel-track');
-      const carouselPrev = document.querySelector('.carousel-prev');
-      const carouselNext = document.querySelector('.carousel-next');
-      const dots = document.querySelectorAll('.carousel-dots [role="tab"]');
-      const sets = document.querySelectorAll('.carousel-set');
-
-      function scrollToSet(index) {
-        if (!sets[index]) return;
-        sets[index].scrollIntoView({ behavior: 'smooth', inline: 'start', block: 'nearest' });
-      }
-
-      carouselPrev.addEventListener('click', () => {
-        const scrollLeft = track.scrollLeft;
-        const w = track.clientWidth;
-        const idx = Math.max(0, Math.round(scrollLeft / w) - 1);
-        scrollToSet(idx);
-      });
-      carouselNext.addEventListener('click', () => {
-        const scrollLeft = track.scrollLeft;
-        const w = track.clientWidth;
-        const idx = Math.min(sets.length - 1, Math.round(scrollLeft / w) + 1);
-        scrollToSet(idx);
-      });
-
-      dots.forEach((dot, i) => {
-        dot.addEventListener('click', () => scrollToSet(i));
-      });
-
-      // Sync dots on scroll
-      let scrollTimeout;
-      track.addEventListener('scroll', () => {
-        clearTimeout(scrollTimeout);
-        scrollTimeout = setTimeout(() => {
-          const w = track.clientWidth;
-          const idx = Math.round(track.scrollLeft / w);
-          dots.forEach((d, i) => d.setAttribute('aria-selected', String(i === idx)));
-        }, 100);
-      });
 
       /* ── Lightbox ── */
       const lightbox = document.getElementById('lightbox');
-      const lbImg = document.getElementById('lightbox-img');
+      const lbTrack = document.querySelector('.lightbox-track');
       const lbCaption = document.getElementById('lightbox-caption');
       const lbClose = document.querySelector('.lightbox-close');
       const lbPrev = document.querySelector('.lightbox-prev');
       const lbNext = document.querySelector('.lightbox-next');
-      let lbIndex = -1;
+      const lbFrame = document.querySelector('.lightbox-frame');
+      let lbIndex = 0;
       let lastFocused = null;
-
+      let isDragging = false;
+      let startX = 0;
+      let prevTranslate = 0;
+      const dragThreshold = 80;
       const focusableSelectors = 'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])';
 
+      const lightboxSlides = slides.map((slide, index) => ({
+        ...slide,
+        index,
+        caption: 'Slide ' + slide.n + ' of 30 · Set ' + Math.ceil(slide.n / 10)
+      }));
+
+      lightboxSlides.forEach((slide) => {
+        const pane = document.createElement('div');
+        pane.className = 'lightbox-slide';
+        const img = document.createElement('img');
+        img.src = slide.full;
+        img.alt = slide.alt;
+        img.decoding = 'async';
+        pane.appendChild(img);
+        lbTrack.appendChild(pane);
+      });
+
+      function updateLightboxPosition(animate = true) {
+        lbTrack.style.transition = animate ? 'transform 240ms ease' : 'none';
+        lbTrack.style.transform = `translateX(${-lbIndex * 100}%)`;
+      }
+
+      function setLightboxControls() {
+        lbPrev.disabled = lbIndex === 0;
+        lbNext.disabled = lbIndex === lightboxSlides.length - 1;
+      }
+
+      function updateLightboxCaption() {
+        lbCaption.textContent = lightboxSlides[lbIndex].caption;
+      }
+
       function openLightbox(index) {
-        if (index < 0 || index >= slides.length) return;
+        if (index < 0 || index >= lightboxSlides.length) return;
         lbIndex = index;
         lastFocused = document.activeElement;
-        lbImg.src = slides[index].full;
-        lbImg.alt = slides[index].alt;
-        lbCaption.textContent = slides[index].caption;
         lightbox.hidden = false;
-        // force reflow
         void lightbox.offsetWidth;
         lightbox.classList.add('active');
         document.body.style.overflow = 'hidden';
-        lbClose.focus();
-        preloadAdjacent(index);
+        updateLightboxCaption();
+        setLightboxControls();
+        updateLightboxPosition(false);
+        lbFrame.focus();
       }
 
       function closeLightbox() {
@@ -956,23 +739,21 @@
         document.body.style.overflow = '';
         setTimeout(() => {
           lightbox.hidden = true;
-          lbImg.src = '';
         }, 200);
         if (lastFocused) lastFocused.focus();
       }
 
-      function lbShow(index) {
-        if (index < 0 || index >= slides.length) return;
+      function showLightbox(index) {
+        if (index < 0 || index >= lightboxSlides.length) return;
         lbIndex = index;
-        lbImg.src = slides[index].full;
-        lbImg.alt = slides[index].alt;
-        lbCaption.textContent = slides[index].caption;
-        preloadAdjacent(index);
+        updateLightboxCaption();
+        setLightboxControls();
+        updateLightboxPosition();
       }
 
       lbClose.addEventListener('click', closeLightbox);
-      lbPrev.addEventListener('click', () => lbShow(lbIndex - 1));
-      lbNext.addEventListener('click', () => lbShow(lbIndex + 1));
+      lbPrev.addEventListener('click', () => showLightbox(lbIndex - 1));
+      lbNext.addEventListener('click', () => showLightbox(lbIndex + 1));
 
       lightbox.addEventListener('click', (e) => {
         if (e.target === lightbox) closeLightbox();
@@ -980,9 +761,8 @@
 
       lightbox.addEventListener('keydown', (e) => {
         if (e.key === 'Escape') { e.preventDefault(); closeLightbox(); }
-        if (e.key === 'ArrowLeft') { e.preventDefault(); lbShow(lbIndex - 1); }
-        if (e.key === 'ArrowRight') { e.preventDefault(); lbShow(lbIndex + 1); }
-        // Focus trap
+        if (e.key === 'ArrowLeft') { e.preventDefault(); showLightbox(lbIndex - 1); }
+        if (e.key === 'ArrowRight') { e.preventDefault(); showLightbox(lbIndex + 1); }
         const focusables = Array.from(lightbox.querySelectorAll(focusableSelectors)).filter(el => el.offsetParent !== null);
         if (focusables.length === 0) return;
         const first = focusables[0];
@@ -998,31 +778,109 @@
         }
       });
 
-      /* ── Wire lightbox to slide images ── */
-      // Grid images
-      document.querySelectorAll('.slide-card img').forEach((img, i) => {
-        img.style.cursor = 'zoom-in';
-        img.addEventListener('click', () => {
-          // Map grid index (0-29) to slideshow index (0-32 with set images at 10, 21, 32)
-          let idx = i;
-          if (i >= 10) idx++;
-          if (i >= 20) idx++;
-          openLightbox(idx);
+      function getFrameWidth() {
+        return lbFrame.clientWidth || lbFrame.getBoundingClientRect().width;
+      }
+
+      function pointerDown(event) {
+        if (event.pointerType === 'mouse' && event.button !== 0) return;
+        if (event.target.closest('button')) return;
+        isDragging = true;
+        startX = event.clientX;
+        prevTranslate = -lbIndex * getFrameWidth();
+        lbFrame.setPointerCapture(event.pointerId);
+        lbFrame.classList.add('dragging');
+        lbTrack.style.transition = 'none';
+      }
+
+      function pointerMove(event) {
+        if (!isDragging) return;
+        const delta = event.clientX - startX;
+        lbTrack.style.transform = `translateX(${prevTranslate + delta}px)`;
+      }
+
+      function pointerUp(event) {
+        if (!isDragging) return;
+        isDragging = false;
+        lbFrame.releasePointerCapture(event.pointerId);
+        lbFrame.classList.remove('dragging');
+        const delta = event.clientX - startX;
+        if (Math.abs(delta) > dragThreshold) {
+          if (delta < 0) showLightbox(lbIndex + 1);
+          else showLightbox(lbIndex - 1);
+        } else {
+          showLightbox(lbIndex);
+        }
+      }
+
+      lbFrame.addEventListener('pointerdown', pointerDown);
+      lbFrame.addEventListener('pointermove', pointerMove);
+      lbFrame.addEventListener('pointerup', pointerUp);
+      lbFrame.addEventListener('pointercancel', pointerUp);
+      lbFrame.addEventListener('pointerleave', pointerUp);
+
+      /* ── Per-set slideshows ── */
+      document.querySelectorAll('.set-slideshow').forEach((widget) => {
+        const setNum = parseInt(widget.dataset.set, 10);
+        const startGlobal = (setNum - 1) * 10; // 0-based index into slides
+        const track = widget.querySelector('.set-ss-track');
+        const caption = widget.querySelector('.set-ss-caption');
+        const counter = widget.querySelector('.set-ss-counter');
+        const viewer = widget.querySelector('.set-ss-viewer');
+        const prevBtn = widget.querySelector('.set-ss-prev');
+        const nextBtn = widget.querySelector('.set-ss-next');
+        const setSlides = slides.slice(startGlobal, startGlobal + 10);
+        let local = 0;
+
+        setSlides.forEach((s) => {
+          const pane = document.createElement('div');
+          pane.className = 'set-ss-slide';
+          const img = document.createElement('img');
+          img.src = s.src;
+          img.alt = s.alt;
+          img.decoding = 'async';
+          img.loading = 'lazy';
+          pane.appendChild(img);
+          track.appendChild(pane);
         });
+
+        function preload(j) {
+          if (j >= 0 && j < setSlides.length) {
+            const im = new Image();
+            im.src = setSlides[j].src;
+          }
+        }
+
+        function update(animate) {
+          track.classList.toggle('no-transition', !animate);
+          track.style.transform = `translateX(${-local * 100}%)`;
+          if (!animate) setTimeout(() => track.classList.remove('no-transition'), 10);
+          const s = setSlides[local];
+          counter.textContent = 'Slide ' + (local + 1) + ' of ' + setSlides.length;
+          caption.textContent = 'Slide ' + s.n + ' of 30';
+          prevBtn.disabled = local === 0;
+          nextBtn.disabled = local === setSlides.length - 1;
+          preload(local - 1);
+          preload(local + 1);
+        }
+
+        prevBtn.addEventListener('click', () => { if (local > 0) { local--; update(true); } });
+        nextBtn.addEventListener('click', () => { if (local < setSlides.length - 1) { local++; update(true); } });
+        viewer.addEventListener('click', () => openLightbox(startGlobal + local));
+
+        widget.addEventListener('keydown', (e) => {
+          if (lightbox.classList.contains('active')) return;
+          if (e.key === 'ArrowLeft') { e.preventDefault(); if (local > 0) { local--; update(true); } }
+          if (e.key === 'ArrowRight') { e.preventDefault(); if (local < setSlides.length - 1) { local++; update(true); } }
+        });
+
+        update(false);
       });
 
-      // Slideshow image
-      slideshowImg.style.cursor = 'zoom-in';
-      slideshowImg.addEventListener('click', () => openLightbox(currentIndex));
-
-      // Carousel set images
+      /* ── Carousel set images → lightbox at set start ── */
       document.querySelectorAll('.carousel-set img').forEach((img, i) => {
-        img.style.cursor = 'zoom-in';
-        img.addEventListener('click', () => {
-          // Clicking a set image opens the first slide of that set
-          const setFirst = [0, 11, 22];
-          openLightbox(setFirst[i]);
-        });
+        img.style.cursor = 'pointer';
+        img.addEventListener('click', () => openLightbox(i * 10));
       });
     })();
     </script>

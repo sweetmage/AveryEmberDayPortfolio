@@ -198,7 +198,6 @@ h2 {
 #about h2,
 #contact h2 {
     color: var(--brand-text-muted);
-    border-bottom-color: var(--brand-ir-4);
 }
 
 h3 {
@@ -260,12 +259,12 @@ footer p {
 }
 
 [data-theme="light"] .brand-nav-logo {
-    color: var(--brand-text-base);
+    color: var(--brand-text);
 }
 
 @media (prefers-color-scheme: light) {
     :root:not([data-theme="dark"]) .brand-nav-logo {
-        color: var(--brand-text-base);
+        color: var(--brand-text);
     }
 }
 
@@ -710,6 +709,20 @@ footer p {
     padding: 0.5em;
 }
 
+.wip-badge {
+    display: inline-block;
+    font-family: var(--brand-font-body);
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--brand-accent);
+    background: var(--brand-surface-1);
+    border: 1px solid var(--brand-accent-dim);
+    border-radius: var(--brand-radius-md);
+    padding: 4px 10px;
+}
+
 /* ── Misc legacy IDs ─────────────────────────────────────────────── */
 .textbox { position: relative; }
 #aboutgrid { position: relative; }
@@ -827,7 +840,7 @@ iframe {
 .brand-bubble--9 { --bx: 91%; --by: 65%; --bd: 72px; --bd2: -6.2s; }
 
 /* ── Project card cover image ────────────────────────────────────── */
-.project-card-cover { width: 100%; height: 100%; object-fit: cover; }
+.project-card-cover { width: 100%; height: 100%; object-fit: cover; object-position: center; }
 
 /* ── Brand palette swatches ──────────────────────────────────────── */
 .swatch-block--blue   { background: #7eb8ff; }
