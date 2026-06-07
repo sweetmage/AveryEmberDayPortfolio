@@ -21,7 +21,7 @@ The website is currently vanilla HTML/CSS/JS. User is evaluating a move to a JS 
 
 - [x] Unify navigation — `.brand-nav` + `.brand-footer` applied to all sub-pages (`history-of-mistrust`, `brand-avery-ember-day`, `patriots-low-thirds`, `gallery`)
 - [x] Resume links — all nav Resume links point to `AveryEmberDay_Resume_2026_Brand.html`
-- [x] Upwork icon — wired into `index.html` Contact section; SVG updated to `currentColor` fill
+- [x] Upwork icon — removed from `index.html` Contact section and deleted `images/icons/upworkicon.svg`
 - [x] Patriots placeholders — replaced with clean `.wip-notice` blocks; `.wip-badge` added to project card in `index.html`
 - [x] Gallery empty placeholders — 9 empty Digital Art placeholders removed
 
@@ -103,9 +103,9 @@ Consolidated reference for finished implementation plans. See original plan file
 **Plan ref:** [docs/archives/plans.md#2026-06-03-all-slides-fullwidth-stacked-sets](docs/archives/plans.md#2026-06-03-all-slides-fullwidth-stacked-sets)
 
 ### Phase 1 Structural Fixes (2026-06-04)
-**Goal:** Unify nav/footer across all sub-pages, update resume links, wire Upwork icon, clean placeholders  
+**Goal:** Unify nav/footer across all sub-pages, update resume links, clean placeholders  
 **Status:** ✅ DONE  
-**Files:** `projects/history-of-mistrust.html`, `projects/brand-avery-ember-day.html`, `projects/patriots-low-thirds.html`, `gallery/gallery.html`, `index.html`, `images/icons/upworkicon.svg`, `style.css`  
+**Files:** `projects/history-of-mistrust.html`, `projects/brand-avery-ember-day.html`, `projects/patriots-low-thirds.html`, `gallery/gallery.html`, `index.html`, `style.css`  
 **Key specs:** Full brand token integration, light/dark theme toggle, print-friendly single-page layout, BubbleLogo SVG  
 **Plan ref:** [docs/archives/plans.md#2026-06-04-phase-1-structural-fixes-shxdowloop](docs/archives/plans.md#2026-06-04-phase-1-structural-fixes-shxdowloop)
 

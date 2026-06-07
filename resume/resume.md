@@ -25,10 +25,10 @@ Designer with a foundation in traditional fine art and a B.S. in Graphic Informa
 ## EXPERIENCE
 
 ### Freelance Graphic Designer
-**Upwork & Direct Clients  |  San Antonio, TX & Las Vegas, NV (Remote)** | November 2018 – Present
+**Freelance & Direct Clients  |  San Antonio, TX & Las Vegas, NV (Remote)** | November 2018 – Present
 
 - Completed 8+ projects across 7 clients including brand identity systems, print production, character illustration, and motion graphics
-- Designed print-ready banner for Macro-Pro, Inc. (Upwork); produced a multi-piece office poster series for Allegra, a San Antonio print company
+- Designed print-ready banner for Macro-Pro, Inc.; produced a multi-piece office poster series for Allegra, a San Antonio print company
 - Created logo and banner packages for 2 content creators; developed virtual and print marketing materials for a D&D community group currently opening a bar in San Antonio
 - Created character art and logo design for SECTION6, a WGAW-registered adult animated series pitch by X.A. Allister
 - Currently designing a custom tattoo illustration; consistently delivering on brief, on time, and within client creative vision
@@ -47,7 +47,7 @@ Designer with a foundation in traditional fine art and a B.S. in Graphic Informa
 
 - **5× National Junior Art Honor Society Medal** — Awarded in national juried competition for excellence in painting, sculpture, and portfolio art
 - **B.S. Graphic Information Technology** — Arizona State University, Dean's College of Integrative Sciences & Arts, Dec 2024
-- **Published Client Testimonial** — Upwork, Kurt Adamie / Macro-Pro, Inc.: print banner project delivered on time and on-brand
+- **Published Client Testimonial** —Kurt Adamie / Macro-Pro, Inc.: print banner project delivered on time and on-brand
 
 ---
 
@@ -63,7 +63,7 @@ Coursework spanning brand identity, typography, color theory, UX principles, dig
 ## TESTIMONIAL
 
 > *"Avery did a great job on this project. They were very professional and delivered on time. The banner looks fantastic and I would definitely hire them again."*
-> — **Kurt Adamie**, Client via Upwork (Macro-Pro, Inc.)
+> — **Kurt Adamie**, Client via Macro-Pro, Inc.
 
 ---
 
@@ -71,4 +71,3 @@ Coursework spanning brand identity, typography, color theory, UX principles, dig
 
 - Portfolio: https://www.averyemberday.com
 - LinkedIn: linkedin.com/in/averyemberday
-- Upwork: upwork.com/freelancers/averyemberday

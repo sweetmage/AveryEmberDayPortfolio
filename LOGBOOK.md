@@ -1,3 +1,55 @@
+## Entry 036 — 2026-06-06
+
+**Agent:** kimi-k2.6 (kilo, shxdow-flow)
+**Cycle:** resume-accessibility
+**Task:** Apply the same accessibility patterns from the main website to the branded resume HTML.
+
+### Changes
+
+- **`resume/AveryEmberDay_Resume_2026_Brand.html`**
+  - Added `<meta name="description">`.
+  - Added skip link (`<a href="#main" class="skip-link">`) and corresponding `.skip-link` CSS (matches `index.html` / `style.css` pattern, adapted to brand tokens).
+  - Added `id="main"` to the existing `<main>` element so the skip link has a target.
+  - Added `:focus-visible` rules for `.resume-back`, `.contact a`, `.footer-portfolio a`, and the `#theme-toggle` button using `var(--brand-border-focus)`.
+  - Added `aria-hidden="true"` to both theme-toggle SVGs so screen readers don't traverse decorative icon markup.
+  - Converted `.footer-portfolio .url` spans to real `<a>` tags (portfolio, LinkedIn, Upwork) so displayed URLs are keyboard-actionable and announced as links.
+
+### Verification
+
+- Node script verified zero old failing hex values (`#72726b`, `#9A9890`, `#B86E10`, `#008EAA`, `#7eb8ff`) remain in non-print styles.
+- All brand-token text pairs spot-checked against WCAG 2.1 AA: body, muted, faint, accent, neon, and gold all pass in both dark and light themes.
+- Print accent (`#7a1ccc` on `#ffffff`) recalculated at ~7.3:1, passes AAA.
+- Tab-order focus rings confirmed in CSS; skip-link target resolves to `<main id="main">`.
+
+### Notes
+
+- No color-contrast issues found beyond what was already fixed in Entry 032 (brand token update). The resume was already aligned with the accessible palette.
+- Footer URLs were previously plain text; making them links is a functional improvement that also satisfies WCAG 1.4.1 (Use of Color) — color alone no longer implies the text is a URL.
+
+---
+
+## Entry 035 — 2026-06-06
+
+**Agent:** Claude Sonnet 4.6 (shxdow-flow)  
+**Cycle:** hide-patriots-lower-thirds  
+**Task:** Hide the Patriots lower thirds project card from the homepage until the project is ready.
+
+### Changes
+
+- **`index.html`** — Wrapped the Patriots Low Thirds project card (lines 96–106) in an HTML comment so it no longer renders. The card and `patriots-low-thirds.html` are preserved; re-enable by removing the comment tags.
+
+### Verification
+
+- Confirmed comment wraps only the Patriots card; surrounding cards (Avery Ember Day brand and Art Gallery) are unaffected.
+- No build step required — static HTML site.
+
+### Notes
+
+- Re-enable by removing the `<!-- Patriots Low Thirds — hidden until ready` comment wrapper in `index.html`.
+- No commits performed per shxdow-flow policy.
+
+---
+
 ## Entry 034 — 2026-06-06
 
 **Agent:** Claude Sonnet 4.6 (shxdow-flow)  

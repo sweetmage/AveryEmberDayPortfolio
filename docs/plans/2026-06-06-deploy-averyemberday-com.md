@@ -22,8 +22,8 @@ GitHub Pages is a viable fallback if Netlify is unavailable or the account alrea
 
 ## Pre-flight checklist (verify before starting)
 
-- [ ] You have access to averyemberday.com DNS — log in to your registrar (Namecheap / GoDaddy / etc.) and confirm you can edit DNS records
-- [ ] The `master` branch is the branch you want live (currently `shxdowloop/2026-06-04/phase-1-structural-fixes` has un-merged work — merge or PR first if you want those fixes included)
+- [x] You have access to averyemberday.com DNS — log in to DreamHost panel → **Manage Domains** and confirm you can edit DNS/nameserver records for averyemberday.com
+- [x] The `master` branch is the branch you want live (currently `shxdowloop/2026-06-04/phase-1-structural-fixes` has un-merged work — merge or PR first if you want those fixes included)
 - [ ] Run through the Pre-launch QA checklist in `TODO.md` — all boxes must be checked before going live
 
 ---
@@ -115,25 +115,21 @@ averyemberday.com
 
 **Option A — Netlify DNS (simplest, recommended):**  
 Transfer nameservers to Netlify. They manage everything including the SSL cert automatically.  
-Netlify gives you 4 nameserver hostnames (e.g. `dns1.p06.nsone.net`). Enter these at your registrar.
+Netlify gives you 4 nameserver hostnames (e.g. `dns1.p06.nsone.net`).
 
-**Option B — External DNS (keep your registrar's nameservers):**  
-Add an `A` record pointing `averyemberday.com` to Netlify's load balancer IP:
+In **DreamHost panel → Manage Domains → Edit** (next to averyemberday.com) → scroll to **Nameservers** → select **Use custom nameservers** → enter the 4 Netlify nameserver hostnames → Save. DreamHost will warn that this removes their DNS control — that is expected.
+
+**Option B — Keep DreamHost DNS, add records manually:**  
+In **DreamHost panel → Manage Domains → DNS** tab for averyemberday.com:
+
 ```
-Type: A
-Name: @
-Value: 75.2.60.5
-TTL: 3600
-```
-Add a `CNAME` for `www`:
-```
-Type: CNAME
-Name: www
-Value: <your-site>.netlify.app
-TTL: 3600
+Type: A     Name: @    Value: 75.2.60.5       TTL: 14400
+Type: CNAME Name: www  Value: <your-site>.netlify.app  TTL: 14400
 ```
 
-**Human action required:** Log in to your domain registrar and apply the DNS changes above.
+> **DreamHost gotcha:** Delete any existing `A` or `CNAME` record for `@` (bare domain) first — DreamHost may have a parking page or default A record that will conflict. The new record will not take effect until the old one is removed.
+
+**Human action required:** Log in to DreamHost and apply the DNS changes above.
 
 ---
 

@@ -20,7 +20,7 @@ If you're looking for a designer who takes craft seriously, communicates clearly
 
 ## LinkedIn / Short Bio Version (300 chars)
 
-Graphic & brand designer with a B.S. in Graphic Information Technology from ASU and 6+ years of freelance experience. Skilled in Adobe Creative Suite, Figma, and motion graphics. Passionate about brand identity, accessible design, and bringing client visions to life.
+Visual graphic & brand designer with a B.S. in Graphic Information Technology from ASU and 6+ years of freelance experience. Skilled in Adobe Creative Suite, Figma, and motion graphics. Passionate about brand identity, accessible design, and bringing client visions to life.
 
 ---
 

@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="description" content="Resume of Avery Ember Day — Brand & Visual Designer with 6+ years of freelance experience. Portfolio: averyemberday.com" />
 <title>Avery Ember Day — Resume</title>
 <link rel="icon" href="../images/icons/BubbleLogo/bubbleLogo-white-notxt.svg" type="image/svg+xml" />
 <link rel="stylesheet" href="../brand.css" />
@@ -47,6 +48,30 @@ html, body {
   transition: color var(--brand-transition-fast);
 }
 .resume-back:hover { color: var(--brand-text); }
+.resume-back:focus-visible,
+.contact a:focus-visible {
+  outline: 2px solid var(--brand-border-focus);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+/* Skip link */
+.skip-link {
+  position: absolute;
+  top: -40px;
+  left: 0;
+  background: var(--brand-bg);
+  color: var(--brand-text);
+  padding: 8px 16px;
+  z-index: 100;
+  text-decoration: none;
+  transition: top 0.2s;
+  border: 1px solid var(--brand-border-mid);
+  border-radius: var(--brand-radius-sm);
+}
+.skip-link:focus {
+  top: 0;
+}
 
 /* ── Page wrapper ───────────────────────────────────────────────────── */
 .page {
@@ -413,9 +438,18 @@ section + section { margin-top: 11px; }
   color: var(--brand-text-muted);
 }
 
-.footer-portfolio .url {
+.footer-portfolio a {
   color: var(--brand-accent);
   font-weight: var(--brand-weight-semibold);
+  text-decoration: none;
+}
+.footer-portfolio a:hover {
+  text-decoration: underline;
+}
+.footer-portfolio a:focus-visible {
+  outline: 2px solid var(--brand-border-focus);
+  outline-offset: 2px;
+  border-radius: 2px;
 }
 
 /* ── Iridescent spectrum divider ────────────────────────────────────── */
@@ -496,6 +530,7 @@ section + section { margin-top: 11px; }
 </style>
 </head>
 <body>
+  <a href="#main" class="skip-link">Skip to content</a>
   <div class="brand-page-bg" aria-hidden="true"></div>
   <div class="brand-page-noise" aria-hidden="true"></div>
 
@@ -510,8 +545,8 @@ section + section { margin-top: 11px; }
     <div class="brand-nav-actions">
       <a href="../index.html" class="resume-back">← Portfolio</a>
       <button class="brand-theme-toggle" id="theme-toggle" aria-label="Toggle light/dark mode" style="position:relative;">
-        <svg class="icon-sun" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M12 17a5 5 0 1 0 0-10 5 5 0 0 0 0 10zm0 2a1 1 0 0 1 1 1v1a1 1 0 1 1-2 0v-1a1 1 0 0 1 1-1zm0-14a1 1 0 0 1-1-1V3a1 1 0 1 1 2 0v1a1 1 0 0 1-1 1zM4.22 5.64a1 1 0 0 1 1.42-1.42l.7.71a1 1 0 0 1-1.41 1.41l-.71-.7zm14.14 12.72a1 1 0 0 1 1.42 1.42l-.71.7a1 1 0 1 1-1.41-1.41l.7-.71zM3 12a1 1 0 0 1 1-1h1a1 1 0 1 1 0 2H4a1 1 0 0 1-1-1zm16 0a1 1 0 0 1 1-1h1a1 1 0 1 1 0 2h-1a1 1 0 0 1-1-1zM5.64 19.78l-.7.71a1 1 0 1 1-1.42-1.42l.71-.7a1 1 0 0 1 1.41 1.41zm12.72-14.14.71-.71a1 1 0 1 1 1.42 1.42l-.71.7a1 1 0 0 1-1.42-1.41z"/></svg>
-        <svg class="icon-moon" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M21 12.79A9 9 0 1 1 11.21 3a7 7 0 0 0 9.79 9.79z"/></svg>
+        <svg class="icon-sun" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M12 17a5 5 0 1 0 0-10 5 5 0 0 0 0 10zm0 2a1 1 0 0 1 1 1v1a1 1 0 1 1-2 0v-1a1 1 0 0 1 1-1zm0-14a1 1 0 0 1-1-1V3a1 1 0 1 1 2 0v1a1 1 0 0 1-1 1zM4.22 5.64a1 1 0 0 1 1.42-1.42l.7.71a1 1 0 0 1-1.41 1.41l-.71-.7zm14.14 12.72a1 1 0 0 1 1.42 1.42l-.71.7a1 1 0 1 1-1.41-1.41l.7-.71zM3 12a1 1 0 0 1 1-1h1a1 1 0 1 1 0 2H4a1 1 0 0 1-1-1zm16 0a1 1 0 0 1 1-1h1a1 1 0 1 1 0 2h-1a1 1 0 0 1-1-1zM5.64 19.78l-.7.71a1 1 0 1 1-1.42-1.42l.71-.7a1 1 0 0 1 1.41 1.41zm12.72-14.14.71-.71a1 1 0 1 1 1.42 1.42l-.71.7a1 1 0 0 1-1.42-1.41z"/></svg>
+        <svg class="icon-moon" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3a7 7 0 0 0 9.79 9.79z"/></svg>
       </button>
     </div>
   </div>
@@ -530,7 +565,6 @@ section + section { margin-top: 11px; }
     <div class="contact">
       <div class="row"><span class="label">Portfolio</span><a href="https://averyemberday.com">averyemberday.com</a></div>
       <div class="row"><span class="label">LinkedIn</span><a href="https://linkedin.com/in/averyemberday">linkedin.com/in/averyemberday</a></div>
-      <div class="row"><span class="label">Upwork</span><a href="https://upwork.com/freelancers/averyemberday">upwork.com/freelancers/averyemberday</a></div>
       <div class="row"><span class="label">Email</span><span>averyemberday@gmail.com</span></div>
       <div class="row"><span class="label">Based</span><span>San Antonio, TX &amp; Las Vegas, NV — Remote</span></div>
     </div>
@@ -592,7 +626,7 @@ section + section { margin-top: 11px; }
       </section>
     </aside>
 
-    <main>
+    <main id="main">
       <section>
         <div class="section-title">Professional Experience</div>
 
@@ -603,18 +637,18 @@ section + section { margin-top: 11px; }
               <div class="role-dates">Nov 2018 – Present</div>
             </div>
             <div class="role-meta">
-              <span class="company">Upwork &amp; Direct Clients</span>
+              <span class="company">Freelance &amp; Direct Clients</span>
               <span class="sep">·</span>
               <span class="location">Remote — San Antonio, TX &amp; Las Vegas, NV</span>
             </div>
           </div>
           <ul>
             <li>Designed brand identity systems, logo packages, and print production deliverables for <strong>7+ clients</strong> across small business, content creator, and entertainment IP categories.</li>
-            <li>Crafted a print-ready banner for <strong>Macro-Pro, Inc.</strong> via Upwork; produced a multi-piece office poster series for <strong>Allegra</strong>, a San Antonio print company.</li>
+            <li>Crafted a print-ready banner for <strong>Macro-Pro, Inc.</strong>; produced a multi-piece office poster series for <strong>Allegra</strong>, a San Antonio print company.</li>
             <li>Developed original character art and logo design for <strong>SECTION6</strong>, a WGAW-registered adult animated series pitch by X.A. Allister.</li>
             <li>Built logo and banner packages for two content creators; created virtual and print marketing materials for a D&amp;D community group launching a brick-and-mortar bar in San Antonio.</li>
             <li>Integrate <strong>Adobe Firefly, ChatGPT, Claude, and Notion AI</strong> into ideation, mood-boarding, and concept-variation cycles — compressing iteration time without compromising brand consistency or hand-crafted feel.</li>
-            <li>Deliver consistently on-brief, on-time, and on-brand — published client testimonial via Upwork.</li>
+            <li>Deliver consistently on-brief, on-time, and on-brand.</li>
           </ul>
         </div>
 
@@ -652,7 +686,7 @@ section + section { margin-top: 11px; }
           </div>
           <div class="award">
             <span class="award-name">Published Client Testimonial</span>
-            <span class="award-meta">Macro-Pro, Inc. via Upwork — "delivered on time and on-brand"</span>
+            <span class="award-meta">Macro-Pro, Inc. — "delivered on time and on-brand"</span>
           </div>
         </div>
       </section>
@@ -661,9 +695,8 @@ section + section { margin-top: 11px; }
   </div>
 
   <div class="footer-portfolio">
-    Portfolio &amp; Work — <span class="url">averyemberday.com</span>
-    &nbsp;·&nbsp; LinkedIn: <span class="url">linkedin.com/in/averyemberday</span>
-    &nbsp;·&nbsp; Upwork: <span class="url">upwork.com/freelancers/averyemberday</span>
+    Portfolio &amp; Work — <a href="https://averyemberday.com">averyemberday.com</a>
+    &nbsp;·&nbsp; LinkedIn: <a href="https://linkedin.com/in/averyemberday">linkedin.com/in/averyemberday</a>
   </div>
 
 </div>
