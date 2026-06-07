@@ -1169,6 +1169,24 @@ html.dark .brand-glow-text {
 
 .brand-footer-links a:hover { color: var(--brand-text); }
 
+.brand-footer-connect {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.brand-footer-icons {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 16px;
+}
+
+.brand-footer-email {
+    margin-top: 12px;
+    font-size: 13px;
+    color: var(--brand-text-muted);
+}
+
 /* ── Utility ─────────────────────────────────────────────────────── */
 .brand-mt-sm  { margin-top: 16px; }
 .brand-mt-md  { margin-top: 24px; }

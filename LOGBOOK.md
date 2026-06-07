@@ -1,3 +1,36 @@
+## Entry 039 — 2026-06-07
+
+**Agent:** kimi-k2.6 (kilo, shxdow-flow)
+**Cycle:** contact-to-footer
+**Task:** Move the entire contact section (icon links + email) into the footer on every page, and remove the standalone `#contact` section from `index.html`.
+
+### Changes
+
+- **`index.html`** — Removed the standalone `<section id="contact">` block. Added `id="contact"` to the `<footer>` so the nav anchor still works. Replaced the text-only `.brand-footer-contact` row with `.brand-footer-connect` containing the three icon-link circles (Email, LinkedIn, GitHub SVGs) and the email address below them.
+- **`gallery/gallery.html`** — Same footer contact block update.
+- **`projects/brand-avery-ember-day.html`** — Same footer contact block update.
+- **`projects/history-of-mistrust.html`** — Same footer contact block update.
+- **`projects/patriots-low-thirds.html`** — Same footer contact block update.
+- **`brand.css`** — Replaced `.brand-footer-contact` (text row) with:
+  - `.brand-footer-connect` — centered wrapper with top margin
+  - `.brand-footer-icons` — flex row, centered, gap 16px
+  - `.brand-footer-email` — muted 13px text below icons
+  - Reuses existing `.icon-link` and `.icon` styles from `style.css`
+
+### Verification
+
+- Grep confirmed `.brand-footer-connect` present in all 5 footers
+- Grep confirmed no remaining `<section id="contact">` anywhere
+- Grep confirmed no stale `.brand-footer-contact` markup anywhere
+- All pages link both `brand.css` and `style.css`, so `.icon-link` / `.icon` styles are available
+
+### Notes
+
+- No commits performed per shxdow-flow policy.
+- The nav "Contact" link on all pages still resolves correctly: `index.html#contact` scrolls to the footer.
+
+---
+
 ## Entry 038 — 2026-06-07
 
 **Agent:** kimi-k2.6 (kilo, shxdow-flow)
