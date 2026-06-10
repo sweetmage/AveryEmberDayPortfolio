@@ -1,3 +1,31 @@
+## Entry 040 — 2026-06-09
+
+**Agent:** claude-sonnet-4.6 (kilo, shxdow-flow)
+**Cycle:** ats-resume
+**Task:** Create a single-page, single-column, ATS-friendly HTML resume and PDF from `resume/resume.md`.
+
+### Changes
+
+- **`resume/AveryEmberDay_Resume_ATS.html`** — New file. Self-contained HTML resume (no external CSS) sourced entirely from `resume.md`. Sections: Summary, Skills, Experience (2 roles), Awards & Recognition, Education, Portfolio footer. Fully single-column — no grid/float multi-column layout. Native `<ul>/<li>` disc bullets (no CSS `::before` pseudo-bullets). Standard `<h2>` section headings. System font stack (Arial/Georgia). `@page { size: letter }` print rules. ATS-parseable: all text selectable, no images/gradients/decorations, reading order matches document order.
+- **`resume/Avery_Ember_Day_Resume_ATS.pdf`** — New file. Single-page letter PDF generated via reportlab from the same `resume.md` content. All sections present in correct reading order. Zero bad glyphs (verified with pypdf text extraction). Built with system fonts (Helvetica/Georgia equivalents) — no embedded webfonts.
+
+### Verification
+
+- Single-column confirmed: no `grid-template-columns` multi-column, no float layout, no sidebar
+- PDF page count: 1 (confirmed via pypdf)
+- PDF text extraction: clean linear reading order — Name, Title, Contact, SUMMARY, SKILLS, EXPERIENCE (2 roles), AWARDS & RECOGNITION, EDUCATION, Portfolio footer
+- Zero replacement characters (U+FFFD) in extracted text — all glyphs render correctly
+- All section headings are plain uppercase text — ATS-parseable
+- Bullets render as disc characters with no CSS pseudo-element dependency
+
+### Notes
+
+- Existing branded two-column `AveryEmberDay_Resume_2026_Brand.html` is unchanged.
+- Testimonial section from `resume.md` intentionally omitted from both ATS files (not an ATS-standard section).
+- No commits performed per shxdow-flow policy.
+
+---
+
 ## Entry 039 — 2026-06-07
 
 **Agent:** kimi-k2.6 (kilo, shxdow-flow)

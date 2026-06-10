@@ -14,7 +14,7 @@ What I care about most is getting the brief right. Every project starts with lis
 
 When I'm not creating something new, I'm probably brewing a cup of coffee, playing cozy video games, or spending time with my family.
 
-If you're looking for a designer who takes craft seriously, communicates clearly, and brings genuine enthusiasm to every project, let's talk.
+
 
 ---
 
