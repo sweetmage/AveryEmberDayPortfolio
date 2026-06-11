@@ -508,18 +508,6 @@
       "sourceLine": 193
     },
     {
-      "id": "ticktick-mirror-portfolio-website-list-synced-2026-05-28-sub-page-content-image-paths-self-portrait-serieshtml-verify-image-pa",
-      "title": "self-portrait-series.html: verify image paths *(page removed in BrandForge-v2 migration — placeholders only, no real images)*",
-      "description": null,
-      "status": "completed",
-      "priority": "normal",
-      "tags": [
-        "ticktick"
-      ],
-      "list": "Sub-page content & image paths",
-      "sourceLine": 194
-    },
-    {
       "id": "ticktick-mirror-portfolio-website-list-synced-2026-05-28-sub-page-content-image-paths-gallerygalleryhtml-verify-all-gallery-im",
       "title": "gallery/gallery.html: verify all gallery image paths load",
       "description": null,

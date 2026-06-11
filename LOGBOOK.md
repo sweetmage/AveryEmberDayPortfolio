@@ -1,3 +1,31 @@
+## Entry 041 — 2026-06-10
+
+**Agent:** Kilo (shxdow-flow)
+**Cycle:** content-removal
+**Task:** Remove self portrait series, Mermaid, and Hope from the website gallery. Collapse "Digital Art" and "Traditional Art" sections into one cohesive gallery grid.
+
+### Changes
+
+- **`gallery/gallery.html`** — Removed 4 self-portrait `<figure>` entries (In Danger, In Fatigue, In Joy, In Love). Removed `Hope` and `Mermaid`. Removed `<h2>Digital Art</h2>` and `<h2>Traditional Art</h2>` section headings. Merged all 10 remaining items into a single `<section class="gallery-grid" aria-label="Art gallery">`.
+- **`images/myart/Gallery/SelfPortraitSeries/`** — Deleted entire directory and 4 `.webp` files (~419 KB total).
+- **`images/myart/Gallery/Hope-Final.webp`** — Deleted.
+- **`images/myart/Gallery/mermaidFinal.webp`** — Deleted.
+- **`TODO.md`** — Removed completed self-portrait-series task line.
+- **`docs/sync/local-tasks.json`** — Removed self-portrait-series completed task entry.
+- **`docs/plans/2026-06-10-remove-self-portrait-series.md`** — Updated plan file documenting removal + gallery collapse.
+
+### Verification
+
+- Link-check script verified all remaining gallery `src` paths in `gallery/gallery.html` resolve to existing files. 0 broken links.
+- `SelfPortraitSeries` directory and both individual image files confirmed deleted.
+- Gallery page now has one cohesive grid with 10 items (no section headings).
+
+### Notes
+
+- No commits performed per shxdow-flow policy.
+
+---
+
 ## Entry 040 — 2026-06-09
 
 **Agent:** claude-sonnet-4.6 (kilo, shxdow-flow)
