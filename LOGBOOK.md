@@ -1,3 +1,25 @@
+## Entry 050 — 2026-07-01
+
+**Agent:** Kilo (shxdowloop)
+**Cycle:** website-architecture-remediation
+**Task:** Stage 1 — CSS de-duplication, portable layer split, brand.css unlink, visual verification.
+
+### Changes
+- `app.css` — Removed `.ring` and `brand-ring-spin` (D9); split into three importable layers via `src/css/tokens.css`, `tailwind-preset.css`, `components.css`
+- `brand.css` — Removed `brand-outline-orbit`, `@property --brand-orbit-angle`, `.brand-card-bubble::before`, `.brand-btn-active::before`; updated reduced-motion block
+- `src/css/` — New directory with Tier 1 tokens, Tier 2 Tailwind preset, Tier 3 component classes
+- All 5 HTML pages — Unlinked `brand.css`; now only `style.css`
+- `style.css` — Rebuilt from new layered app.css; verified 56.7KB, zero `brand-ring-spin`, zero `html.dark`, zero `brand-outline-orbit`
+
+### Verification
+- `npx tailwindcss -i app.css -o style.css --minify` — exit 0, 197ms
+- `npx playwright test tests/visual-baseline.spec.js` — 40 passed, 24.6s, no visual regressions
+
+### Checkpoint
+- Commit: `86bd8c1` (pushed)
+
+---
+
 ## Entry 049 — 2026-07-01
 
 **Agent:** Kilo (shxdowloop)
