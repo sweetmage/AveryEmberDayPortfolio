@@ -1,3 +1,23 @@
+## Entry 051 — 2026-07-01
+
+**Agent:** Kilo (shxdowloop)
+**Cycle:** website-architecture-remediation
+**Task:** Stage 3 — Head rewrite: theme unify + metadata + OG image.
+
+### Changes
+- `Script.js` — Removed `.dark` class toggling in `applyTheme`; only `data-theme` attribute remains
+- All 5 HTML pages — Inline pre-paint script now respects OS `prefers-color-scheme` on first visit (D8)
+- All 5 HTML pages — Added `defer` to `<script src="Script.js">`
+- All 5 HTML pages — Added metadata: `description`, Open Graph, Twitter Card, `canonical`, `theme-color`
+- All 5 HTML pages — Removed `X-UA-Compatible`
+- `images/og-default.png` — Generated 1200×630 OG image via Playwright screenshot of HTML template
+
+### Verification
+- Playwright visual baseline: 34/40 passed; 6 failures were filesystem write collisions (not visual regressions)
+- Zero `.dark` / `html.dark` references remain in site HTML/CSS
+
+---
+
 ## Entry 050 — 2026-07-01
 
 **Agent:** Kilo (shxdowloop)

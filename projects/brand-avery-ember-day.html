@@ -2,13 +2,29 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
+    <meta name="robots" content="index,follow" />
+    <meta name="description" content="Brand identity system for Avery Ember Day — logo, typography, color palette, and visual guidelines." />
+    <meta property="og:title" content="Avery Ember Day Brand — Avery Ember Day" />
+    <meta property="og:description" content="Brand identity system for Avery Ember Day — logo, typography, color palette, and visual guidelines." />
+    <meta property="og:image" content="https://averyemberday.com/images/og-default.png" />
+    <meta property="og:url" content="https://averyemberday.com/projects/brand-avery-ember-day.html" />
+    <meta property="og:type" content="website" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="theme-color" content="#181818" media="(prefers-color-scheme: dark)" />
+    <meta name="theme-color" content="#FCFBF9" media="(prefers-color-scheme: light)" />
+    <link rel="canonical" href="https://averyemberday.com/projects/brand-avery-ember-day.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="author" content="Avery Ember Day" />
     <title>Avery Ember Day Brand — Avery Ember Day</title>
     <link rel="icon" href="../images/icons/BubbleLogo/bubbleLogo-white-notxt.svg" type="image/svg+xml" />
     <link rel="stylesheet" href="../style.css" />
     <script>
-      (function(){var t=localStorage.getItem('theme')||'light';document.documentElement.setAttribute('data-theme',t);})();
+      (function() {
+        const stored = localStorage.getItem('theme');
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        const theme = stored || (prefersDark ? 'dark' : 'light');
+        document.documentElement.setAttribute('data-theme', theme);
+      })();
     </script>
     <style>
       .project-hero {
@@ -396,7 +412,7 @@
       </svg>
     </button>
 
-    <script src="../Script.js"></script>
+    <script src="../Script.js" defer></script>
     <script src="../scripts/bubbles.js" defer></script>
     <div class="brand-bubbles-global" aria-hidden="true"></div>
   </body>

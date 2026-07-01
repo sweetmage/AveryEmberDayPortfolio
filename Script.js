@@ -23,11 +23,6 @@ if (btn) {
 
   function applyTheme(theme) {
     document.documentElement.setAttribute('data-theme', theme);
-    if (theme === 'dark') {
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-    }
     localStorage.setItem('theme', theme);
 
     // Swap logo sources for light/dark mode
