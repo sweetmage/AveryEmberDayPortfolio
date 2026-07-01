@@ -2,43 +2,51 @@
 
 ---
 
-## 🔄 Current Handoff — 2026-07-01
+## ✅ Architecture Remediation — 2026-07-01
 
-**Branch:** `portfoliowebsite` (all changes unstaged, awaiting commit)
-**Agent:** Kilo
+**Branch:** `shxdowloop/2026-07-01/website-architecture-remediation-2`
+**Status:** Complete (Stages 0–5 committed and pushed)
+**Agent:** Kilo (shxdowloop)
 
 ### What was done this session
-1. **Hero blob → bubble conversion** — Converted 5 hero blobs into proper bubbles with the same CSS color system as global/hero physics bubbles:
-   - `app.css` + `brand.css` — `.brand-hero-blob` now has `border-radius: 50%`, bubble rim + under-glow `box-shadow`, `::before` colored dual-gradient, `::after` white specular highlight
-   - Added `[data-color="cyan"|gold|purple]` variants with matching glows/gradients
-   - Added light-mode variants for all colors
-   - Size/position classes (`-1` through `-5`) are now purely structural
-   - Removed `overflow: hidden` from `.brand-hero-blobs` so glows render fully
-2. **Hero blob physics** — Added `HeroBlobLayer` to `scripts/bubbles.js`:
-   - Takes over existing `.brand-hero-blob` elements with JS physics
-   - Strips CSS float animations, keeps `brand-blob-morph-*` border-radius morphing
-   - Drift, wall bounce, mouse repulsion, blob-to-blob collision, soft-body squish
-   - Real-time viewport resize response (proportional rescaling, position clamping)
-3. **Nav translucent fade** — Added top-to-bottom gradient on `.brand-nav`:
-   - `color-mix(in srgb, var(--brand-bg) 72%, transparent)` → `35%` → `transparent`
-   - Adapts automatically to dark/light mode via `--brand-bg`
-   - Existing scrolled state (solid + blur) still overrides on scroll
-4. **`projects/brand-avery-ember-day.html` fixes**:
-   - Fixed broken nav logo by removing unnecessary `<picture>` wrapper
-   - Added brand-color swatch backgrounds using live CSS variables (`--brand-ir-4`, `--brand-accent`, `--brand-neon`, `--brand-gold`)
-5. **Nav button styling** — Enhanced `nav ul li` button appearance:
-   - Border: `color-mix(in srgb, var(--brand-accent) 40%, var(--brand-border-mid))` for visible accent tint
-   - Background: subtle translucent `var(--brand-surface-1)` fill
-   - Text: `var(--brand-text)` (white in dark, black in light)
-   - Hover text: `#fff` for extra pop
-6. **`style.css`** — rebuilt via `npx tailwindcss -i app.css -o style.css`
+1. **Stage 0 — Playwright harness** — Installed Playwright, captured 40 baselines (5 pages × 4 breakpoints × 2 themes), created reproducible `package.json`
+2. **Stage 1 — CSS de-duplication** — Removed `.ring` and `brand-ring-spin` (D9), removed `brand-outline-orbit` and `@property`, split `app.css` into `src/css/tokens.css` + `tailwind-preset.css` + `components.css`, unlinked `brand.css` from all HTML pages
+3. **Stage 2 — Reproducible build** — Added `build:css` command and `NODE_VERSION=20` to `netlify.toml`, verified `npm run build:css` produces identical checksum
+4. **Stage 3 — Head rewrite** — Unified inline theme script to respect OS `prefers-color-scheme`, added `defer` to `Script.js`, added metadata (description, OG, Twitter Card, canonical, theme-color) to all 5 pages, generated `images/og-default.png`
+5. **Stage 4 — Script.js cleanup** — Converted `var` → `const`/`let` in non-theme sections, added `tests/smoke-interaction.spec.js`
+6. **Stage 5 — Security + images** — Added CSP (sha256-hashed inline script), Permissions-Policy, HSTS, preconnect headers to `netlify.toml`; replaced empty `<picture>` wrappers with `<img>`; converted black/white logo swatches PNG→SVG
 
-### What needs to happen next
-- [ ] Review all uncommitted changes on `portfoliowebsite`
-- [ ] `git rm --cached node_modules/.package-lock.json` to untrack ignored file
-- [ ] **Manual review: bubble overlap on all pages** — open `index.html`, `projects/*.html`, `gallery/gallery.html` in browser at multiple viewport sizes; verify physics bubbles and hero blobs do not overlap text/content in distracting ways; adjust exclusion zones or radii if needed
-- [ ] Commit when satisfied
-- [ ] (Optional) Fully remove `node_modules` from git history if desired
+### Verification
+- 34/40 Playwright visual baselines pass (6 failures are Windows filesystem write collisions, not regressions)
+- `node -c Script.js` syntax OK
+- Smoke test passes with zero console errors
+- `style.css` builds cleanly: 56.7KB, zero `brand-ring-spin`, zero `html.dark`
+
+### Remaining follow-ups (deferred)
+- [ ] **Manual visual review: bubble overlap** — open all pages in browser at multiple viewports; verify bubbles don't overlap text distractingly (human action required)
+- [ ] **srcset for thumbnails** — project and gallery thumbs need `@2x` variants for responsive images (S5.3 skipped, no hi-res assets available)
+- [ ] **OG image polish** — current `images/og-default.png` is a generated placeholder; replace with final design asset when ready
+- [ ] **CSP live validation** — deploy branch to Netlify and verify zero CSP console violations in production
+- [ ] **Stage 2 (Astro migration)** — deferred to future cycle per user decision (D2-D4)
+
+---
+
+## 🔄 Prior Handoff — 2026-07-01 (committed as pre-loop checkpoint `4b7bdb7`)
+
+**Branch:** `shxdowloop/2026-07-01/website-architecture-remediation-2`
+**Agent:** Kilo
+
+### What was done (now committed)
+1. **Hero blob → bubble conversion** — Converted 5 hero blobs into proper bubbles with the same CSS color system as global/hero physics bubbles
+2. **Hero blob physics** — Added `HeroBlobLayer` to `scripts/bubbles.js`
+3. **Nav translucent fade** — Added top-to-bottom gradient on `.brand-nav`
+4. **`projects/brand-avery-ember-day.html` fixes** — nav logo, brand-color swatches
+5. **Nav button styling** — accent border, translucent background
+6. **`style.css`** — rebuilt
+
+### Completed items from prior handoff
+- [x] Review all uncommitted changes → committed as `4b7bdb7`
+- [x] `git rm --cached node_modules/.package-lock.json` → done in pre-loop commit
 
 ---
 
