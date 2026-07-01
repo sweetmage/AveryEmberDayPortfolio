@@ -231,7 +231,7 @@ Sequential gates: S0 → S1 → (S2, S3). S4 depends on S3. S5 depends on S2 + S
 | Stage | Commit SHA | Push Status | Notes |
 |---|---|---|---|
 | Pre-loop checkpoint | `4b7bdb7` | pushed | Prior session handoff (hero blobs, nav polish) |
-| S0 — Harness | — | — | Pending |
+| S0 — Harness | `b784801` | pushed | Playwright installed, 40 baselines captured, package.json + lockfile created |
 | S1 — CSS dedup | — | — | Pending |
 | S2 — Build | — | — | Pending |
 | S3 — Head rewrite | — | — | Pending |

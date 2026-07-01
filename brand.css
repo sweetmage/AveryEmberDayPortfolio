@@ -5,18 +5,7 @@
 
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Outfit:wght@300;400;500;600;700&family=Sriracha&display=swap');
 
-@property --brand-orbit-angle {
-    syntax: '<angle>';
-    inherits: false;
-    initial-value: 0deg;
-}
-
 /* ── Keyframes ──────────────────────────────────────────────────── */
-@keyframes brand-outline-orbit {
-    from { --brand-orbit-angle: 0deg; }
-    to   { --brand-orbit-angle: 360deg; }
-}
-
 @keyframes brand-outline-pulse {
     0%, 100% { opacity: 0.72; }
     50%       { opacity: 1; }
@@ -980,40 +969,14 @@ html.dark .brand-pill-ir {
     color: inherit;
 }
 
-.brand-card-bubble::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    border-radius: inherit;
-    padding: 1px;
-    background: conic-gradient(
-        from var(--brand-orbit-angle),
-        var(--brand-ir-1) 0deg,
-        var(--brand-ir-6) 90deg,
-        var(--brand-ir-3) 180deg,
-        var(--brand-ir-4) 270deg,
-        var(--brand-ir-1) 360deg
-    );
-    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
-    -webkit-mask-composite: xor;
-    mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
-    mask-composite: exclude;
-    pointer-events: none;
-    animation: brand-outline-orbit 8s linear infinite;
-    opacity: 0.55;
-}
-
 .brand-card-bubble:hover {
     transform: translateY(-4px);
     box-shadow: 0 8px 32px rgba(199,125,255,0.14), 0 0 0 1px rgba(199,125,255,0.28);
 }
 
-.brand-card-bubble:hover::before { opacity: 1; }
-
 html.dark .brand-card-bubble {
     box-shadow: 0 4px 24px rgba(217,154,255,0.12), 0 0 0 1px rgba(217,154,255,0.22);
 }
-html.dark .brand-card-bubble::before { opacity: 0.75; }
 
 /* ── Circle icon ─────────────────────────────────────────────────── */
 .brand-circle-icon {
@@ -1080,14 +1043,17 @@ html.dark .brand-circle-icon {
 
 .brand-btn-lg { padding: 11px 32px; border-radius: 9999px; font-size: 14px; }
 
-/* Animated iridescent border ring */
-.brand-btn-active,
+/* Animated iridescent border ring (active button ring removed per D9) */
+.brand-btn-active {
+    position: relative;
+    isolation: isolate;
+}
+
 .brand-btn-generating {
     position: relative;
     isolation: isolate;
 }
 
-.brand-btn-active::before,
 .brand-btn-generating::before {
     content: "";
     position: absolute;
@@ -1099,22 +1065,6 @@ html.dark .brand-circle-icon {
     -webkit-mask-composite: xor;
     mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
     mask-composite: exclude;
-}
-
-.brand-btn-active::before {
-    background: conic-gradient(
-        from var(--brand-orbit-angle),
-        color-mix(in srgb, var(--brand-active-outline) 46%, white 54%) 0deg,
-        var(--brand-active-outline) 90deg,
-        color-mix(in srgb, var(--brand-active-outline) 68%, white 32%) 180deg,
-        var(--brand-active-outline) 270deg,
-        color-mix(in srgb, var(--brand-active-outline) 46%, white 54%) 360deg
-    );
-    animation: brand-outline-orbit 3.2s linear infinite,
-               brand-outline-pulse 4.4s ease-in-out infinite;
-}
-
-.brand-btn-generating::before {
     background: linear-gradient(90deg,
         var(--brand-ir-1), var(--brand-ir-2), var(--brand-ir-3),
         var(--brand-ir-4), var(--brand-ir-5), var(--brand-ir-6), var(--brand-ir-1));
@@ -1238,9 +1188,7 @@ html.dark .brand-glow-text {
 
 /* ── Reduced motion ──────────────────────────────────────────────── */
 @media (prefers-reduced-motion: reduce) {
-    .brand-btn-active::before,
-    .brand-btn-generating::before,
-    .brand-card-bubble::before {
+    .brand-btn-generating::before {
         animation-duration: 0.01ms !important;
         animation-iteration-count: 1 !important;
     }
