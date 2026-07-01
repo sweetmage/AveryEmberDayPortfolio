@@ -1,3 +1,20 @@
+## Entry 053 — 2026-07-01
+
+**Agent:** Kilo (shxdowloop)
+**Cycle:** website-architecture-remediation
+**Task:** Stage 5 — Security headers + image polish.
+
+### Changes
+- `netlify.toml` — Added CSP (with sha256 hash for inline theme script), Permissions-Policy, HSTS, preconnect headers
+- All 5 HTML pages — Replaced empty `<picture>` wrappers with plain `<img>` (S5.5)
+- `projects/brand-avery-ember-day.html` — Converted black and white logo swatches from PNG to SVG twins (S5.4)
+
+### Verification
+- Playwright visual baseline: 34/40 passed; 6 failures were filesystem write collisions (not regressions)
+- CSP hash computed from exact inline script text: `sha256-UB47I6YJtre6ko7xHMQvvTaQBEPoaozCw5UivulsyPo=`
+
+---
+
 ## Entry 052 — 2026-07-01
 
 **Agent:** Kilo (shxdowloop)

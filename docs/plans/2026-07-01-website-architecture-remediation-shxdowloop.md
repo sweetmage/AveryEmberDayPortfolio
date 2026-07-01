@@ -236,5 +236,5 @@ Sequential gates: S0 → S1 → (S2, S3). S4 depends on S3. S5 depends on S2 + S
 | S2 — Build | — | — | Pending |
 | S3 — Head rewrite | `TBD` | TBD | Theme script unified, defer added, metadata added, OG image generated |
 | S4 — Script.js cleanup | `TBD` | TBD | var→const/let in non-theme code, smoke test passes |
-| S5 — Security + images | — | — | Pending |
+| S5 — Security + images | `TBD` | TBD | CSP added, picture wrappers fixed, PNG→SVG twins, preconnect headers |
 | S6 — Final review | — | — | Pending |
