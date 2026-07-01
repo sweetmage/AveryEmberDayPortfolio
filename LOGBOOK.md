@@ -1,3 +1,20 @@
+## Entry 052 — 2026-07-01
+
+**Agent:** Kilo (shxdowloop)
+**Cycle:** website-architecture-remediation
+**Task:** Stage 4 — Script.js cleanup: var to const/let, interaction smoke test.
+
+### Changes
+- `Script.js` — Converted `var` → `const`/`let` in return-to-top, scroll-spy, submenu, and smooth-scroll sections
+- Left theme-toggle section untouched (becomes Web Component in Stage 2)
+- `tests/smoke-interaction.spec.js` — New Playwright test verifying scroll, theme toggle, submenu, zero console errors
+
+### Verification
+- `node -c Script.js` — syntax OK
+- `npx playwright test tests/smoke-interaction.spec.js` — 1 passed, 5.3s, zero console errors
+
+---
+
 ## Entry 051 — 2026-07-01
 
 **Agent:** Kilo (shxdowloop)

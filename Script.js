@@ -1,8 +1,8 @@
-var btn = document.getElementById('return-to-top');
+const btn = document.getElementById('return-to-top');
 
 window.addEventListener('scroll', function () {
   if (!btn) return;
-  var scrollY = window.scrollY || document.documentElement.scrollTop;
+  const scrollY = window.scrollY || document.documentElement.scrollTop;
   btn.style.display = scrollY > 800 ? 'block' : 'none';
 }, { passive: true });
 
@@ -50,7 +50,7 @@ if (btn) {
 
 // ── Nav scroll-spy ─────────────────────────────────────────────────
 (function () {
-  var nav = document.getElementById('brandNav');
+  const nav = document.getElementById('brandNav');
   if (!nav) return;
 
   function onScroll() {
@@ -63,7 +63,7 @@ if (btn) {
 
 // ── Submenu toggle ────────────────────────────────────────────────
 (function () {
-  var triggers = document.querySelectorAll('.submenu-trigger');
+  const triggers = document.querySelectorAll('.submenu-trigger');
   if (!triggers.length) return;
 
   function closeAllSubmenus() {
@@ -74,9 +74,9 @@ if (btn) {
 
   triggers.forEach(function (trigger) {
     trigger.addEventListener('click', function (e) {
-      var li = trigger.closest('.has-submenu');
+      const li = trigger.closest('.has-submenu');
       if (!li) return;
-      var isOpen = li.classList.contains('open');
+      const isOpen = li.classList.contains('open');
       if (!isOpen) {
         e.preventDefault();
         closeAllSubmenus();
@@ -104,9 +104,9 @@ if (btn) {
 // ── Smooth scroll for anchor links ────────────────────────────────
 document.querySelectorAll('a[href^="#"]').forEach(function (anchor) {
   anchor.addEventListener('click', function (e) {
-    var li = anchor.closest('.has-submenu');
+    const li = anchor.closest('.has-submenu');
     if (li && !li.classList.contains('open')) return;
-    var target = document.querySelector(this.getAttribute('href'));
+    const target = document.querySelector(this.getAttribute('href'));
     if (target) {
       e.preventDefault();
       target.scrollIntoView({ behavior: 'smooth', block: 'start' });
