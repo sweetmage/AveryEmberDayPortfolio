@@ -24,7 +24,9 @@
     <nav class="brand-nav" id="brandNav" aria-label="Primary navigation">
       <div class="brand-container brand-nav-inner">
         <a href="#" class="brand-nav-logo">
-          <img src="images/icons/BubbleLogo/bubbleLogo-white-notxt.svg" alt="" width="32" height="32" />
+          <picture>
+            <img src="images/icons/BubbleLogo/bubbleLogo-white-notxt.svg" alt="" width="32" height="32" />
+          </picture>
           Avery Ember Day
         </a>
         <ul class="brand-nav-links">
@@ -49,26 +51,18 @@
 
     <!-- Hero (full viewport) -->
     <section id="hero" class="brand-hero">
-        <div class="brand-bubbles" aria-hidden="true">
-          <div class="brand-bubble brand-bubble--sm brand-bubble--1"></div>
-          <div class="brand-bubble brand-bubble--md brand-bubble--2"></div>
-          <div class="brand-bubble brand-bubble--xs brand-bubble--3"></div>
-          <div class="brand-bubble brand-bubble--lg brand-bubble--4"></div>
-          <div class="brand-bubble brand-bubble--sm brand-bubble--5"></div>
-          <div class="brand-bubble brand-bubble--xs brand-bubble--6"></div>
-          <div class="brand-bubble brand-bubble--md brand-bubble--7"></div>
-          <div class="brand-bubble brand-bubble--sm brand-bubble--8"></div>
-          <div class="brand-bubble brand-bubble--lg brand-bubble--9"></div>
-        </div>
+        <div class="brand-bubbles-hero" aria-hidden="true"></div>
         <div class="brand-hero-blobs" aria-hidden="true">
-          <div class="brand-hero-blob brand-hero-blob-1"></div>
-          <div class="brand-hero-blob brand-hero-blob-2"></div>
-          <div class="brand-hero-blob brand-hero-blob-3"></div>
-          <div class="brand-hero-blob brand-hero-blob-4"></div>
-          <div class="brand-hero-blob brand-hero-blob-5"></div>
+          <div class="brand-hero-blob brand-hero-blob-1" data-color="purple"></div>
+          <div class="brand-hero-blob brand-hero-blob-2" data-color="cyan"></div>
+          <div class="brand-hero-blob brand-hero-blob-3" data-color="gold"></div>
+          <div class="brand-hero-blob brand-hero-blob-4" data-color="cyan"></div>
+          <div class="brand-hero-blob brand-hero-blob-5" data-color="purple"></div>
         </div>
         <div class="brand-container brand-hero-content">
-          <img src="images/icons/BubbleLogo/bubbleLogo-white.svg" alt="Avery Ember Day" class="hero-logo" />
+          <picture>
+            <img src="images/icons/BubbleLogo/bubbleLogo-white.svg" alt="Avery Ember Day" class="hero-logo" />
+          </picture>
           <h1 class="hero-name brand-text-hero">Avery Ember Day</h1>
           <p class="hero-sub">Brand & Visual Designer</p>
         </div>
@@ -177,6 +171,9 @@
       </svg>
     </button>
 
+    <div class="brand-bubbles-global" aria-hidden="true"></div>
+
     <script src="Script.js"></script>
+    <script src="scripts/bubbles.js" defer></script>
   </body>
 </html>

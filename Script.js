@@ -29,6 +29,20 @@ if (btn) {
       document.documentElement.classList.remove('dark');
     }
     localStorage.setItem('theme', theme);
+
+    // Swap logo sources for light/dark mode
+    var heroLogo = document.querySelector('.hero-logo');
+    if (heroLogo) {
+      heroLogo.src = theme === 'light'
+        ? 'images/icons/BubbleLogo/bubbleLogo-black.svg'
+        : 'images/icons/BubbleLogo/bubbleLogo-white.svg';
+    }
+    var navLogo = document.querySelector('.brand-nav-logo img');
+    if (navLogo) {
+      navLogo.src = theme === 'light'
+        ? 'images/icons/BubbleLogo/bubbleLogo-black-notxt.svg'
+        : 'images/icons/BubbleLogo/bubbleLogo-white-notxt.svg';
+    }
   }
 
   applyTheme(getTheme());

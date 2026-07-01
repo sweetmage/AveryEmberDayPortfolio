@@ -2,6 +2,46 @@
 
 ---
 
+## 🔄 Current Handoff — 2026-07-01
+
+**Branch:** `portfoliowebsite` (all changes unstaged, awaiting commit)
+**Agent:** Kilo
+
+### What was done this session
+1. **Hero blob → bubble conversion** — Converted 5 hero blobs into proper bubbles with the same CSS color system as global/hero physics bubbles:
+   - `app.css` + `brand.css` — `.brand-hero-blob` now has `border-radius: 50%`, bubble rim + under-glow `box-shadow`, `::before` colored dual-gradient, `::after` white specular highlight
+   - Added `[data-color="cyan"|gold|purple]` variants with matching glows/gradients
+   - Added light-mode variants for all colors
+   - Size/position classes (`-1` through `-5`) are now purely structural
+   - Removed `overflow: hidden` from `.brand-hero-blobs` so glows render fully
+2. **Hero blob physics** — Added `HeroBlobLayer` to `scripts/bubbles.js`:
+   - Takes over existing `.brand-hero-blob` elements with JS physics
+   - Strips CSS float animations, keeps `brand-blob-morph-*` border-radius morphing
+   - Drift, wall bounce, mouse repulsion, blob-to-blob collision, soft-body squish
+   - Real-time viewport resize response (proportional rescaling, position clamping)
+3. **Nav translucent fade** — Added top-to-bottom gradient on `.brand-nav`:
+   - `color-mix(in srgb, var(--brand-bg) 72%, transparent)` → `35%` → `transparent`
+   - Adapts automatically to dark/light mode via `--brand-bg`
+   - Existing scrolled state (solid + blur) still overrides on scroll
+4. **`projects/brand-avery-ember-day.html` fixes**:
+   - Fixed broken nav logo by removing unnecessary `<picture>` wrapper
+   - Added brand-color swatch backgrounds using live CSS variables (`--brand-ir-4`, `--brand-accent`, `--brand-neon`, `--brand-gold`)
+5. **Nav button styling** — Enhanced `nav ul li` button appearance:
+   - Border: `color-mix(in srgb, var(--brand-accent) 40%, var(--brand-border-mid))` for visible accent tint
+   - Background: subtle translucent `var(--brand-surface-1)` fill
+   - Text: `var(--brand-text)` (white in dark, black in light)
+   - Hover text: `#fff` for extra pop
+6. **`style.css`** — rebuilt via `npx tailwindcss -i app.css -o style.css`
+
+### What needs to happen next
+- [ ] Review all uncommitted changes on `portfoliowebsite`
+- [ ] `git rm --cached node_modules/.package-lock.json` to untrack ignored file
+- [ ] **Manual review: bubble overlap on all pages** — open `index.html`, `projects/*.html`, `gallery/gallery.html` in browser at multiple viewport sizes; verify physics bubbles and hero blobs do not overlap text/content in distracting ways; adjust exclusion zones or radii if needed
+- [ ] Commit when satisfied
+- [ ] (Optional) Fully remove `node_modules` from git history if desired
+
+---
+
 ## ⚠️ Framework Decision Pending (2026-06-04)
 
 The website is currently vanilla HTML/CSS/JS. User is evaluating a move to a JS framework (React, Vue, Svelte, Astro, SolidJS, etc.) but **has not yet chosen one**.
@@ -48,7 +88,8 @@ The website is currently vanilla HTML/CSS/JS. User is evaluating a move to a JS 
 ## Active Plans
 
 - `docs/plans/2026-06-06-deploy-averyemberday-com.md` — Deploy averyemberday.com → this repo via Netlify. **Awaiting human actions:** merge master, DNS update at registrar.
-- `docs/plans/2026-06-04-hero-bubble-physics.md` — Hero bubble physics (canvas) — awaiting implementation; pending framework decision above.
+- `docs/plans/2026-06-30-bubble-physics-rework.md` — Interactive DOM-based bubble physics (global + hero layers, mouse repulsion, squish, element collision). **Status:** ✅ Complete.
+- `docs/plans/2026-06-04-hero-bubble-physics.md` — Hero bubble physics (canvas) — **SUPERSEDED** by `2026-06-30-bubble-physics-rework.md`.
 
 All other plans are completed and archived in `docs/archives/plans.md`.
 

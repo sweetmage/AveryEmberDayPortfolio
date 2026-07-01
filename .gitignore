@@ -2,6 +2,19 @@
 /git/portfolio/
 /projects/RNG/
 
+# Dependencies
+/node_modules/
+
+# Generated CSS (rebuilt by Netlify via `npm run build:css`)
+/style.css
+
+# Temporary / debug files
+/tmp/
+*.log
+
+# One-off scripts
+/run_git_commands.py
+
 # Cross-target sync (personal task IDs, auth tokens)
 /docs/sync/mapping.json
 /docs/sync/*-manifest.json
