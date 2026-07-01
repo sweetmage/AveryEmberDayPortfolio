@@ -20,3 +20,6 @@
 /docs/sync/*-manifest.json
 /docs/sync/google-docs.json
 .env
+
+# Playwright test artifacts
+/test-results/

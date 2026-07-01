@@ -1,3 +1,18 @@
+## Entry 049 — 2026-07-01
+
+**Agent:** Kilo (shxdowloop)
+**Cycle:** website-architecture-remediation
+**Task:** Resume architecture remediation loop — preflight passed, branch created, prior session handoff committed, Stage 0 beginning.
+
+### State
+- Branch: `shxdowloop/2026-07-01/website-architecture-remediation-2`
+- Pre-loop checkpoint: `4b7bdb7` (pushed)
+- Process plan: `docs/plans/2026-07-01-website-architecture-remediation-shxdowloop.md`
+- Helper routing: native-first (Claude/Codex low usage)
+- Degraded paths: PowerShell inaccessible — using Node.js for cross-platform automation
+
+---
+
 ## Entry 048 — 2026-07-01
 
 **Agent:** Kilo (shxdowloop dry-run)

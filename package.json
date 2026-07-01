@@ -1,0 +1,18 @@
+{
+  "name": "averyemberday-portfolio",
+  "version": "1.0.0",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "build:css": "tailwindcss -i app.css -o style.css --minify",
+    "watch:css": "tailwindcss -i app.css -o style.css --watch"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.45.0",
+    "@tailwindcss/cli": "^4.3.2",
+    "tailwindcss": "^4.3.2"
+  }
+}
