@@ -216,7 +216,7 @@
           <img src="../images/icons/BubbleLogo/bubbleLogo-white-notxt.svg" alt="" width="32" height="32" />
           Avery Ember Day
         </a>
-        <ul class="brand-nav-links">
+        <ul class="brand-nav-links" id="brand-nav-links">
           <li class="has-submenu">
             <a href="../index.html#work" class="submenu-trigger">Work</a>
             <ul class="submenu">
@@ -226,8 +226,15 @@
             </ul>
           </li>
           <li><a href="../index.html#about">About</a></li>
+          <li><a href="../index.html#contact">Contact</a></li>
         </ul>
         <div class="brand-nav-actions">
+          <button class="brand-nav-hamburger" aria-expanded="false" aria-controls="brand-nav-links" aria-label="Open navigation menu">
+            <span class="hb-line"></span>
+            <span class="hb-line"></span>
+            <span class="hb-line"></span>
+          </button>
+          <a href="../index.html#contact" class="brand-nav-cta">Hire Me</a>
           <button class="brand-theme-toggle" id="theme-toggle" aria-label="Toggle light/dark mode">
             <svg class="icon-sun" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 17a5 5 0 1 0 0-10 5 5 0 0 0 0 10zm0 2a1 1 0 0 1 1 1v1a1 1 0 1 1-2 0v-1a1 1 0 0 1 1-1zm0-14a1 1 0 0 1-1-1V3a1 1 0 1 1 2 0v1a1 1 0 0 1-1 1zM4.22 5.64a1 1 0 0 1 1.42-1.42l.7.71a1 1 0 0 1-1.41 1.41l-.71-.7zm14.14 12.72a1 1 0 0 1 1.42 1.42l-.71.7a1 1 0 1 1-1.41-1.41l.7-.71zM3 12a1 1 0 0 1 1-1h1a1 1 0 1 1 0 2H4a1 1 0 0 1-1-1zm16 0a1 1 0 0 1 1-1h1a1 1 0 1 1 0 2h-1a1 1 0 0 1-1-1zM5.64 19.78l-.7.71a1 1 0 1 1-1.42-1.42l.71-.7a1 1 0 0 1 1.41 1.41zm12.72-14.14.71-.71a1 1 0 1 1 1.42 1.42l-.71.7a1 1 0 0 1-1.42-1.41z"/></svg>
             <svg class="icon-moon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M21 12.79A9 9 0 1 1 11.21 3a7 7 0 0 0 9.79 9.79z"/></svg>
@@ -414,6 +421,6 @@
 
     <script src="../Script.js" defer></script>
     <script src="../scripts/bubbles.js" defer></script>
-    <div class="brand-bubbles-global" aria-hidden="true"></div>
+    <div class="brand-bubbles-global" aria-hidden="true" data-exclusions=".logo-swatch, .swatch, .type-specimen, .project-hero"></div>
   </body>
 </html>

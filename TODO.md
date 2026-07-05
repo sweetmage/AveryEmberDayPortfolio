@@ -2,6 +2,82 @@
 
 ---
 
+## ✅ Nav Improvements — 2026-07-02
+
+**Branch:** `portfoliowebsite`
+**Agent:** Kilo (shxdow-flow)
+**Status:** Complete (uncommitted, awaiting review)
+
+### Goal
+Implement four nav improvements across all 5 pages: mobile hamburger menu, Contact link + Hire Me CTA, active/current-page indicators, and hover-open on the desktop Work submenu.
+
+### Approach
+- All changes are pure HTML/CSS/JS — no framework, stays vanilla per project policy
+- `brand.css` gets all new nav CSS (hamburger, mobile drawer, CTA button, active state, hover submenu)
+- `Script.js` gets hamburger toggle + active page detection logic
+- All 5 HTML pages get updated nav blocks: `index.html`, `projects/brand-avery-ember-day.html`, `projects/history-of-mistrust.html`, `projects/patriots-low-thirds.html`, `gallery/gallery.html`
+- `prefers-reduced-motion` respected: hamburger animation disabled when motion reduced
+
+### Steps
+1. **brand.css** — add CSS for:
+   - `.brand-nav-hamburger` button (3-line icon → X, 44×44 tap target)
+   - `.brand-nav-links` mobile drawer state (`.is-open` class: `display: flex; flex-direction: column`, full-width overlay)
+   - `.brand-nav-cta` — Hire Me pill button in `.brand-nav-actions`
+   - `.brand-nav-links a.is-active` — accent underline using `--brand-accent`
+   - `.has-submenu:hover > .submenu` — hover-open on desktop (≥768px)
+   - `@media (prefers-reduced-motion: reduce)` guard for hamburger transition
+
+2. **Script.js** — add:
+   - Hamburger toggle: click toggles `.is-open` on `.brand-nav-links`, toggles `aria-expanded`, closes on Escape/outside-click (reuses existing `closeAllSubmenus` pattern)
+   - Body scroll lock when mobile menu open (`overflow: hidden` on `<body>`)
+   - Active page detection: on `DOMContentLoaded`, compare `window.location.pathname` to each nav link href; add `aria-current="page"` + `.is-active` to matching `<a>`; if on a project sub-page, also add `.is-active` to the `.submenu-trigger` parent `li`
+
+3. **index.html** — update nav block (L37–61):
+   - Add `<button class="brand-nav-hamburger" ...>` to `.brand-nav-actions` (before theme toggle)
+   - Add `<li><a href="#contact">Contact</a></li>` to `.brand-nav-links`
+   - Add `<a href="#contact" class="brand-nav-cta">Hire Me</a>` to `.brand-nav-actions`
+
+4. **projects/brand-avery-ember-day.html** (L213–237), **projects/history-of-mistrust.html** (L400–420), **projects/patriots-low-thirds.html** (L151–172), **gallery/gallery.html** (L34–58) — same nav updates with correct relative paths
+
+### Testing
+- `npm run build:css` — ensure CSS compiles clean
+- Manual: resize browser ≤767px → hamburger visible, menu opens/closes
+- Manual: resize ≥768px → hamburger hidden, nav links visible
+- Manual: navigate to a project sub-page → "Work" link shows active state
+- Manual: hover "Work" on desktop → submenu opens without click
+- Manual: Escape key closes mobile menu and desktop submenu
+- Manual: "Hire Me" button visible in nav, scrolls to footer `#contact`
+
+### Risks
+- Sub-page active detection uses `pathname` string matching — works for static HTML, no issues
+- Hover submenu adds `:hover` alongside existing click/`:focus-within` — additive only, no regression
+- Mobile drawer needs `z-index` above content but below any modals — using `z-index: 55` (nav is 50, submenu is 60)
+
+---
+
+## ✅ EPERM Docs + Agent Pointer Convention — 2026-07-01
+
+**Branch:** `portfoliowebsite` (uncommitted, awaiting review)
+**Agent:** Kilo
+
+### What was done this session
+1. **EPERM documentation** — Updated `docs/NOTES.md` with precise, evidence-based EPERM behavior table. Removed the inaccurate blanket "PowerShell is inaccessible" statement.
+2. **Shell proxy** — Created `scripts/shell-proxy.js` (cross-platform CLI + API for running PowerShell/cmd via `spawnSync` patterns that bypass EPERM).
+3. **Diagnostic script** — Created `scripts/diagnostic-spawn.js` (10 tests reproducing pass/fail patterns for user verification outside the agent).
+4. **AGENTS.md** — New canonical agent-facing source of truth with branch policy, environment constraints, build/test commands, TickTick notes, accessibility rules, and tech stack.
+5. **Pointer files** — Created `CLAUDE.md`, `CODEX.md`, `KILO.md`, `CURSOR.md`, `BLACKBOX.md`, `COPILOT.md`, `GEMINI.md` all pointing to `AGENTS.md`.
+6. **LOGBOOK** — Added Entry 054 documenting all changes.
+
+### Verification
+- `node scripts/diagnostic-spawn.js` — 10/10 tests pass from a `.js` file (confirms `.js` files are more reliable than `node -e`).
+- `node scripts/shell-proxy.js pwsh "echo test"` and `cmd` variant — return expected output.
+- All pointer files contain valid markdown links to `AGENTS.md`.
+
+### Notes
+- No commits performed per shxdow-flow policy.
+
+---
+
 ## ✅ Architecture Remediation — 2026-07-01
 
 **Branch:** `shxdowloop/2026-07-01/website-architecture-remediation-2`
@@ -23,7 +99,7 @@
 - `style.css` builds cleanly: 56.7KB, zero `brand-ring-spin`, zero `html.dark`
 
 ### Remaining follow-ups (deferred)
-- [ ] **Manual visual review: bubble overlap** — open all pages in browser at multiple viewports; verify bubbles don't overlap text distractingly (human action required)
+- [x] **Manual visual review: bubble overlap** — user confirmed overlap on brand page logo, swatches, type specimen. Fixed via `data-exclusions` on brand, patriots, and gallery pages (Entry 057).
 - [ ] **srcset for thumbnails** — project and gallery thumbs need `@2x` variants for responsive images (S5.3 skipped, no hi-res assets available)
 - [ ] **OG image polish** — current `images/og-default.png` is a generated placeholder; replace with final design asset when ready
 - [ ] **CSP live validation** — deploy branch to Netlify and verify zero CSP console violations in production
@@ -96,6 +172,8 @@ The website is currently vanilla HTML/CSS/JS. User is evaluating a move to a JS 
 ## Active Plans
 
 - `docs/plans/2026-06-06-deploy-averyemberday-com.md` — Deploy averyemberday.com → this repo via Netlify. **Awaiting human actions:** merge master, DNS update at registrar.
+- `docs/plans/2026-07-02-project-card-bubble-exclusion.md` — Add `.bubble-exclude` class to project cards and `.about-box`, update `scripts/bubbles.js` to use the class in default exclusions. **Status:** 📝 Planned, awaiting implementation.
+- `docs/plans/2026-07-02-local-test-page-visibility.md` — Diagnosed why user reported gallery/history-of-mistrust pages unviewable in local test. **Status:** ✅ Resolved — user confirmed `npx serve`; root cause was the `Script.js` logo-404 bug (fixed this session), verified zero console/network errors on both pages after the fix.
 - `docs/plans/2026-06-30-bubble-physics-rework.md` — Interactive DOM-based bubble physics (global + hero layers, mouse repulsion, squish, element collision). **Status:** ✅ Complete.
 - `docs/plans/2026-06-04-hero-bubble-physics.md` — Hero bubble physics (canvas) — **SUPERSEDED** by `2026-06-30-bubble-physics-rework.md`.
 

@@ -24,4 +24,10 @@ The agent can read and edit specific Google Docs via `scripts/google-docs.js`. A
 
 ## Agent Environment Constraints
 
-**PowerShell is inaccessible to agents.** The default shell on this Windows workstation is PowerShell, but agent `bash` tool invocations fail with `EPERM: operation not permitted, uv_spawn` when targeting `powershell.EXE`. Agents must avoid PowerShell-specific syntax (`&&`, `||`, `test`, `command -v`) in `bash` tool calls. Use cross-platform Node.js scripts or Python for any complex automation instead.
+**EPERM `uv_spawn` — root cause found and resolved (2026-07-02).** The intermittent `EPERM: operation not permitted, uv_spawn 'C:\WINDOWS\System32\WindowsPowerShell\v1.0\powershell.EXE'` errors were Microsoft Defender's local ML command-line heuristic (`!#SLF:CMD_HSTR:General.ML.B/D`, severity 5) false-positively blocking `powershell.exe -EncodedCommand <base64>` launches from Node extension hosts. Confirmed via `Get-MpThreatDetection` (blocks logged 2026-07-01 1:18 PM). A Defender platform update the evening of 2026-07-01 plus the 2026-07-02 signature update stopped the false positive; the exact spawn pattern now passes 5/5.
+
+If it recurs: check `Get-MpThreatDetection` for fresh `SLF:CMD_HSTR` entries, allow the detection in Windows Security → Protection history, and update signatures (`Update-MpSignature`). Cloud-delivered protection (MAPS) is disabled on this machine, which makes local ML heuristics block unilaterally instead of getting a cloud second opinion — enabling it reduces these false positives.
+
+The earlier `.js`-file/`shell-proxy.js` workarounds below are no longer required but remain valid fallbacks while a block is active:
+- Write a `.js` file and run `node file.js` instead of `node -e`.
+- One-off PowerShell: `node scripts/shell-proxy.js pwsh "Get-Date"`; one-off cmd: `node scripts/shell-proxy.js cmd "dir /b"`.

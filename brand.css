@@ -796,6 +796,205 @@
     :root:not([data-theme="dark"]) .brand-theme-toggle .icon-moon { opacity: 0; }
 }
 
+/* ── Hamburger button (mobile only) ─────────────────────────────── */
+.brand-nav-hamburger {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+    width: 36px;
+    height: 36px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    border-radius: 8px;
+    color: var(--brand-text);
+    padding: 0;
+    transition: background-color var(--brand-transition-fast);
+}
+
+.brand-nav-hamburger:hover {
+    background: var(--brand-surface-2);
+}
+
+.brand-nav-hamburger:focus-visible {
+    outline: 2px solid var(--brand-border-focus);
+    outline-offset: 2px;
+}
+
+.brand-nav-hamburger .hb-line {
+    display: block;
+    width: 20px;
+    height: 2px;
+    background: currentColor;
+    border-radius: 2px;
+    transition: transform var(--brand-transition-fast),
+                opacity var(--brand-transition-fast);
+}
+
+/* X state when open */
+.brand-nav-hamburger[aria-expanded="true"] .hb-line:nth-child(1) {
+    transform: translateY(7px) rotate(45deg);
+}
+.brand-nav-hamburger[aria-expanded="true"] .hb-line:nth-child(2) {
+    opacity: 0;
+}
+.brand-nav-hamburger[aria-expanded="true"] .hb-line:nth-child(3) {
+    transform: translateY(-7px) rotate(-45deg);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .brand-nav-hamburger .hb-line {
+        transition: none;
+    }
+}
+
+/* Hide hamburger on desktop */
+@media (min-width: 768px) {
+    .brand-nav-hamburger { display: none; }
+}
+
+/* ── Mobile nav drawer ───────────────────────────────────────────── */
+@media (max-width: 767px) {
+    .brand-nav-links {
+        display: none; /* hidden by default */
+        position: absolute;
+        top: 44px; /* nav height */
+        left: 0;
+        right: 0;
+        flex-direction: column;
+        gap: 0;
+        padding: 8px 0 12px;
+        background: color-mix(in srgb, var(--brand-surface-1) 96%, transparent);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        border-bottom: 1px solid var(--brand-border);
+        z-index: 55;
+        overflow-y: auto;
+    }
+
+    .brand-nav-links.is-open {
+        display: flex;
+    }
+
+    .brand-nav-links > li > a {
+        display: block;
+        padding: 12px 20px;
+        font-size: 16px;
+        color: var(--brand-text);
+        text-decoration: none;
+        border-radius: 0;
+        transition: background-color var(--brand-transition-fast);
+    }
+
+    .brand-nav-links > li > a:hover,
+    .brand-nav-links > li > a:focus-visible {
+        background: var(--brand-surface-2);
+    }
+
+    /* Submenu in mobile drawer — static, always visible when parent open */
+    .brand-nav-links .submenu {
+        position: static;
+        transform: none;
+        opacity: 1;
+        visibility: visible;
+        pointer-events: auto;
+        background: transparent;
+        backdrop-filter: none;
+        -webkit-backdrop-filter: none;
+        border: none;
+        box-shadow: none;
+        border-radius: 0;
+        padding: 0 0 4px 16px;
+    }
+
+    .brand-nav-links .submenu a {
+        padding: 10px 20px;
+        font-size: 15px;
+        color: var(--brand-text-soft);
+        border-radius: 0;
+    }
+
+    .brand-nav-links .submenu a:hover,
+    .brand-nav-links .submenu a:focus-visible {
+        background: var(--brand-surface-2);
+        color: var(--brand-text);
+    }
+
+    /* Hide the "Contact" list item in mobile — Hire Me CTA covers it */
+    /* (keep it visible — it's valid navigation) */
+}
+
+/* ── Hover-open for desktop submenu ─────────────────────────────── */
+@media (min-width: 768px) {
+    .has-submenu:hover > .submenu {
+        opacity: 1;
+        visibility: visible;
+        pointer-events: auto;
+        transform: translateX(-50%) translateY(0);
+    }
+}
+
+/* ── Hire Me CTA button ──────────────────────────────────────────── */
+.brand-nav-cta {
+    display: inline-flex;
+    align-items: center;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-family: var(--brand-font-body);
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    color: var(--brand-text);
+    text-decoration: none;
+    background: var(--brand-accent-dim);
+    border: 1px solid var(--brand-accent);
+    transition: background-color var(--brand-transition-fast),
+                box-shadow var(--brand-transition-fast),
+                color var(--brand-transition-fast);
+    white-space: nowrap;
+}
+
+.brand-nav-cta:hover {
+    background: var(--brand-accent);
+    color: #fff;
+    box-shadow: 0 0 12px var(--brand-accent-dim);
+}
+
+.brand-nav-cta:focus-visible {
+    outline: 2px solid var(--brand-border-focus);
+    outline-offset: 2px;
+}
+
+/* ── Active / current-page nav indicator ────────────────────────── */
+.brand-nav-links a.is-active,
+.brand-nav-links li.is-active > a {
+    color: var(--brand-accent);
+    position: relative;
+}
+
+.brand-nav-links > li > a.is-active::after,
+.brand-nav-links > li.is-active > a::after {
+    content: "";
+    display: block;
+    position: absolute;
+    bottom: -2px;
+    left: 8px;
+    right: 8px;
+    height: 2px;
+    background: var(--brand-accent);
+    border-radius: 2px;
+}
+
+/* Active indicator in mobile drawer (no underline, just color) */
+@media (max-width: 767px) {
+    .brand-nav-links > li > a.is-active::after,
+    .brand-nav-links > li.is-active > a::after {
+        display: none;
+    }
+}
+
 /* ── Hero layout ─────────────────────────────────────────────────── */
 .brand-hero {
     position: relative;
