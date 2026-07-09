@@ -47,6 +47,7 @@ The website is currently vanilla HTML/CSS/JS. User is evaluating a move to a JS 
 
 ## Active Plans
 
+- `docs/plans/2026-07-05-tailwind-restoration.md` — Tailwind v4 build pipeline restored (2026-07-05). Watcher + `serve` scripts live in `package.json`. `app.css` → `style.css`. HTML unchanged. Awaiting user visual verification on http://localhost:8080.
 - `docs/plans/2026-06-06-deploy-averyemberday-com.md` — Deploy averyemberday.com → this repo via Netlify. **Awaiting human actions:** merge master, DNS update at registrar.
 - `docs/plans/2026-06-04-hero-bubble-physics.md` — Hero bubble physics (canvas) — awaiting implementation; pending framework decision above.
 

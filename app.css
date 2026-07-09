@@ -1,0 +1,12 @@
+/* ── Tailwind v4 entry ──────────────────────────────────────────────
+   Compiled to ./style.css by:
+     npx tailwindcss -i app.css -o style.css --watch
+   ─────────────────────────────────────────────────────────────── */
+
+/* brand.css (loaded by HTML before this file) defines the --brand-* tokens
+   referenced by tailwind-preset.css. Do not re-bridge them here. */
+@import "tailwindcss";
+@import "./src/css/tailwind-preset.css";
+@import "./src/css/site.css";
+
+@source ".";

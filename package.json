@@ -1,0 +1,14 @@
+{
+  "name": "portfoliowebsite",
+  "private": true,
+  "version": "0.0.0",
+  "scripts": {
+    "css:build": "tailwindcss -i app.css -o style.css --minify",
+    "css:watch": "tailwindcss -i app.css -o style.css --watch",
+    "serve": "serve . -l 8080"
+  },
+  "devDependencies": {
+    "@tailwindcss/cli": "^4.3.2",
+    "tailwindcss": "^4.3.2"
+  }
+}

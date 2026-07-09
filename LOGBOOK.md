@@ -1,3 +1,39 @@
+## Entry 041 — 2026-07-05
+
+**Agent:** claude-opus-4.7 (kilo, shxdow-flow)
+**Cycle:** tailwind-restoration
+**Task:** Restore the Tailwind v4 build pipeline (deleted between commit `86bd8c1` and current HEAD) so `npx tailwindcss -i app.css -o style.css --watch` works again, without losing the 774-line hand-authored CSS that had accumulated in `style.css` in the meantime.
+
+### Changes
+
+- **`app.css`** — New. Tailwind v4 entry: `@import "tailwindcss"` + preset + site.css. Loads `@source ".";` so future utility usage in HTML gets picked up.
+- **`src/css/tailwind-preset.css`** — Restored from commit `86bd8c1`. Bridges `--brand-*` tokens into Tailwind's `@theme inline` map. Dropped the `--font-mono → var(--brand-font-mono)` line because `--brand-font-mono` is not defined anywhere.
+- **`src/css/site.css`** — New. This is the previous hand-authored `style.css` (887 lines), moved intact so Tailwind's compiled output can include it.
+- **`style.css`** — Regenerated. Now the Tailwind-compiled output of `app.css` (32 KB / 1370 lines). HTML `<link rel="stylesheet" href="style.css">` continues to work with no page edits.
+- **`package.json`** — New. Adds `css:build`, `css:watch`, `serve` scripts and declares `tailwindcss`/`@tailwindcss/cli ^4.3.2` as devDependencies (matching the already-installed `node_modules/`).
+- **`.gitignore`** — Added `node_modules/` and `test-results/`. Deliberately did NOT ignore `style.css` because `netlify.toml` has `publish = "."` with no build command — deploys need the committed compiled artifact.
+- **`docs/plans/2026-07-05-tailwind-restoration.md`** — New. Plan doc with approach, executed steps, review findings, and post-review fixes.
+
+### Verification
+
+- `npx tailwindcss -i app.css -o style.css` completes in ~110ms, output 32 KB / 1370 lines
+- Watcher process running via `node -e` piped-stdin wrapper (works around Tailwind v4 Windows CLI EOF-exit bug — the raw `--watch` invocation exits after initial build when stdin is a pipe without input)
+- `serve . -l 8080` accepting connections
+- Chrome opened to `http://localhost:8080`
+- Subagent code review flagged 3 real issues (critical Netlify-deploy break from ignoring `style.css`, duplicate token file, undefined `--brand-font-mono`) — all fixed before writeup
+- No Playwright suite on this branch; visual regression check is manual (user should spot-check hero, project cards, gallery, and each `projects/*.html`)
+
+### Notes
+
+- HTML uses zero Tailwind utility classes today, so Tailwind's real value here is just the token bridge + build-loop scaffolding. Not a framework migration — a re-hookup.
+- Tailwind v4 preflight sits BEFORE site.css in the cascade, so anything site.css doesn't explicitly reset (notably: `h4–h6 { font-size: inherit; font-weight: inherit }` and `iframe/video/audio/embed/object { display: block }`) now uses Tailwind's normalized values. Site currently doesn't use those elements meaningfully.
+- Windows Tailwind watcher tip: the shipped `npx tailwindcss ... --watch` exits immediately when spawned via a background-process pipe. Wrap with `node -e "const {spawn}=require('child_process');const p=spawn(process.execPath,['node_modules/@tailwindcss/cli/dist/index.mjs','-i','app.css','-o','style.css','--watch'],{stdio:['pipe','inherit','inherit']});setInterval(()=>{},1000);"` to keep it alive.
+- No commits performed per shxdow-flow policy.
+
+— claude-opus-4.7
+
+---
+
 ## Entry 040 — 2026-06-09
 
 **Agent:** claude-sonnet-4.6 (kilo, shxdow-flow)

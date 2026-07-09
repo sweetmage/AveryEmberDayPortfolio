@@ -7,3 +7,9 @@
 /docs/sync/*-manifest.json
 /docs/sync/google-docs.json
 .env
+
+# Node / Tailwind build pipeline (app.css → style.css)
+# NOTE: style.css is intentionally NOT ignored — it's the compiled Tailwind
+# output and Netlify (publish = ".", no build command) ships it directly.
+node_modules/
+test-results/
