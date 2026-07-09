@@ -171,9 +171,9 @@ The website is currently vanilla HTML/CSS/JS. User is evaluating a move to a JS 
 
 ## Active Plans
 
-- `docs/plans/2026-07-05-tailwind-restoration.md` — Tailwind v4 build pipeline restored (2026-07-05). Watcher + `serve` scripts live in `package.json`. `app.css` → `style.css`. HTML unchanged. Awaiting user visual verification on http://localhost:8080.
+- `docs/plans/2026-07-05-tailwind-restoration.md` — Tailwind v4 pipeline restored (2026-07-05), then **merged with remediation-2 (`896dba3`) on 2026-07-09**: bubble physics, Playwright suite, metadata, and hamburger nav recovered; `brand.css` + compiled `style.css` architecture kept. Squish/bounce retuned (softer spring, 0.7 restitution); zone-tracker refresh and trapped-bubble deadlock fixed; `package-lock.json` committed; `node_modules/` untracked. ✅ Complete.
 - `docs/plans/2026-06-06-deploy-averyemberday-com.md` — Deploy averyemberday.com → this repo via Netlify. **Awaiting human actions:** merge master, DNS update at registrar.
-- `docs/plans/2026-07-02-project-card-bubble-exclusion.md` — Add `.bubble-exclude` class to project cards and `.about-box`, update `scripts/bubbles.js` to use the class in default exclusions. **Status:** 📝 Planned, awaiting implementation.
+- `docs/plans/2026-07-02-project-card-bubble-exclusion.md` — Add `.bubble-exclude` class to project cards and `.about-box`, update `scripts/bubbles.js` to use the class in default exclusions. **Status:** 📝 Planned, awaiting implementation (per-page `data-exclusions` attributes cover this today; class-based approach is a refinement).
 - `docs/plans/2026-07-02-local-test-page-visibility.md` — Diagnosed why user reported gallery/history-of-mistrust pages unviewable in local test. **Status:** ✅ Resolved — user confirmed `npx serve`; root cause was the `Script.js` logo-404 bug (fixed this session), verified zero console/network errors on both pages after the fix.
 - `docs/plans/2026-06-30-bubble-physics-rework.md` — Interactive DOM-based bubble physics (global + hero layers, mouse repulsion, squish, element collision). **Status:** ✅ Complete.
 - `docs/plans/2026-06-04-hero-bubble-physics.md` — Hero bubble physics (canvas) — **SUPERSEDED** by `2026-06-30-bubble-physics-rework.md`.

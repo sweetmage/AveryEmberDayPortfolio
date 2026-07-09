@@ -108,6 +108,7 @@
       window.addEventListener('scroll', this._update, { passive: true });
     }
     _schedule() {
+      if (this._scheduledRAF) cancelAnimationFrame(this._scheduledRAF);
       this._scheduledRAF = requestAnimationFrame(() => {
         const now = performance.now();
         if (now - this.lastUpdate >= ZONE_THROTTLE) {
@@ -119,6 +120,7 @@
     }
     _update() {
       this.lastUpdate = performance.now();
+      this._schedule(); // keep the periodic refresh alive (layout shifts, lazy images, font reflow)
       this.rects = [];
       for (const sel of this.selectors) {
         const els = document.querySelectorAll(sel);
@@ -354,6 +356,7 @@
 
     resolveZoneCollisions(zones) {
       for (const b of this.bubbles) {
+        if (b._relocating) continue;
         for (const z of zones) {
           // Closest point on rect to bubble center
           const cx = Math.max(z.left, Math.min(b.x, z.right));
@@ -374,9 +377,69 @@
             b.vx -= 2 * dot * ndx;
             b.vy -= 2 * dot * ndy;
             b.triggerSquish(Math.atan2(ndy, ndx));
+          } else if (dist <= 0.1) {
+            // Center is inside the zone (e.g. a card scrolled onto a fixed
+            // bubble) — glide out through the nearest edge instead of
+            // teleporting, so the escape reads as motion, not a pop.
+            const dl = b.x - z.left;
+            const dr = z.right - b.x;
+            const dt = b.y - z.top;
+            const db = z.bottom - b.y;
+            const m = Math.min(dl, dr, dt, db);
+            const ESCAPE_STEP = 8; // px/frame toward freedom
+            if (m === dl)      { b.x -= ESCAPE_STEP; b.vx = -Math.max(Math.abs(b.vx), MIN_SPEED); }
+            else if (m === dr) { b.x += ESCAPE_STEP; b.vx =  Math.max(Math.abs(b.vx), MIN_SPEED); }
+            else if (m === dt) { b.y -= ESCAPE_STEP; b.vy = -Math.max(Math.abs(b.vy), MIN_SPEED); }
+            else               { b.y += ESCAPE_STEP; b.vy =  Math.max(Math.abs(b.vy), MIN_SPEED); }
           }
         }
+        // Deadlock rescue: overlapping zones can squeeze a bubble so each
+        // zone's escape push cancels the other's. If a bubble stays trapped
+        // for ~1.5s, fade it out and respawn it in genuinely free space.
+        const trapped = zones.some(z =>
+          b.x > z.left && b.x < z.right && b.y > z.top && b.y < z.bottom);
+        if (trapped) {
+          b.stuckFrames = (b.stuckFrames || 0) + 1;
+          if (b.stuckFrames > 90) {
+            this._relocate(b, zones);
+            b.stuckFrames = 0;
+          }
+        } else {
+          b.stuckFrames = 0;
+        }
       }
+    }
+
+    _relocate(b, zones) {
+      const bounds = this.cachedBounds;
+      const margin = b.radius + 40;
+      for (let i = 0; i < 40; i++) {
+        const x = margin + Math.random() * (bounds.width - margin * 2);
+        const y = margin + Math.random() * (bounds.height - margin * 2);
+        const clear = !zones.some(z =>
+          x > z.left - b.radius && x < z.right + b.radius &&
+          y > z.top - b.radius && y < z.bottom + b.radius);
+        if (clear) {
+          b._relocating = true;
+          const el = b.el;
+          el.style.transition = 'opacity 250ms ease';
+          el.style.opacity = '0';
+          setTimeout(() => {
+            b.x = x;
+            b.y = y;
+            b.vx = (Math.random() - 0.5) * 1.5;
+            b.vy = (Math.random() - 0.5) * 1.5;
+            el.style.opacity = '';
+            setTimeout(() => {
+              el.style.transition = '';
+              b._relocating = false;
+            }, 300);
+          }, 260);
+          return;
+        }
+      }
+      // No free space found (tiny viewport, dense page) — leave it be;
+      // it sits behind content at z-index 0 anyway.
     }
 
     resolveBubbleCollisions() {
@@ -796,6 +859,7 @@
   function init() {
     if (engine) return;
     engine = new PhysicsEngine();
+    window.__bubbleEngine = engine; // debug/testing handle
   }
 
   if (document.readyState === 'loading') {

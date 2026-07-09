@@ -1,3 +1,50 @@
+## Entry 059 — 2026-07-09
+
+**Agent:** Claude Fable 5 (Claude Code, shxdowflow)
+**Cycle:** bubble-physics-and-review-fixes
+**Task:** Recover the lost bubble-physics engine, retune squish/bounce, verify no bubble/content overlap on every page, and apply the outstanding review fixes (Netlify decision, lockfile, Playwright, exclusions).
+
+### Root cause
+
+The current branch diverged from base `1067e95`, which predates the remediation-2 line. `scripts/bubbles.js` (802-line DOM physics engine), the Playwright suite (40 baselines), page metadata, and the hamburger nav all lived only on `shxdowloop/2026-07-01/website-architecture-remediation-2` (tip `896dba3` "Bubble interactivity") — never deleted, just on an unmerged branch.
+
+### Changes
+
+- **Merged `896dba3`** into this branch (user-approved full merge). Conflicts resolved in favor of the newer Tailwind/transparency architecture: `brand.css` linked before compiled `style.css` (`app.css` → `tailwind-preset.css` + `site.css`); `src/css/tokens.css`/`components.css` retained on disk but unimported.
+- **`brand.css`** — appended the physics-bubble CSS block (containers, `data-color` variants, `.brand-bubble-physics`, light-mode variants) ported from `896dba3:src/css/components.css`.
+- **All 5 pages** — re-added `brand.css` `<link>` (merge had dropped it); physics containers + `scripts/bubbles.js` wiring came in via merge.
+- **`scripts/bubbles.js` tuning** — SQUISH_AMOUNT 0.20→0.26, SPRING_K 0.15→0.12, SPRING_DAMP 0.78→0.82 (squishier, slower recovery); new RESTITUTION=0.7 applied to bubble-bubble and blob-blob collisions (slower after bouncing off each other); hero-blob squish 0.10→0.14.
+- **`scripts/bubbles.js` bug fixes** —
+  1. Zone tracker's throttled RAF loop died after the first update (`_update` never rescheduled) → zones went stale after font/image reflow. Now reschedules.
+  2. A bubble whose center ended up inside an exclusion zone was never expelled (`dist > 0.1` guard) → added 8px/frame edge-glide escape.
+  3. Overlapping zones (e.g. patriots `.project-hero` ∩ section titles) deadlocked the per-zone escape → trapped bubbles now fade out after ~1.5s and respawn in verified-free space.
+  4. Exposed `window.__bubbleEngine` for testing.
+- **Exclusion tuning** — history-of-mistrust gained `data-exclusions=".case-study-hero, .case-study-section h2"`; patriots narrowed `.project-section` → `.project-section h2` (whole-section zones tiled the page, leaving bubbles no legal space).
+- **netlify.toml** — user chose no-build deploy: removed `command`/`NODE_VERSION`, kept security headers; fixed the CSP `script-src` sha256 hashes to match the actual inline theme scripts (old hash would have blocked theme init in production).
+- **package.json / lockfile** — kept `css:build`/`css:watch`/`serve` scripts, added `build:css` alias + `test`; added `@playwright/test` and `serve` devDeps; **`package-lock.json` committed**; **untracked all 683 `node_modules/` files** (now gitignored).
+- **`src/css/site.css`** — removed dead static `.brand-bubble--1..9` position rules; `style.css` rebuilt.
+
+### Verification
+
+- Browser (preview server, all 5 pages, dark + light, scrolled): bubbles animate, squish on impact, and zero overlap with nav/footer/titles/cards after settling (transient pass-through while a rescue is in flight is by design; bubbles render at z-index 0 behind content).
+- `npx playwright test tests/smoke-interaction.spec.js` — 1 passed.
+- `npx playwright test tests/visual-baseline.spec.js` — 40 passed.
+- `node -e "new Function(...)"` parse check on bubbles.js — OK.
+
+### Checkpoints
+
+- `b656dfc` — pre-merge Tailwind restoration checkpoint
+- `77aaf8b` — merge of `896dba3` (physics + Playwright + metadata recovered)
+- final commit this entry ships with (tuning + fixes + docs)
+
+### Notes / open items
+
+- Tailwind utility adoption in HTML remains a follow-up (pipeline compiles preflight + token bridge + existing CSS; zero utility classes authored yet).
+- `docs/plans/2026-07-02-project-card-bubble-exclusion.md` (class-based exclusions) still planned; per-page `data-exclusions` covers the need today.
+- Branch is a review branch; PR to `portfoliowebsite` for deploy.
+
+---
+
 ## Entry 041 — 2026-07-05
 
 **Agent:** claude-opus-4.7 (kilo, shxdow-flow)
