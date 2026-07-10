@@ -696,7 +696,7 @@
     box-shadow: 0 0 0 1px var(--brand-border);
     transition: background-color var(--brand-transition-fast),
                 box-shadow var(--brand-transition-fast);
-    color: var(--brand-text-muted);
+    color: var(--brand-text);
     background: none;
     cursor: pointer;
     border: none;
@@ -715,8 +715,8 @@
     position: absolute;
 }
 
-.brand-theme-toggle .icon-sun  { opacity: 0; }
-.brand-theme-toggle .icon-moon { opacity: 1; fill: var(--brand-gold); }
+.brand-theme-toggle .icon-sun  { opacity: 0; fill: currentColor; }
+.brand-theme-toggle .icon-moon { opacity: 1; fill: currentColor; }
 
 :root[data-theme="light"] .brand-theme-toggle .icon-sun  { opacity: 1; }
 :root[data-theme="light"] .brand-theme-toggle .icon-moon { opacity: 0; }
@@ -729,7 +729,7 @@
 /* ── Active / current-page nav indicator ────────────────────────── */
 .brand-nav-links a.is-active,
 .brand-nav-links li.is-active > a {
-    color: var(--brand-accent);
+    color: var(--brand-text);
     position: relative;
 }
 

@@ -1,3 +1,22 @@
+## Entry 062 — 2026-07-10
+
+**Agent:** Claude Fable 5 (Claude Code, shxdowflow)
+**Cycle:** nav-button-theme-colors
+**Task:** Nav buttons should use accent color only as a highlight; link text and the theme-toggle icon must be black in light mode and white in dark mode.
+
+### Changes
+
+- `src/css/site.css` — `nav ul li a` color: `--brand-text-muted` → `--brand-text`.
+- `brand.css` — `.is-active` nav link color: `--brand-accent` → `--brand-text` (accent underline `::after` kept as the highlight; hover accent border/background kept).
+- `brand.css` — `.brand-theme-toggle` color: `--brand-text-muted` → `--brand-text`; moon icon `fill: var(--brand-gold)` → both sun/moon icons `fill: currentColor`.
+
+### Verification
+
+- Browser, both themes: light = black WORK/ABOUT text + black sun icon; dark = white text + white moon icon; purple underline/hover highlight unchanged.
+- `npx playwright test` — 41 passed (baselines refreshed).
+
+---
+
 ## Entry 061 — 2026-07-10
 
 **Agent:** Claude Fable 5 (Claude Code, shxdowflow)

@@ -109,7 +109,7 @@ nav ul li:hover {
 
 nav ul li a {
     display: inline-block;
-    color: var(--brand-text-muted);
+    color: var(--brand-text);
     font-size: 11px;
     font-weight: var(--brand-weight-semibold);
     text-transform: uppercase;
