@@ -1,3 +1,29 @@
+## Entry 061 — 2026-07-10
+
+**Agent:** Claude Fable 5 (Claude Code, shxdowflow)
+**Cycle:** light-mode-bubble-visibility
+**Task:** Light-mode bubbles were barely visible vs dark mode; user had fixed blob brightness before — diagnose and restore visibility.
+
+### Root cause
+
+- Dark mode uses `screen` blending + bright colored box-shadow glows against `#0A0A0A` — maximal contrast by construction. Light mode uses `multiply` against near-white `#F2F0EC`, where the same 0.55-alpha gradients (fading out by ~58% radius) barely tint the page, and the white rim/specular highlights are invisible on a near-white background.
+- The 2026-07-09 merge **stacked two light-mode systems**: the user's pre-merge fix (`mix-blend-mode: multiply; opacity: 0.72` on `.brand-hero-blob`, written to stop blow-out) AND remediation-2's per-color light styles whose `::before` is also multiply — blobs were double-multiplied and dimmed 28% on top.
+
+### Changes (brand.css, light-mode rules only)
+
+- Blob element rule: opacity 0.72 → 0.92 (multiply kept).
+- White rims → tinted rims: `rgba(255,255,255,.55/.38)` ring/glow → `rgba(70,40,140,.30/.18)`.
+- Colored under-glow alphas 0.30 → 0.45 and 0.18 → 0.30 (all four color triples).
+- Gradient fills denser and wider: 0.55 → 0.70 with falloff 58% → 72%; 0.42 → 0.55 with falloff 52% → 66%.
+- Both `[data-theme="light"]` and the `prefers-color-scheme` fallback blocks updated; dark-mode values untouched (verified by screenshot).
+
+### Verification
+
+- Browser: light mode now shows saturated, well-defined bubbles/blobs; dark mode pixel-identical to before.
+- `npx playwright test` — 41 passed (light baselines refreshed).
+
+---
+
 ## Entry 060 — 2026-07-09
 
 **Agent:** Claude Fable 5 (Claude Code, shxdowflow)

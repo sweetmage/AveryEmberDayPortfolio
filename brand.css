@@ -236,7 +236,7 @@
 /* light mode — blobs switch to multiply so they deepen rather than blow out */
 :root[data-theme="light"] .brand-hero-blob {
     mix-blend-mode: multiply;
-    opacity: 0.72;
+    opacity: 0.92;
 }
 
 /* ── System preference fallback (no JS) ──────────────────────────── */
@@ -462,16 +462,16 @@
 /* LIGHT MODE hero bubbles */
 :root[data-theme="light"] .brand-hero-blob {
     box-shadow:
-        0 0 0 0.5px rgba(255,255,255,0.55),
-        0 0 6px 1px rgba(255,255,255,0.38),
-        0 6px 20px -2px rgba(122,20,214,0.30),
-        0 12px 32px -4px rgba(122,20,214,0.18);
+        0 0 0 1px rgba(70,40,140,0.30),
+        0 0 6px 1px rgba(70,40,140,0.18),
+        0 6px 20px -2px rgba(122,20,214,0.45),
+        0 12px 32px -4px rgba(122,20,214,0.30);
 }
 :root[data-theme="light"] .brand-hero-blob::before {
     mix-blend-mode: multiply;
     background:
-        radial-gradient(ellipse at 36% 30%, rgba(122,20,214,0.55) 0%, transparent 58%),
-        radial-gradient(ellipse at 70% 68%, rgba(2,116,137,0.42)  0%, transparent 52%);
+        radial-gradient(ellipse at 36% 30%, rgba(122,20,214,0.70) 0%, transparent 72%),
+        radial-gradient(ellipse at 70% 68%, rgba(2,116,137,0.55)  0%, transparent 66%);
 }
 :root[data-theme="light"] .brand-hero-blob::after {
     background: radial-gradient(ellipse 55% 25% at 28% 8%,
@@ -479,54 +479,54 @@
 }
 :root[data-theme="light"] .brand-hero-blob[data-color="cyan"] {
     box-shadow:
-        0 0 0 0.5px rgba(255,255,255,0.55),
-        0 0 6px 1px rgba(255,255,255,0.38),
-        0 6px 20px -2px rgba(2,116,137,0.30),
-        0 12px 32px -4px rgba(2,116,137,0.18);
+        0 0 0 1px rgba(70,40,140,0.30),
+        0 0 6px 1px rgba(70,40,140,0.18),
+        0 6px 20px -2px rgba(2,116,137,0.45),
+        0 12px 32px -4px rgba(2,116,137,0.30);
 }
 :root[data-theme="light"] .brand-hero-blob[data-color="cyan"]::before {
     background:
-        radial-gradient(ellipse at 36% 30%, rgba(2,116,137,0.55) 0%, transparent 58%),
-        radial-gradient(ellipse at 72% 65%, rgba(87,50,190,0.42) 0%, transparent 52%);
+        radial-gradient(ellipse at 36% 30%, rgba(2,116,137,0.70) 0%, transparent 72%),
+        radial-gradient(ellipse at 72% 65%, rgba(87,50,190,0.55) 0%, transparent 66%);
 }
 :root[data-theme="light"] .brand-hero-blob[data-color="gold"] {
     box-shadow:
-        0 0 0 0.5px rgba(255,255,255,0.55),
-        0 0 6px 1px rgba(255,255,255,0.38),
-        0 6px 20px -2px rgba(160,91,6,0.30),
-        0 12px 32px -4px rgba(160,91,6,0.18);
+        0 0 0 1px rgba(70,40,140,0.30),
+        0 0 6px 1px rgba(70,40,140,0.18),
+        0 6px 20px -2px rgba(160,91,6,0.45),
+        0 12px 32px -4px rgba(160,91,6,0.30);
 }
 :root[data-theme="light"] .brand-hero-blob[data-color="gold"]::before {
     background:
-        radial-gradient(ellipse at 36% 30%, rgba(160,91,6,0.55)  0%, transparent 58%),
-        radial-gradient(ellipse at 68% 66%, rgba(122,20,214,0.42) 0%, transparent 52%);
+        radial-gradient(ellipse at 36% 30%, rgba(160,91,6,0.70)  0%, transparent 72%),
+        radial-gradient(ellipse at 68% 66%, rgba(122,20,214,0.55) 0%, transparent 66%);
 }
 :root[data-theme="light"] .brand-hero-blob[data-color="purple"] {
     box-shadow:
-        0 0 0 0.5px rgba(255,255,255,0.55),
-        0 0 6px 1px rgba(255,255,255,0.38),
-        0 6px 20px -2px rgba(87,50,190,0.30),
-        0 12px 32px -4px rgba(87,50,190,0.18);
+        0 0 0 1px rgba(70,40,140,0.30),
+        0 0 6px 1px rgba(70,40,140,0.18),
+        0 6px 20px -2px rgba(87,50,190,0.45),
+        0 12px 32px -4px rgba(87,50,190,0.30);
 }
 :root[data-theme="light"] .brand-hero-blob[data-color="purple"]::before {
     background:
-        radial-gradient(ellipse at 36% 30%, rgba(87,50,190,0.55) 0%, transparent 58%),
-        radial-gradient(ellipse at 70% 67%, rgba(2,116,137,0.42) 0%, transparent 52%);
+        radial-gradient(ellipse at 36% 30%, rgba(87,50,190,0.70) 0%, transparent 72%),
+        radial-gradient(ellipse at 70% 67%, rgba(2,116,137,0.55) 0%, transparent 66%);
 }
 
 @media (prefers-color-scheme: light) {
     :root:not([data-theme="dark"]) .brand-hero-blob {
         box-shadow:
-            0 0 0 0.5px rgba(255,255,255,0.55),
-            0 0 6px 1px rgba(255,255,255,0.38),
-            0 6px 20px -2px rgba(122,20,214,0.30),
-            0 12px 32px -4px rgba(122,20,214,0.18);
+            0 0 0 1px rgba(70,40,140,0.30),
+            0 0 6px 1px rgba(70,40,140,0.18),
+            0 6px 20px -2px rgba(122,20,214,0.45),
+            0 12px 32px -4px rgba(122,20,214,0.30);
     }
     :root:not([data-theme="dark"]) .brand-hero-blob::before {
         mix-blend-mode: multiply;
         background:
-            radial-gradient(ellipse at 36% 30%, rgba(122,20,214,0.55) 0%, transparent 58%),
-            radial-gradient(ellipse at 70% 68%, rgba(2,116,137,0.42)  0%, transparent 52%);
+            radial-gradient(ellipse at 36% 30%, rgba(122,20,214,0.70) 0%, transparent 72%),
+            radial-gradient(ellipse at 70% 68%, rgba(2,116,137,0.55)  0%, transparent 66%);
     }
     :root:not([data-theme="dark"]) .brand-hero-blob::after {
         background: radial-gradient(ellipse 55% 25% at 28% 8%,
@@ -534,39 +534,39 @@
     }
     :root:not([data-theme="dark"]) .brand-hero-blob[data-color="cyan"] {
         box-shadow:
-            0 0 0 0.5px rgba(255,255,255,0.55),
-            0 0 6px 1px rgba(255,255,255,0.38),
-            0 6px 20px -2px rgba(2,116,137,0.30),
-            0 12px 32px -4px rgba(2,116,137,0.18);
+            0 0 0 1px rgba(70,40,140,0.30),
+            0 0 6px 1px rgba(70,40,140,0.18),
+            0 6px 20px -2px rgba(2,116,137,0.45),
+            0 12px 32px -4px rgba(2,116,137,0.30);
     }
     :root:not([data-theme="dark"]) .brand-hero-blob[data-color="cyan"]::before {
         background:
-            radial-gradient(ellipse at 36% 30%, rgba(2,116,137,0.55) 0%, transparent 58%),
-            radial-gradient(ellipse at 72% 65%, rgba(87,50,190,0.42) 0%, transparent 52%);
+            radial-gradient(ellipse at 36% 30%, rgba(2,116,137,0.70) 0%, transparent 72%),
+            radial-gradient(ellipse at 72% 65%, rgba(87,50,190,0.55) 0%, transparent 66%);
     }
     :root:not([data-theme="dark"]) .brand-hero-blob[data-color="gold"] {
         box-shadow:
-            0 0 0 0.5px rgba(255,255,255,0.55),
-            0 0 6px 1px rgba(255,255,255,0.38),
-            0 6px 20px -2px rgba(160,91,6,0.30),
-            0 12px 32px -4px rgba(160,91,6,0.18);
+            0 0 0 1px rgba(70,40,140,0.30),
+            0 0 6px 1px rgba(70,40,140,0.18),
+            0 6px 20px -2px rgba(160,91,6,0.45),
+            0 12px 32px -4px rgba(160,91,6,0.30);
     }
     :root:not([data-theme="dark"]) .brand-hero-blob[data-color="gold"]::before {
         background:
-            radial-gradient(ellipse at 36% 30%, rgba(160,91,6,0.55)  0%, transparent 58%),
-            radial-gradient(ellipse at 68% 66%, rgba(122,20,214,0.42) 0%, transparent 52%);
+            radial-gradient(ellipse at 36% 30%, rgba(160,91,6,0.70)  0%, transparent 72%),
+            radial-gradient(ellipse at 68% 66%, rgba(122,20,214,0.55) 0%, transparent 66%);
     }
     :root:not([data-theme="dark"]) .brand-hero-blob[data-color="purple"] {
         box-shadow:
-            0 0 0 0.5px rgba(255,255,255,0.55),
-            0 0 6px 1px rgba(255,255,255,0.38),
-            0 6px 20px -2px rgba(87,50,190,0.30),
-            0 12px 32px -4px rgba(87,50,190,0.18);
+            0 0 0 1px rgba(70,40,140,0.30),
+            0 0 6px 1px rgba(70,40,140,0.18),
+            0 6px 20px -2px rgba(87,50,190,0.45),
+            0 12px 32px -4px rgba(87,50,190,0.30);
     }
     :root:not([data-theme="dark"]) .brand-hero-blob[data-color="purple"]::before {
         background:
-            radial-gradient(ellipse at 36% 30%, rgba(87,50,190,0.55) 0%, transparent 58%),
-            radial-gradient(ellipse at 70% 67%, rgba(2,116,137,0.42) 0%, transparent 52%);
+            radial-gradient(ellipse at 36% 30%, rgba(87,50,190,0.70) 0%, transparent 72%),
+            radial-gradient(ellipse at 70% 67%, rgba(2,116,137,0.55) 0%, transparent 66%);
     }
 }
 
@@ -1246,16 +1246,16 @@ html.dark .brand-glow-text {
 /* LIGHT MODE bubbles */
 :root[data-theme="light"] .brand-bubble {
   box-shadow:
-    0 0 0 0.5px rgba(255,255,255,0.55),
-    0 0 4px 0.5px rgba(255,255,255,0.38),
-    0 4px 12px -1px rgba(122,20,214,0.30),
-    0 8px 20px -2px rgba(122,20,214,0.18);
+    0 0 0 1px rgba(70,40,140,0.30),
+    0 0 4px 0.5px rgba(70,40,140,0.18),
+    0 4px 12px -1px rgba(122,20,214,0.45),
+    0 8px 20px -2px rgba(122,20,214,0.30);
 }
 :root[data-theme="light"] .brand-bubble::before {
   mix-blend-mode: multiply;
   background:
-    radial-gradient(ellipse at 36% 30%, rgba(122,20,214,0.55) 0%, transparent 58%),
-    radial-gradient(ellipse at 70% 68%, rgba(2,116,137,0.42)  0%, transparent 52%);
+    radial-gradient(ellipse at 36% 30%, rgba(122,20,214,0.70) 0%, transparent 72%),
+    radial-gradient(ellipse at 70% 68%, rgba(2,116,137,0.55)  0%, transparent 66%);
 }
 :root[data-theme="light"] .brand-bubble::after {
   background: radial-gradient(ellipse 55% 25% at 28% 8%,
@@ -1263,54 +1263,54 @@ html.dark .brand-glow-text {
 }
 :root[data-theme="light"] .brand-bubble[data-color="cyan"] {
   box-shadow:
-    0 0 0 0.5px rgba(255,255,255,0.55),
-    0 0 4px 0.5px rgba(255,255,255,0.38),
-    0 4px 12px -1px rgba(2,116,137,0.30),
-    0 8px 20px -2px rgba(2,116,137,0.18);
+    0 0 0 1px rgba(70,40,140,0.30),
+    0 0 4px 0.5px rgba(70,40,140,0.18),
+    0 4px 12px -1px rgba(2,116,137,0.45),
+    0 8px 20px -2px rgba(2,116,137,0.30);
 }
 :root[data-theme="light"] .brand-bubble[data-color="cyan"]::before {
   background:
-    radial-gradient(ellipse at 36% 30%, rgba(2,116,137,0.55) 0%, transparent 58%),
-    radial-gradient(ellipse at 72% 65%, rgba(87,50,190,0.42) 0%, transparent 52%);
+    radial-gradient(ellipse at 36% 30%, rgba(2,116,137,0.70) 0%, transparent 72%),
+    radial-gradient(ellipse at 72% 65%, rgba(87,50,190,0.55) 0%, transparent 66%);
 }
 :root[data-theme="light"] .brand-bubble[data-color="gold"] {
   box-shadow:
-    0 0 0 0.5px rgba(255,255,255,0.55),
-    0 0 4px 0.5px rgba(255,255,255,0.38),
-    0 4px 12px -1px rgba(160,91,6,0.30),
-    0 8px 20px -2px rgba(160,91,6,0.18);
+    0 0 0 1px rgba(70,40,140,0.30),
+    0 0 4px 0.5px rgba(70,40,140,0.18),
+    0 4px 12px -1px rgba(160,91,6,0.45),
+    0 8px 20px -2px rgba(160,91,6,0.30);
 }
 :root[data-theme="light"] .brand-bubble[data-color="gold"]::before {
   background:
-    radial-gradient(ellipse at 36% 30%, rgba(160,91,6,0.55)  0%, transparent 58%),
-    radial-gradient(ellipse at 68% 66%, rgba(122,20,214,0.42) 0%, transparent 52%);
+    radial-gradient(ellipse at 36% 30%, rgba(160,91,6,0.70)  0%, transparent 72%),
+    radial-gradient(ellipse at 68% 66%, rgba(122,20,214,0.55) 0%, transparent 66%);
 }
 :root[data-theme="light"] .brand-bubble[data-color="purple"] {
   box-shadow:
-    0 0 0 0.5px rgba(255,255,255,0.55),
-    0 0 4px 0.5px rgba(255,255,255,0.38),
-    0 4px 12px -1px rgba(87,50,190,0.30),
-    0 8px 20px -2px rgba(87,50,190,0.18);
+    0 0 0 1px rgba(70,40,140,0.30),
+    0 0 4px 0.5px rgba(70,40,140,0.18),
+    0 4px 12px -1px rgba(87,50,190,0.45),
+    0 8px 20px -2px rgba(87,50,190,0.30);
 }
 :root[data-theme="light"] .brand-bubble[data-color="purple"]::before {
   background:
-    radial-gradient(ellipse at 36% 30%, rgba(87,50,190,0.55) 0%, transparent 58%),
-    radial-gradient(ellipse at 70% 67%, rgba(2,116,137,0.42) 0%, transparent 52%);
+    radial-gradient(ellipse at 36% 30%, rgba(87,50,190,0.70) 0%, transparent 72%),
+    radial-gradient(ellipse at 70% 67%, rgba(2,116,137,0.55) 0%, transparent 66%);
 }
 
 @media (prefers-color-scheme: light) {
   :root:not([data-theme="dark"]) .brand-bubble {
     box-shadow:
-      0 0 0 0.5px rgba(255,255,255,0.55),
-      0 0 4px 0.5px rgba(255,255,255,0.38),
-      0 4px 12px -1px rgba(122,20,214,0.30),
-      0 8px 20px -2px rgba(122,20,214,0.18);
+      0 0 0 1px rgba(70,40,140,0.30),
+      0 0 4px 0.5px rgba(70,40,140,0.18),
+      0 4px 12px -1px rgba(122,20,214,0.45),
+      0 8px 20px -2px rgba(122,20,214,0.30);
   }
   :root:not([data-theme="dark"]) .brand-bubble::before {
     mix-blend-mode: multiply;
     background:
-      radial-gradient(ellipse at 36% 30%, rgba(122,20,214,0.55) 0%, transparent 58%),
-      radial-gradient(ellipse at 70% 68%, rgba(2,116,137,0.42)  0%, transparent 52%);
+      radial-gradient(ellipse at 36% 30%, rgba(122,20,214,0.70) 0%, transparent 72%),
+      radial-gradient(ellipse at 70% 68%, rgba(2,116,137,0.55)  0%, transparent 66%);
   }
   :root:not([data-theme="dark"]) .brand-bubble::after {
     background: radial-gradient(ellipse 55% 25% at 28% 8%,
@@ -1318,38 +1318,38 @@ html.dark .brand-glow-text {
   }
   :root:not([data-theme="dark"]) .brand-bubble[data-color="cyan"] {
     box-shadow:
-      0 0 0 0.5px rgba(255,255,255,0.55),
-      0 0 4px 0.5px rgba(255,255,255,0.38),
-      0 4px 12px -1px rgba(2,116,137,0.30),
-      0 8px 20px -2px rgba(2,116,137,0.18);
+      0 0 0 1px rgba(70,40,140,0.30),
+      0 0 4px 0.5px rgba(70,40,140,0.18),
+      0 4px 12px -1px rgba(2,116,137,0.45),
+      0 8px 20px -2px rgba(2,116,137,0.30);
   }
   :root:not([data-theme="dark"]) .brand-bubble[data-color="cyan"]::before {
     background:
-      radial-gradient(ellipse at 36% 30%, rgba(2,116,137,0.55) 0%, transparent 58%),
-      radial-gradient(ellipse at 72% 65%, rgba(87,50,190,0.42) 0%, transparent 52%);
+      radial-gradient(ellipse at 36% 30%, rgba(2,116,137,0.70) 0%, transparent 72%),
+      radial-gradient(ellipse at 72% 65%, rgba(87,50,190,0.55) 0%, transparent 66%);
   }
   :root:not([data-theme="dark"]) .brand-bubble[data-color="gold"] {
     box-shadow:
-      0 0 0 0.5px rgba(255,255,255,0.55),
-      0 0 4px 0.5px rgba(255,255,255,0.38),
-      0 4px 12px -1px rgba(160,91,6,0.30),
-      0 8px 20px -2px rgba(160,91,6,0.18);
+      0 0 0 1px rgba(70,40,140,0.30),
+      0 0 4px 0.5px rgba(70,40,140,0.18),
+      0 4px 12px -1px rgba(160,91,6,0.45),
+      0 8px 20px -2px rgba(160,91,6,0.30);
   }
   :root:not([data-theme="dark"]) .brand-bubble[data-color="gold"]::before {
     background:
-      radial-gradient(ellipse at 36% 30%, rgba(160,91,6,0.55)  0%, transparent 58%),
-      radial-gradient(ellipse at 68% 66%, rgba(122,20,214,0.42) 0%, transparent 52%);
+      radial-gradient(ellipse at 36% 30%, rgba(160,91,6,0.70)  0%, transparent 72%),
+      radial-gradient(ellipse at 68% 66%, rgba(122,20,214,0.55) 0%, transparent 66%);
   }
   :root:not([data-theme="dark"]) .brand-bubble[data-color="purple"] {
     box-shadow:
-      0 0 0 0.5px rgba(255,255,255,0.55),
-      0 0 4px 0.5px rgba(255,255,255,0.38),
-      0 4px 12px -1px rgba(87,50,190,0.30),
-      0 8px 20px -2px rgba(87,50,190,0.18);
+      0 0 0 1px rgba(70,40,140,0.30),
+      0 0 4px 0.5px rgba(70,40,140,0.18),
+      0 4px 12px -1px rgba(87,50,190,0.45),
+      0 8px 20px -2px rgba(87,50,190,0.30);
   }
   :root:not([data-theme="dark"]) .brand-bubble[data-color="purple"]::before {
     background:
-      radial-gradient(ellipse at 36% 30%, rgba(87,50,190,0.55) 0%, transparent 58%),
-      radial-gradient(ellipse at 70% 67%, rgba(2,116,137,0.42) 0%, transparent 52%);
+      radial-gradient(ellipse at 36% 30%, rgba(87,50,190,0.70) 0%, transparent 72%),
+      radial-gradient(ellipse at 70% 67%, rgba(2,116,137,0.55) 0%, transparent 66%);
   }
 }
