@@ -1,3 +1,31 @@
+## Entry 060 — 2026-07-09
+
+**Agent:** Claude Fable 5 (Claude Code, shxdowflow)
+**Cycle:** nav-trim-and-tailwind-conversion
+**Task:** Trim the top bar to only Work + About, and convert all 5 pages to Tailwind utility authoring before the branch is merged.
+
+### Changes
+
+- **Nav trim (all 5 pages):** links are now just Work and About (plain anchors — submenu removed per user choice); Contact link, Hire Me CTA, and hamburger button removed. Links are always visible (two links fit mobile), logo text sized with clamp + nowrap so the bar stays one line at 375px.
+- **Cascade-layer fix (prerequisite):** `brand.css` was an unlayered separate `<link>`, which beats every Tailwind layer — utilities could never override it. It is now `@import ... layer(components)` inside `app.css`; pages link only the compiled `style.css`. The Google Fonts `@import` moved to the top of `app.css` (it was being nested inside the layer, which browsers ignore).
+- **Dark variant:** `@custom-variant dark` keyed to `[data-theme="dark"]` so `dark:` utilities work with the theme toggle.
+- **Preset additions:** bridged `--brand-border`→`line`, `--brand-border-mid`→`line-mid`, `accent-dim`, `gold-dim`, `--brand-shadow-lg`→`shadow-raised`.
+- **Utility conversion:** index (hero text, project grid/cards, about box, footer icons, skip link), gallery (header, grids, items, back link), brand page (entire inline `<style>` deleted — logo grid, palette, type specimen now utilities), patriots (inline `<style>` deleted — hero, sections, WIP notices now utilities), history (structural classes converted; slideshow/lightbox mechanics kept as CSS since they are JS-state-class driven). JS-referenced class names (exclusion zones, Script.js hooks) kept in the markup.
+- **Dead code removed:** submenu/hamburger/CTA CSS cut from `brand.css`; submenu + hamburger IIFEs cut from `Script.js` (parse-checked); `site.css` reduced from 877 to ~300 lines (reset, base typography, logo theme-swap `content:url()` rules, nav link boxes, footer, `#return-to-top`).
+- **history-of-mistrust exclusions fixed:** `data-exclusions` referenced `.case-study-*` classes that don't exist on that page; now `.project-hero, .section-title`.
+
+### Verification
+
+- Browser: all 5 pages, dark + light, desktop + 375px mobile — layouts match the pre-conversion look, nav shows only Work/About, slideshows work, fonts load, zero console errors, bubble exclusion zones still clear (0 overlaps after settling).
+- `npx playwright test` — 41 passed (smoke + 40 visual baselines, refreshed to the new nav).
+- CSP inline-script hashes unchanged (both already in netlify.toml).
+
+### Checkpoint
+
+- Commit this entry ships with (nav trim + Tailwind conversion).
+
+---
+
 ## Entry 059 — 2026-07-09
 
 **Agent:** Claude Fable 5 (Claude Code, shxdowflow)
