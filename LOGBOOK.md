@@ -1,3 +1,23 @@
+## Entry 063 — 2026-07-10
+
+**Agent:** Claude Fable 5 (Claude Code, shxdowflow)
+**Cycle:** bubble-exclude-scroll-stir-docs
+**Task:** Implement the `.bubble-exclude` plan, make scrolling stir the bubbles, and refresh all local docs.
+
+### Changes
+
+- **`.bubble-exclude` marker class** (per `docs/plans/2026-07-02-project-card-bubble-exclusion.md`): added to `DEFAULT_EXCLUSIONS` in `scripts/bubbles.js`; hardcoded `#work .project-card` / `#about .about-box` removed from `HOME_EXCLUSIONS`; class applied to all four project cards and the about box in `index.html`. Verified 14 zones tracked on index including cards + about box.
+- **Scroll stir** (user request, option chosen: "scroll stirs the bubbles"): global-layer bubbles get velocity from scroll delta (`SCROLL_STIR = 0.02`/px, delta clamped to ±40px/frame) plus a small random horizontal swirl; existing `MAX_SPEED` clamp and damping keep it settled. Verified: simulated 40px delta imparts ≈0.79 vy.
+- **Docs refresh:** `AGENTS.md` rewritten where stale — EPERM marked resolved (pointer to NOTES.md), build/test commands corrected (`css:build`, `npm test`/Playwright), tech stack updated (Tailwind utility authoring, brand.css in components layer, single style.css link, dark: variant keying, physics exclusion mechanisms, Work+About nav), new Deploy section documenting **no Netlify build** (committed style.css ships) and the CSP inline-script hash pinning; file conventions list JS-coupled class names. `TODO.md` + plan doc statuses updated.
+
+### Verification
+
+- Browser: engine runs, `.bubble-exclude` in selector list, zones include cards/about box, manual step with 40px scroll delta stirs velocity. (Note: rAF freezes in backgrounded tabs — velocities only looked static because the probe tab was hidden.)
+- `npx playwright test` — 41 passed.
+- `node` parse check on `scripts/bubbles.js` — OK.
+
+---
+
 ## Entry 062 — 2026-07-10
 
 **Agent:** Claude Fable 5 (Claude Code, shxdowflow)

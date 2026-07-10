@@ -28,6 +28,8 @@
   const DRIFT_KICK      = 0.12;
   const ZONE_PADDING    = 24;   // px buffer around exclusion zones
   const ZONE_THROTTLE   = 250;  // ms between rect queries
+  const SCROLL_STIR     = 0.02; // velocity imparted per px of scroll delta
+  const SCROLL_STIR_MAX = 40;   // px of scroll delta considered per frame
   const SQUISH_EPSILON  = 0.003; // snap to rest when this close to 1.0
 
   // ── Viewport scaling ────────────────────────────────────────────
@@ -56,15 +58,14 @@
   const DEFAULT_EXCLUSIONS = [
     '.brand-nav',
     '.brand-footer',
-    '#return-to-top'
+    '#return-to-top',
+    '.bubble-exclude'
   ];
   const HOME_EXCLUSIONS = [
     '#hero .hero-name',
     '#hero .hero-sub',
     '#work h2',
-    '#work .project-card',
     '#about h2',
-    '#about .about-box',
     '.brand-footer-inner',
     '.brand-footer-connect'
   ];
@@ -480,6 +481,20 @@
     step(mouse, zones) {
       if (!this.active) return;
       const scrollY = this.isFixed ? window.scrollY : 0;
+      // Scroll stir: scrolling drags the "water" the bubbles float in —
+      // they lag behind the scroll and swirl a little, then settle.
+      if (this.isFixed) {
+        if (this.lastScrollY === undefined) this.lastScrollY = scrollY;
+        const dScroll = Math.max(-SCROLL_STIR_MAX,
+                        Math.min(SCROLL_STIR_MAX, scrollY - this.lastScrollY));
+        this.lastScrollY = scrollY;
+        if (dScroll !== 0) {
+          for (const b of this.bubbles) {
+            b.vy += dScroll * SCROLL_STIR;
+            b.vx += (Math.random() - 0.5) * Math.abs(dScroll) * SCROLL_STIR * 0.5;
+          }
+        }
+      }
       // Convert inputs to this layer's coordinate space
       const mouseLocal = this.isFixed
         ? { x: mouse.x, y: mouse.y + scrollY }

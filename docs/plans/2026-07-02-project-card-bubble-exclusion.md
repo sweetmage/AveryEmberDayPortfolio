@@ -1,7 +1,7 @@
 # Plan — Project Card Bubble Exclusion
 
 **Date:** 2026-07-02  
-**Status:** Ready for implementation  
+**Status:** ✅ Complete (2026-07-10) — implemented with the scroll-stir addition; see LOGBOOK Entry 063  
 **Agent:** Kilo  
 **Scope:** `index.html`, `scripts/bubbles.js`  
 
