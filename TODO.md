@@ -136,16 +136,15 @@ Implement four nav improvements across all 5 pages: mobile hamburger menu, Conta
 
 ---
 
-## ⚠️ Framework Decision Pending (2026-06-04)
+## ✅ Framework Decision — Next.js (2026-07-12)
 
-The website is currently vanilla HTML/CSS/JS. User is evaluating a move to a JS framework (React, Vue, Svelte, Astro, SolidJS, etc.) but **has not yet chosen one**.
+**Decided:** Next.js (React), chosen partly for resume/skills-signaling value during an active job search, over SvelteKit or staying vanilla. Migration plan written; **execution not yet started**.
+
+**Plan:** `docs/plans/2026-07-12-nextjs-migration.md` — covers bubble-physics-engine port strategy, CSP rework (hash-pinning breaks under Next's build output, needs nonce-based CSP), page-by-page migration order (pilot: `patriots-low-thirds.html`), and full Playwright re-baseline requirement.
 
 **Impact on open work:**
-- All new feature plans (incl. `docs/plans/2026-06-04-hero-bubble-physics.md`) should keep core logic framework-agnostic (plain ES modules) so wrappers can be added later.
-- Hold off on any large structural refactor (build tooling, routing, component model) until the framework is chosen.
-- Existing pages (`index.html`, `projects/*.html`, `resume/*.html`) stay vanilla until migration day.
-
-**Action required from user:** Pick a framework (or confirm staying vanilla) so plans can be revised with concrete wrapper specs.
+- Existing pages (`index.html`, `projects/*.html`, `gallery/gallery.html`) stay vanilla HTML/CSS/JS + Tailwind until migration execution begins — no changes needed to current work in flight.
+- Migration execution is a distinct future task, not scoped into this decision.
 
 ---
 

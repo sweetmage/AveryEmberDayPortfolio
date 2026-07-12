@@ -1,3 +1,32 @@
+## Entry 066 — 2026-07-12
+
+**Agent:** Claude Fable 5 (Claude Code, shxdowflow)
+**Cycle:** branch-reconciliation-framework-decision
+**Task:** Walk the user through the open decisions blocking forward progress (branch divergence, unpushed work, stale branches, framework choice), then execute the chosen resolutions.
+
+### Decisions made (user, via structured questions)
+
+1. **master vs portfoliowebsite:** merge master into portfoliowebsite — done, clean fast-forward to `dfb9d1d`. Both branches now point at the same commit.
+2. **Pushing master:** hold off (moot in practice — Entry 065 shows master was already pushed and live from the prior session; this session made no master changes).
+3. **Stale branches:** investigate before deleting. Findings: `archive-resume-html` obsolete (master deleted `resume/` entirely), `complete-google-ticktick-plan` obsolete (sync scripts already present via another merge path), `follow-up-fixes` obsolete (early Tailwind pilot superseded by the full 07-05/07-09 conversion), `gallery-tag-filter` plan-only. Deleted all four plus the four fully-merged branches (`phase-1-structural-fixes`, both `website-architecture-remediation` branches, `bubble-physics-and-review-fixes`) — local and remote. Preserved the gallery-tag-filter dry-run plan as `docs/plans/2026-06-07-gallery-tag-filter-shxdowloop-dry-run.md` since it maps to the open "Gallery tag system" TODO item.
+4. **Framework:** Next.js (React), weighted for resume/skills signaling during the job search over raw technical fit. Plan-only this cycle — no migration code.
+
+### Changes
+
+- `docs/plans/2026-07-12-nextjs-migration.md` (new) — full migration plan: bubble-physics engine ported verbatim (not rewritten into React state), nonce-based CSP to replace hash-pinning (which breaks under Next's hashed bundles), static export for Netlify, `patriots-low-thirds.html` as pilot page, `history-of-mistrust.html` last, full Playwright re-baseline required.
+- `docs/plans/2026-06-07-gallery-tag-filter-shxdowloop-dry-run.md` (recovered from deleted branch).
+- `TODO.md` — "Framework Decision Pending (2026-06-04)" closed as decided (Next.js), pointing at the new plan.
+
+### Verification
+
+- Docs-only changes; no code touched. `git branch -a` confirms remaining branches: master, portfoliowebsite (in sync), develop, feat/history-of-mistrust-case-study, resume, claude/loving-knuth-1651f9.
+
+### Notes
+
+- The Netlify-dashboard-vs-docs deploy-branch mismatch (TODO, from Entry 065) remains blocked on user dashboard access.
+
+---
+
 ## Entry 065 — 2026-07-12
 
 **Agent:** Claude Sonnet 5 (Claude Code, shxdowflow)
