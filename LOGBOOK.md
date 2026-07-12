@@ -29,6 +29,9 @@
 ### Notes
 
 - **Open follow-up for the user:** `AGENTS.md`/`docs/NOTES.md` branch policy still describes `portfoliowebsite` as the deploying branch — that's stale relative to what's actually wired up in Netlify. Recommend updating Netlify's dashboard (or these docs) so the documented branch and the real deploy branch agree, to prevent this same confusion next time.
+- **Post-push fixes (same session):**
+  - An initial `AGENTS.md` edit worded the master-deploy note as if it pre-authorized future "publish live" requests to skip per-instance confirmation. Corrected in a follow-up commit — the note is informational only, not standing authorization.
+  - Restoring "In Danger" to `gallery.html` after the merge left the `<img>` pointing at a file that no longer existed: master's Entry 041 (2026-06-10) had deleted `images/myart/Gallery/SelfPortraitSeries/` outright, and since the feature branch never touched that binary path, git's three-way merge silently kept it deleted (no conflict, no warning). Live site 404'd on the image. Recovered the blob from the feature branch's git history and re-added it, verified with a full site-wide asset-reference sweep (all `src`/`href` in every HTML file resolve to an existing file), reran Playwright (41 passed), and pushed the fix.
 
 ---
 
