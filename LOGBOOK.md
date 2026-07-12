@@ -1,3 +1,26 @@
+## Entry 064 — 2026-07-12
+
+**Agent:** Claude Sonnet 5 (Claude Code, shxdowflow)
+**Cycle:** gallery-item-removal
+**Task:** Remove 5 gallery pieces (In Fatigue, In Joy, In Love, Hope, Mermaid) from gallery.html on this review branch, then backport the same content removal to the live `portfoliowebsite` branch.
+
+### Changes
+
+- `gallery/gallery.html` (this branch) — removed the 5 `<figure class="gallery-item">` blocks for In Fatigue, In Joy, In Love, Hope, and Mermaid. 11 items remain: In Danger, Chill, Gross, Emergence (Digital Art); Faces, Lollipop, Overflow, Stairs, Beheaded, Shadow, TX Lake Landscape (Traditional Art). No other markup touched.
+- `portfoliowebsite` branch — same 5 items removed directly from that branch's (pre-Tailwind-conversion) `gallery/gallery.html` via a separate `git worktree`, matching its existing markup style exactly (tag balance verified: 11/11 `<figure>`/`<figcaption>` pairs). Committed only, not pushed (user will push when ready) — that branch auto-deploys via Netlify on push, so a push goes live immediately.
+
+### Verification
+
+- Browser (this branch, local dev server): gallery page text content confirms exactly the 11 expected captions remain, in original order.
+- `npx playwright test` — 41 passed (gallery baselines refreshed for the new grid).
+
+### Checkpoint
+
+- Commit on `shxdowloop/2026-07-05/bubble-physics-and-review-fixes`: this entry.
+- Commit on `portfoliowebsite`: gallery-only removal, **not pushed** — awaiting user's own push per their explicit choice.
+
+---
+
 ## Entry 063 — 2026-07-10
 
 **Agent:** Claude Fable 5 (Claude Code, shxdowflow)
