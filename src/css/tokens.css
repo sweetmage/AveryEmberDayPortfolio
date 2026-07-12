@@ -1,0 +1,158 @@
+/* ── Tokens — dark-first (:root = dark palette) ─────────────────── */
+:root,
+:root[data-theme="dark"] {
+    /* Surfaces */
+    --brand-bg:                   #0A0A0A;
+    --brand-bg-soft:              #0f0f0f;
+    --brand-surface-1:            #141414;
+    --brand-surface-2:            #1a1a1a;
+    --brand-surface-3:            #222222;
+    --brand-surface-4:            #2a2a2a;
+    --brand-surface-inverse:      #f1f1ec;
+    --brand-surface-inverse-soft: #ddddda;
+
+    /* Text */
+    --brand-text:       #f3f3ee;
+    --brand-text-soft:  #d7d7d1;
+    --brand-text-muted: #a2a29a;
+    --brand-text-faint: #82827a;
+
+    /* Accents */
+    --brand-accent:         #CC44FF;
+    --brand-accent-dim:     rgba(204, 68, 255, 0.30);
+    --brand-neon:           #00FFFF;
+    --brand-gold:           #f5b96a;
+    --brand-gold-dim:       rgba(245, 185, 106, 0.28);
+    --brand-active-outline: var(--brand-accent);
+
+    /* Iridescent spectrum */
+    --brand-ir-1: #d99aff;
+    --brand-ir-2: #c49aff;
+    --brand-ir-3: #f5b96a;
+    --brand-ir-4: #9acdff;
+    --brand-ir-5: #5ae3f0;
+    --brand-ir-6: #00FFFF;
+
+    /* Borders */
+    --brand-border:       rgba(255, 255, 255, 0.08);
+    --brand-border-mid:   rgba(255, 255, 255, 0.12);
+    --brand-border-focus: rgba(255, 255, 255, 0.24);
+
+    /* Shadows */
+    --brand-shadow-sm:   0 1px 2px rgba(0,0,0,0.40);
+    --brand-shadow-md:   0 2px 8px rgba(0,0,0,0.40), 0 0 0 1px rgba(255,255,255,0.04);
+    --brand-shadow-lg:   0 8px 24px rgba(0,0,0,0.45), 0 0 0 1px rgba(255,255,255,0.04);
+    --brand-shadow-xl:   0 16px 48px rgba(0,0,0,0.50), 0 0 0 1px rgba(255,255,255,0.04);
+    --brand-shadow-card: var(--brand-shadow-md);
+
+    /* Typography */
+    --brand-font-display:   'Sriracha', sans-serif;
+    --brand-font-heading:   'Outfit', sans-serif;
+    --brand-font-body:      'Inter', sans-serif;
+    --brand-weight-thin:    100;
+    --brand-weight-light:   300;
+    --brand-weight-regular: 400;
+    --brand-weight-medium:  500;
+    --brand-weight-semibold:600;
+    --brand-weight-bold:    700;
+
+    /* Radii */
+    --brand-radius-sm: 8px;
+    --brand-radius-md: 12px;
+    --brand-radius-lg: 16px;
+    --brand-radius-xl: 20px;
+
+    /* Layout */
+    --brand-content-max:   1200px;
+    --brand-section-gap:   80px;
+    --brand-header-height: 80px;
+
+    /* Transitions */
+    --brand-transition-fast: 140ms ease;
+    --brand-transition:      220ms ease;
+}
+
+/* ── Light theme tokens ──────────────────────────────────────────── */
+:root[data-theme="light"] {
+    /* Surfaces — warm off-white derived from brand off-white swatch */
+    --brand-bg:                   #F2F0EC;
+    --brand-bg-soft:              #EAE8E3;
+    --brand-surface-1:            #E4E2DD;
+    --brand-surface-2:            #DDDAD4;
+    --brand-surface-3:            #D3D0C9;
+    --brand-surface-4:            #C8C5BE;
+    --brand-surface-inverse:      #1a1a18;
+    --brand-surface-inverse-soft: #2e2e2a;
+
+    /* Text — charcoal from brand palette */
+    --brand-text:       #1C1C1A;
+    --brand-text-soft:  #313130;
+    --brand-text-muted: #6A6860;
+    --brand-text-faint: #5A5850;
+
+    /* Accents — shifted for light-bg contrast */
+    --brand-accent:         #8B22E0;
+    --brand-accent-dim:     rgba(139, 34, 224, 0.14);
+    --brand-neon:           #006e82;
+    --brand-gold:           #995008;
+    --brand-gold-dim:       rgba(184, 110, 16, 0.18);
+    --brand-active-outline: var(--brand-accent);
+
+    /* Iridescent spectrum — deeper/richer for light bg */
+    --brand-ir-1: #8B22E0;
+    --brand-ir-2: #6A44CC;
+    --brand-ir-3: #995008;
+    --brand-ir-4: #1A7ACC;
+    --brand-ir-5: #0A9EAA;
+    --brand-ir-6: #006e82;
+
+    /* Borders */
+    --brand-border:       rgba(0, 0, 0, 0.09);
+    --brand-border-mid:   rgba(0, 0, 0, 0.14);
+    --brand-border-focus: rgba(0, 0, 0, 0.26);
+
+    /* Shadows — warm-tinted */
+    --brand-shadow-sm:   0 1px 2px rgba(0,0,0,0.12);
+    --brand-shadow-md:   0 2px 8px rgba(0,0,0,0.12), 0 0 0 1px rgba(0,0,0,0.04);
+    --brand-shadow-lg:   0 8px 24px rgba(0,0,0,0.14), 0 0 0 1px rgba(0,0,0,0.04);
+    --brand-shadow-xl:   0 16px 48px rgba(0,0,0,0.16), 0 0 0 1px rgba(0,0,0,0.04);
+    --brand-shadow-card: var(--brand-shadow-md);
+}
+
+/* ── System preference fallback (no JS) ──────────────────────────── */
+@media (prefers-color-scheme: light) {
+    :root:not([data-theme="dark"]) {
+        --brand-bg:                   #F2F0EC;
+        --brand-bg-soft:              #EAE8E3;
+        --brand-surface-1:            #E4E2DD;
+        --brand-surface-2:            #DDDAD4;
+        --brand-surface-3:            #D3D0C9;
+        --brand-surface-4:            #C8C5BE;
+        --brand-surface-inverse:      #1a1a18;
+        --brand-surface-inverse-soft: #2e2e2a;
+        --brand-text:       #1C1C1A;
+        --brand-text-soft:  #313130;
+        --brand-text-muted: #6A6860;
+        --brand-text-faint: #5A5850;
+        --brand-accent:         #8B22E0;
+        --brand-accent-dim:     rgba(139, 34, 224, 0.14);
+        --brand-neon:           #006e82;
+        --brand-gold:           #995008;
+        --brand-gold-dim:       rgba(184, 110, 16, 0.18);
+        --brand-active-outline: var(--brand-accent);
+        --brand-ir-1: #8B22E0;
+        --brand-ir-2: #6A44CC;
+        --brand-ir-3: #995008;
+        --brand-ir-4: #1A7ACC;
+        --brand-ir-5: #0A9EAA;
+        --brand-ir-6: #006e82;
+        --brand-border:       rgba(0, 0, 0, 0.09);
+        --brand-border-mid:   rgba(0, 0, 0, 0.14);
+        --brand-border-focus: rgba(0, 0, 0, 0.26);
+        --brand-shadow-sm:   0 1px 2px rgba(0,0,0,0.12);
+        --brand-shadow-md:   0 2px 8px rgba(0,0,0,0.12), 0 0 0 1px rgba(0,0,0,0.04);
+        --brand-shadow-lg:   0 8px 24px rgba(0,0,0,0.14), 0 0 0 1px rgba(0,0,0,0.04);
+        --brand-shadow-xl:   0 16px 48px rgba(0,0,0,0.16), 0 0 0 1px rgba(0,0,0,0.04);
+        --brand-shadow-card: var(--brand-shadow-md);
+    }
+}

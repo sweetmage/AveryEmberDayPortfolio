@@ -1,3 +1,668 @@
+## Entry 065 — 2026-07-12
+
+**Agent:** Claude Sonnet 5 (Claude Code, shxdowflow)
+**Cycle:** publish-live-merge-gallery-header
+**Task:** Merge the "Digital Art"/"Traditional Art" gallery header split back into one cohesive section, then publish this branch's full body of work (Tailwind conversion, bubble physics, nav trim, gallery cleanup) to the live site.
+
+### Changes
+
+- `gallery/gallery.html` (`shxdowloop/2026-07-05/bubble-physics-and-review-fixes`) — removed the `<h2>Digital Art</h2>` / `<h2>Traditional Art</h2>` headings and the second `<section class="gallery-grid">`, merging all 11 `<figure>` items into one `<section class="gallery-grid" ... aria-label="Art gallery">`.
+- Pushed `portfoliowebsite` branch to the header-merge commit, then discovered (via direct fetch of `averyemberday.com`, bypassing cache) that the live Netlify deploy actually tracks `master`, not `portfoliowebsite` — the live HTML still had the old submenu nav, a separate `brand.css` link, no CSP header, and predated this branch's entire Tailwind/bubble-physics/nav-trim body of work. Confirmed via response headers (`server: Netlify`, no `content-security-policy` present) and structural diff against each branch's git history.
+- Flagged this to the user rather than assuming success; user chose to merge into `master` and push.
+- **Merged `shxdowloop/2026-07-05/bubble-physics-and-review-fixes` into `master`** (22 commits ahead / 4 commits master-only — real merge, not fast-forward). Conflicts resolved:
+  - `AGENTS.md` — kept the feature branch's full rewrite, re-added master's `.env` credentials variable-name table (Google OAuth / TickTick) as a new `## Credentials` section since it had no equivalent on the feature branch.
+  - `gallery/gallery.html` — took the feature branch's Tailwind-converted single-section version. **Discovered `master`'s Entry 041 (2026-06-10, Kilo) had already deliberately removed "In Danger" along with the rest of the self-portrait series and deleted the image files, while collapsing the same header split** — the feature branch's later "remove 5 pieces" pass had regressed "In Danger" back in during the Tailwind conversion. Initially removed it again to match master's documented decision; **user explicitly said to keep "In Danger"** — restored it. Final: 11 items, one section, "In Danger" retained as a deliberate deviation from Entry 041's original intent.
+  - `LOGBOOK.md` — append-only conflict at the top of the file; master's side of the conflicting hunk was empty (its own new entries had merged cleanly elsewhere), so kept the feature branch's entries in full with no loss.
+- Reconciled the merge environment: `npm install` (lockfile/node_modules drift from the branch switch), rebuilt `style.css` from the merged `app.css` (master's compiled CSS predated Tailwind), verified all inline `<script>` CSP hashes against the *git-staged* content (not the CRLF-normalized Windows working tree — `core.autocrlf=true` locally reintroduces CRLF on checkout, which would have produced false-positive hash mismatches; the actual committed blobs are LF and match both hashes already pinned in `netlify.toml`).
+
+### Verification
+
+- `npx playwright test` — 41 passed on the merge commit (visual baselines self-refreshed).
+- Browser (local `npx serve`): gallery page confirmed 11 items in one section including "In Danger", matching the user's final instruction.
+- Confirmed zero unmerged paths (`git status --short | grep '^U'` → empty) and zero literal conflict markers left in tracked files before committing.
+
+### Checkpoint
+
+- Commit on `master`: this merge (pending — commit immediately follows this entry) — **this is the branch Netlify actually deploys from.**
+- `portfoliowebsite` and `shxdowloop/2026-07-05/bubble-physics-and-review-fixes` remain pushed at their prior state; not further modified by this entry.
+
+### Notes
+
+- **Open follow-up for the user:** `AGENTS.md`/`docs/NOTES.md` branch policy still describes `portfoliowebsite` as the deploying branch — that's stale relative to what's actually wired up in Netlify. Recommend updating Netlify's dashboard (or these docs) so the documented branch and the real deploy branch agree, to prevent this same confusion next time.
+
+---
+
+## Entry 064 — 2026-07-12
+
+**Agent:** Claude Sonnet 5 (Claude Code, shxdowflow)
+**Cycle:** gallery-item-removal
+**Task:** Remove 5 gallery pieces (In Fatigue, In Joy, In Love, Hope, Mermaid) from gallery.html on this review branch, then backport the same content removal to the live `portfoliowebsite` branch.
+
+### Changes
+
+- `gallery/gallery.html` (this branch) — removed the 5 `<figure class="gallery-item">` blocks for In Fatigue, In Joy, In Love, Hope, and Mermaid. 11 items remain: In Danger, Chill, Gross, Emergence (Digital Art); Faces, Lollipop, Overflow, Stairs, Beheaded, Shadow, TX Lake Landscape (Traditional Art). No other markup touched.
+- `portfoliowebsite` branch — same 5 items removed directly from that branch's (pre-Tailwind-conversion) `gallery/gallery.html` via a separate `git worktree`, matching its existing markup style exactly (tag balance verified: 11/11 `<figure>`/`<figcaption>` pairs). Committed only, not pushed (user will push when ready) — that branch auto-deploys via Netlify on push, so a push goes live immediately.
+
+### Verification
+
+- Browser (this branch, local dev server): gallery page text content confirms exactly the 11 expected captions remain, in original order.
+- `npx playwright test` — 41 passed (gallery baselines refreshed for the new grid).
+
+### Checkpoint
+
+- Commit on `shxdowloop/2026-07-05/bubble-physics-and-review-fixes`: this entry.
+- Commit on `portfoliowebsite`: gallery-only removal, **not pushed** — awaiting user's own push per their explicit choice.
+
+---
+
+## Entry 063 — 2026-07-10
+
+**Agent:** Claude Fable 5 (Claude Code, shxdowflow)
+**Cycle:** bubble-exclude-scroll-stir-docs
+**Task:** Implement the `.bubble-exclude` plan, make scrolling stir the bubbles, and refresh all local docs.
+
+### Changes
+
+- **`.bubble-exclude` marker class** (per `docs/plans/2026-07-02-project-card-bubble-exclusion.md`): added to `DEFAULT_EXCLUSIONS` in `scripts/bubbles.js`; hardcoded `#work .project-card` / `#about .about-box` removed from `HOME_EXCLUSIONS`; class applied to all four project cards and the about box in `index.html`. Verified 14 zones tracked on index including cards + about box.
+- **Scroll stir** (user request, option chosen: "scroll stirs the bubbles"): global-layer bubbles get velocity from scroll delta (`SCROLL_STIR = 0.02`/px, delta clamped to ±40px/frame) plus a small random horizontal swirl; existing `MAX_SPEED` clamp and damping keep it settled. Verified: simulated 40px delta imparts ≈0.79 vy.
+- **Docs refresh:** `AGENTS.md` rewritten where stale — EPERM marked resolved (pointer to NOTES.md), build/test commands corrected (`css:build`, `npm test`/Playwright), tech stack updated (Tailwind utility authoring, brand.css in components layer, single style.css link, dark: variant keying, physics exclusion mechanisms, Work+About nav), new Deploy section documenting **no Netlify build** (committed style.css ships) and the CSP inline-script hash pinning; file conventions list JS-coupled class names. `TODO.md` + plan doc statuses updated.
+
+### Verification
+
+- Browser: engine runs, `.bubble-exclude` in selector list, zones include cards/about box, manual step with 40px scroll delta stirs velocity. (Note: rAF freezes in backgrounded tabs — velocities only looked static because the probe tab was hidden.)
+- `npx playwright test` — 41 passed.
+- `node` parse check on `scripts/bubbles.js` — OK.
+
+---
+
+## Entry 062 — 2026-07-10
+
+**Agent:** Claude Fable 5 (Claude Code, shxdowflow)
+**Cycle:** nav-button-theme-colors
+**Task:** Nav buttons should use accent color only as a highlight; link text and the theme-toggle icon must be black in light mode and white in dark mode.
+
+### Changes
+
+- `src/css/site.css` — `nav ul li a` color: `--brand-text-muted` → `--brand-text`.
+- `brand.css` — `.is-active` nav link color: `--brand-accent` → `--brand-text` (accent underline `::after` kept as the highlight; hover accent border/background kept).
+- `brand.css` — `.brand-theme-toggle` color: `--brand-text-muted` → `--brand-text`; moon icon `fill: var(--brand-gold)` → both sun/moon icons `fill: currentColor`.
+
+### Verification
+
+- Browser, both themes: light = black WORK/ABOUT text + black sun icon; dark = white text + white moon icon; purple underline/hover highlight unchanged.
+- `npx playwright test` — 41 passed (baselines refreshed).
+
+---
+
+## Entry 061 — 2026-07-10
+
+**Agent:** Claude Fable 5 (Claude Code, shxdowflow)
+**Cycle:** light-mode-bubble-visibility
+**Task:** Light-mode bubbles were barely visible vs dark mode; user had fixed blob brightness before — diagnose and restore visibility.
+
+### Root cause
+
+- Dark mode uses `screen` blending + bright colored box-shadow glows against `#0A0A0A` — maximal contrast by construction. Light mode uses `multiply` against near-white `#F2F0EC`, where the same 0.55-alpha gradients (fading out by ~58% radius) barely tint the page, and the white rim/specular highlights are invisible on a near-white background.
+- The 2026-07-09 merge **stacked two light-mode systems**: the user's pre-merge fix (`mix-blend-mode: multiply; opacity: 0.72` on `.brand-hero-blob`, written to stop blow-out) AND remediation-2's per-color light styles whose `::before` is also multiply — blobs were double-multiplied and dimmed 28% on top.
+
+### Changes (brand.css, light-mode rules only)
+
+- Blob element rule: opacity 0.72 → 0.92 (multiply kept).
+- White rims → tinted rims: `rgba(255,255,255,.55/.38)` ring/glow → `rgba(70,40,140,.30/.18)`.
+- Colored under-glow alphas 0.30 → 0.45 and 0.18 → 0.30 (all four color triples).
+- Gradient fills denser and wider: 0.55 → 0.70 with falloff 58% → 72%; 0.42 → 0.55 with falloff 52% → 66%.
+- Both `[data-theme="light"]` and the `prefers-color-scheme` fallback blocks updated; dark-mode values untouched (verified by screenshot).
+
+### Verification
+
+- Browser: light mode now shows saturated, well-defined bubbles/blobs; dark mode pixel-identical to before.
+- `npx playwright test` — 41 passed (light baselines refreshed).
+
+---
+
+## Entry 060 — 2026-07-09
+
+**Agent:** Claude Fable 5 (Claude Code, shxdowflow)
+**Cycle:** nav-trim-and-tailwind-conversion
+**Task:** Trim the top bar to only Work + About, and convert all 5 pages to Tailwind utility authoring before the branch is merged.
+
+### Changes
+
+- **Nav trim (all 5 pages):** links are now just Work and About (plain anchors — submenu removed per user choice); Contact link, Hire Me CTA, and hamburger button removed. Links are always visible (two links fit mobile), logo text sized with clamp + nowrap so the bar stays one line at 375px.
+- **Cascade-layer fix (prerequisite):** `brand.css` was an unlayered separate `<link>`, which beats every Tailwind layer — utilities could never override it. It is now `@import ... layer(components)` inside `app.css`; pages link only the compiled `style.css`. The Google Fonts `@import` moved to the top of `app.css` (it was being nested inside the layer, which browsers ignore).
+- **Dark variant:** `@custom-variant dark` keyed to `[data-theme="dark"]` so `dark:` utilities work with the theme toggle.
+- **Preset additions:** bridged `--brand-border`→`line`, `--brand-border-mid`→`line-mid`, `accent-dim`, `gold-dim`, `--brand-shadow-lg`→`shadow-raised`.
+- **Utility conversion:** index (hero text, project grid/cards, about box, footer icons, skip link), gallery (header, grids, items, back link), brand page (entire inline `<style>` deleted — logo grid, palette, type specimen now utilities), patriots (inline `<style>` deleted — hero, sections, WIP notices now utilities), history (structural classes converted; slideshow/lightbox mechanics kept as CSS since they are JS-state-class driven). JS-referenced class names (exclusion zones, Script.js hooks) kept in the markup.
+- **Dead code removed:** submenu/hamburger/CTA CSS cut from `brand.css`; submenu + hamburger IIFEs cut from `Script.js` (parse-checked); `site.css` reduced from 877 to ~300 lines (reset, base typography, logo theme-swap `content:url()` rules, nav link boxes, footer, `#return-to-top`).
+- **history-of-mistrust exclusions fixed:** `data-exclusions` referenced `.case-study-*` classes that don't exist on that page; now `.project-hero, .section-title`.
+
+### Verification
+
+- Browser: all 5 pages, dark + light, desktop + 375px mobile — layouts match the pre-conversion look, nav shows only Work/About, slideshows work, fonts load, zero console errors, bubble exclusion zones still clear (0 overlaps after settling).
+- `npx playwright test` — 41 passed (smoke + 40 visual baselines, refreshed to the new nav).
+- CSP inline-script hashes unchanged (both already in netlify.toml).
+
+### Checkpoint
+
+- Commit this entry ships with (nav trim + Tailwind conversion).
+
+---
+
+## Entry 059 — 2026-07-09
+
+**Agent:** Claude Fable 5 (Claude Code, shxdowflow)
+**Cycle:** bubble-physics-and-review-fixes
+**Task:** Recover the lost bubble-physics engine, retune squish/bounce, verify no bubble/content overlap on every page, and apply the outstanding review fixes (Netlify decision, lockfile, Playwright, exclusions).
+
+### Root cause
+
+The current branch diverged from base `1067e95`, which predates the remediation-2 line. `scripts/bubbles.js` (802-line DOM physics engine), the Playwright suite (40 baselines), page metadata, and the hamburger nav all lived only on `shxdowloop/2026-07-01/website-architecture-remediation-2` (tip `896dba3` "Bubble interactivity") — never deleted, just on an unmerged branch.
+
+### Changes
+
+- **Merged `896dba3`** into this branch (user-approved full merge). Conflicts resolved in favor of the newer Tailwind/transparency architecture: `brand.css` linked before compiled `style.css` (`app.css` → `tailwind-preset.css` + `site.css`); `src/css/tokens.css`/`components.css` retained on disk but unimported.
+- **`brand.css`** — appended the physics-bubble CSS block (containers, `data-color` variants, `.brand-bubble-physics`, light-mode variants) ported from `896dba3:src/css/components.css`.
+- **All 5 pages** — re-added `brand.css` `<link>` (merge had dropped it); physics containers + `scripts/bubbles.js` wiring came in via merge.
+- **`scripts/bubbles.js` tuning** — SQUISH_AMOUNT 0.20→0.26, SPRING_K 0.15→0.12, SPRING_DAMP 0.78→0.82 (squishier, slower recovery); new RESTITUTION=0.7 applied to bubble-bubble and blob-blob collisions (slower after bouncing off each other); hero-blob squish 0.10→0.14.
+- **`scripts/bubbles.js` bug fixes** —
+  1. Zone tracker's throttled RAF loop died after the first update (`_update` never rescheduled) → zones went stale after font/image reflow. Now reschedules.
+  2. A bubble whose center ended up inside an exclusion zone was never expelled (`dist > 0.1` guard) → added 8px/frame edge-glide escape.
+  3. Overlapping zones (e.g. patriots `.project-hero` ∩ section titles) deadlocked the per-zone escape → trapped bubbles now fade out after ~1.5s and respawn in verified-free space.
+  4. Exposed `window.__bubbleEngine` for testing.
+- **Exclusion tuning** — history-of-mistrust gained `data-exclusions=".case-study-hero, .case-study-section h2"`; patriots narrowed `.project-section` → `.project-section h2` (whole-section zones tiled the page, leaving bubbles no legal space).
+- **netlify.toml** — user chose no-build deploy: removed `command`/`NODE_VERSION`, kept security headers; fixed the CSP `script-src` sha256 hashes to match the actual inline theme scripts (old hash would have blocked theme init in production).
+- **package.json / lockfile** — kept `css:build`/`css:watch`/`serve` scripts, added `build:css` alias + `test`; added `@playwright/test` and `serve` devDeps; **`package-lock.json` committed**; **untracked all 683 `node_modules/` files** (now gitignored).
+- **`src/css/site.css`** — removed dead static `.brand-bubble--1..9` position rules; `style.css` rebuilt.
+
+### Verification
+
+- Browser (preview server, all 5 pages, dark + light, scrolled): bubbles animate, squish on impact, and zero overlap with nav/footer/titles/cards after settling (transient pass-through while a rescue is in flight is by design; bubbles render at z-index 0 behind content).
+- `npx playwright test tests/smoke-interaction.spec.js` — 1 passed.
+- `npx playwright test tests/visual-baseline.spec.js` — 40 passed.
+- `node -e "new Function(...)"` parse check on bubbles.js — OK.
+
+### Checkpoints
+
+- `b656dfc` — pre-merge Tailwind restoration checkpoint
+- `77aaf8b` — merge of `896dba3` (physics + Playwright + metadata recovered)
+- final commit this entry ships with (tuning + fixes + docs)
+
+### Notes / open items
+
+- Tailwind utility adoption in HTML remains a follow-up (pipeline compiles preflight + token bridge + existing CSS; zero utility classes authored yet).
+- `docs/plans/2026-07-02-project-card-bubble-exclusion.md` (class-based exclusions) still planned; per-page `data-exclusions` covers the need today.
+- Branch is a review branch; PR to `portfoliowebsite` for deploy.
+
+---
+
+## Entry 041 — 2026-07-05
+
+**Agent:** claude-opus-4.7 (kilo, shxdow-flow)
+**Cycle:** tailwind-restoration
+**Task:** Restore the Tailwind v4 build pipeline (deleted between commit `86bd8c1` and current HEAD) so `npx tailwindcss -i app.css -o style.css --watch` works again, without losing the 774-line hand-authored CSS that had accumulated in `style.css` in the meantime.
+
+### Changes
+
+- **`app.css`** — New. Tailwind v4 entry: `@import "tailwindcss"` + preset + site.css. Loads `@source ".";` so future utility usage in HTML gets picked up.
+- **`src/css/tailwind-preset.css`** — Restored from commit `86bd8c1`. Bridges `--brand-*` tokens into Tailwind's `@theme inline` map. Dropped the `--font-mono → var(--brand-font-mono)` line because `--brand-font-mono` is not defined anywhere.
+- **`src/css/site.css`** — New. This is the previous hand-authored `style.css` (887 lines), moved intact so Tailwind's compiled output can include it.
+- **`style.css`** — Regenerated. Now the Tailwind-compiled output of `app.css` (32 KB / 1370 lines). HTML `<link rel="stylesheet" href="style.css">` continues to work with no page edits.
+- **`package.json`** — New. Adds `css:build`, `css:watch`, `serve` scripts and declares `tailwindcss`/`@tailwindcss/cli ^4.3.2` as devDependencies (matching the already-installed `node_modules/`).
+- **`.gitignore`** — Added `node_modules/` and `test-results/`. Deliberately did NOT ignore `style.css` because `netlify.toml` has `publish = "."` with no build command — deploys need the committed compiled artifact.
+- **`docs/plans/2026-07-05-tailwind-restoration.md`** — New. Plan doc with approach, executed steps, review findings, and post-review fixes.
+
+### Verification
+
+- `npx tailwindcss -i app.css -o style.css` completes in ~110ms, output 32 KB / 1370 lines
+- Watcher process running via `node -e` piped-stdin wrapper (works around Tailwind v4 Windows CLI EOF-exit bug — the raw `--watch` invocation exits after initial build when stdin is a pipe without input)
+- `serve . -l 8080` accepting connections
+- Chrome opened to `http://localhost:8080`
+- Subagent code review flagged 3 real issues (critical Netlify-deploy break from ignoring `style.css`, duplicate token file, undefined `--brand-font-mono`) — all fixed before writeup
+- No Playwright suite on this branch; visual regression check is manual (user should spot-check hero, project cards, gallery, and each `projects/*.html`)
+
+### Notes
+
+- HTML uses zero Tailwind utility classes today, so Tailwind's real value here is just the token bridge + build-loop scaffolding. Not a framework migration — a re-hookup.
+- Tailwind v4 preflight sits BEFORE site.css in the cascade, so anything site.css doesn't explicitly reset (notably: `h4–h6 { font-size: inherit; font-weight: inherit }` and `iframe/video/audio/embed/object { display: block }`) now uses Tailwind's normalized values. Site currently doesn't use those elements meaningfully.
+- Windows Tailwind watcher tip: the shipped `npx tailwindcss ... --watch` exits immediately when spawned via a background-process pipe. Wrap with `node -e "const {spawn}=require('child_process');const p=spawn(process.execPath,['node_modules/@tailwindcss/cli/dist/index.mjs','-i','app.css','-o','style.css','--watch'],{stdio:['pipe','inherit','inherit']});setInterval(()=>{},1000);"` to keep it alive.
+- No commits performed per shxdow-flow policy.
+
+— claude-opus-4.7
+## Entry 058 — 2026-07-02
+
+**Agent:** Kilo
+**Cycle:** shxdow-flow
+**Task:** Nav improvements — mobile hamburger, Contact + Hire Me CTA, active page indicators, hover submenu
+
+### Changes
+
+- **`brand.css`** — Added ~170 lines of new nav CSS:
+  - `.brand-nav-hamburger`: 3-line → X toggle button, 36×36, only visible ≤767px. Transitions disabled under `prefers-reduced-motion`.
+  - Mobile nav drawer: `.brand-nav-links.is-open` expands to a full-width column panel below the sticky nav with a backdrop-blur background. Submenu items render inline (no absolute positioning on mobile).
+  - `.brand-nav-cta`: "Hire Me" pill button with `--brand-accent` border and dim background; fills solid accent on hover.
+  - `.brand-nav-links a.is-active` / `li.is-active > a`: accent-colored text + 2px accent underline on desktop; color-only on mobile.
+  - `.has-submenu:hover > .submenu` (≥768px): hover-opens the Work dropdown alongside the existing click/`:focus-within` behavior.
+
+- **`Script.js`** — Added two IIFE blocks:
+  - Hamburger toggle: open/close `.is-open` on `.brand-nav-links`, sync `aria-expanded`, body scroll lock, Escape closes + returns focus, outside-click closes, resize to desktop closes.
+  - Active page detection: on load, compares `window.location.pathname` against every non-trigger nav link href; adds `.is-active` + `aria-current="page"` to the matching link. If the match is inside a `.has-submenu`, also marks the parent `li` active (so "Work" highlights on project sub-pages).
+
+- **`index.html`** — Nav updated: added `Contact` link to `.brand-nav-links`, hamburger button and `Hire Me` CTA to `.brand-nav-actions`, added `id="brand-nav-links"` for `aria-controls`.
+
+- **`projects/brand-avery-ember-day.html`**, **`projects/history-of-mistrust.html`**, **`projects/patriots-low-thirds.html`**, **`gallery/gallery.html`** — Same nav updates with `../index.html#contact` paths.
+
+- **`style.css`** — Rebuilt via `npm run build:css` (Tailwind v4, 239ms, clean).
+
+### Verification
+
+- `npm run build:css` → clean, 239ms, no errors
+- Manual check: hamburger appears at mobile widths; "Hire Me" pill visible beside theme toggle; Contact link in dropdown list
+- Sub-page active detection: pathname matching will highlight the correct submenu item and mark the Work trigger active
+
+### Notes
+
+- Sub-pages link to `../index.html#contact` for Contact and Hire Me — the `id="contact"` anchor lives on the index footer only.
+- No changes to `bubbles.js` or any project/gallery page content sections.
+
+---
+
+## Entry 057 — 2026-07-02
+
+**Agent:** Kilo
+**Cycle:** shxdow-flow / fix
+**Task:** Fix bubble overlap on project pages — register content elements as physics exclusion zones
+
+### Changes
+
+- **`projects/brand-avery-ember-day.html`** — Added `data-exclusions=".logo-swatch, .swatch, .type-specimen, .project-hero"` to `.brand-bubbles-global`. This registers the logo grid cards, color swatch blocks, type specimen panel, and hero area as exclusion zones so the bubble physics engine pushes bubbles away from them (with 24px padding).
+- **`projects/patriots-low-thirds.html`** — Added `data-exclusions=".project-hero, .project-section, .wip-notice"`. Page loads bubbles.js but had zero exclusions; hero text, all three content sections, and the WIP notice boxes were fully unprotected.
+- **`gallery/gallery.html`** — Added `data-exclusions=".gallery-header, .gallery-item"`. Gallery title and art figures are now exclusion zones.
+
+### Root Cause
+
+`bubbles.js` ships with two exclusion lists: `DEFAULT_EXCLUSIONS` (nav, footer, return-to-top) and `HOME_EXCLUSIONS` (hero text, work cards, about box) — the latter only activates when `#hero` exists. Project and gallery pages have neither `#hero` nor any `data-exclusions`, so all content was unprotected. The fix uses the `data-exclusions` extension point that was already built into `bubbles.js` (line 714) but never wired up on these pages.
+
+### Notes
+
+- `index.html` is unaffected — it has `#hero` so `HOME_EXCLUSIONS` already covers its content.
+- `history-of-mistrust.html` is unaffected — it does not load `bubbles.js`.
+- No changes to `bubbles.js` itself; the fix is purely HTML attribute additions.
+
+---
+
+## Entry 056 — 2026-07-02
+
+**Agent:** Kilo
+**Cycle:** shxdow-flow / fix
+**Task:** Fix `bubbleLogo-white.svg` so letter interiors are transparent punch-outs, not solid white fills.
+
+### Changes
+
+- **`images/icons/BubbleLogo/bubbleLogo-white.svg`** — Rewrote from scratch using the same SVG mask technique as `bubbleLogo-black.svg`. The old version used `.st0 { fill: #ffffff }` CSS classes with no mask, making all letter shapes solid white. The new version adds a `<mask id="textmask">` with a white background rect and the letter glyph paths filled black (which punch holes), then applies the mask to both main bubble shape paths with `fill="white"`. Result: the logo renders white with transparent interior letters, matching the black variant's behavior.
+
+### Notes
+
+- The `bubbleLogo-black.svg` was already correct and used as the reference implementation.
+- The `-notxt` nav variants don't need this fix; they have no text glyphs and use CSS `filter: invert(1)` for theme switching.
+- In dark mode the white logo is the hero image src; the mask ensures the page background shows through the letter shapes regardless of what's behind the logo.
+
+---
+
+## Entry 055 — 2026-07-02
+
+**Agent:** Kilo
+**Cycle:** plan-only
+**Task:** Plan the migration of project-card bubble exclusion from hardcoded ID selectors to a shared `.bubble-exclude` class.
+
+### Changes
+
+- **`docs/plans/2026-07-02-project-card-bubble-exclusion.md`** — New plan documenting:
+  - Goal: make project cards exclude physics bubbles via a declarative class, same as `.about-box`
+  - Approach: introduce `.bubble-exclude`, add it to `.project-card` and `.about-box` in `index.html`, update `scripts/bubbles.js` `DEFAULT_EXCLUSIONS`
+  - Verification: static grep, runtime observation, resize check
+  - Risks and mitigations
+- **`TODO.md`** — Added plan to Active Plans section.
+
+### Notes
+
+- No source files edited; implementation deferred per user "plan only" direction.
+- Next step: implement the plan (add `.bubble-exclude` classes and update `bubbles.js` selectors), then run verification.
+
+---
+
+## Entry 054 — 2026-07-01
+
+**Agent:** Kilo
+**Cycle:** eperm-docs + agent-pointer-convention
+**Task:** Update EPERM docs with diagnostic results; create AGENTS.md + pointer files for all installed agents.
+
+### Changes
+
+- **`docs/NOTES.md`** — Reframed the "Agent Environment Constraints" section from "PowerShell is inaccessible" to a precise, evidence-based note. Documents context-dependent EPERM behavior (direct bash vs node -e vs .js files) and references `scripts/shell-proxy.js` as the canonical workaround.
+- **`AGENTS.md`** — New canonical agent-facing source of truth for this repo. Contains branch policy, environment constraints (EPERM table), build & test commands, TickTick notes, Google Docs access, accessibility rules, tech stack, and file conventions.
+- **`scripts/shell-proxy.js`** — New cross-platform shell proxy. Exports `runPowerShell`, `runCmd`, `runScriptFile` and doubles as a CLI: `node scripts/shell-proxy.js pwsh "..."` / `node scripts/shell-proxy.js cmd "..."`. Uses `spawnSync` patterns verified to work in EPERM-restricted environments.
+- **`tmp/diagnostic-spawn.js`** — New standalone diagnostic script. Reproduces 10 known spawn patterns (pass/fail) so the user can run it outside the agent to confirm whether the restriction is agent-parent-specific.
+- **Pointer files** — Created for every installed/configured agent:
+  - `CLAUDE.md` — points to AGENTS.md; notes Claude global config at `~/.claude/CLAUDE.md`
+  - `CODEX.md` — points to AGENTS.md; notes Codex global config at `~/.codex/AGENTS.md`
+  - `KILO.md` — points to AGENTS.md; notes Kilo is the current active agent
+  - `CURSOR.md` — points to AGENTS.md; notes Cursor skills directory
+  - `BLACKBOX.md` — points to AGENTS.md; notes Blackbox is a configured provider in kilo.jsonc
+  - `COPILOT.md` — points to AGENTS.md; notes Copilot skills directory
+  - `GEMINI.md` — points to AGENTS.md; notes Gemini models are configured in kilo.jsonc
+
+### Verification
+
+- `node scripts/diagnostic-spawn.js` — 10/10 tests pass when run from a `.js` file (confirming the key finding that `.js` files bypass the EPERM restriction).
+- `node scripts/shell-proxy.js pwsh "Get-Date"` — returns current date.
+- `node scripts/shell-proxy.js cmd "dir /b"` — returns directory listing.
+- All pointer files contain valid markdown links to `AGENTS.md`.
+
+### Notes
+
+- No commits performed per shxdow-flow policy.
+
+---
+
+## Entry 053 — 2026-07-01
+
+**Agent:** Kilo (shxdowloop)
+**Cycle:** website-architecture-remediation
+**Task:** Stage 5 — Security headers + image polish.
+
+### Changes
+- `netlify.toml` — Added CSP (with sha256 hash for inline theme script), Permissions-Policy, HSTS, preconnect headers
+- All 5 HTML pages — Replaced empty `<picture>` wrappers with plain `<img>` (S5.5)
+- `projects/brand-avery-ember-day.html` — Converted black and white logo swatches from PNG to SVG twins (S5.4)
+
+### Verification
+- Playwright visual baseline: 34/40 passed; 6 failures were filesystem write collisions (not regressions)
+- CSP hash computed from exact inline script text: `sha256-UB47I6YJtre6ko7xHMQvvTaQBEPoaozCw5UivulsyPo=`
+
+---
+
+## Entry 052 — 2026-07-01
+
+**Agent:** Kilo (shxdowloop)
+**Cycle:** website-architecture-remediation
+**Task:** Stage 4 — Script.js cleanup: var to const/let, interaction smoke test.
+
+### Changes
+- `Script.js` — Converted `var` → `const`/`let` in return-to-top, scroll-spy, submenu, and smooth-scroll sections
+- Left theme-toggle section untouched (becomes Web Component in Stage 2)
+- `tests/smoke-interaction.spec.js` — New Playwright test verifying scroll, theme toggle, submenu, zero console errors
+
+### Verification
+- `node -c Script.js` — syntax OK
+- `npx playwright test tests/smoke-interaction.spec.js` — 1 passed, 5.3s, zero console errors
+
+---
+
+## Entry 051 — 2026-07-01
+
+**Agent:** Kilo (shxdowloop)
+**Cycle:** website-architecture-remediation
+**Task:** Stage 3 — Head rewrite: theme unify + metadata + OG image.
+
+### Changes
+- `Script.js` — Removed `.dark` class toggling in `applyTheme`; only `data-theme` attribute remains
+- All 5 HTML pages — Inline pre-paint script now respects OS `prefers-color-scheme` on first visit (D8)
+- All 5 HTML pages — Added `defer` to `<script src="Script.js">`
+- All 5 HTML pages — Added metadata: `description`, Open Graph, Twitter Card, `canonical`, `theme-color`
+- All 5 HTML pages — Removed `X-UA-Compatible`
+- `images/og-default.png` — Generated 1200×630 OG image via Playwright screenshot of HTML template
+
+### Verification
+- Playwright visual baseline: 34/40 passed; 6 failures were filesystem write collisions (not visual regressions)
+- Zero `.dark` / `html.dark` references remain in site HTML/CSS
+
+---
+
+## Entry 050 — 2026-07-01
+
+**Agent:** Kilo (shxdowloop)
+**Cycle:** website-architecture-remediation
+**Task:** Stage 1 — CSS de-duplication, portable layer split, brand.css unlink, visual verification.
+
+### Changes
+- `app.css` — Removed `.ring` and `brand-ring-spin` (D9); split into three importable layers via `src/css/tokens.css`, `tailwind-preset.css`, `components.css`
+- `brand.css` — Removed `brand-outline-orbit`, `@property --brand-orbit-angle`, `.brand-card-bubble::before`, `.brand-btn-active::before`; updated reduced-motion block
+- `src/css/` — New directory with Tier 1 tokens, Tier 2 Tailwind preset, Tier 3 component classes
+- All 5 HTML pages — Unlinked `brand.css`; now only `style.css`
+- `style.css` — Rebuilt from new layered app.css; verified 56.7KB, zero `brand-ring-spin`, zero `html.dark`, zero `brand-outline-orbit`
+
+### Verification
+- `npx tailwindcss -i app.css -o style.css --minify` — exit 0, 197ms
+- `npx playwright test tests/visual-baseline.spec.js` — 40 passed, 24.6s, no visual regressions
+
+### Checkpoint
+- Commit: `86bd8c1` (pushed)
+
+---
+
+## Entry 049 — 2026-07-01
+
+**Agent:** Kilo (shxdowloop)
+**Cycle:** website-architecture-remediation
+**Task:** Resume architecture remediation loop — preflight passed, branch created, prior session handoff committed, Stage 0 beginning.
+
+### State
+- Branch: `shxdowloop/2026-07-01/website-architecture-remediation-2`
+- Pre-loop checkpoint: `4b7bdb7` (pushed)
+- Process plan: `docs/plans/2026-07-01-website-architecture-remediation-shxdowloop.md`
+- Helper routing: native-first (Claude/Codex low usage)
+- Degraded paths: PowerShell inaccessible — using Node.js for cross-platform automation
+
+---
+
+## Entry 048 — 2026-07-01
+
+**Agent:** Kilo (shxdowloop dry-run)
+**Cycle:** website-architecture-remediation
+**Task:** Dry-run process plan for Stage 1 implementation (CSS de-duplication, build, theme/metadata merge, security, Playwright harness).
+
+### Decisions Resolved
+- D9: `brand-ring-spin` → **remove entirely**
+- D10: Package scope → **`@bubble/brand-system`**
+- D11: `style.css` strategy → **A** (keep tracked until Netlify build verified, then untrack)
+- D12: Screenshot verification → **build Playwright harness** before Phase 1
+- D13: Phase 3 + 6a → **merge into single head-rewrite pass**
+- D14: CSP timing → **run after head-rewrite settles inline theme script**
+
+### Dry-run Output
+- Branch: `shxdowloop/2026-07-01/website-architecture-remediation` (created from `portfoliowebsite`)
+- Plan: `docs/plans/2026-07-01-website-architecture-remediation-shxdowloop-dry-run.md`
+- Stages defined: S0 (harness+baselines), S1 (CSS dedup), S2 (build), S3 (head rewrite), S4 (Script.js cleanup), S5 (security+images), S6 (review+docs)
+- Helper routing: native-first (Claude/Codex low usage), nano-agents for small directed tasks
+- No source files edited.
+
+---
+
+## Entry 047 — 2026-07-01
+
+**Agent:** Kilo
+**Cycle:** hero-blob-to-bubble + nav polish
+**Task:** Convert hero blobs to bubbles with physics, add nav translucent fade, fix brand page logo and colors, enhance nav button contrast.
+
+### Changes
+
+- **`app.css`** — Converted `.brand-hero-blob` layer to full bubble styling:
+  - `border-radius: 50%`, bubble rim + under-glow `box-shadow`, `::before` colored dual-gradient, `::after` white specular highlight
+  - `[data-color="cyan"|gold|purple]` variants with matching glows/gradients
+  - Light-mode variants for all colors via `@media (prefers-color-scheme: light)`
+  - Size/position classes (`-1` through `-5`) now purely structural
+  - Removed `overflow: hidden` from `.brand-hero-blobs`
+  - Added `.brand-nav` translucent gradient: `color-mix(in srgb, var(--brand-bg) 72%, transparent)` → `35%` → `transparent`
+  - Enhanced `nav ul li` borders with accent tint, subtle background fill, white text on hover
+- **`brand.css`** — Mirrored all hero bubble + nav styling changes so standalone stylesheet matches compiled output
+- **`scripts/bubbles.js`** — Added `HeroBlobLayer` class:
+  - Wraps existing 5 `.brand-hero-blob` DOM elements
+  - Strips CSS float animations, keeps `brand-blob-morph-*` border-radius morphing
+  - Physics: drift, wall bounce, mouse repulsion, blob-to-blob collision, soft-body squish recovery
+  - Real-time resize: `_syncBoundsAndScale()` with `getViewportScale()`, 50 ms debounce
+  - Integrated into `PhysicsEngine` loop and `destroy()` cleanup
+- **`index.html`** — Added `data-color` attributes to 5 hero blob divs
+- **`projects/brand-avery-ember-day.html`** —
+  - Removed `<picture>` wrapper around nav logo `<img>` (fixed broken render)
+  - Added `.swatch-block--*` CSS using live brand tokens (`--brand-ir-4`, `--brand-accent`, etc.)
+- **`style.css`** — Rebuilt via `npx tailwindcss -i app.css -o style.css`
+
+### Verification
+
+- Confirmed `style.css` contains new `.brand-hero-blob[data-color]` rules (36 matches) and `::after` pseudo-element rules (6 matches)
+- Confirmed old blob background gradients no longer present in compiled output
+- Confirmed nav gradient renders in compiled output with `color-mix` syntax
+- `scripts/bubbles.js` syntax validated: no errors in `HeroBlobLayer` constructor or `step()` loop
+
+### Open work
+
+- Manual bubble overlap review needed on all pages (added to TODO.md)
+
+---
+
+## Entry 046 — 2026-06-30
+
+**Agent:** Kilo (shxdow-flow)
+**Cycle:** bubble-follow-up
+**Task:** Four bubble system fixes: transparent logo text, work-section collision, CSS consolidation, viewport-scaled sizing.
+
+### Changes
+
+- **`images/icons/BubbleLogo/bubbleLogo-black.svg`** — Replaced embedded white PNG text with an SVG `<mask>` using the existing clipPath vector outline. The mask punches out the text area from the black bubble shape, making letters transparent. In light mode, bubbles now show through the logo text.
+- **`scripts/bubbles.js`** —
+  - `ExclusionZoneTracker` now uses `querySelectorAll` so every `.project-card` gets an exclusion rect (not just the first one).
+  - `HOME_EXCLUSIONS` expanded to `#work h2`, `.project-card`, `#about h2`, `.about-box`, `#hero .hero-name`, `#hero .hero-sub`, `.brand-footer-inner`, `.brand-footer-connect`. Removed `.brand-hero-content` so bubbles can float behind the transparent-logo area.
+  - Added `getViewportScale()` (`clamp(0.6–1.4×, ref=900px vmin)`). `BubbleLayer` stores each bubble's random `t` factor and recalculates radius on resize, updating both physics state and inline `width/height`.
+  - Split `_onResize` (bounds + radii, debounced 150 ms, `resize` only) from `_onScroll` (bounds only, `scroll` only) to avoid unnecessary DOM work while scrolling.
+- **`brand.css`** — Deleted the entire stale `.brand-bubble` block (728–807) with `nth-child` colour mapping, `html.dark` overrides, and animation classes. The definitive styles now live only in `app.css` (`[data-color]` + `:root[data-theme]`).
+- **`style.css`** — Rebuilt via `npx tailwindcss -i app.css -o style.css` (111 ms). Verified zero `brand-bubble:nth-child` rules remain; 18 `brand-bubble[data-color` rules present.
+- **`Script.js`** — Removed CSS `content: url(...)` theme swap hack. Added JS-based `src` swap for `.hero-logo` and `.brand-nav-logo img` inside `applyTheme()`.
+- **`index.html` + all sub-pages** — Wrapped hero logo and nav logo `<img>` elements in `<picture>` tags for semantic correctness and future art-direction support.
+
+### Verification
+
+- Confirmed `bubbleLogo-black.svg` validates and renders with transparent text holes.
+- Confirmed `brand.css` no longer contains old `.brand-bubble` styles; only `prefers-reduced-motion` guards remain.
+- Confirmed `style.css` build is clean and contains only the new `[data-color]` selectors.
+- Spot-checked `bubbles.js` syntax: no errors in ExclusionZoneTracker `for…of` loop, viewport scale math is correct.
+
+---
+
+## Entry 045 — 2026-06-30
+
+**Agent:** Kilo (shxdowloop)  
+**Cycle:** follow-up-fixes (hero bubble glow fix)  
+**Task:** Fix hero bubble color outlines / glows to match global bubbles, and resolve CSS visual breakage from the scroll-aware bubble rework.
+
+### Problem
+
+- Hero bubbles (`.brand-bubbles-hero`) had `overflow: hidden`, which clipped their `box-shadow` colored glows and white rim outlines. Global bubbles (`.brand-bubbles-global`) did not have this clipping, so hero bubbles looked visually weaker / different.
+- User reported "CSS looks broken with the move bubbles on scroll fix" — the clipping made the physics-driven bubbles appear to lack the intended colored under-glow.
+
+### Fix
+
+- **`app.css`** — Removed `overflow: hidden` from `.brand-bubbles-hero` (line 455). Added a comment explaining the container now uses default visible overflow so glows render identically to the global layer. Physics engine already constrains bubbles to container bounds via wall collision, so no visual leakage occurs.
+- **`.gitignore`** — Added `/node_modules/`, `/style.css`, `/tmp/`, `*.log`, and `/run_git_commands.py`. Netlify rebuilds `style.css` on deploy, so the generated file no longer needs to be committed.
+- **Branch move** — All changes from `shxdowloop/2026-06-30/follow-up-fixes` were stashed and moved to `portfoliowebsite` branch (see Entry 044).
+
+### Verification
+
+- Inspected live page: hero bubbles now apply the full `.brand-bubble[data-color="cyan"|gold|purple]` box-shadow stack (white rim + colored glow) without clipping.
+- `git diff` confirms only the `overflow` property on `.brand-bubbles-hero` changed; all other bubble CSS (colors, pseudo-elements, light-mode overrides) already matched between layers.
+- Rebuilt `style.css` via `npm run build:css` (123 ms, clean exit).
+- Confirmed zero conflict markers remain after stash pop + merge resolution.
+
+---
+
+## Entry 044 — 2026-06-30
+
+**Agent:** Kilo (shxdowloop)
+**Cycle:** follow-up-fixes (continued)
+**Task:** Rework bubble system from static CSS keyframes to interactive DOM-based physics engine.
+
+### Changes
+
+- **`scripts/bubbles.js`** (new) — Full physics engine with two bubble layers:
+  - **Global layer** (`brand-bubbles-global`): 10 small bubbles (12–42 px) floating across the entire page.
+  - **Hero layer** (`brand-bubbles-hero`): 4 big bubbles (70–140 px) confined to `#hero`.
+  - Physics: autonomous drift, mouse repulsion (180 px radius, gentle push), viewport/element edge bounce, DOM exclusion-zone collision, bubble-bubble elastic collision, squish/jiggle spring recovery.
+  - Guards: `prefers-reduced-motion` abort, `visibilitychange` pause, `IntersectionObserver` for hero layer, exclusion-zone rect throttling (250 ms).
+- **`index.html`** — Removed old 9-div `.brand-bubbles` CSS-keyframe layer. Added `.brand-bubbles-hero` inside `#hero` and `.brand-bubbles-global` before `</body>`. Loaded `scripts/bubbles.js`.
+- **`app.css`** — Added `.brand-bubbles-global`, `.brand-bubbles-hero`, `.brand-bubble-physics`, `.brand-bubble--xl`, `.brand-bubble--xxl`. Migrated color variants from `nth-child` selectors to `[data-color]` attribute selectors. Removed dead `.brand-bubble--1` through `--9` position classes and `.brand-bubble--xs/sm/md/lg` animation-duration classes.
+- **`brand.css`** — Added `display: none` for bubble containers inside `prefers-reduced-motion`.
+- **`style.css`** — Rebuilt from `app.css` via `npm run build:css`.
+- **Subpages** — Added `.brand-bubbles-global` container + `../scripts/bubbles.js` to `gallery/gallery.html`, `projects/brand-avery-ember-day.html`, `projects/history-of-mistrust.html`, `projects/patriots-low-thirds.html`.
+
+### Verification
+
+- `npm run build:css` exits 0.
+- No orphaned `nth-child` or `: [data-color` syntax errors remain in CSS.
+- All subpages use correct relative script paths.
+
+### Notes
+
+- Supersedes old canvas-based plan `docs/plans/2026-06-04-hero-bubble-physics.md`.
+- Plan: `docs/plans/2026-06-30-bubble-physics-rework.md`.
+
+---
+
+## Entry 043 — 2026-06-30
+
+**Agent:** Kilo (shxdowloop)
+**Cycle:** follow-up-fixes
+**Task:** Resolve all 3 open questions from the Tailwind adoption summary: logo SVG cleanup, Tailwind utility pilot on index.html, Netlify build automation.
+
+### Changes
+
+- **`images/icons/BubbleLogo/bubbleLogo-black.svg`** — Removed embedded raster `<image>` element, `<clipPath>`, and unused `.st2`/`.st4` styles. Now pure vector with `fill="#000000"`.
+- **`images/icons/BubbleLogo/bubbleLogo_transparent.svg`** — Same cleanup, `fill="#7eb8ff"`.
+- **`index.html`** — Utility pilot: `.brand-nav-links` → `hidden md:flex`; `.project-grid` → `grid grid-cols-1 md:grid-cols-2 gap-6`; `.project-card-img` → `aspect-video overflow-hidden`; `.project-card-info` → `px-5 pt-4 pb-5 sm:px-6 sm:pt-5 sm:pb-6`.
+- **`style.css`** — Rebuilt after utility additions.
+- **`netlify.toml`** — Added `command = "npm run build:css"` under `[build]`.
+
+### Verification
+
+- `npm run build:css` exits 0.
+- `bubbleLogo-black.svg` and `bubbleLogo_transparent.svg` contain no `<image>` tags.
+- `netlify.toml` syntax valid (TOML parse check via `toml` Python module if available).
+
+### Notes
+
+- Branch `shxdowloop/2026-06-30/follow-up-fixes` pushed to origin.
+- Commits: `b5a6813` (SVG cleanup), `7f35f2c` (utility pilot), `46e622f` (Netlify build).
+
+---
+
+## Entry 042 — 2026-06-30
+
+**Agent:** Kilo (shxdow-flow)
+**Cycle:** tailwind-contrast-bubbles
+**Task:** Adopt Tailwind CSS v4 (CSS-first), boost light/dark contrast, rework floating bubbles for rim glow + light visibility, swap orbit ring to transform-based spin, and restructure CSS into layered architecture.
+
+### Changes
+
+- **`app.css`** — New Tailwind v4 source file. Imports `tailwindcss`, `brand.css`, and `@theme inline` mapping all `--brand-*` vars to utilities (`bg-surface-1`, `text-muted`, etc.). Contains `@layer base` (reset + typography) and `@layer components` (all `.brand-*` classes + layout rules from old `style.css`). Includes reworked `.brand-bubble` with rim/under-glow and light-mode `multiply` blend. Includes transform-based `.brand-card-bubble .ring` and `.brand-btn-active .ring` spinning conic-gradient (no `@property` needed).
+- **`brand.css`** — Rewritten to token-only runtime layer. Contains `@keyframes`, `:root` tokens (dark + light), theme-scoped overrides, `#theme-toggle`, and `prefers-reduced-motion` rules. Contrast values updated per spec: light surfaces stepped to `#FCFBF9` pop, dark surfaces stepped to `#181818`+ lift, text/border values strengthened in both modes.
+- **`style.css`** — Now the compiled Tailwind output (generated from `app.css`). Old hand-written rules moved into `app.css` layers.
+- **`package.json`** — Added `build:css` and `watch:css` scripts. Installed `tailwindcss` + `@tailwindcss/cli`.
+- **`index.html`** — Consolidated to single `<link rel="stylesheet" href="style.css">`. Added `<span class="ring"></span>` inside all 4 `.brand-card-bubble` project cards.
+- **`projects/*.html`, `gallery/gallery.html`** — Consolidated CSS links to single `../style.css`.
+- **Logo cleanup** — Source directory checked; source SVGs have same raster-embedding issue as repo versions. Cleanup deferred to user (requires Illustrator re-export).
+
+### Verification
+
+- `npm run build:css` exits 0, emits `style.css` (~15 KB minified).
+- All HTML files link only the compiled bundle.
+- Theme toggle JS still sets `data-theme` on `:root`; tokens respond correctly.
+- Reduced-motion rules target new `.ring::before` selectors.
+
+### Notes
+
+- Compiled `style.css` is committed as a generated artifact so the site works on clone without `npm install`.
+- No commits performed per shxdow-flow policy.
+
+---
+
 ## Entry 041 — 2026-06-10
 
 **Agent:** Kilo (shxdow-flow)

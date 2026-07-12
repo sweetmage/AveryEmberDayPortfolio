@@ -1,0 +1,295 @@
+/* ── Site CSS — post-Tailwind-conversion residue ─────────────────────
+   Page structure is authored in Tailwind utilities in the HTML.
+   This file keeps only:
+   - reset + base element typography (idiomatic Tailwind base additions)
+   - theme-swap rules for logo images (content: url() per data-theme)
+   - legacy element selectors still doing live styling (nav links, footer)
+   - JS-coupled widgets (#return-to-top)
+   ─────────────────────────────────────────────────────────────────── */
+
+/* ── CSS Reset ──────────────────────────────────────────────────── */
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center, dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend, table, caption,
+tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed,
+figure, figcaption, footer, header, hgroup,
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+    margin: 0; padding: 0; border: 0;
+    font-size: 100%; font: inherit; vertical-align: baseline;
+}
+article, aside, details, figcaption, figure,
+footer, header, hgroup, menu, nav, section { display: block; }
+body         { line-height: 1; }
+ol, ul       { list-style: none; }
+blockquote, q { quotes: none; }
+blockquote:before, blockquote:after,
+q:before, q:after { content: ""; content: none; }
+table { border-collapse: collapse; border-spacing: 0; }
+
+
+/* ── Base ────────────────────────────────────────────────────────── */
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+}
+
+body {
+    font-family: var(--brand-font-body);
+    font-size: 15px;
+    font-weight: var(--brand-weight-regular);
+    line-height: 1.6;
+    color: var(--brand-text);
+    background: var(--brand-bg);
+    letter-spacing: -0.012em;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+img, svg {
+    display: block;
+    max-width: 100%;
+    height: auto;
+}
+
+img, iframe, section, video, h1 {
+    max-width: 100%;
+    height: auto;
+}
+
+::selection {
+    background: var(--brand-gold-dim);
+    color: var(--brand-text);
+}
+
+/* ── Nav link boxes (styles .brand-nav-links via element selectors) ── */
+nav {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+nav ul {
+    list-style: none;
+    display: flex;
+    gap: 0;
+}
+
+nav ul li {
+    display: inline;
+    margin: 0 4px;
+    border: 1px solid var(--brand-border-mid);
+    border-radius: var(--brand-radius-sm);
+    transition: border-color var(--brand-transition-fast),
+                background var(--brand-transition-fast);
+}
+
+nav ul li:hover {
+    border-color: var(--brand-accent);
+    background: var(--brand-accent-dim);
+}
+
+nav ul li a {
+    display: inline-block;
+    color: var(--brand-text);
+    font-size: 11px;
+    font-weight: var(--brand-weight-semibold);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    padding: 4px 10px;
+    transition: color var(--brand-transition-fast);
+}
+
+nav ul li:hover a {
+    color: var(--brand-text);
+}
+
+/* ── Main / Section ──────────────────────────────────────────────── */
+main {
+    padding: 0 clamp(16px, 4vw, 40px);
+    max-width: var(--brand-content-max);
+    margin: 0 auto;
+    width: 100%;
+}
+
+section {
+    margin: 3em 0 4em;
+}
+
+/* ── Typography ──────────────────────────────────────────────────── */
+h1 {
+    font-family: var(--brand-font-display);
+    font-size: 1.6em;
+    font-weight: var(--brand-weight-regular);
+    color: var(--brand-text);
+}
+
+h2 {
+    font-family: var(--brand-font-heading);
+    font-size: 1.1em;
+    font-weight: var(--brand-weight-semibold);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--brand-text-muted);
+    text-align: left;
+    padding: 0 0 0.6em;
+    border-bottom: 1px solid var(--brand-border-mid);
+    margin-bottom: 1.5em;
+}
+
+h3 {
+    font-family: var(--brand-font-display);
+    font-size: 1em;
+    font-weight: var(--brand-weight-regular);
+    color: var(--brand-text);
+}
+
+p {
+    color: var(--brand-text-soft);
+    background: transparent;
+    padding: 0;
+    line-height: 1.65;
+}
+
+figcaption {
+    background: transparent;
+    color: var(--brand-text-muted);
+    padding: 0.4em 0 0;
+    font-size: 0.85em;
+}
+
+/* ── Footer ──────────────────────────────────────────────────────── */
+footer {
+    background: var(--brand-surface-1);
+    border-top: 1px solid var(--brand-border);
+    color: var(--brand-text-muted);
+    text-align: center;
+    padding: 2em 1em;
+    margin-top: 4em;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+footer p {
+    color: var(--brand-text-muted);
+    font-size: 0.85em;
+}
+
+#contact {
+    display: grid;
+    grid-template-columns: auto;
+    grid-template-rows: auto 1fr;
+    justify-content: center;
+    gap: 0.5em;
+}
+#contact p { text-align: center; }
+
+/* ── Hero / nav logo theme swaps (content: url per theme) ────────── */
+.hero-logo {
+    width: clamp(180px, 40vw, 300px);
+    height: auto;
+    position: relative;
+    z-index: 1;
+    display: block;
+    margin: 0 auto 0.4em;
+}
+
+[data-theme="light"] .hero-logo {
+    content: url('images/icons/BubbleLogo/bubbleLogo-black.svg');
+}
+
+@media (prefers-color-scheme: light) {
+    :root:not([data-theme="dark"]) .hero-logo {
+        content: url('images/icons/BubbleLogo/bubbleLogo-black.svg');
+    }
+}
+
+[data-theme="light"] .brand-nav-logo {
+    color: var(--brand-text);
+}
+
+@media (prefers-color-scheme: light) {
+    :root:not([data-theme="dark"]) .brand-nav-logo {
+        color: var(--brand-text);
+    }
+}
+
+[data-theme="light"] .brand-nav-logo img {
+    content: url('images/icons/BubbleLogo/bubbleLogo-black-notxt.svg');
+}
+
+@media (prefers-color-scheme: light) {
+    :root:not([data-theme="dark"]) .brand-nav-logo img {
+        content: url('images/icons/BubbleLogo/bubbleLogo-black-notxt.svg');
+    }
+}
+
+/* ── Return to top (JS-coupled fixed widget) ─────────────────────── */
+#return-to-top {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    cursor: pointer;
+    padding: 10px;
+    background: var(--brand-surface-2);
+    border: 1px solid var(--brand-border-mid);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: border-color var(--brand-transition-fast),
+                background var(--brand-transition-fast),
+                box-shadow var(--brand-transition-fast);
+}
+
+#return-to-top:hover {
+    border-color: var(--brand-accent);
+    background: var(--brand-accent-dim);
+    box-shadow: 0 0 12px var(--brand-accent-dim);
+}
+
+#return-to-top svg {
+    width: 1.4em;
+    height: 1.4em;
+    fill: var(--brand-text-muted);
+    transition: fill var(--brand-transition-fast);
+}
+
+#return-to-top:hover svg {
+    fill: var(--brand-accent);
+}
+
+/* ── Responsive base font scaling ────────────────────────────────── */
+@media (max-width: 600px) {
+    main, footer { font-size: smaller; }
+}
+
+@media screen and (min-width: 1024px) {
+    main, footer { font-size: larger; }
+}
+
+/* ── Accessibility ───────────────────────────────────────────────── */
+.brand-nav-links a:focus-visible,
+nav a:focus-visible {
+    outline: 2px solid var(--brand-accent);
+    outline-offset: 3px;
+    border-radius: 2px;
+}

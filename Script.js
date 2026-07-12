@@ -1,8 +1,8 @@
-var btn = document.getElementById('return-to-top');
+const btn = document.getElementById('return-to-top');
 
 window.addEventListener('scroll', function () {
   if (!btn) return;
-  var scrollY = window.scrollY || document.documentElement.scrollTop;
+  const scrollY = window.scrollY || document.documentElement.scrollTop;
   btn.style.display = scrollY > 800 ? 'block' : 'none';
 }, { passive: true });
 
@@ -17,18 +17,36 @@ if (btn) {
   var toggle = document.getElementById('theme-toggle');
   if (!toggle) return;
 
+  // Resolve image paths against this script's own location (site root),
+  // not the current page's location — subpages load Script.js via "../Script.js"
+  // but a page-relative "images/..." string would resolve under the subpage's folder.
+  var assetBase = document.currentScript
+    ? document.currentScript.src.replace(/Script\.js(\?.*)?$/, '')
+    : '';
+
   function getTheme() {
-    return localStorage.getItem('theme') || 'light';
+    var stored = localStorage.getItem('theme');
+    if (stored) return stored;
+    return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
   }
 
   function applyTheme(theme) {
     document.documentElement.setAttribute('data-theme', theme);
-    if (theme === 'dark') {
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-    }
     localStorage.setItem('theme', theme);
+
+    // Swap logo sources for light/dark mode
+    var heroLogo = document.querySelector('.hero-logo');
+    if (heroLogo) {
+      heroLogo.src = theme === 'light'
+        ? assetBase + 'images/icons/BubbleLogo/bubbleLogo-black.svg'
+        : assetBase + 'images/icons/BubbleLogo/bubbleLogo-white.svg';
+    }
+    var navLogo = document.querySelector('.brand-nav-logo img');
+    if (navLogo) {
+      navLogo.src = theme === 'light'
+        ? assetBase + 'images/icons/BubbleLogo/bubbleLogo-black-notxt.svg'
+        : assetBase + 'images/icons/BubbleLogo/bubbleLogo-white-notxt.svg';
+    }
   }
 
   applyTheme(getTheme());
@@ -41,7 +59,7 @@ if (btn) {
 
 // ── Nav scroll-spy ─────────────────────────────────────────────────
 (function () {
-  var nav = document.getElementById('brandNav');
+  const nav = document.getElementById('brandNav');
   if (!nav) return;
 
   function onScroll() {
@@ -52,55 +70,32 @@ if (btn) {
   onScroll();
 })();
 
-// ── Submenu toggle ────────────────────────────────────────────────
-(function () {
-  var triggers = document.querySelectorAll('.submenu-trigger');
-  if (!triggers.length) return;
-
-  function closeAllSubmenus() {
-    document.querySelectorAll('.has-submenu.open').forEach(function (el) {
-      el.classList.remove('open');
-    });
-  }
-
-  triggers.forEach(function (trigger) {
-    trigger.addEventListener('click', function (e) {
-      var li = trigger.closest('.has-submenu');
-      if (!li) return;
-      var isOpen = li.classList.contains('open');
-      if (!isOpen) {
-        e.preventDefault();
-        closeAllSubmenus();
-        li.classList.add('open');
-      } else {
-        li.classList.remove('open');
-        // allow default smooth-scroll behavior
-      }
-    });
-  });
-
-  document.addEventListener('click', function (e) {
-    if (!e.target.closest('.has-submenu')) {
-      closeAllSubmenus();
-    }
-  });
-
-  document.addEventListener('keydown', function (e) {
-    if (e.key === 'Escape') {
-      closeAllSubmenus();
-    }
-  });
-})();
-
 // ── Smooth scroll for anchor links ────────────────────────────────
 document.querySelectorAll('a[href^="#"]').forEach(function (anchor) {
   anchor.addEventListener('click', function (e) {
-    var li = anchor.closest('.has-submenu');
-    if (li && !li.classList.contains('open')) return;
-    var target = document.querySelector(this.getAttribute('href'));
+    const target = document.querySelector(this.getAttribute('href'));
     if (target) {
       e.preventDefault();
       target.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
   });
 });
+
+// ── Active page indicator ─────────────────────────────────────────
+(function () {
+  const path = window.location.pathname;
+  // Normalise: strip trailing slash, lower-case
+  const normPath = path.replace(/\/$/, '').toLowerCase() || '/';
+
+  document.querySelectorAll('.brand-nav-links a').forEach(function (a) {
+    const href = a.getAttribute('href') || '';
+    // Resolve relative href to an absolute path for comparison
+    const resolved = new URL(href, window.location.href).pathname
+      .replace(/\/$/, '').toLowerCase() || '/';
+
+    if (resolved === normPath) {
+      a.classList.add('is-active');
+      a.setAttribute('aria-current', 'page');
+    }
+  });
+})();

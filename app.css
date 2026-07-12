@@ -1,0 +1,19 @@
+/* ── Tailwind v4 entry ──────────────────────────────────────────────
+   Compiled to ./style.css by:
+     npx tailwindcss -i app.css -o style.css --watch
+   ─────────────────────────────────────────────────────────────── */
+
+/* brand.css defines the --brand-* tokens referenced by tailwind-preset.css.
+   It is compiled into the components layer so Tailwind utilities can
+   override brand component styles — pages link only the compiled style.css. */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Outfit:wght@300;400;500;600;700&family=Sriracha&display=swap');
+@import "tailwindcss";
+@import "./brand.css" layer(components);
+@import "./src/css/tailwind-preset.css";
+@import "./src/css/site.css" layer(components);
+
+@source ".";
+
+/* The inline head script always stamps data-theme on <html>, so key the
+   dark: variant to it instead of prefers-color-scheme. */
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));

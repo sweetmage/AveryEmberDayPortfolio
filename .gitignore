@@ -2,8 +2,25 @@
 /git/portfolio/
 /projects/RNG/
 
+# Dependencies
+/node_modules/
+
+# Temporary / debug files
+/tmp/
+*.log
+
+# One-off scripts
+/run_git_commands.py
+
 # Cross-target sync (personal task IDs, auth tokens)
 /docs/sync/mapping.json
 /docs/sync/*-manifest.json
 /docs/sync/google-docs.json
 .env
+
+# Node / Tailwind build pipeline (app.css → style.css)
+# NOTE: style.css is intentionally NOT ignored — it's the compiled Tailwind
+# output and Netlify (publish = ".", no build command) ships it directly.
+
+# Playwright test artifacts
+/test-results/
