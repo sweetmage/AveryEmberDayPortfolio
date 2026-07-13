@@ -40,6 +40,30 @@ for (const page of PAGES) {
           // Wait for bubble physics and fonts to settle
           await p.waitForTimeout(1500);
 
+          // loading="lazy" images below the viewport never fetch during a
+          // fullPage capture, so force them eager and wait for completion.
+          // Only in-layout images count (hidden lightbox imgs never load);
+          // the wait is bounded so a stalled request can't hang the test.
+          await p.evaluate(async () => {
+            const inLayout = [...document.images].filter(
+              (img) => img.src && img.getClientRects().length > 0
+            );
+            for (const img of inLayout) img.loading = 'eager';
+            await Promise.race([
+              Promise.all(
+                inLayout.map((img) =>
+                  img.complete ? null : new Promise((r) => (img.onload = img.onerror = r))
+                )
+              ),
+              new Promise((r) => setTimeout(r, 8000)),
+            ]);
+            // decoding="async" images outside the viewport stay undecoded
+            // during captureBeyondViewport and screenshot as blanks — force
+            // the decode explicitly.
+            await Promise.allSettled(inLayout.map((img) => (img.decode ? img.decode() : null)));
+          });
+          await p.waitForTimeout(300);
+
           const screenshotPath = path.join(
             BASELINE_DIR,
             `${page.name}_${width}_${theme}.png`

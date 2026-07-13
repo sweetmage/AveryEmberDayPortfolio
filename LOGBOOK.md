@@ -1,3 +1,70 @@
+## Entry 072 — 2026-07-12
+
+**Agent:** Claude Fable 5 (vesper, shxdowflow)
+**Cycle:** motion-load-perf
+**Task:** Execute `docs/plans/2026-07-12-motion-load-perf.md` — reduce time-to-motion / time-to-interactive on the Next.js static-export site.
+
+### Changes
+
+1. **Idle-deferred engine init** — `app/components/BubblePhysics.tsx` now appends the `bubbles.js` script inside `requestIdleCallback` (1500 ms timeout, `setTimeout(0)` fallback) with `async = true` + `data-priority="low"`, so engine startup no longer competes with LCP. Cleanup cancels the pending idle callback (also fixes a potential double-append under React strict mode).
+2. **Per-frame layout caches** — `scripts/bubbles.js`: `PhysicsEngine` caches the hero container rect and the derived `zonesLocal` array (keyed on a new `ExclusionZoneTracker.version` stamp), invalidated on scroll/resize/visibility-restore. `HeroBlobLayer` caches its container rect the same way. Eliminates 2 `getBoundingClientRect()` calls + a full array rebuild per frame in steady state.
+3. **Hero-blob visibility gate** — `heroBlobLayer.step()` is now skipped when `#hero` is scrolled out of view (reuses the existing IntersectionObserver via a new `_heroVisible` flag; the hero bubble layer keeps its old gating).
+4. **LCP image hints** — hero logo (`app/page.tsx`) gets `fetchPriority="high"`, `decoding="async"`, `width`/`height` (160×160 from the SVG viewBox). Below-fold images get `loading="lazy" decoding="async"`: 3 home project-card thumbs (incl. 426 KB `FacesFinal.webp`), mistrust moodboard/storyboard, brand logo swatches. (`next/image` skipped deliberately — the logo is an SVG theme-swapped via CSS `content: url()`, and the export runs `images.unoptimized` anyway.)
+5. **Reduced-motion smooth-scroll** — `html { scroll-behavior: smooth }` in `src/css/site.css` is now wrapped in `@media (prefers-reduced-motion: no-preference)`; `ReturnToTop.tsx` checks `matchMedia` and scrolls with `behavior: 'auto'` when reduce is set.
+6. **Dead motion CSS removed** — `brand.css`: deleted unreferenced keyframes `brand-blob-morph-1..5`, `brand-float-1..5`, plus base `brand-float` and `brand-blob-layer-rotate` (also dead; `brand-outline-pulse` is used at `.brand-btn-generating` and kept). Dropped the redundant `will-change: transform, opacity` on `.brand-bubble` (physics bubbles always carry `.brand-bubble-physics`, which declares `will-change: transform`). The animation-strip guard in `HeroBlobLayer`'s constructor is now a documented no-op.
+7. **Copy sync** — `public/scripts/bubbles.js` (the file the Next export actually serves) re-synced from `scripts/bubbles.js`; `style.css` rebuilt via `npm run build:css`.
+8. **Test harness fix for lazy images** — the first re-baseline run captured the Art Gallery card blank: `loading="lazy"` images below the viewport never fetch during Playwright's fullPage capture, and even after forcing the load, `decoding="async"` images outside the viewport screenshot as blanks because captureBeyondViewport never decodes them. `tests/visual-baseline.spec.js` now forces in-layout images eager, awaits load (bounded 8 s — the mistrust lightbox imgs are hidden and never load), then awaits `img.decode()` before the capture. Baselines regenerated once with images intact; verified against the pre-change baseline composition.
+
+### Verification
+
+- `npm run build:css` — clean.
+- `npm run build:next` — static export succeeds, 7/7 pages (pre-existing `headers`-with-export warning unchanged; Netlify serves headers).
+- `npm test` — 33/33 pass (visual baselines × 4 pages × 4 breakpoints × 2 themes + smoke, zero console errors). Index and mistrust baselines visually inspected against the committed versions: composition unchanged, all thumbnails/slides render.
+- Runtime probe against the served `out/` build: engine initializes after idle defer (`window.__bubbleEngine` present), 7 global bubbles + 3 hero bubbles + 5 blobs created, `script.async` true, hero-rect cache populated and zone version stamping live, zero console/page errors.
+- Lighthouse before/after not run this pass — no baseline capture existed pre-change; noted as follow-up only if the user wants numbers.
+
+---
+
+
+**Agent:** Kilo (Claude Opus 4.7, shxdowflow)
+**Cycle:** docs-consolidation + motion-perf-plan
+**Task:** User: "consolidate docs and plans, create a new plan to decrease loading time for motion interactivity."
+
+### Consolidation
+
+- Deleted 25 completed / superseded / dry-run plan files from `docs/plans/` and one orphaned `docs/color-contrast-preview.html`. Full text preserved in git history.
+- Appended a **Consolidation Stubs — 2026-07-12** table to `docs/archives/plans.md` with a one-line outcome for each removed file and a `git show <sha>:<path>` recovery hint. Added a TOC pointer near the top.
+- Rewrote `TODO.md` end-to-end: 448 lines → ~55. Kept an Active Plans block (only the new perf plan), an Open Task Threads block for genuine backlog (Patriots motion, gallery tags, HoM polish, watermark, three deferred remediation follow-ups), a short Recently Completed pointer to LOGBOOK, and the TickTick mirror note. Nine inline retrospective sections and a duplicative Completed Plans Archive TOC were folded out — LOGBOOK + `docs/archives/plans.md` are now the single source of truth for retrospectives.
+
+`docs/plans/` now contains exactly one file: the new perf plan.
+
+### Motion + interactivity load-perf plan
+
+Written to `docs/plans/2026-07-12-motion-load-perf.md`. Scope: the Next.js static-export build (the shipping surface). Seven steps, ranked by contained-blast-radius first:
+
+1. `requestIdleCallback` gate on the bubble-engine `<script>` append in `BubblePhysics.tsx` so LCP wins the network race.
+2. Cache `heroRect` and mapped `zonesLocal` in the rAF loop of `scripts/bubbles.js`; invalidate on scroll + resize + visibilitychange. Same treatment for `HeroBlobLayer`'s container rect.
+3. Reuse the existing `#hero` IntersectionObserver to also gate `heroBlobLayer.step()`.
+4. `fetchpriority="high"` on hero logo (or `next/image` `priority`); `loading="lazy"` on below-fold thumbs (especially `FacesFinal.webp` at 426 KB).
+5. Honour `prefers-reduced-motion` for smooth-scroll (missed by prior passes) — CSS guard in `src/css/site.css` line ~44 + JS matchMedia checks in scroll callers.
+6. Delete dead keyframes `brand-blob-morph-1..5` and `brand-float-1..5` from `brand.css`; remove redundant `will-change` on `.brand-bubble`.
+7. Verify with `npm test` (Playwright visual + smoke). Re-baseline once if step 4's lazy loading trips the capture.
+
+Nano-agent review flagged five technical inaccuracies in draft (wrong CSS path, `_syncBoundsAndScale` vs constructor for the strip logic, missing `next/image` import mention, inconsistency between prose and code example, wrong CSS entry point for the reduced-motion guard). All five fixed in the plan before handoff.
+
+### Files touched
+
+- `TODO.md` — rewritten.
+- `docs/archives/plans.md` — TOC pointer + new stubs section at the bottom.
+- `docs/plans/2026-07-12-motion-load-perf.md` — new.
+- `docs/plans/*.md` (25 files), `docs/color-contrast-preview.html` — deleted.
+
+No code changes; no commits. Handoff for user review.
+
+— Kilo (Opus 4.7)
+
+---
+
 ## Entry 070 — 2026-07-12
 
 **Agent:** Claude Sonnet 5 (Claude Code, shxdowflow)

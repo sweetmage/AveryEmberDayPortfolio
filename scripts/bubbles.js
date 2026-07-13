@@ -124,6 +124,7 @@
     constructor(selectors) {
       this.selectors = selectors;
       this.rects = [];
+      this.version = 0; // bumped on every rebuild so consumers can cache derived data
       this.lastUpdate = 0;
       this._scheduledRAF = null;
       this._update = this._update.bind(this);
@@ -145,6 +146,7 @@
     _update() {
       this.lastUpdate = performance.now();
       this._schedule(); // keep the periodic refresh alive (layout shifts, lazy images, font reflow)
+      this.version++;
       this.rects = [];
       for (const sel of this.selectors) {
         const els = document.querySelectorAll(sel);
@@ -568,8 +570,11 @@
       this.active = true;
       this.blobs = [];
       this._resizeTimer = null;
+      this._cRect = null; // viewport-relative container rect, cached per scroll position
       this._onResize = this._onResize.bind(this);
+      this._invalidateRect = this._invalidateRect.bind(this);
       window.addEventListener('resize', this._onResize);
+      window.addEventListener('scroll', this._invalidateRect, { passive: true });
 
       const els = this.container.querySelectorAll('.brand-hero-blob');
       const cRect = this.container.getBoundingClientRect();
@@ -590,7 +595,10 @@
         if (left !== 'auto') x = parseFloat(left);
         else if (right !== 'auto') x = cRect.width - parseFloat(right) - rect.width;
 
-        // Strip CSS float animations; keep border-radius morph
+        // Strip CSS float animations; keep border-radius morph.
+        // The brand-float-* / brand-blob-morph-* keyframes were removed from
+        // brand.css (2026-07-12, dead code) so this is normally a no-op —
+        // kept as a guard in case blob animations return.
         const animName = style.animationName;
         if (animName && animName !== 'none') {
           const names = animName.split(',').map(s => s.trim());
@@ -635,8 +643,13 @@
       return { width: r.width, height: r.height };
     }
 
+    _invalidateRect() {
+      this._cRect = null;
+    }
+
     _syncBoundsAndScale() {
       const scale = getViewportScale();
+      this._cRect = null;
       this.cachedBounds = this._queryBounds();
       for (const b of this.blobs) {
         b.w = b.baseW * scale;
@@ -659,7 +672,7 @@
     step(mouse) {
       if (!this.active) return;
       const bounds = this.cachedBounds || this._queryBounds();
-      const cRect = this.container.getBoundingClientRect();
+      const cRect = this._cRect || (this._cRect = this.container.getBoundingClientRect());
 
       const mouseLocal = {
         x: mouse.x - cRect.left,
@@ -794,6 +807,7 @@
 
     destroy() {
       window.removeEventListener('resize', this._onResize);
+      window.removeEventListener('scroll', this._invalidateRect);
       if (this._resizeTimer) clearTimeout(this._resizeTimer);
       for (const b of this.blobs) {
         b.el.classList.remove('brand-hero-blob-physics');
@@ -827,15 +841,26 @@
       this.heroLayer    = new BubbleLayer('.brand-bubbles-hero',   3, [40, 75], false);
       this.heroBlobLayer = new HeroBlobLayer();
 
+      // Per-frame layout caches — hero rect and derived local zones only
+      // change on scroll/resize, not every frame
+      this._heroRect = null;
+      this._zonesLocal = null;
+      this._zonesVersion = -1;
+      this._invalidateBounds = this._invalidateBounds.bind(this);
+      window.addEventListener('resize', this._invalidateBounds);
+      window.addEventListener('scroll', this._invalidateBounds, { passive: true });
+
       // Visibility / intersection guards
       this._onVis = this._onVis.bind(this);
       document.addEventListener('visibilitychange', this._onVis);
 
       this.heroObs = null;
+      this._heroVisible = true;
       const heroEl = document.querySelector('#hero');
       if (heroEl && 'IntersectionObserver' in window) {
         this.heroObs = new IntersectionObserver((entries) => {
-          this.heroLayer.active = entries[0].isIntersecting;
+          this._heroVisible = entries[0].isIntersecting;
+          this.heroLayer.active = this.heroLayer.container ? this._heroVisible : false;
         }, { threshold: 0 });
         this.heroObs.observe(heroEl);
       }
@@ -851,7 +876,15 @@
         if (this.rAF) cancelAnimationFrame(this.rAF);
       } else {
         this.running = true;
+        this._invalidateBounds(); // layout may have shifted while hidden
         this._loop();
+      }
+    }
+
+    _invalidateBounds() {
+      this._heroRect = null;
+      if (this.heroBlobLayer && this.heroBlobLayer.active) {
+        this.heroBlobLayer._invalidateRect();
       }
     }
 
@@ -861,27 +894,37 @@
       this.globalLayer.step(this.mouse, this.zones.rects);
       // Hero layer uses container-local coordinates — convert mouse and zones
       if (this.heroLayer.active) {
-        const heroRect = this.heroLayer.container.getBoundingClientRect();
+        let heroRect = this._heroRect;
+        if (!heroRect) {
+          heroRect = this._heroRect = this.heroLayer.container.getBoundingClientRect();
+          this._zonesLocal = null; // rect moved, cached local zones are stale
+        }
+        if (!this._zonesLocal || this._zonesVersion !== this.zones.version) {
+          this._zonesVersion = this.zones.version;
+          this._zonesLocal = this.zones.rects.map(z => ({
+            left:   z.left   - heroRect.left,
+            top:    z.top    - heroRect.top,
+            right:  z.right  - heroRect.left,
+            bottom: z.bottom - heroRect.top
+          }));
+        }
         const mouseLocal = {
           x: this.mouse.x - heroRect.left,
           y: this.mouse.y - heroRect.top
         };
-        const zonesLocal = this.zones.rects.map(z => ({
-          left:   z.left   - heroRect.left,
-          top:    z.top    - heroRect.top,
-          right:  z.right  - heroRect.left,
-          bottom: z.bottom - heroRect.top
-        }));
-        this.heroLayer.step(mouseLocal, zonesLocal);
+        this.heroLayer.step(mouseLocal, this._zonesLocal);
       }
-      // Hero blobs use container-local coordinates
-      this.heroBlobLayer.step(this.mouse);
+      // Hero blobs use container-local coordinates; skip when the hero
+      // is scrolled out of view (blobs only live inside #hero)
+      if (this._heroVisible) this.heroBlobLayer.step(this.mouse);
       this.rAF = requestAnimationFrame(this._loop);
     }
 
     destroy() {
       this.running = false;
       if (this.rAF) cancelAnimationFrame(this.rAF);
+      window.removeEventListener('resize', this._invalidateBounds);
+      window.removeEventListener('scroll', this._invalidateBounds);
       document.removeEventListener('visibilitychange', this._onVis);
       this.mouse.destroy();
       this.zones.destroy();

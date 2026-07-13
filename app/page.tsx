@@ -39,6 +39,10 @@ export default function HomePage() {
             src="/images/icons/BubbleLogo/bubbleLogo-white.svg"
             alt="Avery Ember Day"
             className="hero-logo"
+            width={160}
+            height={160}
+            fetchPriority="high"
+            decoding="async"
           />
           <h1 className="hero-name brand-text-hero relative z-1 mt-[0.2em] mb-[0.1em] font-display text-[clamp(1.6em,5vw,2.8em)] font-normal text-black dark:text-white">
             Avery Ember Day
@@ -68,6 +72,8 @@ export default function HomePage() {
                   src="/images/projects/brand-thumb.jpg"
                   alt="Avery Ember Day Brand"
                   className="project-card-cover h-full w-full object-cover object-center"
+                  loading="lazy"
+                  decoding="async"
                 />
               </div>
               <div className="project-card-info bg-transparent px-[1.2em] pt-4 pb-[1.2em]">
@@ -91,6 +97,8 @@ export default function HomePage() {
                   alt="A History of Mistrust"
                   className="project-card-cover h-full w-full object-cover object-center"
                   style={{ objectPosition: 'center 65%' }}
+                  loading="lazy"
+                  decoding="async"
                 />
               </div>
               <div className="project-card-info bg-transparent px-[1.2em] pt-4 pb-[1.2em]">
@@ -137,6 +145,8 @@ export default function HomePage() {
                   src="/images/myart/Gallery/FacesFinal.webp"
                   alt="Faces"
                   className="project-card-cover h-full w-full object-cover object-center"
+                  loading="lazy"
+                  decoding="async"
                 />
               </div>
               <div className="project-card-info bg-transparent px-[1.2em] pt-4 pb-[1.2em]">

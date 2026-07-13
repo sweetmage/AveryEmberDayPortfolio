@@ -116,7 +116,7 @@ export default function BrandPage() {
                 className="logo-swatch-canvas flex flex-1 items-center justify-center p-10"
                 style={{ backgroundColor: swatch.bg }}
               >
-                <img src={swatch.src} alt={swatch.alt} />
+                <img src={swatch.src} alt={swatch.alt} loading="lazy" decoding="async" />
               </div>
               <div className="logo-swatch-label border-t border-line bg-surface-1 px-4 py-3 [&_span]:font-body [&_span]:text-xs [&_span]:text-text-muted [&_strong]:block [&_strong]:font-body [&_strong]:text-sm [&_strong]:font-medium [&_strong]:text-text">
                 <strong>{swatch.label}</strong>

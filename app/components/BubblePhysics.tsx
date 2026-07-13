@@ -12,16 +12,25 @@ export default function BubblePhysics({ exclusions }: BubblePhysicsProps) {
 
   useEffect(() => {
     // Dynamically load bubbles.js after hydration so React doesn't
-    // wipe the DOM elements the engine creates.
-    const script = document.createElement('script');
-    script.src = '/scripts/bubbles.js';
-    document.body.appendChild(script);
-    scriptRef.current = script;
+    // wipe the DOM elements the engine creates. Deferred to idle time
+    // so engine init doesn't compete with LCP paint on cold loads.
+    const start = () => {
+      const script = document.createElement('script');
+      script.src = '/scripts/bubbles.js';
+      script.async = true;
+      script.dataset.priority = 'low';
+      document.body.appendChild(script);
+      scriptRef.current = script;
+    };
+    const ric = (window as any).requestIdleCallback;
+    const handle: number = ric ? ric(start, { timeout: 1500 }) : window.setTimeout(start, 0);
 
     return () => {
+      if (ric) (window as any).cancelIdleCallback?.(handle);
+      else window.clearTimeout(handle);
       // Teardown: destroy the engine and remove the script tag.
       // Only destroy if the script has actually loaded and initialized.
-      if (typeof window !== 'undefined' && (window as any).__bubbleEngine) {
+      if ((window as any).__bubbleEngine) {
         (window as any).__bubbleEngine.destroy();
         delete (window as any).__bubbleEngine;
       }

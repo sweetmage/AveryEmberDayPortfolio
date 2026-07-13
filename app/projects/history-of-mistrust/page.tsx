@@ -118,6 +118,8 @@ export default function HistoryOfMistrustPage() {
             <img
               src="/images/myart/A History of Mistrust/supporting material/HistoryofMistrustMoodboard-cropped.png"
               alt="A History of Mistrust moodboard"
+              loading="lazy"
+              decoding="async"
             />
             <div className="supporting-card-label border-t border-line px-4 py-3 [&_span]:font-body [&_span]:text-xs [&_span]:text-text-muted [&_strong]:block [&_strong]:font-body [&_strong]:text-sm [&_strong]:font-medium [&_strong]:text-text">
               <strong>Moodboard</strong>
@@ -128,6 +130,8 @@ export default function HistoryOfMistrustPage() {
             <img
               src="/images/myart/A History of Mistrust/supporting material/aHistoryOfMistrustStoryboard.jpg"
               alt="A History of Mistrust storyboard"
+              loading="lazy"
+              decoding="async"
             />
             <div className="supporting-card-label border-t border-line px-4 py-3 [&_span]:font-body [&_span]:text-xs [&_span]:text-text-muted [&_strong]:block [&_strong]:font-body [&_strong]:text-sm [&_strong]:font-medium [&_strong]:text-text">
               <strong>Storyboard</strong>
