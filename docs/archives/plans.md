@@ -4,6 +4,10 @@ All completed, cancelled, and superseded implementation plans consolidated from 
 
 ## Table of Contents
 
+### Retired stubs (2026-07-12 consolidation)
+Full text of these plans lives in git history — see [Consolidation Stubs](#consolidation-stubs-2026-07-12) at the bottom of this file for one-line status + recovery commands.
+
+### Full-text archives
 - [2026-05-20 — hero-bubbles-nanoagent-plan](#2026-05-20-hero-bubbles-nanoagent-plan)
 - [2026-05-22 — branded-resume-nanoagent-plan](#2026-05-22-branded-resume-nanoagent-plan)
 - [2026-05-28 — history-of-mistrust-canonical-content](#2026-05-28-history-of-mistrust-canonical-content)
@@ -1798,4 +1802,43 @@ The pipeline stays local-first: the source of truth remains repo files; Google D
 
 
 ---
+
+<a id="consolidation-stubs-2026-07-12"></a>
+# Consolidation Stubs — 2026-07-12
+
+Plans below were removed from `docs/plans/` during the 2026-07-12 consolidation. Shipped work is captured in `LOGBOOK.md` and the current codebase; full plan text is preserved in git history. Recover any file with:
+
+```powershell
+git log --all --diff-filter=A -- <path>            # find the creating commit
+git show <sha>:<path> > <path>                      # restore locally
+```
+
+| Removed file | Outcome |
+|---|---|
+| `docs/plans/2026-05-28-history-of-mistrust-canonical-content.md` | Shipped. Canonical slide content in `app/projects/history-of-mistrust/` and slide webps. |
+| `docs/plans/2026-05-28-history-of-mistrust-carousel-slideshow-lightbox.md` | Shipped. Slideshow + lightbox in `app/projects/history-of-mistrust/SlideshowScript.tsx`. |
+| `docs/plans/2026-05-28-history-of-mistrust-sync-nanoagent-plan.md` | Shipped. All targets synced 2026-05-28. |
+| `docs/plans/2026-06-04-apply-color-changes-html.md` | Shipped. Palette applied across pages; tokens in `brand.css`. |
+| `docs/plans/2026-06-04-color-contrast-alternates.md` | Shipped. See `docs/accessibility.md` for the final contrast contract. |
+| `docs/plans/2026-06-04-hero-bubble-physics.md` | Superseded by 2026-06-30 bubble physics rework. |
+| `docs/plans/2026-06-04-prelaunch-qa.md` | Shipped. QA gates checked in TODO history. |
+| `docs/plans/2026-06-06-deploy-averyemberday-com.md` | Shipped. averyemberday.com deploys from `portfoliowebsite` via Netlify (LOGBOOK Entry 069). |
+| `docs/plans/2026-06-06-resume-accessibility.md` | Shipped. Accessibility patterns applied to branded resume. |
+| `docs/plans/2026-06-07-gallery-tag-filter-shxdowloop-dry-run.md` | Dry-run only. Actual gallery tag system tracked in TickTick mirror (still open). |
+| `docs/plans/2026-06-07-move-contact-to-footer.md` | Moot. Nav trim on 2026-07-09 removed the Contact link entirely. |
+| `docs/plans/2026-06-07-work-submenu.md` | Superseded / reversed by 2026-07-09 Tailwind conversion (submenu removed). |
+| `docs/plans/2026-06-10-remove-self-portrait-series.md` | Shipped. Portrait/Hope/Mermaid items removed. |
+| `docs/plans/2026-06-30-bubble-follow-up.md` | Shipped. Follow-up fixes applied to bubble physics. |
+| `docs/plans/2026-06-30-bubble-physics-rework.md` | Shipped. DOM-based physics engine is the current `scripts/bubbles.js`. |
+| `docs/plans/2026-07-01-fix-eperm-commands.md` | Resolved externally 2026-07-02 by Defender platform/signature update. See AGENTS.md. |
+| `docs/plans/2026-07-01-website-architecture-remediation.md` | Shipped. Stages 0–5 committed on `shxdowloop/2026-07-01/website-architecture-remediation-2`. |
+| `docs/plans/2026-07-01-website-architecture-remediation-shxdowloop.md` | Duplicate of the master plan (shxdowloop wrapper). |
+| `docs/plans/2026-07-01-website-architecture-remediation-shxdowloop-dry-run.md` | Dry-run write-up of the same shipped work. |
+| `docs/plans/2026-07-02-local-test-page-visibility.md` | Resolved. Root cause was `Script.js` logo-404 bug; fixed. |
+| `docs/plans/2026-07-02-project-card-bubble-exclusion.md` | Shipped 2026-07-10. `.bubble-exclude` marker class in `DEFAULT_EXCLUSIONS`. |
+| `docs/plans/2026-07-05-tailwind-restoration.md` | Shipped. Tailwind v4 pipeline restored. |
+| `docs/plans/2026-07-09-tailwind-utility-conversion.md` | Shipped. All 5 pages authored in Tailwind utilities; nav trimmed to Work + About. |
+| `docs/plans/2026-07-12-nextjs-migration.md` | Shipped. Framework decision + Next.js 15 static export live (LOGBOOK Entries 068–070). |
+| `docs/plans/2026-07-12-nextjs-migration-execution.md` | Shipped. Execution complete, deploy verified. |
+| `docs/color-contrast-preview.html` | One-shot palette-comparison artifact from 2026-06-04 contrast work. |
 
