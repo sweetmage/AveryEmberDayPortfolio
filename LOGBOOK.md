@@ -1,3 +1,138 @@
+## Entry 069 — 2026-07-12
+
+**Agent:** Claude Sonnet 5 (Claude Code, shxdowflow)
+**Cycle:** netlify-deploy-branch-repoint
+**Task:** Resolve the deploy-branch mismatch (TODO item from Entry 065): user chose `portfoliowebsite` as the real production branch and provided Netlify API access.
+
+### Changes
+
+- **Netlify site config** (`averyemberdayportfolio`, site id `dd16abce-b0e7-433f-b694-19b427949485`) — production branch and `allowed_branches` repointed from `master` to `portfoliowebsite` via the Netlify API (PATCH `/api/v1/sites/:id` with the full `repo` object; a partial `{"repo": {"repo_branch": ...}}` payload 422s with `path is invalid` — the API requires `provider`, `installation_id`, `path`/`repo_path`, and `allowed_branches` alongside the branch).
+- **`.env`** (gitignored) — user added `NETLIFY_AUTH_TOKEN` (personal access token) so the agent can manage/verify deploys going forward.
+- **`AGENTS.md`** Branch Policy + **`docs/NOTES.md`** — updated: `portfoliowebsite` is now the deploy branch; pushing it publishes to production and needs explicit per-instance user go-ahead (informational note, not standing authorization). `master` retained as historical.
+- **`TODO.md`** — deploy-branch reconciliation item closed.
+
+### Verification
+
+- Triggered a production build from the new branch via API: deploy `6a543ef45efe488affdb4b25` reached state `ready`, `branch: portfoliowebsite`, `sha: 12a2bc3`, `context: production`. Live site returns HTTP 200.
+- Safe rollout: remote `portfoliowebsite` (12a2bc3) is `master` (dfb9d1d) plus one docs-only commit, so the verification deploy changed nothing user-visible. The uncommitted Next.js migration (Entries 067–068) goes live only when committed and pushed.
+
+---
+
+## Entry 068 — 2026-07-12
+
+**Agent:** Claude Sonnet 5 (Claude Code, shxdowflow)
+**Cycle:** nextjs-migration-verification
+**Task:** Pick up the uncommitted Next.js migration left by Entry 067 (Kilo) and verify it's actually correct and reproducible before handoff — the LOGBOOK claimed "all tests pass" but that wasn't reproducible from a clean `npm test`.
+
+### Bugs found and fixed
+
+- **`playwright.config.js`** — the single `webServer` still only started `npx serve . -l 3000` (the legacy static site). `tests/visual-baseline.spec.js` was updated during the migration to hit `http://localhost:3001` (the Next.js `out/` export), but nothing served that port — a clean `npm test` failed 32 of 33 tests with `ERR_CONNECTION_REFUSED`. Fixed by converting `webServer` to an array: the existing port-3000 legacy server, plus a new port-3001 entry (`npm run build:next && npx serve out -l 3001`) so the export is always fresh when tests run. Verified: `npx playwright test` → 33/33 pass from a clean run.
+- **`public/scripts/theme-init.js`** — theme-flash regression. The legacy `Script.js` calls `applyTheme(getTheme())` immediately on load, which swaps the nav logo and hero logo to the theme-correct variant (black logo on light backgrounds, white on dark). The Next.js port's `theme-init.js` only set `data-theme` on `<html>` and never synced the logo `<img>` src — `Nav.tsx`'s logo swap only ran on click. Result: on a fresh light-theme load, both the nav logo and hero logo rendered in their white/dark-mode variant against a light background until the user manually toggled the theme. Fixed by porting the logo-swap logic into `theme-init.js` (runs `beforeInteractive`, before the static HTML becomes interactive). Verified headlessly with Playwright: light theme now resolves `bubbleLogo-black(-notxt).svg`, dark theme resolves `bubbleLogo-white(-notxt).svg`.
+- **`app/projects/history-of-mistrust/page.tsx`** — minor copy fix, "Slides 1 10" / "11 20" / "21 30" were missing the range dash (pre-existing typo, present identically in the legacy `projects/history-of-mistrust.html`, not introduced by the migration). Fixed to "1–10" / "11–20" / "21–30" in the Next.js version since that's the file going live.
+
+### Verification performed
+
+- `npm run build:next` — 5 routes, zero errors (both before and after fixes).
+- `npx playwright test` — 33/33 pass on a clean run (previously 1/33 due to the webServer gap above).
+- Headless Playwright spot-check of `theme-init.js` fix: confirmed correct logo src per theme.
+- Content-parity spot checks against legacy source: gallery — 11/11 items match including "In Danger"; History of Mistrust bibliography — 82/82 `<li>` entries match exactly.
+- CSP review: `next.config.ts` `headers()` is a no-op under `output: 'export'` (expected, logged as a build warning) — actual headers are correctly carried by `public/_headers`, which is confirmed present in `out/_headers` after build and matches `netlify.toml`. No external image/script sources that would violate `img-src 'self'` / `script-src 'self'`.
+- Manually read every file under `app/` and `public/scripts/` against its legacy counterpart; verified `bubbles.js` and `history-of-mistrust-slideshow.js` init logic is safe to re-inject via React `useEffect` (both guard on `document.readyState`, no `DOMContentLoaded`-only path that would silently no-op on client-side route navigation).
+- Nano-agent (pro, read-only) was dispatched for a second-pass file review but stalled with no output past the 6-minute floor; stopped and not retried since the manual review above already covered its intended scope.
+
+### Notes
+
+- This session did not touch content/structure beyond the three fixes above — Entry 067's migration work (scaffold, components, all 5 pages, CSP, netlify.toml, baselines) stands as implemented.
+- Still uncommitted per shxdow-flow policy (no commit without explicit user instruction). All of Entry 067 + Entry 068's changes are sitting in the working tree together.
+
+### Next step
+
+Ready for user review and commit. Once committed and pushed to the branch Netlify builds from, `next build` will run automatically and publish `out/`.
+
+---
+
+## Entry 067 — 2026-07-12
+
+**Agent:** Kilo (shxdowflow)
+**Cycle:** nextjs-migration-pilot
+**Task:** Execute the Next.js migration plan: scaffold Next.js 15 + TypeScript + Tailwind v4, port `bubbles.js` verbatim, convert `patriots-low-thirds.html` as pilot page.
+
+### Changes
+
+- **Scaffold** — Next.js 15 App Router with `output: 'export'`, TypeScript, Tailwind v4 via `@tailwindcss/postcss`.
+  - New: `next.config.ts`, `tsconfig.json`, `postcss.config.mjs`, `app/globals.css`, `app/layout.tsx`, `app/page.tsx` (placeholder)
+  - Dependencies added: `next`, `react`, `react-dom`, `typescript`, `@types/*`, `@tailwindcss/postcss`, `postcss`
+  - Legacy Tailwind CLI restored: `@tailwindcss/cli` kept for existing `npm run build:css` pipeline
+- **Theme system** — Extracted inline theme script to `public/scripts/theme-init.js`, loaded via `<Script strategy="beforeInteractive">` in layout. Zero inline scripts in generated HTML.
+- **Shared components** — `Nav.tsx` (client, with theme toggle + active page detection), `Footer.tsx`, `SkipLink.tsx`, `ReturnToTop.tsx`, `BubblePhysics.tsx` (client, dynamically loads `bubbles.js` in `useEffect`, destroys engine on unmount).
+- **Pilot page** — `app/projects/patriots-low-thirds/page.tsx` replicates the full content of `projects/patriots-low-thirds.html` in JSX + Tailwind utilities, with per-page metadata and bubble exclusions.
+- **CSP** — Updated `next.config.ts` headers and `public/_headers` for Netlify static deploy: `script-src 'self' 'unsafe-inline'` (required for Next.js hydration scripts in static export), all other directives carried over.
+- **Asset paths** — Fixed `src/css/site.css` logo `content: url()` paths to absolute (`/images/...`) so they resolve correctly when imported from `app/globals.css`. Rebuilt `style.css`.
+- **Public assets** — Copied logo SVGs to `public/images/icons/BubbleLogo/` for Next.js static serving.
+
+### Verification
+
+- `npx next build` — completes with zero errors, outputs to `out/`
+- Generated `out/projects/patriots-low-thirds/index.html` contains correct markup, metadata, external scripts only
+- Playwright verification script: zero 404s, 7 bubbles active, theme toggle works (light ↔ dark)
+- Screenshots at 1440px confirm visual parity with legacy page: nav, footer, content sections, bubble physics, WIP notices all render correctly in both themes
+- Legacy `npm run build:css` still works, `style.css` rebuilt with updated paths
+
+### Risks / open items
+
+- **CSP `'unsafe-inline'`** — Next.js static export injects inline hydration scripts (`self.__next_f`). For a portfolio with no user data this is acceptable, but a stricter CSP (hashes or `'strict-dynamic'`) would require a server runtime or Next.js experimental features. Revisit before production cutover.
+- **Image duplication** — Legacy `images/` at root and Next.js `public/images/` will need consolidation when migrating remaining pages. Strategy: either move all images to `public/images/` and update legacy HTML refs, or copy at build time.
+- **Home page** — `app/page.tsx` is a placeholder. `index.html` remains the live home page on the legacy deploy.
+
+### Amendments (post code-review)
+
+- `app/layout.tsx` — removed manual `<head>` wrapper around `Script` (Next.js manages `<head>` automatically); added `metadataBase` for relative OG URL resolution.
+- `app/globals.css` — removed `@source ".."` (scanned irrelevant parent directories).
+- `app/page.tsx` — replaced `<a>` with `<Link>` for client-side navigation.
+- `app/projects/patriots-low-thirds/page.tsx` — replaced `<a>` with `<Link>`; changed absolute OG/canonical URLs to relative paths (resolved via `metadataBase`).
+- `app/components/SkipLink.tsx` — fixed `z-100` → `z-[100]` (arbitrary value syntax).
+- `app/components/BubblePhysics.tsx` — removed unreliable `defer` on dynamically created script; added comment clarifying destroy only runs if engine initialized.
+- `next-env.d.ts` — removed manual `/// <reference path="./.next/types/routes.d.ts" />` (Next.js adds this automatically during build).
+- `app/components/Nav.tsx` — removed unnecessary `useCallback` around `toggleTheme`.
+
+### Migration continuation (same session)
+
+- **Home page** — `app/page.tsx` converted from `index.html`: hero with brand blobs, work grid with 4 project cards, about section. 10 bubbles (7 global + 3 hero layer), 50 exclusion zones.
+- **Gallery** — `app/gallery/page.tsx` converted from `gallery/gallery.html`: 11 gallery items with lazy-loaded images, responsive 2-column grid.
+- **Brand page** — `app/projects/brand-avery-ember-day/page.tsx` converted: logo variants grid, color palette, type system specimen.
+- **History of Mistrust** — `app/projects/history-of-mistrust/page.tsx` converted: description, 3 per-set slideshows with extracted `slideshow.css` + `SlideshowScript.tsx` loading `public/scripts/history-of-mistrust-slideshow.js`, moodboard/storyboard, all slides carousel, full bibliography (77 sources). 95 exclusion zones due to extensive text content.
+- **Images** — Full `images/` directory (129 files) copied to `public/images/` for static serving.
+
+### Verification (all pages)
+
+- `npx next build` — 6 routes, zero errors
+- All 5 pages: bubbles active, zero console errors, zero 404s
+- Home: 10 bubbles, 50 zones
+- Gallery: 7 bubbles, 31 zones
+- Brand: 7 bubbles, 25 zones
+- Patriots: 7 bubbles, 23 zones
+- Mistrust: 7 bubbles, 95 zones
+
+### Amendments (user-directed)
+
+- **Patriots page removed** — `app/projects/patriots-low-thirds/` deleted; project is still WIP and should not be on the live site. Legacy `projects/patriots-low-thirds.html` remains at repo root but is not linked from the Next.js home page.
+- **Portrait JPG deleted** — `images/AveryDayPortraitSmaller.jpg` and `public/images/AveryDayPortraitSmaller.jpg` removed from repo.
+
+### Deployment update
+
+- **netlify.toml** — Updated to `command = "next build"`, `publish = "out"`, `NODE_VERSION = "20"`. CSP updated to `script-src 'self' 'unsafe-inline'` (removes legacy sha256 hashes that are incompatible with Next.js hashed bundles).
+
+### Playwright re-baseline
+
+- **32 visual baselines regenerated** — 4 pages × 4 breakpoints × 2 themes (index, brand, mistrust, gallery). All tests pass.
+- **Smoke interaction test** — passes (theme toggle, nav links, scroll-to-top).
+
+### Next step
+
+Migration is complete and deployment-ready. Netlify will build Next.js and publish `out/` on the next push to the production branch.
+
+---
+
 ## Entry 066 — 2026-07-12
 
 **Agent:** Claude Fable 5 (Claude Code, shxdowflow)

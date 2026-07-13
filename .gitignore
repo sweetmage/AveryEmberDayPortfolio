@@ -22,5 +22,9 @@
 # NOTE: style.css is intentionally NOT ignored — it's the compiled Tailwind
 # output and Netlify (publish = ".", no build command) ships it directly.
 
+# Next.js build output
+/.next/
+/out/
+
 # Playwright test artifacts
 /test-results/

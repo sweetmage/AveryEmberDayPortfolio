@@ -2,14 +2,13 @@ import { test, expect } from '@playwright/test';
 import * as fs from 'fs';
 import * as path from 'path';
 
-const BASE_URL = 'http://localhost:3000';
+const BASE_URL = 'http://localhost:3001';
 
 const PAGES = [
   { name: 'index', url: '/' },
-  { name: 'brand', url: '/projects/brand-avery-ember-day.html' },
-  { name: 'mistrust', url: '/projects/history-of-mistrust.html' },
-  { name: 'patriots', url: '/projects/patriots-low-thirds.html' },
-  { name: 'gallery', url: '/gallery/gallery.html' },
+  { name: 'brand', url: '/projects/brand-avery-ember-day/' },
+  { name: 'mistrust', url: '/projects/history-of-mistrust/' },
+  { name: 'gallery', url: '/gallery/' },
 ];
 
 const BREAKPOINTS = [360, 768, 1024, 1440];

@@ -10,12 +10,20 @@ export default defineConfig({
   use: {
     trace: 'on-first-retry',
   },
-  webServer: {
-    command: 'npx serve . -l 3000',
-    url: 'http://localhost:3000',
-    reuseExistingServer: !process.env.CI,
-    timeout: 120 * 1000,
-  },
+  webServer: [
+    {
+      command: 'npx serve . -l 3000',
+      url: 'http://localhost:3000',
+      reuseExistingServer: !process.env.CI,
+      timeout: 120 * 1000,
+    },
+    {
+      command: 'npm run build:next && npx serve out -l 3001',
+      url: 'http://localhost:3001',
+      reuseExistingServer: !process.env.CI,
+      timeout: 120 * 1000,
+    },
+  ],
   projects: [
     {
       name: 'chromium',

@@ -2,13 +2,45 @@
 
 ---
 
-## ⚠️ Reconcile deploy-branch docs with Netlify's actual config — 2026-07-12
+## ✅ Reconcile deploy-branch docs with Netlify's actual config — 2026-07-12
 
-**Branch:** `master`
+**Branch:** `portfoliowebsite`
 **Agent:** Claude Sonnet 5 (Claude Code, shxdowflow)
-**Status:** Blocked on user — needs Netlify dashboard access, which the agent doesn't have.
+**Status:** Resolved 2026-07-12. User chose `portfoliowebsite` as the production branch and provided a Netlify personal access token (`NETLIFY_AUTH_TOKEN` in `.env`, gitignored). Netlify's production branch and allowed-branches were repointed from `master` to `portfoliowebsite` via the API, verified with a production deploy from the new branch (state `ready`, commit `12a2bc3`, site healthy). `AGENTS.md` and `docs/NOTES.md` updated to match. See `LOGBOOK.md` Entry 069.
 
-`AGENTS.md`/`docs/NOTES.md` said `portfoliowebsite` was the branch Netlify auto-deploys from. It isn't — the live site was confirmed (2026-07-12, see `LOGBOOK.md` Entry 065) to actually be serving `master`. Docs have been corrected to say `master` is live, but the underlying Netlify site config vs. docs mismatch should be resolved properly: either repoint Netlify's production branch to `portfoliowebsite` (matching the original intended workflow) or formally adopt `master` as the integration/deploy branch going forward. Pick one and make the docs and the dashboard agree.
+---
+
+## ✅ Next.js Migration — All Pages Migrated + Verified
+
+**Branch:** `portfoliowebsite`
+**Agent:** Kilo (shxdowflow), verified/fixed by Claude Sonnet 5 (Claude Code, shxdowflow)
+**Status:** Complete. All 5 pages migrated. Build passes. `npm test` verified green from a clean run (33/33) — see LOGBOOK Entry 068 for a `playwright.config.js` webServer gap, a theme-flash logo bug, and a copy typo found and fixed during verification. Still uncommitted, ready for user review.
+
+### Completed
+- [x] Next.js 15 scaffold with TypeScript + Tailwind v4 + static export
+- [x] `bubbles.js` ported verbatim as dynamic client-side module
+- [x] Theme init externalized (`public/scripts/theme-init.js`)
+- [x] Shared components: `Nav`, `Footer`, `SkipLink`, `ReturnToTop`, `BubblePhysics`
+- [x] Home page: `app/page.tsx` (hero, work grid, about)
+- [x] Gallery: `app/gallery/page.tsx`
+- [x] Brand page: `app/projects/brand-avery-ember-day/page.tsx`
+- [x] History of Mistrust: `app/projects/history-of-mistrust/page.tsx` (with slideshow CSS + JS)
+- [x] CSP configured for static export (`script-src 'self' 'unsafe-inline'`)
+- [x] Images consolidated: `public/images/` (128 files after deleting portrait)
+- [x] Build verification: 5 routes, zero errors, zero 404s, bubbles animate on all pages
+
+### Removed / Deferred
+- [x] Patriots page deleted from Next.js app (`app/projects/patriots-low-thirds/`) — project still WIP, not for live site
+- [x] Portrait JPG deleted (`images/AveryDayPortraitSmaller.jpg`)
+
+### Completed (deployment)
+- [x] Update `netlify.toml` to build Next.js and publish `out/` — command: `next build`, publish: `out`, NODE_VERSION: 20
+- [x] CSP updated: removed legacy sha256 hashes, added `'unsafe-inline'` for Next.js hydration scripts
+- [x] Full Playwright re-baseline — 32 baselines regenerated (4 pages × 4 breakpoints × 2 themes), all tests pass
+- [x] Smoke interaction test passes
+
+### Plan
+`docs/plans/2026-07-12-nextjs-migration-execution.md`
 
 ---
 

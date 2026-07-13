@@ -7,12 +7,26 @@
     "css:watch": "tailwindcss -i app.css -o style.css --watch",
     "build:css": "tailwindcss -i app.css -o style.css --minify",
     "serve": "serve . -l 8080",
-    "test": "playwright test"
+    "test": "playwright test",
+    "dev": "next dev",
+    "build:next": "next build",
+    "start": "next start"
+  },
+  "dependencies": {
+    "next": "^15.0.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
   },
   "devDependencies": {
     "@playwright/test": "^1.45.0",
-    "serve": "^14.2.0",
     "@tailwindcss/cli": "^4.3.2",
-    "tailwindcss": "^4.3.2"
+    "@tailwindcss/postcss": "^4.3.2",
+    "@types/node": "^22.0.0",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "postcss": "^8.5.0",
+    "serve": "^14.2.0",
+    "tailwindcss": "^4.3.2",
+    "typescript": "^5.7.0"
   }
 }

@@ -1,0 +1,14 @@
+/* ── Tailwind v4 entry for Next.js ──────────────────────────────────
+   Imported by app/layout.tsx.
+   Compiles automatically via Next.js built-in PostCSS pipeline.
+   ─────────────────────────────────────────────────────────────── */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Outfit:wght@300;400;500;600;700&family=Sriracha&display=swap');
+@import "tailwindcss";
+@import "../brand.css" layer(components);
+@import "../src/css/tailwind-preset.css";
+@import "../src/css/site.css" layer(components);
+
+/* The inline head script always stamps data-theme on <html>, so key the
+   dark: variant to it instead of prefers-color-scheme. */
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));

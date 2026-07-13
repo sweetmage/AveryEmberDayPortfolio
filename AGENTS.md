@@ -18,7 +18,7 @@ This is the canonical agent-facing source of truth for the `portfoliowebsite` re
 
 **All changes must be committed to the `portfoliowebsite` branch.** Do not commit to `main` or `master` without explicit user direction.
 
-**`master` is the branch Netlify actually deploys from** (confirmed 2026-07-12 by fetching the live site directly — it was serving `master`'s content, not `portfoliowebsite`'s, despite this doc previously saying otherwise). Publishing to production means merging into `master`, not just pushing `portfoliowebsite`. This is a standing discrepancy between the documented workflow and the real deploy config — reconcile by either repointing Netlify at `portfoliowebsite` or updating this policy to treat `master` as the integration branch (see `TODO.md`). A merge/push to `master` is still a production-affecting action: get the user's explicit go-ahead in the moment before doing it, every time — this note is informational, not standing authorization.
+**`portfoliowebsite` is the branch Netlify deploys from** (repointed 2026-07-12 via the Netlify API at the user's direction — production branch and allowed-branches both changed from `master` to `portfoliowebsite`, verified with a production deploy from the new branch; see `LOGBOOK.md` Entry 069). Pushing `portfoliowebsite` publishes to production. That makes every push to this branch a production-affecting action: get the user's explicit go-ahead in the moment before pushing, every time — this note is informational, not standing authorization. `master` is retained as a historical branch; do not merge into it without explicit user direction.
 
 ## Environment Constraints
 
