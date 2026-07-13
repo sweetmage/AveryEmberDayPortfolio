@@ -16,6 +16,12 @@
 - Triggered a production build from the new branch via API: deploy `6a543ef45efe488affdb4b25` reached state `ready`, `branch: portfoliowebsite`, `sha: 12a2bc3`, `context: production`. Live site returns HTTP 200.
 - Safe rollout: remote `portfoliowebsite` (12a2bc3) is `master` (dfb9d1d) plus one docs-only commit, so the verification deploy changed nothing user-visible. The uncommitted Next.js migration (Entries 067–068) goes live only when committed and pushed.
 
+### Migration deployed (same session, user-directed)
+
+- User said "proceed": the full Next.js migration + verification fixes + this branch repoint were committed as `af865e7` (196 files) and pushed to `portfoliowebsite`. Netlify ran `next build` in CI for the first time — deploy reached `ready` on commit `af865e7`.
+- Live-site verification: home/gallery/brand/mistrust all HTTP 200; HTML is the Next.js export (`_next/static` chunks, correct `<title>`); CSP + X-Frame-Options headers present (served from `out/_headers`); `theme-init.js` on production contains the Entry 068 logo-swap fix; gallery serves all items including "In Danger"; `bubbles.js` and image assets resolve.
+- **The Next.js site is now live at averyemberday.com.** The legacy root HTML files remain in the repo but are no longer served (publish dir is `out/`).
+
 ---
 
 ## Entry 068 — 2026-07-12
