@@ -32,7 +32,7 @@ export default function RootLayout({
         <div className="brand-page-bg" aria-hidden="true" />
         <div className="brand-page-noise" aria-hidden="true" />
         <Nav />
-        <main id="main">{children}</main>
+        {children}
         <Footer />
         <ReturnToTop />
         <BubblePhysics />

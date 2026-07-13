@@ -74,7 +74,7 @@ const palette = [
 
 export default function BrandPage() {
   return (
-    <>
+    <main id="main">
       <div className="project-hero mx-auto max-w-(--brand-content-max) px-6 pt-20 pb-12">
         <Link
           href="/"
@@ -181,6 +181,6 @@ export default function BrandPage() {
           </div>
         </div>
       </section>
-    </>
+    </main>
   );
 }

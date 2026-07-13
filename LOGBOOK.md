@@ -1,3 +1,28 @@
+## Entry 070 — 2026-07-12
+
+**Agent:** Claude Sonnet 5 (Claude Code, shxdowflow)
+**Cycle:** bigscreen-layout-fix
+**Task:** User reported the freshly-deployed Next.js site "messed up on bigger screen sizes." Diagnose and fix.
+
+### Root cause
+
+`app/layout.tsx` wrapped **all** page content in `<main id="main">`, but `site.css`/`components.css` style `main` with `max-width: var(--brand-content-max)` (1200px) + auto margins + side padding. In the legacy `index.html`, the hero section and `.brand-spectrum-bar` sit **outside** `<main>` — only Work/About are inside. So on viewports wider than ~1200px, the Next.js version squeezed the hero and spectrum bar into the content column instead of full-bleed. Invisible at ≤1440px (where Playwright baselines stop, since the container barely binds there); obvious at 1920/2560.
+
+### Fix
+
+- `app/layout.tsx` — no longer renders `<main>`; pages own it.
+- `app/page.tsx` — hero + spectrum bar outside `<main id="main">`; Work + About inside (matches legacy structure).
+- `app/gallery/page.tsx`, `app/projects/brand-avery-ember-day/page.tsx` — content wrapped in `<main id="main">` (same effective DOM as before).
+- `app/projects/history-of-mistrust/page.tsx` — content in `<main id="main">`, lightbox overlay outside it (matches legacy).
+
+### Verification
+
+- Captured full-page screenshots of live (broken), legacy (repo HTML), and fixed build at 1920px and 2560px; fixed build matches legacy layout (full-bleed spectrum bar, hero spanning viewport, bubbles distributed full-width).
+- Checked the 512px horizontal overflow visible in screenshot canvases at 2560: caused by `.brand-hero-blobs { inset: -20% }` decorative bleed; `body { overflow-x: hidden }` (site.css) already clips it in real browsers — pre-existing in legacy, not user-visible, no action needed.
+- `next build` clean; `npx playwright test` 33/33 pass (baselines self-refreshed — spectrum bar now edge-to-edge at small widths too, matching legacy).
+
+---
+
 ## Entry 069 — 2026-07-12
 
 **Agent:** Claude Sonnet 5 (Claude Code, shxdowflow)

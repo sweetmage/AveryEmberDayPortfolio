@@ -34,7 +34,7 @@ const galleryItems = [
 
 export default function GalleryPage() {
   return (
-    <>
+    <main id="main">
       <Link
         href="/"
         className="back-link mb-6 inline-block border-b border-line-mid py-[0.3em] text-[0.85em] font-medium tracking-[0.04em] text-text-muted no-underline transition-colors hover:border-gold hover:text-gold"
@@ -62,6 +62,6 @@ export default function GalleryPage() {
           </figure>
         ))}
       </section>
-    </>
+    </main>
   );
 }

@@ -53,6 +53,7 @@ export default function HomePage() {
         <div />
       </div>
 
+      <main id="main">
       {/* Work */}
       <section id="work" className="brand-section">
         <div className="brand-container">
@@ -181,6 +182,7 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+      </main>
     </>
   );
 }

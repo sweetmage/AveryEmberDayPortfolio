@@ -25,6 +25,7 @@ export default function HistoryOfMistrustPage() {
     <>
       <SlideshowScript />
 
+      <main id="main">
       {/* Hero */}
       <div className="project-hero mx-auto max-w-(--brand-content-max) px-6 pt-20 pb-12">
         <Link
@@ -268,6 +269,7 @@ export default function HistoryOfMistrustPage() {
           <li>Professional Heart Daily. <em>Priority for Cardiovascular Health Equity among U.S. Women</em>. <a href="https://professional.heart.org/en/science-news/cardiovascular-disease-risk-factors-in-women-impact-of-race/commentary" target="_blank">Link</a></li>
         </ul>
       </section>
+      </main>
 
       {/* Lightbox */}
       <div
