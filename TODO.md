@@ -2,7 +2,7 @@
 
 ## Active Plans
 
-- `docs/plans/2026-07-12-motion-load-perf.md` — Reduce time-to-motion / time-to-interactive on the Next.js site (bubble engine defer, rAF micro-opts, dead-CSS trim, LCP image hints, reduced-motion for smooth-scroll). **Status:** Implemented 2026-07-12 (LOGBOOK Entry 072); awaiting user review/commit.
+- `docs/plans/2026-07-12-motion-load-perf.md` — Reduce time-to-motion / time-to-interactive on the Next.js site (bubble engine defer, rAF micro-opts, dead-CSS trim, LCP image hints, reduced-motion for smooth-scroll). **Status:** Deployed to production 2026-07-13 (LOGBOOK Entry 072, commits 249b1b4 + 62ff597).
 
 _No other plans currently active. All prior plans are consolidated in `docs/archives/plans.md` (see the Consolidation Stubs section at the bottom for the 2026-07-12 batch)._
 
@@ -35,7 +35,7 @@ _These are backlog items that don't currently have a written plan. Historical re
 ### Architecture remediation follow-ups (deferred from 2026-07-01)
 - [ ] `srcset` / `@2x` variants for project + gallery thumbnails
 - [ ] Replace generated placeholder `images/og-default.png` with final design asset
-- [ ] Verify zero CSP console violations in production after next deploy
+- [x] Verify zero CSP console violations in production after next deploy — done 2026-07-13: all 4 pages loaded headlessly post-deploy, zero console/page errors (Entry 072)
 
 ---
 

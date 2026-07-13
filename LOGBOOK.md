@@ -23,6 +23,10 @@
 - Runtime probe against the served `out/` build: engine initializes after idle defer (`window.__bubbleEngine` present), 7 global bubbles + 3 hero bubbles + 5 blobs created, `script.async` true, hero-rect cache populated and zone version stamping live, zero console/page errors.
 - Lighthouse before/after not run this pass — no baseline capture existed pre-change; noted as follow-up only if the user wants numbers.
 
+### Deploy (2026-07-13)
+
+User approved deploy. Committed as `249b1b4` (docs consolidation from Entry 071) + `62ff597` (perf work), pushed to `origin/portfoliowebsite`; Netlify picked it up within ~20 s. Post-deploy production verification (headless Chromium against averyemberday.com): all 4 pages load with **zero console/page errors** — this also closes the deferred "verify zero CSP console violations in production" remediation item — engine initializes (7 global + 3 hero bubbles, 5 blobs), and the shipped stylesheet no longer contains the dead `brand-blob-morph` keyframes.
+
 ---
 
 
