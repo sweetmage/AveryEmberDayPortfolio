@@ -2,9 +2,11 @@
 
 ## Active Plans
 
+- `docs/plans/2026-07-14-nav-restructure.md` — Top nav becomes Home / Projects / Gallery / Contact; landing drops the Work section; new tabbed `/projects/` page (Brand + History of Mistrust, hash deep-links, 301 redirects for old URLs); new `/contact/` page with Netlify form + links. **Status:** Complete 2026-07-14 (Entry 075, commits 94664d6 → e24c0ba → 077843c → 229806f).
+- `docs/plans/2026-07-13-srcset-variants.md` — srcset/@2x variants for project + gallery thumbnails. **Status:** Complete 2026-07-13 (Entry 073), verified + reviewed, **uncommitted** — commit awaiting user instruction.
 - `docs/plans/2026-07-12-motion-load-perf.md` — Reduce time-to-motion / time-to-interactive on the Next.js site (bubble engine defer, rAF micro-opts, dead-CSS trim, LCP image hints, reduced-motion for smooth-scroll). **Status:** Deployed to production 2026-07-13 (LOGBOOK Entry 072, commits 249b1b4 + 62ff597).
 
-_No other plans currently active. All prior plans are consolidated in `docs/archives/plans.md` (see the Consolidation Stubs section at the bottom for the 2026-07-12 batch)._
+_All prior plans are consolidated in `docs/archives/plans.md` (see the Consolidation Stubs section at the bottom for the 2026-07-12 batch)._
 
 ---
 
@@ -19,9 +21,9 @@ _These are backlog items that don't currently have a written plan. Historical re
 - [ ] Display final project
 - [ ] Patriots project card thumbnail (`images/projects/patriots-thumb.jpg`) — blocked on the motion-graphics render
 
-### Gallery tag system
-- [ ] Design tag taxonomy (medium-based: mixed-media, digital, photography, illustration)
-- [ ] Implement filter UI in `app/gallery/page.tsx` (all / medium toggles)
+### Gallery tag system (explicitly deferred by user 2026-07-14 — nav restructure first)
+- [x] Design tag taxonomy — groundwork done 2026-07-14: all 11 works visually reviewed; actual medium split is **Digital (4: In Danger, Chill, Gross, Emergence) / Painting (5: Faces, Lollipop, Overflow, Beheaded, Shadow) / Drawing (2: Stairs — colored pencil, TX Lake Landscape — pastel)**. No photography in the gallery, so the originally suggested mixed-media/photography buckets don't apply. Per-work assignments need user confirmation before shipping.
+- [ ] Implement filter UI in `app/gallery/page.tsx` (all / medium toggles; page must become a server-metadata + client-grid split)
 - [ ] Wire tag metadata into gallery items
 - [ ] Verify responsive layout with filter bar at 360 / 768 / 1024 / 1440 px
 
@@ -33,7 +35,7 @@ _These are backlog items that don't currently have a written plan. Historical re
 - [ ] Watermark artwork
 
 ### Architecture remediation follow-ups (deferred from 2026-07-01)
-- [ ] `srcset` / `@2x` variants for project + gallery thumbnails
+- [x] `srcset` / `@2x` variants for project + gallery thumbnails — done 2026-07-13: 25 generated variants + `srcset`/`sizes`/`width`/`height` on home cards and gallery grid (Entry 073)
 - [ ] Replace generated placeholder `images/og-default.png` with final design asset
 - [x] Verify zero CSP console violations in production after next deploy — done 2026-07-13: all 4 pages loaded headlessly post-deploy, zero console/page errors (Entry 072)
 

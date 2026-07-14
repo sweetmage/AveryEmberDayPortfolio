@@ -1,3 +1,102 @@
+## Entry 075 — 2026-07-14
+
+**Agent:** Kilo (kimi-k2.6)
+**Cycle:** nav-restructure-implement
+**Task:** Implement the nav restructure plan from Entry 074 across Tracks A–D.
+
+### Changes
+
+1. **Track A — Nav, Footer, landing page, gallery back-link**
+   - `Nav.tsx`: links → Home / Projects / Gallery / Contact; `isActive` normalizes trailing slashes; logo text hidden below `sm` (640px) via `hidden sm:inline`
+   - `Footer.tsx`: links → Projects / Gallery / Contact
+   - `app/page.tsx`: Work section removed entirely; unused `Link` + `cardSizes` cleaned up
+   - `app/gallery/page.tsx`: back-link relabeled "← Home"
+   - `src/css/site.css`: removed dead `#contact` grid rule
+   - Commit: `94664d6`
+
+2. **Track B — Tabbed Projects page**
+   - Extracted `BrandProject.tsx` and `MistrustProject.tsx` from old per-page routes
+   - Created `ProjectTabs.tsx` (client): accessible tabs (`role="tablist"`, arrow keys, `aria-selected`), hash deep-linking on mount, tab-switch closes lightbox + resets body scroll, both panels always mounted (`hidden` toggling)
+   - Created `app/projects/page.tsx` (server): one `<main>`, `sr-only` h1, `SlideshowScript` + lightbox rendered once at page level
+   - Moved `slideshow.css` and `SlideshowScript.tsx` up to `app/projects/`
+   - Deleted old `brand-avery-ember-day/` and `history-of-mistrust/` directories
+   - `netlify.toml`: 301 redirects from old project URLs to `#brand` / `#history-of-mistrust`
+   - Commit: `e24c0ba`
+
+3. **Track C — Contact page + form + thanks page**
+   - Extracted shared `ConnectLinks.tsx` (email, LinkedIn, GitHub icons) used by Footer and Contact
+   - `app/contact/page.tsx`: heading, invite text, ConnectLinks, Netlify form (name/email/message + honeypot + hidden `form-name`)
+   - `app/contact/thanks/page.tsx`: static thanks page with "Back to Home" button
+   - Commit: `077843c`
+
+4. **Track D — Tests update, re-baseline, smoke spec**
+   - `visual-baseline.spec.js`: replaced brand/mistrust with `projects` + `projects-mistrust`; added `contact`; mistrust tab auto-clicked before capture
+   - `smoke-next.spec.js`: new console-error-capturing smoke spec against :3001 covering home, projects (tab switch + lightbox), gallery, contact
+   - Re-baselined all 40 screenshots (5 pages × 4 breakpoints × 2 themes); removed 16 old brand/mistrust baselines
+   - Full suite: 45/45 passed
+   - Commit: `229806f`
+
+### Verification
+
+- `npm run build:next` → clean export with 6 routes: `/`, `/projects/`, `/gallery/`, `/contact/`, `/contact/thanks/`, `/_not-found`
+- `out/projects/index.html` contains both "Avery Ember Day Brand" and "A History of Mistrust" bodies
+- `out/contact/index.html` contains `data-netlify="true"`, `netlify-honeypot="bot-field"`, `name="contact"`
+- Playwright: 45/45 green (visual baselines + smoke-next + smoke-interaction + unit tests)
+
+### Risks / Notes
+
+- No push to origin per user instruction. All commits are local on `portfoliowebsite` branch.
+- Netlify redirects in `netlify.toml` are advisory for the static export; actual redirect behavior depends on Netlify's redirect handling for hash-fragments (the `#brand` / `#history-of-mistrust` targets may need client-side JS to activate the correct tab on arrival). The `ProjectTabs` component already reads `location.hash` on mount, so direct navigation to `/projects/#brand` will work in the browser.
+- Gallery baselines at 360/768 occasionally hit Windows file-lock collisions under parallel workers; sequential capture (`--workers=1`) is the reliable fallback.
+
+---
+
+## Entry 074 — 2026-07-14
+
+**Agent:** Claude Fable 5 (sable, shxdowflow)
+**Cycle:** nav-restructure-plan
+**Task:** User: plan a navigation restructure — top nav becomes Home / Projects / Gallery / Contact, landing drops the Work section, Gallery unchanged (tags later), Projects becomes one tabbed page.
+
+### Output
+
+- **Plan written:** `docs/plans/2026-07-14-nav-restructure.md`. Four tracks: (A) Nav/Footer/landing — new nav links, Work grid deleted, dead-CSS trim (`#work h2` rule, `.project-grid`); (B) tabbed `/projects/` page — Brand + Mistrust bodies extracted to components, accessible always-mounted tab panels (`hidden` toggling), hash deep-links, Netlify 301 redirects for the old project URLs; (C) `/contact/` — Netlify Forms (form + email/LinkedIn/GitHub links, user-confirmed) with a static thanks page; (D) test-spec updates + re-baseline + screenshot adjudication. A/B/C parallelizable, D sequential.
+- **User decisions captured (AskUserQuestion):** Contact = form + links; no coming-soon Motion Graphics tab (Patriots slots in when its render lands).
+- **Claims verified against source, not assumed:** the mistrust slideshow script is an IIFE that measures only inside interaction handlers (line 158) and binds element-scoped listeners, so hidden-panel init is safe; the re-run hazard is duplicated lightbox DOM, which the always-mounted design avoids. Complete `/#work`/`/#about` reference sweep is in the plan with file:line refs.
+- **Gallery tags groundwork stashed in TODO:** all 11 gallery works visually reviewed; real taxonomy is Digital (4) / Painting (5) / Drawing (2) — no photography, so the original suggested buckets don't fit. Per-work assignments flagged for user confirmation.
+
+### Review
+
+The OpenCode nano route wedged again, same signature as Entry 073: pro (minimax-m3) review and the flash (deepseek-v4-flash) retry both stalled past the 6-minute floor with only the startup line (flash also logged a 20 s `model-probe:timeout`). Per retry-exhaustion rules the review fell back to a native reviewer (general-purpose backstop, model fable — the pinned `oracle` wasn't in this session's agent registry). Verdict **SOUND-WITH-FIXES**, 11 findings, all verified against source before incorporation. Biggest catches: the plan's CSS sweep had targeted `src/css/components.css`, which `app/globals.css` never imports (live CSS is root `brand.css` + `src/css/site.css`); a live legacy `#contact` grid rule (site.css:201) would have broken the contact page; the existing smoke spec only covers the *legacy* site on port 3000, so Next console-error coverage must be written new; demoted project titles need the `normal-case tracking-normal border-none p-0` override set; lightbox-open + tab-switch would deadlock body scroll without an explicit close-on-switch; Netlify Forms detection is opt-in in the site UI. Second AskUserQuestion round settled mobile nav: inline links + icon-only logo below ~480 px, no hamburger.
+
+No implementation this cycle — plan awaits user go-ahead. Entry 073's srcset work remains uncommitted in the tree, untouched.
+
+---
+
+## Entry 073 — 2026-07-13
+
+**Agent:** Claude Fable 5 (maren, shxdowflow)
+**Cycle:** srcset-variants
+**Task:** `srcset` / `@2x` variants for project + gallery thumbnails (TODO → Architecture remediation follow-ups). Plan: `docs/plans/2026-07-13-srcset-variants.md`.
+
+### Changes
+
+1. **Variant generator** — new `scripts/generate-image-variants.js` (manifest-driven, `sharp`): writes `<name>-<width>w.<ext>` next to each source, same format, mtime-based skip, never upscales, `--force` to regenerate. Exposed as `npm run images:variants`. `sharp ^0.35.3` added as devDependency (build-time only).
+2. **25 generated variants** committed under `public/images/`: project thumbs at 480/960 w (brand) and 480 w (mistrust); all 12 gallery webps at 480/900 w with the 1200 px original as the top srcset rung. Biggest wins: `FacesFinal.webp` 426 KB → 84 KB at 1x on cards, `beheadedFinal` 387 KB → 69 KB.
+3. **Home cards** (`app/page.tsx`) — the 3 card `<img>`s get `srcSet`, `sizes="(min-width: 1200px) 500px, (min-width: 768px) 45vw, 92vw"` (card caps at ~500 px inside `main` + `brand-container`), and intrinsic `width`/`height`.
+4. **Gallery grid** (`app/gallery/page.tsx`) — items carry `width`/`height` (CLS reservation; previously missing), rendered with a `buildSrcSet()` helper and `sizes="(min-width: 1000px) 438px, (min-width: 768px) 46vw, 92vw"` (900 px grid, 2-col ≥768). All srcset rungs are `encodeURI`'d — the SelfPortraitSeries filename contains spaces, which would break srcset parsing raw. Also added `decoding="async"`.
+
+### Verification
+
+- `node scripts/generate-image-variants.js` — 25/25 generated, spot-checked output dimensions (480×270 jpg, 900×1167 webp).
+- `npm run build:next` — export succeeds 7/7 pages; `out/index.html` + `out/gallery/index.html` contain correct srcset rungs, spaces rendered as `%20`.
+- `npm test` — 33/33 pass. Baseline PNGs are re-captured by design on every run; gallery + index captures visually inspected: all images render, no layout shift from the new intrinsic dimensions.
+
+### Review
+
+The OpenCode nano-agent route was wedged this session: pro (glm-5.2) plan review, pro final review, and the flash retry all stalled past the 6-minute no-progress floor with only the startup line. Per retry rules the review fell back to a native code-reviewer subagent, which verified srcset↔disk consistency, sizes math against the CSS chain, the encodeURI space handling, generator skip/upscale logic, and docs sync — zero findings above threshold. Main-agent diff review also done. TickTick mirror dry-run flagged a pre-existing stale mapping (15 create / 95 delete) from the earlier TODO restructure; real sync left user-gated. No commit — awaiting user instruction per handoff rules.
+
+---
+
 ## Entry 072 — 2026-07-12
 
 **Agent:** Claude Fable 5 (vesper, shxdowflow)

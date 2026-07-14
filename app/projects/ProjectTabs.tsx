@@ -84,6 +84,7 @@ export default function ProjectTabs() {
           const isActive = activeTab === tab.id;
           return (
             <button
+              id={`tab-${tab.id}`}
               key={tab.id}
               role="tab"
               aria-selected={isActive}
