@@ -5,6 +5,16 @@
 [build.environment]
   NODE_VERSION = "20"
 
+[[redirects]]
+  from = "/projects/brand-avery-ember-day/*"
+  to = "/projects/#brand"
+  status = 301
+
+[[redirects]]
+  from = "/projects/history-of-mistrust/*"
+  to = "/projects/#history-of-mistrust"
+  status = 301
+
 [[headers]]
   for = "/*"
   [headers.values]

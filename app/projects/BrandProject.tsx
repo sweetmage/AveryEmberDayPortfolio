@@ -1,23 +1,3 @@
-import type { Metadata } from 'next';
-import Link from 'next/link';
-
-export const metadata: Metadata = {
-  title: 'Avery Ember Day Brand — Avery Ember Day',
-  description: 'Brand identity system for Avery Ember Day — logo, typography, color palette, and visual guidelines.',
-  openGraph: {
-    title: 'Avery Ember Day Brand — Avery Ember Day',
-    description: 'Brand identity system for Avery Ember Day — logo, typography, color palette, and visual guidelines.',
-    images: ['/images/og-default.png'],
-    type: 'website',
-  },
-  twitter: {
-    card: 'summary_large_image',
-  },
-  alternates: {
-    canonical: '/projects/brand-avery-ember-day/',
-  },
-};
-
 const logoSwatches = [
   {
     src: '/images/icons/BubbleLogo/bubbleLogo.png',
@@ -72,28 +52,13 @@ const palette = [
   { name: 'Light BG', hex: '#F2F0EC', bg: 'bg-[#F2F0EC]' },
 ];
 
-export default function BrandPage() {
+export default function BrandProject() {
   return (
-    <main id="main">
+    <>
       <div className="project-hero mx-auto max-w-(--brand-content-max) px-6 pt-20 pb-12">
-        <Link
-          href="/"
-          className="project-back mb-8 inline-flex items-center gap-1.5 font-body text-sm text-text-muted no-underline transition-colors hover:text-text [&_svg]:h-4 [&_svg]:w-4"
-        >
-          <svg
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth={2}
-            className="h-4 w-4"
-          >
-            <path d="M19 12H5M5 12l7-7M5 12l7 7" />
-          </svg>
-          Back to Work
-        </Link>
-        <h1 className="project-title mb-4 font-display text-[clamp(2rem,5vw,3.5rem)] leading-[1.1] text-text">
+        <h2 className="project-title mb-4 font-display text-[clamp(2rem,5vw,3.5rem)] leading-[1.1] text-text border-none p-0 normal-case tracking-normal font-normal">
           Avery Ember Day Brand
-        </h1>
+        </h2>
         <p className="project-desc m-0 max-w-[560px] font-body text-base leading-[1.7] text-text-soft">
           Complete personal brand identity system logos, color, type, and
           applications. Built to work across dark and light contexts with a
@@ -103,9 +68,9 @@ export default function BrandPage() {
 
       {/* Logo Variants */}
       <section className="project-section mx-auto max-w-(--brand-content-max) px-6 pb-20">
-        <h2 className="section-title mb-8 border-none p-0 text-left font-heading text-2xl font-semibold normal-case tracking-normal text-ir-4">
+        <h3 className="section-title mb-8 border-none p-0 text-left font-heading text-2xl font-semibold normal-case tracking-normal text-ir-4">
           Logo Variants
-        </h2>
+        </h3>
         <div className="logo-grid grid grid-cols-[repeat(auto-fill,minmax(280px,1fr))] gap-4">
           {logoSwatches.map((swatch) => (
             <div
@@ -129,9 +94,9 @@ export default function BrandPage() {
 
       {/* Color Palette */}
       <section className="project-section mx-auto max-w-(--brand-content-max) px-6 pb-20">
-        <h2 className="section-title mb-8 border-none p-0 text-left font-heading text-2xl font-semibold normal-case tracking-normal text-ir-4">
+        <h3 className="section-title mb-8 border-none p-0 text-left font-heading text-2xl font-semibold normal-case tracking-normal text-ir-4">
           Brand Palette
-        </h2>
+        </h3>
         <div className="palette-row mb-10 flex flex-wrap gap-3">
           {palette.map((color) => (
             <div key={color.name} className="swatch flex min-w-[100px] flex-1 flex-col gap-2">
@@ -149,9 +114,9 @@ export default function BrandPage() {
 
       {/* Typography */}
       <section className="project-section mx-auto max-w-(--brand-content-max) px-6 pb-20">
-        <h2 className="section-title mb-8 border-none p-0 text-left font-heading text-2xl font-semibold normal-case tracking-normal text-ir-4">
+        <h3 className="section-title mb-8 border-none p-0 text-left font-heading text-2xl font-semibold normal-case tracking-normal text-ir-4">
           Type System
-        </h2>
+        </h3>
         <div className="type-specimen flex flex-col gap-6 rounded-lg border border-line bg-surface-1 p-8">
           <div className="type-row flex flex-col gap-1 border-b border-line pb-6 last:border-b-0 last:pb-0">
             <span className="type-label font-body text-[0.72rem] tracking-[0.08em] uppercase text-text-muted">
@@ -181,6 +146,6 @@ export default function BrandPage() {
           </div>
         </div>
       </section>
-    </main>
+    </>
   );
 }

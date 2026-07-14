@@ -1,58 +1,18 @@
-import type { Metadata } from 'next';
-import Link from 'next/link';
-import './slideshow.css';
-import SlideshowScript from './SlideshowScript';
-
-export const metadata: Metadata = {
-  title: 'A History of Mistrust — Avery Ember Day',
-  description: 'A History of Mistrust — a visual narrative exploring faith, doubt, and human complexity.',
-  openGraph: {
-    title: 'A History of Mistrust — Avery Ember Day',
-    description: 'A History of Mistrust — a visual narrative exploring faith, doubt, and human complexity.',
-    images: ['/images/og-default.png'],
-    type: 'website',
-  },
-  twitter: {
-    card: 'summary_large_image',
-  },
-  alternates: {
-    canonical: '/projects/history-of-mistrust/',
-  },
-};
-
-export default function HistoryOfMistrustPage() {
+export default function MistrustProject() {
   return (
     <>
-      <SlideshowScript />
-
-      <main id="main">
       {/* Hero */}
       <div className="project-hero mx-auto max-w-(--brand-content-max) px-6 pt-20 pb-12">
-        <Link
-          href="/"
-          className="project-back mb-8 inline-flex items-center gap-1.5 font-body text-sm text-text-muted no-underline transition-colors hover:text-text [&_svg]:h-4 [&_svg]:w-4"
-        >
-          <svg
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth={2}
-            className="h-4 w-4"
-          >
-            <path d="M19 12H5M5 12l7-7M5 12l7 7" />
-          </svg>
-          Back to Work
-        </Link>
-        <h1 className="project-title mb-4 font-display text-[clamp(2rem,5vw,3.5rem)] leading-[1.1] text-text">
+        <h2 className="project-title mb-4 font-display text-[clamp(2rem,5vw,3.5rem)] leading-[1.1] text-text border-none p-0 normal-case tracking-normal font-normal">
           A History of Mistrust
-        </h1>
+        </h2>
       </div>
 
       {/* Description */}
       <section className="project-section mx-auto max-w-(--brand-content-max) px-6 pb-20">
-        <h2 className="section-title mb-8 border-none p-0 text-left font-heading text-2xl font-semibold normal-case tracking-normal text-ir-4">
+        <h3 className="section-title mb-8 border-none p-0 text-left font-heading text-2xl font-semibold normal-case tracking-normal text-ir-4">
           Description
-        </h2>
+        </h3>
         <p className="project-desc m-0 max-w-[640px] font-body text-base leading-[1.7] text-text-soft">
           A long form Instagram carousel series with 3 sets of 10 slides examining
           the roots and ripple effects of medical mistrust, spanning the Tuskegee
@@ -65,9 +25,9 @@ export default function HistoryOfMistrustPage() {
 
       {/* Per-set slideshows */}
       <section className="project-section mx-auto max-w-(--brand-content-max) px-6 pb-20">
-        <h2 className="section-title mb-8 border-none p-0 text-left font-heading text-2xl font-semibold normal-case tracking-normal text-ir-4">
+        <h3 className="section-title mb-8 border-none p-0 text-left font-heading text-2xl font-semibold normal-case tracking-normal text-ir-4">
           Slideshow
-        </h2>
+        </h3>
         <div className="set-slideshows">
           <div className="set-slideshow" data-set="1">
             <p className="set-ss-label">Set 1 · Slides 1–10</p>
@@ -110,9 +70,9 @@ export default function HistoryOfMistrustPage() {
 
       {/* Moodboard & Storyboard */}
       <section className="project-section mx-auto max-w-(--brand-content-max) px-6 pb-20">
-        <h2 className="section-title mb-8 border-none p-0 text-left font-heading text-2xl font-semibold normal-case tracking-normal text-ir-4">
+        <h3 className="section-title mb-8 border-none p-0 text-left font-heading text-2xl font-semibold normal-case tracking-normal text-ir-4">
           Moodboard & Storyboard
-        </h2>
+        </h3>
         <div className="supporting-grid grid grid-cols-1 gap-6 min-[600px]:grid-cols-2">
           <div className="supporting-card overflow-hidden rounded-lg border border-line bg-surface-1 [&_img]:block [&_img]:h-auto [&_img]:w-full">
             <img
@@ -143,9 +103,9 @@ export default function HistoryOfMistrustPage() {
 
       {/* All Slides */}
       <section className="project-section mx-auto max-w-(--brand-content-max) px-6 pb-20">
-        <h2 className="section-title mb-8 border-none p-0 text-left font-heading text-2xl font-semibold normal-case tracking-normal text-ir-4">
+        <h3 className="section-title mb-8 border-none p-0 text-left font-heading text-2xl font-semibold normal-case tracking-normal text-ir-4">
           All Slides
-        </h2>
+        </h3>
         <div className="all-sets-full flex w-full flex-col gap-6">
           <div
             className="carousel-set relative w-full cursor-pointer overflow-hidden rounded-lg border border-line bg-surface-1 transition-colors hover:border-accent-dim [&_img]:block [&_img]:h-auto [&_img]:w-full"
@@ -185,9 +145,9 @@ export default function HistoryOfMistrustPage() {
 
       {/* Sources */}
       <section className="project-section mx-auto max-w-(--brand-content-max) px-6 pb-20">
-        <h2 className="section-title mb-8 border-none p-0 text-left font-heading text-2xl font-semibold normal-case tracking-normal text-ir-4">
+        <h3 className="section-title mb-8 border-none p-0 text-left font-heading text-2xl font-semibold normal-case tracking-normal text-ir-4">
           Sources & Bibliography
-        </h2>
+        </h3>
         <ul className="sources-list m-0 list-none gap-x-12 p-0 columns-1 min-[700px]:columns-2 min-[1100px]:columns-3 [&_a]:break-words [&_a]:text-text-soft [&_a]:underline [&_a]:underline-offset-2 [&_a:hover]:text-accent [&_li]:mb-3 [&_li]:break-inside-avoid [&_li]:pl-6 [&_li]:-indent-6 [&_li]:font-body [&_li]:text-[0.82rem] [&_li]:leading-[1.55] [&_li]:text-text-muted">
           <li>AIDSVu. (2024). <em>AIDSVu Releases 2024 PrEP Use Data</em>. Emory University Rollins School of Public Health. <a href="https://aidsvu.org/news-updates/aidsvu-releases-2024-prep-use-data-showing-growing-use-across-the-u-s/" target="_blank">Link</a></li>
           <li>Alsan, M., Garrick, O., & Graziani, G. C. (2019). Does Diversity Matter for Health? Experimental Evidence from Oakland. <em>American Economic Review, 109</em>(12), 4071-4111. <a href="https://pubs.aeaweb.org/doi/10.1257/aer.20181446" target="_blank">Link</a></li>
@@ -273,31 +233,6 @@ export default function HistoryOfMistrustPage() {
           <li>Professional Heart Daily. <em>Priority for Cardiovascular Health Equity among U.S. Women</em>. <a href="https://professional.heart.org/en/science-news/cardiovascular-disease-risk-factors-in-women-impact-of-race/commentary" target="_blank">Link</a></li>
         </ul>
       </section>
-      </main>
-
-      {/* Lightbox */}
-      <div
-        id="lightbox"
-        className="lightbox-overlay"
-        role="dialog"
-        aria-modal="true"
-        aria-label="Image viewer"
-        hidden
-      >
-        <button className="lightbox-close" aria-label="Close image viewer">
-          &times;
-        </button>
-        <button className="lightbox-arrow lightbox-prev" aria-label="Previous image">
-          &#8249;
-        </button>
-        <div className="lightbox-frame" tabIndex={0}>
-          <div className="lightbox-track" />
-        </div>
-        <button className="lightbox-arrow lightbox-next" aria-label="Next image">
-          &#8250;
-        </button>
-        <p id="lightbox-caption" className="lightbox-caption" aria-live="polite" />
-      </div>
     </>
   );
 }
