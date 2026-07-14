@@ -4,17 +4,21 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
 const navLinks = [
-  { href: '/#work', label: 'Work' },
-  { href: '/#about', label: 'About' },
+  { href: '/', label: 'Home' },
+  { href: '/projects/', label: 'Projects' },
+  { href: '/gallery/', label: 'Gallery' },
+  { href: '/contact/', label: 'Contact' },
 ];
 
 export default function Nav() {
   const pathname = usePathname();
 
   const isActive = (href: string) => {
-    // Resolve hashless path for comparison
+    // Resolve hashless path for comparison, normalize trailing slashes
     const resolved = new URL(href, 'http://localhost').pathname;
-    return pathname === resolved || pathname === resolved + '/';
+    const normalizedPath = pathname.replace(/\/$/, '') || '/';
+    const normalizedHref = resolved.replace(/\/$/, '') || '/';
+    return normalizedPath === normalizedHref;
   };
 
   function toggleTheme() {
@@ -46,7 +50,7 @@ export default function Nav() {
             width={32}
             height={32}
           />
-          Avery Ember Day
+          <span className="hidden sm:inline">Avery Ember Day</span>
         </Link>
 
         <ul className="brand-nav-links flex" id="brand-nav-links">

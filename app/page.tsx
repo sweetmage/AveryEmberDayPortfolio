@@ -1,5 +1,4 @@
 import type { Metadata } from 'next';
-import Link from 'next/link';
 
 export const metadata: Metadata = {
   title: 'Avery Ember Day — Brand & Visual Designer',
@@ -58,110 +57,6 @@ export default function HomePage() {
       </div>
 
       <main id="main">
-      {/* Work */}
-      <section id="work" className="brand-section">
-        <div className="brand-container">
-          <h2>Work</h2>
-          <div className="project-grid mt-6 grid grid-cols-1 gap-6 md:grid-cols-2">
-            <Link
-              href="/projects/brand-avery-ember-day/"
-              className="project-card brand-card-bubble bubble-exclude block overflow-hidden rounded-md border border-line bg-surface-1 shadow-card no-underline transition hover:-translate-y-[3px] hover:border-accent hover:shadow-[0_0_0_1px_var(--brand-accent),var(--brand-shadow-lg)]"
-            >
-              <div className="project-card-img aspect-video w-full">
-                <img
-                  src="/images/projects/brand-thumb.jpg"
-                  alt="Avery Ember Day Brand"
-                  className="project-card-cover h-full w-full object-cover object-center"
-                  loading="lazy"
-                  decoding="async"
-                />
-              </div>
-              <div className="project-card-info bg-transparent px-[1.2em] pt-4 pb-[1.2em]">
-                <h3 className="mt-[0.4em] mb-[0.3em] font-display text-text">
-                  Avery Ember Day Brand
-                </h3>
-                <p className="mt-[0.3em] bg-transparent p-0 text-[0.9em] leading-[1.55] text-text-muted">
-                  Complete personal brand identity system logos, color, type, and
-                  applications.
-                </p>
-              </div>
-            </Link>
-
-            <Link
-              href="/projects/history-of-mistrust/"
-              className="project-card brand-card-bubble bubble-exclude block overflow-hidden rounded-md border border-line bg-surface-1 shadow-card no-underline transition hover:-translate-y-[3px] hover:border-accent hover:shadow-[0_0_0_1px_var(--brand-accent),var(--brand-shadow-lg)]"
-            >
-              <div className="project-card-img aspect-video w-full">
-                <img
-                  src="/images/projects/mistrust-thumb.jpg"
-                  alt="A History of Mistrust"
-                  className="project-card-cover h-full w-full object-cover object-center"
-                  style={{ objectPosition: 'center 65%' }}
-                  loading="lazy"
-                  decoding="async"
-                />
-              </div>
-              <div className="project-card-info bg-transparent px-[1.2em] pt-4 pb-[1.2em]">
-                <h3 className="mt-[0.4em] mb-[0.3em] font-display text-text">
-                  A History of Mistrust
-                </h3>
-                <p className="mt-[0.3em] bg-transparent p-0 text-[0.9em] leading-[1.55] text-text-muted">
-                  A 30 slide Instagram carousel exploring medical mistrust in
-                  marginalized communities from HIV/AIDS stigma and Tuskegee to
-                  LGBTQ+ health disparities.
-                </p>
-              </div>
-            </Link>
-
-            <div
-              className="project-card brand-card-bubble bubble-exclude block overflow-hidden rounded-md border border-line bg-surface-1 shadow-card no-underline transition hover:-translate-y-[3px] hover:border-accent hover:shadow-[0_0_0_1px_var(--brand-accent),var(--brand-shadow-lg)]"
-              aria-disabled="true"
-              style={{ display: 'none' }}
-            >
-              <div className="project-card-img placeholder-img flex aspect-video w-full items-center justify-center border border-dashed border-line-mid bg-surface-2">
-                <span
-                  className="wip-badge inline-block rounded-md border border-accent-dim bg-surface-1 px-2.5 py-1 font-body text-xs font-semibold tracking-[0.08em] uppercase text-accent"
-                  aria-hidden="true"
-                >
-                  coming soon!
-                </span>
-              </div>
-              <div className="project-card-info bg-transparent px-[1.2em] pt-4 pb-[1.2em]">
-                <h3 className="mt-[0.4em] mb-[0.3em] font-display text-text">
-                  Motion Graphics
-                </h3>
-                <p className="mt-[0.3em] bg-transparent p-0 text-[0.9em] leading-[1.55] text-text-muted">
-                  coming soon!
-                </p>
-              </div>
-            </div>
-
-            <Link
-              href="/gallery/"
-              className="project-card brand-card-bubble bubble-exclude block overflow-hidden rounded-md border border-line bg-surface-1 shadow-card no-underline transition hover:-translate-y-[3px] hover:border-accent hover:shadow-[0_0_0_1px_var(--brand-accent),var(--brand-shadow-lg)]"
-            >
-              <div className="project-card-img aspect-video w-full">
-                <img
-                  src="/images/myart/Gallery/FacesFinal.webp"
-                  alt="Faces"
-                  className="project-card-cover h-full w-full object-cover object-center"
-                  loading="lazy"
-                  decoding="async"
-                />
-              </div>
-              <div className="project-card-info bg-transparent px-[1.2em] pt-4 pb-[1.2em]">
-                <h3 className="mt-[0.4em] mb-[0.3em] font-display text-text">
-                  Art Gallery
-                </h3>
-                <p className="mt-[0.3em] bg-transparent p-0 text-[0.9em] leading-[1.55] text-text-muted">
-                  A curated selection of traditional and digital illustrations.
-                </p>
-              </div>
-            </Link>
-          </div>
-        </div>
-      </section>
-
       {/* About */}
       <section id="about" className="brand-section-raised">
         <div className="brand-container">

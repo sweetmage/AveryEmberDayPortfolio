@@ -198,15 +198,6 @@ footer p {
     font-size: 0.85em;
 }
 
-#contact {
-    display: grid;
-    grid-template-columns: auto;
-    grid-template-rows: auto 1fr;
-    justify-content: center;
-    gap: 0.5em;
-}
-#contact p { text-align: center; }
-
 /* ── Hero / nav logo theme swaps (content: url per theme) ────────── */
 .hero-logo {
     width: clamp(180px, 40vw, 300px);
