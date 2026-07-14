@@ -6,9 +6,10 @@ const BASE_URL = 'http://localhost:3001';
 
 const PAGES = [
   { name: 'index', url: '/' },
-  { name: 'brand', url: '/projects/brand-avery-ember-day/' },
-  { name: 'mistrust', url: '/projects/history-of-mistrust/' },
+  { name: 'projects', url: '/projects/' },
+  { name: 'projects-mistrust', url: '/projects/#history-of-mistrust' },
   { name: 'gallery', url: '/gallery/' },
+  { name: 'contact', url: '/contact/' },
 ];
 
 const BREAKPOINTS = [360, 768, 1024, 1440];
@@ -39,6 +40,15 @@ for (const page of PAGES) {
 
           // Wait for bubble physics and fonts to settle
           await p.waitForTimeout(1500);
+
+          // For mistrust tab deep-link, ensure the tab is active before capture
+          if (page.name === 'projects-mistrust') {
+            const mistrustTab = p.locator('button[aria-controls="panel-history-of-mistrust"]');
+            if (await mistrustTab.count()) {
+              await mistrustTab.click();
+              await p.waitForTimeout(300);
+            }
+          }
 
           // loading="lazy" images below the viewport never fetch during a
           // fullPage capture, so force them eager and wait for completion.
