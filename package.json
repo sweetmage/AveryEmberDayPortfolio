@@ -8,6 +8,7 @@
     "build:css": "tailwindcss -i app.css -o style.css --minify",
     "serve": "serve . -l 8080",
     "test": "playwright test",
+    "images:variants": "node scripts/generate-image-variants.js",
     "dev": "next dev",
     "build:next": "next build",
     "start": "next start"
@@ -26,6 +27,7 @@
     "@types/react-dom": "^19.0.0",
     "postcss": "^8.5.0",
     "serve": "^14.2.0",
+    "sharp": "^0.35.3",
     "tailwindcss": "^4.3.2",
     "typescript": "^5.7.0"
   }
