@@ -1,3 +1,36 @@
+## Entry 076 — 2026-07-14
+
+**Agent:** Claude Fable 5 (vesper, shxdowloop)
+**Cycle:** nav-restructure-wrapup
+**Task:** Reconcile post-implementation state of the nav restructure (Entry 075): dirty worktree, untracked/stale plan doc, stale TODO notes; re-verify; checkpoint on an isolated branch.
+
+### Changes
+
+- Branch: `shxdowloop/2026-07-14/nav-restructure-wrapup` (production `portfoliowebsite` stays local-only, 6 ahead of origin, push withheld per user).
+- **style.css reconciled — kept rebuilt artifact.** Two compounding causes: (1) the committed copy was stale — Track A deleted the `#contact` grid rule from `src/css/site.css` (commit `94664d6`) but the legacy root bundle was never rebuilt; (2) a leftover `tailwindcss --watch=always` process (no `--minify`, PID 28292) kept rewriting style.css unminified on every file change — it even reverted this loop's first rebuild between verification and checkpoint (`b1a5b49` briefly carried the unminified copy; corrected in the stage-3 commit). Watcher killed; restart with `npm run css:watch` if wanted. Final artifact rebuilt via `npm run css:build` (minified, canonical). Only consumer is the undeployed legacy root site (Netlify publishes `out/`); legacy footer (`index.html:135` uses `id="contact"`) loses grid-centering — accepted, page is frozen and not shipped.
+- **docs/sync/local-tasks.json reconciled — kept.** Derived state from TODO.md; verified deterministic (`parse-todo.js` regen matches byte-for-byte minus `generatedAt`). Regenerated after TODO edits; `sync-all.js --dry-run` clean.
+- **42 baseline re-captures discarded — and the churn explained.** `tests/visual-baseline.spec.js` is capture-only: it screenshots directly into `tests/baselines/` every run and asserts only file-exists/size, with no image comparison. Every `npm test` therefore rewrites all 40 PNGs, and bubble-physics animation makes index captures pixel-nondeterministic, so the tree dirties on every run by design. The startup-dirty baselines were just a prior run's captures, not intentional work. Restored the committed (`229806f`) set — the adjudicated ones from stage 4's visual inspection. Follow-up recorded in TODO (capture-only vs compare-based gate is a testing-model decision for the user).
+- Plan doc `docs/plans/2026-07-14-nav-restructure.md` committed (was untracked) with Status corrected from "Planned — no implementation yet" to Implemented (Entry 075).
+- TODO.md: srcset plan note corrected (was "uncommitted", actually `f63671d`); nav-restructure entry now lists the full commit range + deploy-gated leftovers.
+- Process plan: `docs/plans/2026-07-14-nav-restructure-wrapup-shxdowloop.md`.
+
+### Verification
+
+- `npm test` → 45/45 passed (Playwright webServer ran `build:next` + served legacy :3000 and `out/` :3001).
+- `parse-todo.js` determinism check: DETERMINISTIC-MATCH, 15 tasks.
+- `git status` clean after checkpoint except intentional commits.
+
+### Helper route
+
+Main agent only (nano-agents warmed but not dispatched — run was small, git-heavy, judgment-bound). Binding usage 60% weekly at preflight, below the 80% native ban.
+
+### Risks / Notes
+
+- Production push of `portfoliowebsite` (nav restructure + srcset, 6 commits) still withheld — user decision. After that deploy: enable Netlify form detection (Site configuration → Forms) and verify the hash-fragment 301 redirects.
+- Legacy root site's footer alignment changed with the style.css rebuild (undeployed surface only).
+
+---
+
 ## Entry 075 — 2026-07-14
 
 **Agent:** Kilo (kimi-k2.6)

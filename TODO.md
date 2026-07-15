@@ -2,8 +2,8 @@
 
 ## Active Plans
 
-- `docs/plans/2026-07-14-nav-restructure.md` — Top nav becomes Home / Projects / Gallery / Contact; landing drops the Work section; new tabbed `/projects/` page (Brand + History of Mistrust, hash deep-links, 301 redirects for old URLs); new `/contact/` page with Netlify form + links. **Status:** Complete 2026-07-14 (Entry 075, commits 94664d6 → e24c0ba → 077843c → 229806f).
-- `docs/plans/2026-07-13-srcset-variants.md` — srcset/@2x variants for project + gallery thumbnails. **Status:** Complete 2026-07-13 (Entry 073), verified + reviewed, **uncommitted** — commit awaiting user instruction.
+- `docs/plans/2026-07-14-nav-restructure.md` — Top nav becomes Home / Projects / Gallery / Contact; landing drops the Work section; new tabbed `/projects/` page (Brand + History of Mistrust, hash deep-links, 301 redirects for old URLs); new `/contact/` page with Netlify form + links. **Status:** Complete 2026-07-14 (Entry 075, commits 94664d6 → 7bcc45a; wrap-up Entry 076). Remaining deploy-gated: Netlify form-detection toggle + redirect verification after the production push.
+- `docs/plans/2026-07-13-srcset-variants.md` — srcset/@2x variants for project + gallery thumbnails. **Status:** Complete 2026-07-13 (Entry 073), committed `f63671d` (local, unpushed).
 - `docs/plans/2026-07-12-motion-load-perf.md` — Reduce time-to-motion / time-to-interactive on the Next.js site (bubble engine defer, rAF micro-opts, dead-CSS trim, LCP image hints, reduced-motion for smooth-scroll). **Status:** Deployed to production 2026-07-13 (LOGBOOK Entry 072, commits 249b1b4 + 62ff597).
 
 _All prior plans are consolidated in `docs/archives/plans.md` (see the Consolidation Stubs section at the bottom for the 2026-07-12 batch)._
@@ -33,6 +33,7 @@ _These are backlog items that don't currently have a written plan. Historical re
 
 ### Standalone
 - [ ] Watermark artwork
+- [ ] Visual-baseline spec is capture-only: `tests/visual-baseline.spec.js` rewrites all `tests/baselines/*.png` on every `npm test` (no image comparison; bubble physics makes index captures pixel-nondeterministic), so the tree dirties on every run. Decide: keep the git-diff-plus-visual-inspection model and live with churn, or move to a compare-based gate (e.g. `toHaveScreenshot` with animation masking + explicit update flag). Discovered 2026-07-14 (Entry 076).
 
 ### Architecture remediation follow-ups (deferred from 2026-07-01)
 - [x] `srcset` / `@2x` variants for project + gallery thumbnails — done 2026-07-13: 25 generated variants + `srcset`/`sizes`/`width`/`height` on home cards and gallery grid (Entry 073)
