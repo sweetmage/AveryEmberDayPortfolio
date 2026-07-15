@@ -14,9 +14,10 @@ export default function Footer() {
             <li>
               <Link href="/gallery/">Gallery</Link>
             </li>
+            {/* Hidden until Netlify form detection is enabled (LOGBOOK Entry 077):
             <li>
               <Link href="/contact/">Contact</Link>
-            </li>
+            </li> */}
           </ul>
         </div>
         <div className="brand-footer-connect">

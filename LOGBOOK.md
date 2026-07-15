@@ -1,3 +1,26 @@
+## Entry 078 — 2026-07-15
+
+**Agent:** Claude Fable 5 (vesper)
+**Cycle:** contact-link-hide
+**Task:** User: keep the contact page deployed but hide its nav/footer links until Netlify form detection is enabled.
+
+### Changes
+
+- `Nav.tsx`: Contact entry commented out of `navLinks` (re-enable note points here).
+- `Footer.tsx`: Contact `<li>` commented out. Page stays live at `/contact/` by direct URL; footer ConnectLinks (email/LinkedIn/GitHub) unchanged, so the About section's "links below" line still holds.
+- Re-baselined all 40 captures (nav row changed on every page); adjudicated index 360 dark + 1440 light: three links render clean, no wrap, footer correct.
+
+### Verification
+
+- `npm test` 45/45 green.
+- Post-deploy: nav/footer HTML has no `/contact/` link on any page; `/contact/` itself still 200.
+
+### Risks / Notes
+
+- Re-enable = uncomment both blocks, re-baseline, redeploy — after the Netlify Forms toggle + test submission (Entry 077 instructions).
+
+---
+
 ## Entry 077 — 2026-07-15
 
 **Agent:** Claude Fable 5 (vesper, shxdowloop)

@@ -7,7 +7,8 @@ const navLinks = [
   { href: '/', label: 'Home' },
   { href: '/projects/', label: 'Projects' },
   { href: '/gallery/', label: 'Gallery' },
-  { href: '/contact/', label: 'Contact' },
+  // Hidden until Netlify form detection is enabled (LOGBOOK Entry 077):
+  // { href: '/contact/', label: 'Contact' },
 ];
 
 export default function Nav() {
