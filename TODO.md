@@ -2,7 +2,7 @@
 
 ## Active Plans
 
-- `docs/plans/2026-07-14-nav-restructure.md` — Top nav becomes Home / Projects / Gallery / Contact; landing drops the Work section; new tabbed `/projects/` page (Brand + History of Mistrust, hash deep-links, 301 redirects for old URLs); new `/contact/` page with Netlify form + links. **Status:** Complete 2026-07-14 (Entry 075, commits 94664d6 → 7bcc45a; wrap-up Entry 076). Remaining deploy-gated: Netlify form-detection toggle + redirect verification after the production push.
+- `docs/plans/2026-07-14-nav-restructure.md` — Top nav becomes Home / Projects / Gallery / Contact; landing drops the Work section; new tabbed `/projects/` page (Brand + History of Mistrust, hash deep-links, 301 redirects for old URLs); new `/contact/` page with Netlify form + links. **Status:** Complete — implemented 2026-07-14 (Entry 075), deployed + live-verified 2026-07-15 (Entry 077). Remaining: enable Netlify form detection (UI toggle, user step) + one test submission.
 - `docs/plans/2026-07-13-srcset-variants.md` — srcset/@2x variants for project + gallery thumbnails. **Status:** Complete 2026-07-13 (Entry 073), committed `f63671d` (local, unpushed).
 - `docs/plans/2026-07-12-motion-load-perf.md` — Reduce time-to-motion / time-to-interactive on the Next.js site (bubble engine defer, rAF micro-opts, dead-CSS trim, LCP image hints, reduced-motion for smooth-scroll). **Status:** Deployed to production 2026-07-13 (LOGBOOK Entry 072, commits 249b1b4 + 62ff597).
 

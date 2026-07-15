@@ -1,3 +1,27 @@
+## Entry 077 — 2026-07-15
+
+**Agent:** Claude Fable 5 (vesper, shxdowloop)
+**Cycle:** nav-restructure-deploy
+**Task:** Merge wrap-up branch, push to production, verify the nav restructure live.
+
+### Changes
+
+- Fast-forward merged `shxdowloop/2026-07-14/nav-restructure-wrapup` into `portfoliowebsite` (`f63671d` → `5f035e1`); deleted the loop branch local + remote.
+- Pushed `portfoliowebsite` to origin (8 commits: nav restructure stages, srcset variants, wrap-up) — Netlify production deploy.
+
+### Verification (live, averyemberday.com)
+
+- `/contact/` and `/projects/` → 200; both project bodies, `role="tablist"`, and page-level `#lightbox` present in `/projects/` HTML.
+- 301 redirects preserve hash targets: `/projects/brand-avery-ember-day/` → `/projects/#brand`, `/projects/history-of-mistrust/` → `/projects/#history-of-mistrust`.
+- Home has zero `id="work"` sections; nav + footer each link `/projects/`, `/gallery/`, `/contact/`.
+- Contact form markup live: `data-netlify="true"`, `netlify-honeypot="bot-field"`, hidden `form-name`.
+
+### Risks / Notes
+
+- **One user step remains:** enable form detection (Netlify → Site configuration → Forms) so the contact POST registers — markup alone 404s without it. Then submit a test message once.
+
+---
+
 ## Entry 076 — 2026-07-14
 
 **Agent:** Claude Fable 5 (vesper, shxdowloop)
