@@ -1,6 +1,4 @@
 import { test, expect } from '@playwright/test';
-import * as fs from 'fs';
-import * as path from 'path';
 
 const BASE_URL = 'http://localhost:3001';
 
@@ -15,12 +13,37 @@ const PAGES = [
 const BREAKPOINTS = [360, 768, 1024, 1440];
 const THEMES = ['light', 'dark'];
 
-const BASELINE_DIR = path.join(process.cwd(), 'tests', 'baselines');
-
-if (!fs.existsSync(BASELINE_DIR)) {
-  fs.mkdirSync(BASELINE_DIR, { recursive: true });
-}
-
+/**
+ * Visual regression gate.
+ *
+ * This suite COMPARES against committed snapshots — it does not merely capture.
+ * Snapshots live in `visual-baseline.spec.js-snapshots/` (Playwright's own
+ * convention) so that diffs, `--update-snapshots`, and the actual/expected/diff
+ * artifacts in `test-results/` all work without custom plumbing.
+ *
+ * To accept intentional visual changes:
+ *
+ *     npm test -- --update-snapshots
+ *
+ * Review the regenerated PNGs before committing them. An unreviewed
+ * `--update-snapshots` defeats the entire point of the gate.
+ *
+ * Determinism: reduced motion makes captures reproducible without masking
+ * anything. The bubble engine returns before creating a single bubble under
+ * that media query (`public/scripts/bubbles.js:13`), and `brand.css` already
+ * zeroes its own animations there. That costs coverage of the purely
+ * decorative bubble layer — which was never meaningfully comparable, since the
+ * bubbles are randomly seeded and continuously in motion — and keeps full
+ * pixel coverage of every element that actually matters.
+ *
+ * NOTE: reduced motion is applied via `page.emulateMedia()`, NOT via
+ * `test.use({ reducedMotion })`. On Playwright 1.61.1 the declarative option
+ * is silently ignored for `reducedMotion` specifically — verified by probe:
+ * `colorScheme` and `viewport` from the same `test.use` call both applied
+ * while `matchMedia('(prefers-reduced-motion: reduce)')` still reported
+ * false, leaving the bubble engine running and captures unstable. The runtime
+ * API works. Do not "simplify" this back into `test.use`.
+ */
 for (const page of PAGES) {
   for (const width of BREAKPOINTS) {
     for (const theme of THEMES) {
@@ -28,25 +51,20 @@ for (const page of PAGES) {
         test.beforeEach(async ({ context }) => {
           await context.addInitScript((t) => {
             localStorage.setItem('theme', t);
-            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-            const resolved = t || (prefersDark ? 'dark' : 'light');
-            document.documentElement.setAttribute('data-theme', resolved);
+            document.documentElement.setAttribute('data-theme', t);
           }, theme);
         });
 
         test('visual baseline', async ({ page: p }) => {
+          await p.emulateMedia({ reducedMotion: 'reduce', colorScheme: theme });
           await p.setViewportSize({ width, height: 900 });
           await p.goto(`${BASE_URL}${page.url}`, { waitUntil: 'networkidle' });
 
-          // Wait for bubble physics and fonts to settle
-          await p.waitForTimeout(1500);
-
-          // For mistrust tab deep-link, ensure the tab is active before capture
+          // For the mistrust tab deep-link, ensure the tab is active before capture.
           if (page.name === 'projects-mistrust') {
             const mistrustTab = p.locator('button[aria-controls="panel-history-of-mistrust"]');
             if (await mistrustTab.count()) {
               await mistrustTab.click();
-              await p.waitForTimeout(300);
             }
           }
 
@@ -72,22 +90,19 @@ for (const page of PAGES) {
             // the decode explicitly.
             await Promise.allSettled(inLayout.map((img) => (img.decode ? img.decode() : null)));
           });
-          await p.waitForTimeout(300);
 
-          const screenshotPath = path.join(
-            BASELINE_DIR,
-            `${page.name}_${width}_${theme}.png`
-          );
+          // Webfonts shift metrics on late swap; wait for them explicitly
+          // rather than sleeping and hoping.
+          await p.evaluate(() => document.fonts.ready);
 
-          await p.screenshot({
-            path: screenshotPath,
+          await expect(p).toHaveScreenshot(`${page.name}_${width}_${theme}.png`, {
             fullPage: true,
+            animations: 'disabled',
+            caret: 'hide',
+            // Tight enough to catch a colour/spacing regression, loose enough
+            // to survive sub-pixel text rasterisation differences.
+            maxDiffPixelRatio: 0.002,
           });
-
-          // Verify file was written
-          expect(fs.existsSync(screenshotPath)).toBe(true);
-          const stats = fs.statSync(screenshotPath);
-          expect(stats.size).toBeGreaterThan(1024);
         });
       });
     }

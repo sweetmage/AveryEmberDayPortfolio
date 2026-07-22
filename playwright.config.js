@@ -12,8 +12,12 @@ export default defineConfig({
   },
   webServer: [
     {
-      command: 'npx serve . -l 3000',
-      url: 'http://localhost:3000',
+      // Legacy static site. Deliberately NOT on 3000: `next dev` defaults to
+      // that port, and with reuseExistingServer the suite would silently adopt
+      // a running dev server and test the Next app while believing it was
+      // testing the legacy site.
+      command: 'npx serve . -l 4321',
+      url: 'http://localhost:4321',
       reuseExistingServer: !process.env.CI,
       timeout: 120 * 1000,
     },
