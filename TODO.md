@@ -34,6 +34,7 @@ _These are backlog items that don't currently have a written plan. Historical re
 
 ### Standalone
 - [ ] Watermark artwork
+- [ ] **Run the visual gate in CI.** The gate is now real (Entry 081) but opt-in — `netlify.toml` runs `next build` + publish with no test step, so a visual regression deploys unchallenged if `npm test` is skipped locally. **Blocked on a decision:** snapshots are `-chromium-win32` suffixed, so a Linux CI runner cannot reuse them. Options are (a) regenerate a Linux snapshot set and commit both, (b) run CI in a Windows runner, or (c) containerize capture so one platform is canonical. Raised by the Entry 081 shippability review.
 - [x] Visual-baseline spec is capture-only — **done 2026-07-22** (Entry 081): migrated to `toHaveScreenshot()` with reduced-motion determinism and `--update-snapshots`; tree now stays clean. Also fixed two defects found while proving the gate could fail: Playwright's default per-pixel `threshold` was too loose to catch a whole-theme colour shift, and `reuseExistingServer` was skipping `next build` so the suite graded a stale `out/`.
 
 ### Architecture remediation follow-ups (deferred from 2026-07-01)

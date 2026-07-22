@@ -44,7 +44,18 @@ Failures were 100% dark-theme captures, matching the dark-only edit — specific
 
 ### Helper route
 
-Main agent throughout. Nano/native dispatch not used: the whole task is one tightly-coupled test+config surface where every step depended on the previous run's empirical result, so splitting it would have cost more in integration than it saved. Binding usage 30% at preflight (session 30% / weekly 17%), well below the 80% native ban — routing was a judgement call, not a usage constraint. Gated preflight + two structured questions (baseline layout, dirty-PNG handling) answered by the user before branch creation.
+Implementation: main agent throughout. The whole task is one tightly-coupled test+config surface where every step depended on the previous run's empirical result, so splitting it would have cost more in integration than it saved. Binding usage 30% at preflight (session 30% / weekly 17%), well below the 80% native ban — routing was a judgement call, not a usage constraint. Gated preflight + two structured questions (baseline layout, dirty-PNG handling) answered before branch creation.
+
+Shippability review: pro nano-agent. First dispatch used `nano-agent.sh`, which refuses to run from Git Bash on Windows — the PowerShell wrapper is required on this host. Second dispatch (OpenCode, qwen3.7-plus) wedged with the known `model-probe:timeout` + bare-startup-line signature. Retry on the **kilo** route succeeded and returned a substantive review. Native subagents were not used (session-level directive); the main agent performed its own full diff review regardless.
+
+### Review outcome
+
+Verdict: real compare-based gate, low flakiness risk, determinism measures "thorough and battle-documented". Four residual risks raised:
+
+1. **No CI step** — the gate is opt-in; `netlify.toml` deploys without running it. Accepted as the biggest remaining gap and deferred to `TODO.md` with its blocker named (win32-suffixed snapshots can't be reused by a Linux runner).
+2. **Platform-locked snapshots** — same blocker as (1); already recorded as a known limitation.
+3. **`--update-snapshots` review is unenforced** — inherent to the tool; documentation is the only available lever and is now prominent in `AGENTS.md` and the spec header. Accepted.
+4. **A reused server on 3001 could serve a different directory** — assessed as *loud*, not silent: a different directory yields wildly different screenshots and mass failures, which is the opposite of blindness. No config change made; recorded as a deliberate disagreement on severity.
 
 ### Risks / Notes
 
