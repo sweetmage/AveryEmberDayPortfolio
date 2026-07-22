@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import BubbleLogo from './BubbleLogo';
 
 const navLinks = [
   { href: '/', label: 'Home' },
@@ -27,15 +28,7 @@ export default function Nav() {
     const next = current === 'light' ? 'dark' : 'light';
     document.documentElement.setAttribute('data-theme', next);
     localStorage.setItem('theme', next);
-
-    // Swap nav logo
-    const navLogo = document.querySelector('.brand-nav-logo img') as HTMLImageElement | null;
-    if (navLogo) {
-      navLogo.src =
-        next === 'light'
-          ? '/images/icons/BubbleLogo/bubbleLogo-black-notxt.svg'
-          : '/images/icons/BubbleLogo/bubbleLogo-white-notxt.svg';
-    }
+    // Logos are inline SVG using currentColor — they follow the theme with no swap.
   }
 
   return (
@@ -45,12 +38,7 @@ export default function Nav() {
           href="/"
           className="brand-nav-logo whitespace-nowrap text-[clamp(15px,4.2vw,20px)]"
         >
-          <img
-            src="/images/icons/BubbleLogo/bubbleLogo-white-notxt.svg"
-            alt=""
-            width={32}
-            height={32}
-          />
+          <BubbleLogo notxt size={32} />
           <span className="hidden sm:inline">Avery Ember Day</span>
         </Link>
 

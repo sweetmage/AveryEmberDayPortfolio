@@ -39,7 +39,13 @@ Do NOT use these in `bash` tool calls (they are PowerShell-specific and often fa
 
 `npm run css:watch` — CSS watch
 
-`npm run serve` — local dev server on :8080
+`npm run dev` — Next.js dev server on :3000 (hot reload; this is the real app)
+
+`npm run build:next` — production static export → `out/`
+
+> **Never run `build:next` while `npm run dev` is live.** `distDir` is `out`, so the build deletes the running dev server's runtime and every route starts 500ing with `ENOENT .../out/routes-manifest.json`. Stop dev first, build, then restart dev. (Hit 2026-07-22, Entry 080.)
+
+`npm run serve` — serves the repo root on :8080 (**legacy static site only** — not the Next.js app)
 
 `npm test` / `npx playwright test` — smoke test + 40 visual baselines (`tests/*.spec.js`; baselines self-refresh, so manual visual review is the real gate)
 
@@ -84,16 +90,16 @@ In Node.js scripts, load with `import 'dotenv/config'` (or `require('dotenv').co
 
 ## Tech Stack
 
-- Vanilla HTML/JS, **pages authored in Tailwind v4 utility classes** (converted 2026-07-09; no framework — migration pending user decision)
+- **Next.js 15 static export** (`app/` router, migrated 2026-07-12, Entries 066–068), pages authored in Tailwind v4 utility classes. The legacy root `index.html` site is retained but not deployed
 - CSS pipeline: `app.css` → compiled `style.css` (the only stylesheet pages link). `brand.css` (tokens, keyframes, component visuals) is imported into the `components` cascade layer so utilities can override it — **never re-add a separate `brand.css` <link>**
 - `src/css/tailwind-preset.css` bridges `--brand-*` tokens to Tailwind theme names (`text-text`, `bg-surface-1`, `border-line`, `text-accent`, …); `src/css/site.css` holds only reset, base typography, logo theme-swaps, and `#return-to-top`
 - `dark:` variant is keyed to `[data-theme="dark"]` (set by the inline head script + theme toggle), not `prefers-color-scheme`
 - Physics engine: `scripts/bubbles.js` (DOM-based). Exclusion zones come from `DEFAULT_EXCLUSIONS` (includes the semantic `.bubble-exclude` marker class), `HOME_EXCLUSIONS` (index-only), and per-page `data-exclusions` on `.brand-bubbles-global`. Scrolling stirs the global-layer bubbles (`SCROLL_STIR`). `window.__bubbleEngine` is exposed for testing
-- Nav: **Work + About only** (plain anchors — no submenu, Contact link, Hire Me CTA, or hamburger)
+- Nav: **Home / Projects / Gallery / Contact** (nav restructure 2026-07-14, Entry 075 — no submenu, Hire Me CTA, or hamburger). Contact is temporarily commented out of nav + footer pending the Netlify Forms toggle (Entry 078)
 
 ## Deploy
 
-- Netlify publishes the repo as-is (`publish = "."`, **no build command**) — the committed `style.css` is what ships
+- Netlify runs `next build` and publishes the static export (`publish = "out"`); the committed `style.css` only serves the undeployed legacy root site
 - `netlify.toml` CSP pins sha256 hashes of the inline theme scripts; if an inline `<script>` changes, recompute and update the hashes or theme init breaks in production
 
 ## File Conventions

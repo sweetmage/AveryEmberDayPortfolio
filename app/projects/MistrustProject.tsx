@@ -3,16 +3,16 @@ export default function MistrustProject() {
     <>
       {/* Hero */}
       <div className="project-hero mx-auto max-w-(--brand-content-max) px-6 pt-20 pb-12">
-        <h2 className="project-title mb-4 font-display text-[clamp(2rem,5vw,3.5rem)] leading-[1.1] text-text border-none p-0 normal-case tracking-normal font-normal">
+        <h3 className="project-title mb-4 font-display text-[clamp(1.5rem,3.5vw,2.25rem)] leading-[1.1] text-text border-none p-0 normal-case tracking-normal font-normal">
           A History of Mistrust
-        </h2>
+        </h3>
       </div>
 
       {/* Description */}
       <section className="project-section mx-auto max-w-(--brand-content-max) px-6 pb-20">
-        <h3 className="section-title mb-8 border-none p-0 text-left font-heading text-2xl font-semibold normal-case tracking-normal text-ir-4">
+        <h4 className="section-title mb-8 border-none p-0 text-left font-heading text-xl font-semibold normal-case tracking-normal text-ir-4">
           Description
-        </h3>
+        </h4>
         <p className="project-desc m-0 max-w-[640px] font-body text-base leading-[1.7] text-text-soft">
           A long form Instagram carousel series with 3 sets of 10 slides examining
           the roots and ripple effects of medical mistrust, spanning the Tuskegee
@@ -25,9 +25,9 @@ export default function MistrustProject() {
 
       {/* Per-set slideshows */}
       <section className="project-section mx-auto max-w-(--brand-content-max) px-6 pb-20">
-        <h3 className="section-title mb-8 border-none p-0 text-left font-heading text-2xl font-semibold normal-case tracking-normal text-ir-4">
+        <h4 className="section-title mb-8 border-none p-0 text-left font-heading text-xl font-semibold normal-case tracking-normal text-ir-4">
           Slideshow
-        </h3>
+        </h4>
         <div className="set-slideshows">
           <div className="set-slideshow" data-set="1">
             <p className="set-ss-label">Set 1 · Slides 1–10</p>
@@ -70,9 +70,9 @@ export default function MistrustProject() {
 
       {/* Moodboard & Storyboard */}
       <section className="project-section mx-auto max-w-(--brand-content-max) px-6 pb-20">
-        <h3 className="section-title mb-8 border-none p-0 text-left font-heading text-2xl font-semibold normal-case tracking-normal text-ir-4">
+        <h4 className="section-title mb-8 border-none p-0 text-left font-heading text-xl font-semibold normal-case tracking-normal text-ir-4">
           Moodboard & Storyboard
-        </h3>
+        </h4>
         <div className="supporting-grid grid grid-cols-1 gap-6 min-[600px]:grid-cols-2">
           <div className="supporting-card overflow-hidden rounded-lg border border-line bg-surface-1 [&_img]:block [&_img]:h-auto [&_img]:w-full">
             <img
@@ -103,9 +103,9 @@ export default function MistrustProject() {
 
       {/* All Slides */}
       <section className="project-section mx-auto max-w-(--brand-content-max) px-6 pb-20">
-        <h3 className="section-title mb-8 border-none p-0 text-left font-heading text-2xl font-semibold normal-case tracking-normal text-ir-4">
+        <h4 className="section-title mb-8 border-none p-0 text-left font-heading text-xl font-semibold normal-case tracking-normal text-ir-4">
           All Slides
-        </h3>
+        </h4>
         <div className="all-sets-full flex w-full flex-col gap-6">
           <div
             className="carousel-set relative w-full cursor-pointer overflow-hidden rounded-lg border border-line bg-surface-1 transition-colors hover:border-accent-dim [&_img]:block [&_img]:h-auto [&_img]:w-full"
@@ -145,9 +145,9 @@ export default function MistrustProject() {
 
       {/* Sources */}
       <section className="project-section mx-auto max-w-(--brand-content-max) px-6 pb-20">
-        <h3 className="section-title mb-8 border-none p-0 text-left font-heading text-2xl font-semibold normal-case tracking-normal text-ir-4">
+        <h4 className="section-title mb-8 border-none p-0 text-left font-heading text-xl font-semibold normal-case tracking-normal text-ir-4">
           Sources & Bibliography
-        </h3>
+        </h4>
         <ul className="sources-list m-0 list-none gap-x-12 p-0 columns-1 min-[700px]:columns-2 min-[1100px]:columns-3 [&_a]:break-words [&_a]:text-text-soft [&_a]:underline [&_a]:underline-offset-2 [&_a:hover]:text-accent [&_li]:mb-3 [&_li]:break-inside-avoid [&_li]:pl-6 [&_li]:-indent-6 [&_li]:font-body [&_li]:text-[0.82rem] [&_li]:leading-[1.55] [&_li]:text-text-muted">
           <li>AIDSVu. (2024). <em>AIDSVu Releases 2024 PrEP Use Data</em>. Emory University Rollins School of Public Health. <a href="https://aidsvu.org/news-updates/aidsvu-releases-2024-prep-use-data-showing-growing-use-across-the-u-s/" target="_blank">Link</a></li>
           <li>Alsan, M., Garrick, O., & Graziani, G. C. (2019). Does Diversity Matter for Health? Experimental Evidence from Oakland. <em>American Economic Review, 109</em>(12), 4071-4111. <a href="https://pubs.aeaweb.org/doi/10.1257/aer.20181446" target="_blank">Link</a></li>

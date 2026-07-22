@@ -1,3 +1,85 @@
+## Entry 080 — 2026-07-22
+
+**Agent:** Claude Opus 4.8 (shxdowflow)
+**Cycle:** hero-logo-currentcolor
+**Task:** User: "fix the hero logo color in dark mode." Same session also covered header spacing tightening and projects title/tab alignment (live iteration, undocumented by request).
+
+### Root cause
+
+The logo was not mis-swapped — the correct asset loaded in both themes. The defect was that `bubbleLogo-white.svg` is hard-coded `fill="white"` (`#FFFFFF`) while the dark-theme token is `--brand-text: #f3f3ee` (warm off-white). The logo was the only pure-white element on `#0A0A0A`, reading colder than everything around it. Same inversion in light: pure `#000000` vs the `#1C1C1A` token.
+
+### Changes
+
+- `app/components/BubbleLogo.tsx` (new): the mark inlined as a React component painted with `fill="currentColor"`, `notxt` prop for the wordless nav variant. Inlining is required — an SVG referenced through `<img src>` is an isolated document and **cannot** see the host page's `color`, so `currentColor` is inert there. The `mask` fills stay literal white/black (alpha-channel values, not visible color).
+- `app/page.tsx` / `app/components/Nav.tsx`: `<img>` → `<BubbleLogo>`; nav `toggleTheme()` logo `src` rewrite deleted.
+- `public/scripts/theme-init.js`: pre-paint logo `src` swaps deleted. These were **dead code already** — the script loads `beforeInteractive`, so `document.querySelector('.hero-logo')` ran before body parse and always returned `null`.
+- `src/css/site.css`: four `content: url()` theme-swap blocks replaced by `color: var(--brand-text)` on `.hero-logo` / `.brand-nav-logo` (−25 lines).
+- `app/page.tsx`: dropped `text-black dark:text-white` from the hero `<h1>` — those utilities were overriding `.brand-text-hero`'s own `color: var(--brand-text)`, so the wordmark rendered pure `#fff`/`#000` and no longer matched the corrected logo directly above it. Connected defect, fixed in-run.
+
+Net: one asset instead of two per variant, two fewer network requests, and the hero logo now also responds to the live theme toggle (previously only the nav logo did — the hero was never swapped on toggle at all).
+
+### Verification
+
+- Computed-color probe (Playwright, both themes): logo / wordmark / nav all `rgb(243,243,238)` dark and `rgb(28,28,26)` light — all three agree on the token.
+- Live toggle dark→light flips the hero logo (`#f3f3ee` → `#1C1C1A`); previously unhandled.
+- `next build` clean, types valid, 8/8 static pages exported.
+- `npm test` **not** run: `tests/visual-baseline.spec.js` is capture-only and rewrites all 40 baseline PNGs every run (see Entry 077 note), so it is not a regression gate and would only add churn to an already-dirty tree.
+
+### Helper route
+
+Main agent throughout — diagnosis was a short evidence chain (asset inspection → computed-style probe → screenshot) and the fix is a small design-judgment-bound diff; no nano/native dispatch warranted. One structured question to the user on fix approach (currentColor refactor vs. asset recolor). No architecture map in repo.
+
+### Also shipped in this commit (inherited uncommitted work, reviewed 2026-07-22)
+
+The tree had carried uncommitted work from prior sessions. Reviewed before pushing; all of it went out in the same commit:
+
+- **Heading hierarchy + type scale** (`contact/`, `contact/thanks/`, `gallery/`, `BrandProject.tsx`, `MistrustProject.tsx`): visible headings demoted to their correct levels with `sr-only` h1s added, sizes stepped down (`3.5rem`→`3rem`, `text-2xl`→`text-xl`). Removes heading-level skips and gives every page exactly one h1 — an accessibility fix, not just cosmetics.
+- **Nav chrome flattening** (`brand.css`, `site.css`): the translucent gradient nav, `backdrop-filter: blur(12px)`, and iridescent scroll-underline (`.brand-nav::after` + `[data-scrolled]`) removed in favor of solid `--brand-bg` + a 1px bottom border; theme toggle outlined→filled; nav links border→background fill. **This was undocumented by the session that wrote it** — recorded here so the design change has a history entry. `Script.js`'s `data-scrolled` toggle is now inert for styling purposes.
+- **Dev-only CSP fix** (`next.config.ts`): dev gets `'unsafe-eval'` because webpack HMR uses `eval()` and the strict CSP was silently killing all client JS in dev (theme-init never ran, so `dark:` variants never applied). Production CSP is byte-identical to before, and `headers()` does not apply to static export at all.
+- Auto-generated/config: `tsconfig.json` reformat, `next-env.d.ts` tracking `distDir: out`, `docs/sync/local-tasks.json`.
+
+The 40 regenerated `tests/baselines/*.png` were **deliberately excluded** — capture-only churn, and the baseline gate itself is the next work item.
+
+### Risks / Notes
+
+- **`next build` while `next dev` is live breaks the dev server**: `distDir` is `out`, so the production build deletes the running server's runtime and every route 500s with `ENOENT .../out/routes-manifest.json`. Stop dev before building. Hit this mid-run; recovered by restarting dev.
+- `src/css/components.css` still carries duplicate legacy `.hero-logo` / `.brand-nav-logo` rules but is **not** in the import graph (`globals.css` pulls only `brand.css`, `tailwind-preset.css`, `site.css`) — left untouched.
+- Legacy static site (`index.html`, `Script.js`, `projects/*.html`, `gallery/gallery.html`) still references the old swap and black/white assets; not deployed, left untouched.
+- `bubbleLogo-white*.svg` / `bubbleLogo-black*.svg` retained — still used by the BrandProject showcase grid and the `layout.tsx` favicon (a favicon cannot use `currentColor`).
+- Working tree remains uncommitted (production branch; commit/push needs explicit go-ahead).
+
+---
+
+## Entry 079 — 2026-07-15
+
+**Agent:** Claude Fable 5 (sable, shxdowflow)
+**Cycle:** projects-vertical-tabs
+**Task:** User: projects tabs become a vertical tab bar beside the content ("tabs need to be horizontal" = rail + panel side by side; clarified via structured question); remove the gallery "← Home" back link.
+
+### Changes
+
+- `ProjectTabs.tsx`: at `lg+` (1024px) the tablist is a sticky vertical rail (`w-52`, `top-16` clearing the 44px sticky nav) left of the panels (`flex-1 min-w-0`); below `lg` the horizontal pill row on top is unchanged. `aria-orientation` follows the breakpoint via `matchMedia`; arrow-key handler accepts both axes. Plan: `docs/plans/2026-07-15-projects-vertical-tabs.md`.
+- `BrandProject.tsx`: palette swatches capped at `max-w-[170px]` — pre-existing defect where a wrapped orphan swatch (`flex-1`) stretched full-row (visible at 768 before this change; the rail exposed it at 1024 too).
+- `app/gallery/page.tsx`: "← Home" back link + unused `next/link` import removed (nav has Home).
+- `AGENTS.md`: three stale lines corrected — tech stack (Next.js 15 static export, not "no framework"), nav roster (Home/Projects/Gallery/Contact, not "Work + About"), deploy (`next build` → `publish = "out"`, not `publish = "."`).
+- Baselines: kept fresh captures for changed pages only (projects/projects-mistrust/gallery, 24 files, adjudicated); restored index/contact/patriots to `144a190` (churn only).
+
+### Verification
+
+- `npm test` green against the final tree (42/45 + the 3 interrupted captures re-run green; total = all 45). Two earlier runs hit random `UNKNOWN: open` errors writing baseline PNGs — root cause: a concurrent agent session (Entry 078, vesper) was re-baselining the same files at the same time, not Defender (no new detections).
+- Adjudicated captures: rail + active pill at 1440/1024 light+dark; hash deep-link activates History of Mistrust in the rail; pills stay one row at 768/360; palette orphan swatch fixed at 1024/768; gallery header leads with no back link.
+
+### Helper route
+
+Main agent implemented (small, design-judgment-bound diff — Entry 076 precedent); flash/pro nano preflight warmed. Pro nano shippability review: OpenCode route wedged on the known `model-probe:timeout` pattern, killed past the 6-min floor; Kilo retry (`NANO_AGENTS_RUNTIME=kilo`) also stalled at `readonly-agent:ready`. Nano retries exhausted → native fallback reviewer (feature-dev:code-reviewer @ opus; pinned oracle absent from this session's registry): SHIPPABLE, one doc nit (Contact annotation in AGENTS.md nav line) — fixed. Binding usage 64% weekly at preflight, below the 80% native ban.
+
+### Risks / Notes
+
+- Working tree intentionally holds the full change set uncommitted (commit/push withheld — production branch, needs explicit user go-ahead).
+- Concurrent-session lesson: two live sessions re-baselining `tests/baselines/` collide with file-lock errors; coordinate before running `npm test` in parallel sessions.
+
+---
+
 ## Entry 078 — 2026-07-15
 
 **Agent:** Claude Fable 5 (vesper)

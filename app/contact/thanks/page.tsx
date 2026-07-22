@@ -12,7 +12,7 @@ export const metadata: Metadata = {
 export default function ThanksPage() {
   return (
     <main id="main" className="mx-auto flex max-w-(--brand-content-max) flex-col items-center justify-center px-6 pt-20 pb-12 text-center">
-      <h1 className="mb-4 font-display text-[clamp(2rem,5vw,3.5rem)] leading-[1.1] text-text">
+      <h1 className="mb-4 font-display text-[clamp(2rem,5vw,3rem)] leading-[1.1] text-text">
         Thank You
       </h1>
       <p className="m-0 max-w-[480px] font-body text-base leading-[1.7] text-text-soft">

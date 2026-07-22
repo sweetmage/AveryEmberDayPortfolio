@@ -2,6 +2,7 @@
 
 ## Active Plans
 
+- `docs/plans/2026-07-15-projects-vertical-tabs.md` — Projects tabs become a sticky vertical rail beside the content at `lg+` (pills on top below `lg`); gallery "← Home" back link removed; palette orphan-swatch stretch fixed; AGENTS.md stale lines corrected. **Status:** Complete — implemented + verified 2026-07-15 (Entry 079), committed + pushed to production 2026-07-22 (Entry 080).
 - `docs/plans/2026-07-14-nav-restructure.md` — Top nav becomes Home / Projects / Gallery / Contact; landing drops the Work section; new tabbed `/projects/` page (Brand + History of Mistrust, hash deep-links, 301 redirects for old URLs); new `/contact/` page with Netlify form + links. **Status:** Complete — implemented 2026-07-14 (Entry 075), deployed + live-verified 2026-07-15 (Entry 077). Contact nav/footer links hidden until forms work (Entry 078). Remaining: enable Netlify form detection (UI toggle, user step) + one test submission, then uncomment the links in `Nav.tsx`/`Footer.tsx` and re-baseline.
 - `docs/plans/2026-07-13-srcset-variants.md` — srcset/@2x variants for project + gallery thumbnails. **Status:** Complete 2026-07-13 (Entry 073), committed `f63671d` (local, unpushed).
 - `docs/plans/2026-07-12-motion-load-perf.md` — Reduce time-to-motion / time-to-interactive on the Next.js site (bubble engine defer, rAF micro-opts, dead-CSS trim, LCP image hints, reduced-motion for smooth-scroll). **Status:** Deployed to production 2026-07-13 (LOGBOOK Entry 072, commits 249b1b4 + 62ff597).

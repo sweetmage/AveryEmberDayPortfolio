@@ -27,6 +27,11 @@ export default function ProjectsPage() {
 
       <main id="main">
         <h1 className="sr-only">Projects</h1>
+        <section className="projects-header my-0 px-6 py-4 pb-2">
+          <h2 className="mt-1 border-none p-0 text-left font-display text-[clamp(2rem,5vw,3rem)] leading-[1.1] normal-case tracking-normal font-normal text-text [text-shadow:0_0_30px_rgba(217,154,255,0.20),0_0_60px_rgba(0,255,255,0.10)]">
+            Projects
+          </h2>
+        </section>
         <ProjectTabs />
       </main>
 

@@ -22,7 +22,7 @@ export const metadata: Metadata = {
 export default function ContactPage() {
   return (
     <main id="main" className="mx-auto max-w-(--brand-content-max) px-6 pt-20 pb-12">
-      <h1 className="mb-4 font-display text-[clamp(2rem,5vw,3.5rem)] leading-[1.1] text-text">
+      <h1 className="mb-4 font-display text-[clamp(2rem,5vw,3rem)] leading-[1.1] text-text">
         Contact
       </h1>
       <p className="m-0 max-w-[560px] font-body text-base leading-[1.7] text-text-soft">

@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "generatedAt": "2026-07-15T19:52:20.190Z",
+  "generatedAt": "2026-07-16T01:22:30.293Z",
   "source": "TODO.md",
   "tasks": [
     {
@@ -11,7 +11,7 @@
       "priority": "normal",
       "tags": [],
       "list": "Patriots motion graphics",
-      "sourceLine": 18
+      "sourceLine": 19
     },
     {
       "id": "open-task-threads-patriots-motion-graphics-save-new-files",
@@ -21,7 +21,7 @@
       "priority": "normal",
       "tags": [],
       "list": "Patriots motion graphics",
-      "sourceLine": 19
+      "sourceLine": 20
     },
     {
       "id": "open-task-threads-patriots-motion-graphics-add-project-overview-to-portfolio-patrio",
@@ -31,7 +31,7 @@
       "priority": "normal",
       "tags": [],
       "list": "Patriots motion graphics",
-      "sourceLine": 20
+      "sourceLine": 21
     },
     {
       "id": "open-task-threads-patriots-motion-graphics-display-final-project",
@@ -41,7 +41,7 @@
       "priority": "normal",
       "tags": [],
       "list": "Patriots motion graphics",
-      "sourceLine": 21
+      "sourceLine": 22
     },
     {
       "id": "open-task-threads-patriots-motion-graphics-patriots-project-card-thumbnail-imagespr",
@@ -51,7 +51,7 @@
       "priority": "normal",
       "tags": [],
       "list": "Patriots motion graphics",
-      "sourceLine": 22
+      "sourceLine": 23
     },
     {
       "id": "open-task-threads-gallery-tag-system-explicitly-deferred-by-user-2026-07-14-na-design-tag-taxonomy-groundwork-done-2026",
@@ -61,7 +61,7 @@
       "priority": "normal",
       "tags": [],
       "list": "Gallery tag system (explicitly deferred by user 2026-07-14 — nav restructure first)",
-      "sourceLine": 25
+      "sourceLine": 26
     },
     {
       "id": "open-task-threads-gallery-tag-system-explicitly-deferred-by-user-2026-07-14-na-implement-filter-ui-in-appgallerypagetsx",
@@ -71,7 +71,7 @@
       "priority": "normal",
       "tags": [],
       "list": "Gallery tag system (explicitly deferred by user 2026-07-14 — nav restructure first)",
-      "sourceLine": 26
+      "sourceLine": 27
     },
     {
       "id": "open-task-threads-gallery-tag-system-explicitly-deferred-by-user-2026-07-14-na-wire-tag-metadata-into-gallery-items",
@@ -81,7 +81,7 @@
       "priority": "normal",
       "tags": [],
       "list": "Gallery tag system (explicitly deferred by user 2026-07-14 — nav restructure first)",
-      "sourceLine": 27
+      "sourceLine": 28
     },
     {
       "id": "open-task-threads-gallery-tag-system-explicitly-deferred-by-user-2026-07-14-na-verify-responsive-layout-with-filter-bar",
@@ -91,7 +91,7 @@
       "priority": "normal",
       "tags": [],
       "list": "Gallery tag system (explicitly deferred by user 2026-07-14 — nav restructure first)",
-      "sourceLine": 28
+      "sourceLine": 29
     },
     {
       "id": "open-task-threads-history-of-mistrust-post-framework-polish-final-polish-on-the-continuous-horizonta",
@@ -101,7 +101,7 @@
       "priority": "normal",
       "tags": [],
       "list": "History of Mistrust — post-framework polish",
-      "sourceLine": 31
+      "sourceLine": 32
     },
     {
       "id": "open-task-threads-history-of-mistrust-post-framework-polish-standalone-viewer-page-with-all-canonica",
@@ -111,7 +111,7 @@
       "priority": "normal",
       "tags": [],
       "list": "History of Mistrust — post-framework polish",
-      "sourceLine": 32
+      "sourceLine": 33
     },
     {
       "id": "open-task-threads-standalone-watermark-artwork",
@@ -121,7 +121,7 @@
       "priority": "normal",
       "tags": [],
       "list": "Standalone",
-      "sourceLine": 35
+      "sourceLine": 36
     },
     {
       "id": "open-task-threads-standalone-visual-baseline-spec-is-capture-only-tes",
@@ -131,7 +131,7 @@
       "priority": "normal",
       "tags": [],
       "list": "Standalone",
-      "sourceLine": 36
+      "sourceLine": 37
     },
     {
       "id": "open-task-threads-architecture-remediation-follow-ups-deferred-from-2026-07-01-srcset-2x-variants-for-project-gallery-t",
@@ -141,7 +141,7 @@
       "priority": "normal",
       "tags": [],
       "list": "Architecture remediation follow-ups (deferred from 2026-07-01)",
-      "sourceLine": 39
+      "sourceLine": 40
     },
     {
       "id": "open-task-threads-architecture-remediation-follow-ups-deferred-from-2026-07-01-replace-generated-placeholder-imagesog-d",
@@ -151,7 +151,7 @@
       "priority": "normal",
       "tags": [],
       "list": "Architecture remediation follow-ups (deferred from 2026-07-01)",
-      "sourceLine": 40
+      "sourceLine": 41
     },
     {
       "id": "open-task-threads-architecture-remediation-follow-ups-deferred-from-2026-07-01-verify-zero-csp-console-violations-in-pr",
@@ -161,7 +161,7 @@
       "priority": "normal",
       "tags": [],
       "list": "Architecture remediation follow-ups (deferred from 2026-07-01)",
-      "sourceLine": 41
+      "sourceLine": 42
     }
   ]
 }

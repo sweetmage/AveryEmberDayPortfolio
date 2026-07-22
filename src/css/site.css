@@ -101,14 +101,12 @@ nav ul {
 nav ul li {
     display: inline;
     margin: 0 4px;
-    border: 1px solid var(--brand-border-mid);
+    background: var(--brand-surface-2);
     border-radius: var(--brand-radius-sm);
-    transition: border-color var(--brand-transition-fast),
-                background var(--brand-transition-fast);
+    transition: background var(--brand-transition-fast);
 }
 
 nav ul li:hover {
-    border-color: var(--brand-accent);
     background: var(--brand-accent-dim);
 }
 
@@ -136,7 +134,7 @@ main {
 }
 
 section {
-    margin: 3em 0 4em;
+    margin: 1.75em 0 2.25em;
 }
 
 /* ── Typography ──────────────────────────────────────────────────── */
@@ -157,7 +155,7 @@ h2 {
     text-align: left;
     padding: 0 0 0.6em;
     border-bottom: 1px solid var(--brand-border-mid);
-    margin-bottom: 1.5em;
+    margin-bottom: 0.9em;
 }
 
 h3 {
@@ -198,7 +196,9 @@ footer p {
     font-size: 0.85em;
 }
 
-/* ── Hero / nav logo theme swaps (content: url per theme) ────────── */
+/* ── Hero / nav logo ─────────────────────────────────────────────────
+   Both logos are inline SVG painted with currentColor, so they track the
+   theme through --brand-text with no asset swap. */
 .hero-logo {
     width: clamp(180px, 40vw, 300px);
     height: auto;
@@ -206,36 +206,11 @@ footer p {
     z-index: 1;
     display: block;
     margin: 0 auto 0.4em;
-}
-
-[data-theme="light"] .hero-logo {
-    content: url('/images/icons/BubbleLogo/bubbleLogo-black.svg');
-}
-
-@media (prefers-color-scheme: light) {
-    :root:not([data-theme="dark"]) .hero-logo {
-        content: url('/images/icons/BubbleLogo/bubbleLogo-black.svg');
-    }
-}
-
-[data-theme="light"] .brand-nav-logo {
     color: var(--brand-text);
 }
 
-@media (prefers-color-scheme: light) {
-    :root:not([data-theme="dark"]) .brand-nav-logo {
-        color: var(--brand-text);
-    }
-}
-
-[data-theme="light"] .brand-nav-logo img {
-    content: url('/images/icons/BubbleLogo/bubbleLogo-black-notxt.svg');
-}
-
-@media (prefers-color-scheme: light) {
-    :root:not([data-theme="dark"]) .brand-nav-logo img {
-        content: url('/images/icons/BubbleLogo/bubbleLogo-black-notxt.svg');
-    }
+.brand-nav-logo {
+    color: var(--brand-text);
 }
 
 /* ── Return to top (JS-coupled fixed widget) ─────────────────────── */

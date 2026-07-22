@@ -8,6 +8,15 @@ const nextConfig: NextConfig = {
     unoptimized: true,
   },
   async headers() {
+    // next.config's headers() only ever reaches `next dev` — the static
+    // export (`output: 'export'`) ignores it, and production headers come
+    // from netlify.toml instead. Dev mode's webpack HMR runtime uses eval(),
+    // so dev needs 'unsafe-eval' or the CSP silently kills all client JS
+    // (theme-init.js never sets data-theme, dark: variants never apply).
+    const scriptSrc =
+      process.env.NODE_ENV === 'production'
+        ? "script-src 'self' 'unsafe-inline';"
+        : "script-src 'self' 'unsafe-inline' 'unsafe-eval';";
     return [
       {
         source: '/(.*)',
@@ -34,7 +43,7 @@ const nextConfig: NextConfig = {
           },
           {
             key: 'Content-Security-Policy',
-            value: "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self'; connect-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'self';",
+            value: `default-src 'self'; ${scriptSrc} style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self'; connect-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'self';`,
           },
           {
             key: 'Link',

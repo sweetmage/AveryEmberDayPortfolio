@@ -1,5 +1,4 @@
 import type { Metadata } from 'next';
-import Link from 'next/link';
 
 export const metadata: Metadata = {
   title: 'Art Gallery — Avery Ember Day',
@@ -48,17 +47,11 @@ const gallerySizes = '(min-width: 1000px) 438px, (min-width: 768px) 46vw, 92vw';
 export default function GalleryPage() {
   return (
     <main id="main">
-      <Link
-        href="/"
-        className="back-link mb-6 inline-block border-b border-line-mid py-[0.3em] text-[0.85em] font-medium tracking-[0.04em] text-text-muted no-underline transition-colors hover:border-gold hover:text-gold"
-      >
-        &larr; Home
-      </Link>
-
+      <h1 className="sr-only">Art Gallery</h1>
       <section className="gallery-header py-8 pb-6">
-        <h1 className="mt-1 text-left font-display text-[clamp(1.6em,4vw,2.2em)] text-text [text-shadow:0_0_30px_rgba(217,154,255,0.20),0_0_60px_rgba(0,255,255,0.10)]">
+        <h2 className="mt-1 border-none p-0 text-left font-display text-[clamp(2rem,5vw,3rem)] leading-[1.1] normal-case tracking-normal font-normal text-text [text-shadow:0_0_30px_rgba(217,154,255,0.20),0_0_60px_rgba(0,255,255,0.10)]">
           Art Gallery
-        </h1>
+        </h2>
       </section>
 
       <section

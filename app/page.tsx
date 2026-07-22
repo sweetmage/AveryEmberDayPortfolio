@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import BubbleLogo from './components/BubbleLogo';
 
 export const metadata: Metadata = {
   title: 'Avery Ember Day — Brand & Visual Designer',
@@ -34,16 +35,8 @@ export default function HomePage() {
           <div className="brand-hero-blob brand-hero-blob-5" data-color="purple" />
         </div>
         <div className="brand-container brand-hero-content">
-          <img
-            src="/images/icons/BubbleLogo/bubbleLogo-white.svg"
-            alt="Avery Ember Day"
-            className="hero-logo"
-            width={160}
-            height={160}
-            fetchPriority="high"
-            decoding="async"
-          />
-          <h1 className="hero-name brand-text-hero relative z-1 mt-[0.2em] mb-[0.1em] font-display text-[clamp(1.6em,5vw,2.8em)] font-normal text-black dark:text-white">
+          <BubbleLogo label="Avery Ember Day" className="hero-logo" />
+          <h1 className="hero-name brand-text-hero relative z-1 mt-[0.2em] mb-[0.1em] font-display text-[clamp(1.6em,5vw,2.8em)] font-normal">
             Avery Ember Day
           </h1>
           <p className="hero-sub relative z-1 mt-[0.6em] bg-transparent p-0 font-heading text-base font-light tracking-[0.08em] uppercase text-text-soft">

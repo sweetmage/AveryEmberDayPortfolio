@@ -56,9 +56,9 @@ export default function BrandProject() {
   return (
     <>
       <div className="project-hero mx-auto max-w-(--brand-content-max) px-6 pt-20 pb-12">
-        <h2 className="project-title mb-4 font-display text-[clamp(2rem,5vw,3.5rem)] leading-[1.1] text-text border-none p-0 normal-case tracking-normal font-normal">
+        <h3 className="project-title mb-4 font-display text-[clamp(1.5rem,3.5vw,2.25rem)] leading-[1.1] text-text border-none p-0 normal-case tracking-normal font-normal">
           Avery Ember Day Brand
-        </h2>
+        </h3>
         <p className="project-desc m-0 max-w-[560px] font-body text-base leading-[1.7] text-text-soft">
           Complete personal brand identity system logos, color, type, and
           applications. Built to work across dark and light contexts with a
@@ -68,9 +68,9 @@ export default function BrandProject() {
 
       {/* Logo Variants */}
       <section className="project-section mx-auto max-w-(--brand-content-max) px-6 pb-20">
-        <h3 className="section-title mb-8 border-none p-0 text-left font-heading text-2xl font-semibold normal-case tracking-normal text-ir-4">
+        <h4 className="section-title mb-8 border-none p-0 text-left font-heading text-xl font-semibold normal-case tracking-normal text-ir-4">
           Logo Variants
-        </h3>
+        </h4>
         <div className="logo-grid grid grid-cols-[repeat(auto-fill,minmax(280px,1fr))] gap-4">
           {logoSwatches.map((swatch) => (
             <div
@@ -94,12 +94,12 @@ export default function BrandProject() {
 
       {/* Color Palette */}
       <section className="project-section mx-auto max-w-(--brand-content-max) px-6 pb-20">
-        <h3 className="section-title mb-8 border-none p-0 text-left font-heading text-2xl font-semibold normal-case tracking-normal text-ir-4">
+        <h4 className="section-title mb-8 border-none p-0 text-left font-heading text-xl font-semibold normal-case tracking-normal text-ir-4">
           Brand Palette
-        </h3>
+        </h4>
         <div className="palette-row mb-10 flex flex-wrap gap-3">
           {palette.map((color) => (
-            <div key={color.name} className="swatch flex min-w-[100px] flex-1 flex-col gap-2">
+            <div key={color.name} className="swatch flex min-w-[100px] max-w-[170px] flex-1 flex-col gap-2">
               <div className={`swatch-block h-[72px] rounded-md border border-line ${color.bg}`} />
               <span className="swatch-name font-body text-[0.8rem] font-medium text-text">
                 {color.name}
@@ -114,9 +114,9 @@ export default function BrandProject() {
 
       {/* Typography */}
       <section className="project-section mx-auto max-w-(--brand-content-max) px-6 pb-20">
-        <h3 className="section-title mb-8 border-none p-0 text-left font-heading text-2xl font-semibold normal-case tracking-normal text-ir-4">
+        <h4 className="section-title mb-8 border-none p-0 text-left font-heading text-xl font-semibold normal-case tracking-normal text-ir-4">
           Type System
-        </h3>
+        </h4>
         <div className="type-specimen flex flex-col gap-6 rounded-lg border border-line bg-surface-1 p-8">
           <div className="type-row flex flex-col gap-1 border-b border-line pb-6 last:border-b-0 last:pb-0">
             <span className="type-label font-body text-[0.72rem] tracking-[0.08em] uppercase text-text-muted">

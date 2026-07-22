@@ -28,6 +28,7 @@ function closeLightbox() {
 
 export default function ProjectTabs() {
   const [activeTab, setActiveTab] = useState<TabId>('brand');
+  const [isRail, setIsRail] = useState(false);
   const tablistRef = useRef<HTMLDivElement>(null);
   const initialized = useRef(false);
 
@@ -38,6 +39,16 @@ export default function ProjectTabs() {
     if (isValidHash(hash)) {
       setActiveTab(hash);
     }
+  }, []);
+
+  /* The tablist is a vertical rail at lg+ and a horizontal row below;
+     aria-orientation has to follow the breakpoint. */
+  useEffect(() => {
+    const mq = window.matchMedia('(min-width: 1024px)');
+    const update = () => setIsRail(mq.matches);
+    update();
+    mq.addEventListener('change', update);
+    return () => mq.removeEventListener('change', update);
   }, []);
 
   const switchTab = useCallback((id: TabId) => {
@@ -53,9 +64,9 @@ export default function ProjectTabs() {
   const handleKeyDown = useCallback(
     (e: React.KeyboardEvent<HTMLButtonElement>, index: number) => {
       let nextIndex = index;
-      if (e.key === 'ArrowRight') {
+      if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
         nextIndex = (index + 1) % TABS.length;
-      } else if (e.key === 'ArrowLeft') {
+      } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
         nextIndex = (index - 1 + TABS.length) % TABS.length;
       } else if (e.key === 'Home') {
         nextIndex = 0;
@@ -73,12 +84,13 @@ export default function ProjectTabs() {
   );
 
   return (
-    <>
+    <div className="lg:flex lg:items-start lg:gap-6 lg:px-6">
       <div
         ref={tablistRef}
         role="tablist"
         aria-label="Projects"
-        className="flex flex-wrap gap-2 px-6 pt-8 pb-4"
+        aria-orientation={isRail ? 'vertical' : 'horizontal'}
+        className="flex flex-wrap gap-2 px-6 pt-2 pb-4 lg:sticky lg:top-16 lg:w-52 lg:shrink-0 lg:flex-col lg:flex-nowrap lg:px-0 lg:pt-6 lg:pb-0"
       >
         {TABS.map((tab, i) => {
           const isActive = activeTab === tab.id;
@@ -92,7 +104,7 @@ export default function ProjectTabs() {
               tabIndex={isActive ? 0 : -1}
               onClick={() => switchTab(tab.id)}
               onKeyDown={(e) => handleKeyDown(e, i)}
-              className={`brand-btn ${isActive ? 'brand-btn-primary' : 'brand-btn-secondary'}`}
+              className={`brand-btn ${isActive ? 'brand-btn-primary' : 'brand-btn-secondary'} lg:w-full lg:justify-start`}
             >
               {tab.label}
             </button>
@@ -100,23 +112,25 @@ export default function ProjectTabs() {
         })}
       </div>
 
-      <div
-        id="panel-brand"
-        role="tabpanel"
-        aria-labelledby="tab-brand"
-        hidden={activeTab !== 'brand'}
-      >
-        <BrandProject />
-      </div>
+      <div className="lg:min-w-0 lg:flex-1">
+        <div
+          id="panel-brand"
+          role="tabpanel"
+          aria-labelledby="tab-brand"
+          hidden={activeTab !== 'brand'}
+        >
+          <BrandProject />
+        </div>
 
-      <div
-        id="panel-history-of-mistrust"
-        role="tabpanel"
-        aria-labelledby="tab-history-of-mistrust"
-        hidden={activeTab !== 'history-of-mistrust'}
-      >
-        <MistrustProject />
+        <div
+          id="panel-history-of-mistrust"
+          role="tabpanel"
+          aria-labelledby="tab-history-of-mistrust"
+          hidden={activeTab !== 'history-of-mistrust'}
+        >
+          <MistrustProject />
+        </div>
       </div>
-    </>
+    </div>
   );
 }
