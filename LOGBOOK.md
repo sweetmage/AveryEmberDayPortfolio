@@ -1,3 +1,59 @@
+## Entry 081 — 2026-07-22
+
+**Agent:** Claude Opus 4.8 (shxdowloop)
+**Cycle:** visual-baseline-gate
+**Branch:** `shxdowloop/2026-07-22/visual-baseline-gate` (not merged — awaiting review)
+**Task:** Convert `tests/visual-baseline.spec.js` from capture-only into a real compare-based regression gate.
+
+### The headline
+
+The stage that exists to prove the gate can fail is the stage that earned its keep. After the migration looked finished and green, an injected regression (`--brand-text-soft` `#d7d7d1`→`#cfcfc9`, dark theme only) **passed 45/45**. Two independent defects were hiding behind that green:
+
+1. **Per-pixel threshold too loose.** `maxDiffPixelRatio` only caps *how many* pixels may differ; Playwright's `threshold` decides whether a pixel counts as differing at all, and its 0.2 default is very permissive. An 8-point colour shift across the entire dark theme registered **zero** differing pixels. Now `threshold: 0.02` + `maxDiffPixelRatio: 0.001`.
+2. **The suite graded a stale build.** `webServer` ran `next build && serve out`, but `reuseExistingServer` skips the *entire command* when the port is already held — so any leftover server meant the build never ran. Confirmed directly: the injected colour was absent from `out/_next/static/css`. The build moved to `tests/global-setup.js`, which always runs.
+
+Defect 2 is the more serious of the two: it means **every** local visual run since the config was written could have scored a stale artifact whenever a server was left listening.
+
+### Changes
+
+- `tests/visual-baseline.spec.js`: `expect(page).toHaveScreenshot()` against committed snapshots in Playwright's `*-snapshots/` convention, replacing `p.screenshot(path)` + `existsSync`/size assertions.
+- `tests/global-setup.js` (new): owns `next build`.
+- `playwright.config.js`: `globalSetup` wired; legacy static server moved 3000 → 4321 (`next dev` defaults to 3000, so `reuseExistingServer` could silently adopt a dev server and test the Next app while believing it was testing the legacy site; 4000 was already held by an unrelated process).
+- `tests/smoke-interaction.spec.js`: follows the port move.
+- `next-env.d.ts` untracked + gitignored — it oscillates between `.next/types` and `out/types` depending on which command ran last, dirtying the tree every build.
+- Removed 48 obsolete `tests/baselines/*.png`, including 8 for a `patriots` page the spec no longer captures.
+
+### Determinism
+
+Reduced motion, no masking: the bubble engine returns before creating a single bubble (`bubbles.js:13`) and `brand.css` already zeroes its own animations there. Hero blobs still render (static), so hero coverage is retained; only the randomly-seeded roaming bubbles drop out, and those were never meaningfully comparable.
+
+**Applied via `page.emulateMedia()`, not `test.use({ reducedMotion })`.** On Playwright 1.61.1 the declarative option is silently ignored for `reducedMotion` specifically — probed and confirmed: `colorScheme` and `viewport` from the *same* `test.use` call both applied while `matchMedia('(prefers-reduced-motion: reduce)')` still reported false.
+
+### Verification
+
+| Step | Result |
+|---|---|
+| Pre-change suite (gate requirement) | 45 passed |
+| Injected regression, stale server present | 45 passed — **gate blind** |
+| After threshold fix, port freed | 16 failed / 29 passed |
+| After globalSetup fix, stale server deliberately planted | 16 failed / 29 passed |
+| Injection reverted, run twice | 45 passed both times |
+| Working tree after each run | clean (0 dirty) |
+
+Failures were 100% dark-theme captures, matching the dark-only edit — specific, not merely sensitive. Suite time 46.2s → ~19s (dropped a fixed 1500ms settle sleep for `document.fonts.ready`). Adjudicated captures: `index-1440-dark` (full render, blobs static, logo/wordmark correct) and `gallery-360-light` (all 11 artworks decoded, no blanks).
+
+### Helper route
+
+Main agent throughout. Nano/native dispatch not used: the whole task is one tightly-coupled test+config surface where every step depended on the previous run's empirical result, so splitting it would have cost more in integration than it saved. Binding usage 30% at preflight (session 30% / weekly 17%), well below the 80% native ban — routing was a judgement call, not a usage constraint. Gated preflight + two structured questions (baseline layout, dirty-PNG handling) answered by the user before branch creation.
+
+### Risks / Notes
+
+- Snapshots are `-chromium-win32` suffixed. A Linux CI would need its own set; no CI is configured today.
+- `threshold: 0.02` is empirically derived, not a default. Relaxing it must be re-validated with the injected-regression procedure.
+- Port 4000 is held on this machine by an unrelated process (`nxd`); 4321 chosen after probing.
+
+---
+
 ## Entry 080 — 2026-07-22
 
 **Agent:** Claude Opus 4.8 (shxdowflow)

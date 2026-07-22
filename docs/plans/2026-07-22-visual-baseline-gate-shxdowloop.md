@@ -134,7 +134,27 @@ Sequential by nature — noted here so the absence is a decision, not an oversig
 
 | Stage | SHA | Push | Notes |
 |---|---|---|---|
-| 0 | — | — | in progress |
+| 0 | — | n/a | 45 passed pre-change; no intentional edits to commit |
+| 1-2 | `833d46a` | ✅ | migration + 40 regenerated snapshots; committed together (same coupled surface) |
+| 3 | `ce3fe3a` | ✅ | gate proven to fail correctly; threshold + stale-build defects fixed |
+| 4 | — | pending | docs |
+
+## Stage 3 outcome — the gate was blind
+
+Recorded because it is the most important result of the run. The migration
+looked complete and green, then the injected regression passed 45/45. Two
+defects were hiding behind that green:
+
+1. `threshold` default 0.2 too loose — an 8-point whole-theme colour shift
+   produced zero differing pixels. Now `0.02`.
+2. `reuseExistingServer` skipped the entire `next build && serve` command when
+   the port was held, so the suite graded a stale `out/`. Build moved to
+   `tests/global-setup.js`.
+
+Evidence chain: blind (45 pass) → threshold fixed + port freed (16 fail) →
+globalSetup fixed with a stale server *deliberately planted* (16 fail) →
+reverted (45 pass, twice). Failures were 100% dark-theme, matching the
+dark-only edit.
 
 ## Verification matrix
 

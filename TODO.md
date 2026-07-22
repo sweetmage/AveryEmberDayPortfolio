@@ -34,7 +34,7 @@ _These are backlog items that don't currently have a written plan. Historical re
 
 ### Standalone
 - [ ] Watermark artwork
-- [ ] Visual-baseline spec is capture-only: `tests/visual-baseline.spec.js` rewrites all `tests/baselines/*.png` on every `npm test` (no image comparison; bubble physics makes index captures pixel-nondeterministic), so the tree dirties on every run. Decide: keep the git-diff-plus-visual-inspection model and live with churn, or move to a compare-based gate (e.g. `toHaveScreenshot` with animation masking + explicit update flag). Discovered 2026-07-14 (Entry 076).
+- [x] Visual-baseline spec is capture-only — **done 2026-07-22** (Entry 081): migrated to `toHaveScreenshot()` with reduced-motion determinism and `--update-snapshots`; tree now stays clean. Also fixed two defects found while proving the gate could fail: Playwright's default per-pixel `threshold` was too loose to catch a whole-theme colour shift, and `reuseExistingServer` was skipping `next build` so the suite graded a stale `out/`.
 
 ### Architecture remediation follow-ups (deferred from 2026-07-01)
 - [x] `srcset` / `@2x` variants for project + gallery thumbnails — done 2026-07-13: 25 generated variants + `srcset`/`sizes`/`width`/`height` on home cards and gallery grid (Entry 073)

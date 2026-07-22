@@ -47,7 +47,17 @@ Do NOT use these in `bash` tool calls (they are PowerShell-specific and often fa
 
 `npm run serve` — serves the repo root on :8080 (**legacy static site only** — not the Next.js app)
 
-`npm test` / `npx playwright test` — smoke test + 40 visual baselines (`tests/*.spec.js`; baselines self-refresh, so manual visual review is the real gate)
+`npm test` / `npx playwright test` — smoke tests + a **compare-based** visual regression gate (45 tests: 5 pages × 4 breakpoints × 2 themes, plus smoke).
+
+> The visual suite is a real gate: it fails on unintended visual change and leaves the working tree clean. Snapshots live in `tests/visual-baseline.spec.js-snapshots/`; failures write actual/expected/diff PNGs to `test-results/`.
+>
+> **To accept an intentional visual change:** `npm test -- --update-snapshots`, then *review the regenerated PNGs before committing them*. An unreviewed update defeats the gate.
+>
+> Two things that are load-bearing and easy to break (both cost a debugging cycle on 2026-07-22, Entry 081):
+> - Reduced motion is applied via `page.emulateMedia()`, **not** `test.use({ reducedMotion })` — the declarative option is silently ignored for `reducedMotion` on Playwright 1.61.1, which leaves the bubble engine running and captures unstable.
+> - `next build` runs in `tests/global-setup.js`, **not** in `webServer.command` — `reuseExistingServer` skips the command when the port is already held, which made the suite grade a stale `out/`.
+>
+> `threshold: 0.02` is empirically derived; at Playwright's 0.2 default an entire-theme text-colour shift passed undetected. Don't relax it without re-running the injected-regression check in the Stage 3 plan.
 
 `node scripts/parse-todo.js` — Parse TODO into `docs/sync/local-tasks.json`
 
