@@ -99,9 +99,15 @@ for (const page of PAGES) {
             fullPage: true,
             animations: 'disabled',
             caret: 'hide',
-            // Tight enough to catch a colour/spacing regression, loose enough
-            // to survive sub-pixel text rasterisation differences.
-            maxDiffPixelRatio: 0.002,
+            // `threshold` is the per-pixel colour sensitivity and is the knob
+            // that actually matters. Playwright's default of 0.2 is far too
+            // loose for this site: an 8-point shift in --brand-text-soft
+            // (#d7d7d1 -> #cfcfc9) across the whole dark theme registered ZERO
+            // differing pixels and the suite passed. Verified empirically —
+            // do not relax this without re-running the injected-regression
+            // check in the plan's Stage 3.
+            threshold: 0.02,
+            maxDiffPixelRatio: 0.001,
           });
         });
       });

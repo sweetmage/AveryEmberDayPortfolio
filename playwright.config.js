@@ -2,6 +2,7 @@ import { defineConfig, devices } from '@playwright/test';
 
 export default defineConfig({
   testDir: 'tests',
+  globalSetup: './tests/global-setup.js',
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
@@ -22,7 +23,10 @@ export default defineConfig({
       timeout: 120 * 1000,
     },
     {
-      command: 'npm run build:next && npx serve out -l 3001',
+      // The build lives in globalSetup, NOT here: reuseExistingServer skips
+      // this command entirely when the port is already held, which silently
+      // served a stale out/ and graded the wrong artifact.
+      command: 'npx serve out -l 3001',
       url: 'http://localhost:3001',
       reuseExistingServer: !process.env.CI,
       timeout: 120 * 1000,
