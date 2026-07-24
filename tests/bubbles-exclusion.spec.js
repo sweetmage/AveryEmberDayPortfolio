@@ -96,6 +96,11 @@ test.describe('bubble exclusion zones', () => {
     // Frame-based sampling (below) makes the wall-clock duration depend on the
     // frame rate this worker actually gets, so the default 30s is not enough
     // under full-suite contention.
+    //
+    // This timeout is also the backstop for a rarer case: the engine cancels
+    // its rAF loop on `visibilitychange` -> hidden (bubbles.js), so a
+    // backgrounded page would leave the frame waits below stalled rather than
+    // failing. Bounded here rather than hanging.
     test.setTimeout(120000);
 
     await page.setViewportSize({ width: 1440, height: 900 });
