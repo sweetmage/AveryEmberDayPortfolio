@@ -19,11 +19,21 @@ const BASE_URL = 'http://localhost:4322';
  * geometry.
  */
 
-/** Wait for the idle-deferred engine, then let the physics settle. */
-async function waitForEngine(page) {
+/**
+ * Wait for the idle-deferred engine, then let the physics settle.
+ *
+ * The settle is counted in animation frames, not milliseconds: the engine
+ * integrates per frame, so under `fullyParallel` contention a fixed
+ * wall-clock wait buys far fewer frames of settling than it does standalone.
+ */
+async function waitForEngine(page, settleFrames = 180) {
   await page.waitForFunction(() => typeof window.__bubbleEngine !== 'undefined', null, { timeout: 15000 });
   await page.waitForFunction(() => document.querySelectorAll('.brand-bubble').length > 0, null, { timeout: 15000 });
-  await page.waitForTimeout(3000);
+  await page.evaluate(async (frames) => {
+    for (let i = 0; i < frames; i++) {
+      await new Promise((r) => requestAnimationFrame(() => r()));
+    }
+  }, settleFrames);
 }
 
 /**
@@ -83,6 +93,11 @@ test.describe('bubble exclusion zones', () => {
   });
 
   test('hero blobs are not parked on the hero copy', async ({ page }) => {
+    // Frame-based sampling (below) makes the wall-clock duration depend on the
+    // frame rate this worker actually gets, so the default 30s is not enough
+    // under full-suite contention.
+    test.setTimeout(120000);
+
     await page.setViewportSize({ width: 1440, height: 900 });
     await page.goto(`${BASE_URL}/`, { waitUntil: 'networkidle' });
     await waitForEngine(page);
@@ -92,12 +107,22 @@ test.describe('bubble exclusion zones', () => {
     // copy" -- an instantaneous-maximum assertion would instead measure
     // transient pass-through and flake.
     //
-    // Measured over 60 samples/15s after the fix: the overlap is exactly zero
-    // in 90% of samples at 1440px and 97% at 768px, median 0 at both, with
+    // Measured over 60 samples after the fix: the overlap is exactly zero in
+    // 90% of samples at 1440px and 97% at 768px, median 0 at both, with
     // occasional transients to ~2,000px2 as a blob is steered back out.
     // Before the fix a blob sat on the copy continuously, so the zero-fraction
     // would have been ~0. The 0.6 bar below therefore has wide margin against
     // normal behaviour while still failing loudly on a real regression.
+    //
+    // Sampling is per ANIMATION FRAME, not per millisecond, and that is
+    // load-bearing. The blob physics integrates a fixed velocity per frame
+    // rather than scaling by elapsed time, so under `fullyParallel` contention
+    // -- 45+ browser contexts competing -- rAF is starved and the blobs
+    // genuinely travel less per wall-clock second. A time-based sample then
+    // measures fewer frames of motion and reports a lower zero-fraction, which
+    // looks like a regression and is not one. This failed exactly that way when
+    // the full suite first ran (passing 3/3 standalone), so the instrument, not
+    // the threshold, was wrong.
     //
     // Ink, not element box: .hero-name is a full-width block with centred
     // text (1104px box vs 290px of glyphs at 1440), so its box would report
@@ -113,8 +138,11 @@ test.describe('bubble exclusion zones', () => {
         .filter(Boolean)
         .map(ink);
 
+      const nextFrame = () => new Promise((r) => requestAnimationFrame(() => r()));
+
       let zero = 0;
       const total = 40;
+      const framesBetweenSamples = 10; // ~400 frames of physics overall
       for (let i = 0; i < total; i++) {
         let worst = 0;
         for (const t of targets) {
@@ -126,7 +154,7 @@ test.describe('bubble exclusion zones', () => {
           }
         }
         if (worst === 0) zero++;
-        await new Promise((r) => setTimeout(r, 250));
+        for (let f = 0; f < framesBetweenSamples; f++) await nextFrame();
       }
       return { zeroFraction: zero / total, samples: total };
     });

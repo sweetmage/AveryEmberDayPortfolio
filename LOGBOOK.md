@@ -44,6 +44,16 @@ Tuning the original constant upward until it went green would have produced a te
 
 Final: `npm test` 49 passed (45 + 4 new), zero visual-snapshot churn.
 
+### At merge time: the test was measuring in the wrong units
+
+Merging this branch with the heading-padding branch surfaced a third problem, and it was in my test rather than the code. The blob test **passed 3/3 standalone but failed in the full suite**.
+
+The cause is `fullyParallel: true`. With 45+ browser contexts competing, rAF is starved — and the blob physics integrates a fixed velocity **per frame** rather than scaling by elapsed time, so the blobs genuinely travel less per wall-clock second. My sampling was wall-clock based (`setTimeout(250)`), so under contention it observed fewer frames of motion and reported a lower zero-fraction. That reads exactly like a regression and was not one.
+
+The temptation here is to lower the threshold until the suite goes green, which would have destroyed the test's meaning for the second time in one day. The instrument was wrong, not the bar: sampling and settling are now counted in **animation frames**, making the measurement frame-rate invariant, with an explicit `test.setTimeout(120000)` since wall-clock duration now depends on the frame rate the worker actually gets. Verified with three consecutive full-suite runs, 49 passed each.
+
+Generalisable: any test asserting on per-frame physics must sample per frame. Under a parallel runner, wall-clock and frame-count are not interchangeable.
+
 ---
 
 ## Entry 087 — 2026-07-24

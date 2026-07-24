@@ -49,7 +49,7 @@ Do NOT use these in `bash` tool calls (they are PowerShell-specific and often fa
 
 `npm run serve` — serves the repo root on :8080 (**legacy static site only** — not the Next.js app)
 
-`npm test` / `npx playwright test` — smoke tests + a **compare-based** visual regression gate (45 tests: 5 pages × 4 breakpoints × 2 themes, plus smoke).
+`npm test` / `npx playwright test` — smoke tests + a **compare-based** visual regression gate, plus bubble-engine coverage (49 tests: 40 visual = 5 pages × 4 breakpoints × 2 themes, plus smoke and 4 bubble-exclusion specs).
 
 > The visual suite is a real gate: it fails on unintended visual change and leaves the working tree clean. Snapshots live in `tests/visual-baseline.spec.js-snapshots/`; failures write actual/expected/diff PNGs to `test-results/`.
 >
@@ -64,6 +64,10 @@ Do NOT use these in `bash` tool calls (they are PowerShell-specific and often fa
 > - `next build` runs in `tests/global-setup.js`, **not** in `webServer.command` — `reuseExistingServer` skips the command when the port is already held, which made the suite grade a stale `out/`.
 >
 > `threshold: 0.02` is empirically derived; at Playwright's 0.2 default an entire-theme text-colour shift passed undetected. Don't relax it without re-running the injected-regression check in the Stage 3 plan.
+
+> **`tests/bubbles-exclusion.spec.js` is the only motion-enabled spec**, and the only coverage the bubble engine has — the visual gate captures under `prefers-reduced-motion`, where the engine creates nothing, so bubbles are otherwise invisible to the suite (that blind spot hid a regression for a week; Entry 090).
+>
+> **Sample per animation frame, not per millisecond, when asserting on the physics.** The engine integrates a fixed velocity per frame rather than scaling by elapsed time, so under `fullyParallel` contention rAF is starved and bubbles/blobs travel less per wall-clock second. A time-based sample then observes fewer frames of motion and under-reports, which looks exactly like a regression. This bit once already: the blob test passed 3/3 standalone and failed in the full suite (Entry 090). Frame-based sampling needs a raised `test.setTimeout`, since wall-clock duration then depends on the frame rate the worker gets.
 
 `node scripts/parse-todo.js` — Parse TODO into `docs/sync/local-tasks.json`
 
