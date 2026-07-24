@@ -178,6 +178,7 @@ the same instant.
 | Stage | SHA | Push | Notes |
 |---|---|---|---|
 | pre | — | — | branch created + pushed; stray probe server killed |
+| 1-3 | `b271168` | ✅ | single checkpoint: fix, first motion-enabled spec, docs, cleanup |
 
 ## Verification matrix
 
