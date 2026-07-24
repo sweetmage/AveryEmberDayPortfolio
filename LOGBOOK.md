@@ -1,3 +1,34 @@
+## Entry 093 — 2026-07-24
+
+**Agent:** Opus 4.8 (main)
+**Cycle:** shxdowflow
+**Branch:** `portfoliowebsite` (still unpushed)
+**Task:** User: make the Projects page vertical tabs repel bubbles.
+
+### Headline
+
+**The same bug as the hero logo, a second time, from a different cause.** `DEFAULT_EXCLUSIONS` already listed `.brand-btn`, `.brand-btn-primary` and `.brand-btn-secondary` — which is exactly what the Projects tabs used to be. Entry 085 restyled them to `.project-tab`, and they silently stopped being exclusion zones. Last time the element stopped matching because its *tag* changed (`<img>` → `<svg>`); this time because its *class* changed. The list is matched by selector, so either mutation drops an element out with no error.
+
+Measured before fixing: at 1440px, bubbles overlapped the tabs in **30 of 30 sampled frames** — continuously, not transiently, and worse than the hero-logo case. At 768px the overlap happened to be zero, but both tabs were equally unregistered, so that was luck rather than design.
+
+### Changes
+
+- `scripts/bubbles.js`: `.project-tab` added to `DEFAULT_EXCLUSIONS`, with the rename trap documented in place next to the near-identical `.hero-logo` note.
+- `public/scripts/bubbles.js` re-synced (the copy the export serves).
+- `tests/bubbles-exclusion.spec.js`: two new cases at 768 and 1440. The per-element helper was generalised from `maxBubbleLogoOverlap` to `maxBubbleOverlap(page, selector)`, and a structural `allRegisteredAsZones()` check added.
+- `AGENTS.md`: the trap note rewritten from "swapping `<img>` for `<svg>`" to the general "renaming or retagging" case, now that it has happened twice; `.project-tab` added to the JS-referenced class list; test count 49 → 51.
+
+### Why the structural assertion matters
+
+The new tests assert **both** that no bubble overlaps a tab *and* that every tab sits inside a registered zone. That second check is what makes the 768px case meaningful: with the fix reverted, the overlap assertion alone would have passed there — the bubbles simply were not near the rail at that width — while the structural assertion correctly failed. An observational test that only samples where the physics happens to wander would give a false green on exactly the breakpoint least likely to be checked by eye.
+
+### Verification
+
+- Injected-regression check: with `.project-tab` removed, **both** new tests go red at both breakpoints. Reverted from a scratch copy; both `bubbles.js` files verified free of markers and byte-identical afterwards.
+- `npm test` — 51 passed, **zero visual-snapshot churn**, which is the expected signature: the visual gate captures under reduced motion where no bubbles exist, so a bubble-behaviour change cannot move a baseline.
+
+---
+
 ## Entry 092 — 2026-07-24
 
 **Agent:** Opus 4.8 (main)

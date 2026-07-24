@@ -37,31 +37,48 @@ async function waitForEngine(page, settleFrames = 180) {
 }
 
 /**
- * Largest overlap between any `.brand-bubble` and the hero logo, sampled over
- * several seconds. Bubbles are hard-constrained by `resolveZoneCollisions`, so
- * the correct answer is zero at every instant, not merely on average.
+ * Largest overlap between any `.brand-bubble` and the elements matching
+ * `selector`, sampled over several intervals. Bubbles are hard-constrained by
+ * `resolveZoneCollisions`, so the correct answer is zero at every instant, not
+ * merely on average.
  */
-async function maxBubbleLogoOverlap(page, samples = 6) {
+async function maxBubbleOverlap(page, selector, samples = 6) {
   let worst = 0;
   for (let i = 0; i < samples; i++) {
-    const v = await page.evaluate(() => {
-      const logo = document.querySelector('#hero .hero-logo');
-      if (!logo) return -1;
-      const L = logo.getBoundingClientRect();
+    const v = await page.evaluate((sel) => {
+      const targets = [...document.querySelectorAll(sel)];
+      if (!targets.length) return -1;
       let max = 0;
-      for (const el of document.querySelectorAll('.brand-bubble')) {
-        const b = el.getBoundingClientRect();
-        const ox = Math.max(0, Math.min(L.right, b.right) - Math.max(L.left, b.left));
-        const oy = Math.max(0, Math.min(L.bottom, b.bottom) - Math.max(L.top, b.top));
-        max = Math.max(max, ox * oy);
+      for (const t of targets) {
+        const T = t.getBoundingClientRect();
+        for (const el of document.querySelectorAll('.brand-bubble')) {
+          const b = el.getBoundingClientRect();
+          const ox = Math.max(0, Math.min(T.right, b.right) - Math.max(T.left, b.left));
+          const oy = Math.max(0, Math.min(T.bottom, b.bottom) - Math.max(T.top, b.top));
+          max = Math.max(max, ox * oy);
+        }
       }
       return max;
-    });
-    if (v === -1) throw new Error('hero logo not found');
+    }, selector);
+    if (v === -1) throw new Error(`no elements matched ${selector}`);
     worst = Math.max(worst, v);
     await page.waitForTimeout(500);
   }
   return worst;
+}
+
+/** True when every element matching `selector` sits inside a registered zone. */
+async function allRegisteredAsZones(page, selector) {
+  return page.evaluate((sel) => {
+    const targets = [...document.querySelectorAll(sel)];
+    if (!targets.length) return false;
+    const zones = window.__bubbleEngine.zones.rects;
+    // A zone carries ZONE_PADDING, so the registered rect contains the element.
+    return targets.every((t) => {
+      const r = t.getBoundingClientRect();
+      return zones.some((z) => z.left <= r.left && z.top <= r.top && z.right >= r.right && z.bottom >= r.bottom);
+    });
+  }, selector);
 }
 
 test.describe('bubble exclusion zones', () => {
@@ -71,7 +88,23 @@ test.describe('bubble exclusion zones', () => {
       await page.goto(`${BASE_URL}/`, { waitUntil: 'networkidle' });
       await waitForEngine(page);
 
-      expect(await maxBubbleLogoOverlap(page)).toBe(0);
+      expect(await maxBubbleOverlap(page, '#hero .hero-logo')).toBe(0);
+    });
+  }
+
+  // The Projects rail went the same way as the hero logo, for the same reason.
+  // The tabs were `.brand-btn` + `.brand-btn-primary`/`-secondary` -- all
+  // excluded -- until they were restyled to `.project-tab` (Entry 085), which
+  // dropped them out of the list. Measured before the fix: bubbles crossed the
+  // rail in 30 of 30 sampled frames at 1440px. Continuously, not transiently.
+  for (const width of [768, 1440]) {
+    test(`physics bubbles never cover the Projects tabs @ ${width}px`, async ({ page }) => {
+      await page.setViewportSize({ width, height: 900 });
+      await page.goto(`${BASE_URL}/projects/`, { waitUntil: 'networkidle' });
+      await waitForEngine(page);
+
+      expect(await allRegisteredAsZones(page, '.project-tab')).toBe(true);
+      expect(await maxBubbleOverlap(page, '.project-tab')).toBe(0);
     });
   }
 

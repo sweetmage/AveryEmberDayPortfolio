@@ -49,7 +49,7 @@ Do NOT use these in `bash` tool calls (they are PowerShell-specific and often fa
 
 `npm run serve` — serves the repo root on :8080 (**legacy static site only** — not the Next.js app)
 
-`npm test` / `npx playwright test` — smoke tests + a **compare-based** visual regression gate, plus bubble-engine coverage (49 tests: 40 visual = 5 pages × 4 breakpoints × 2 themes, plus smoke and 4 bubble-exclusion specs).
+`npm test` / `npx playwright test` — smoke tests + a **compare-based** visual regression gate, plus bubble-engine coverage (51 tests: 40 visual = 5 pages × 4 breakpoints × 2 themes, plus smoke and 6 bubble-exclusion specs).
 
 > The visual suite is a real gate: it fails on unintended visual change and leaves the working tree clean. Snapshots live in `tests/visual-baseline.spec.js-snapshots/`; failures write actual/expected/diff PNGs to `test-results/`.
 >
@@ -146,5 +146,5 @@ Modern desktop monitors commonly exceed 1920px. A layout that looks correct at 1
 - Generated `style.css` is tracked and deployed directly (see Deploy)
 - `.gitignore`: `/node_modules/` (lockfile committed), `/tmp/`, `*.log`, `/test-results/`, `docs/sync/google-docs.json`
 - All pages use `.brand-nav` + `.brand-footer` from the brand system
-- Class names referenced by JS must stay in markup even when styled by utilities: `.project-card`, `.about-box`, `.bubble-exclude`, `.hero-logo`, `.hero-name`, `.hero-sub`, `.gallery-item`, `.wip-notice`, `.brand-nav*`, `.brand-footer*`
-- **Swapping an `<img>` for an inline `<svg>` silently drops it out of the bubble exclusion zones.** `DEFAULT_EXCLUSIONS` matches the `img` tag, so an element stops being avoided the moment it stops being an `<img>` — with no error, and nothing red in the suite (the visual gate runs under reduced motion, where the engine creates no bubbles at all). This is what put bubbles across the hero logo after it was inlined for `currentColor` theming. Add the new element's class to `DEFAULT_EXCLUSIONS` in the same change.
+- Class names referenced by JS must stay in markup even when styled by utilities: `.project-card`, `.about-box`, `.bubble-exclude`, `.hero-logo`, `.hero-name`, `.hero-sub`, `.project-tab`, `.gallery-item`, `.wip-notice`, `.brand-nav*`, `.brand-footer*`
+- **Renaming or retagging an element silently drops it out of the bubble exclusion zones.** `DEFAULT_EXCLUSIONS` is matched by selector, so an element stops being avoided the moment it stops matching — no error, and nothing red in the suite unless `tests/bubbles-exclusion.spec.js` covers it (the visual gate runs under reduced motion, where the engine creates no bubbles at all). **This has now happened twice in one day:** the hero logo when it was inlined from `<img>` to `<svg>` for `currentColor` theming (Entry 090), and the Projects rail when the tabs were restyled from `.brand-btn` to `.project-tab` (Entry 085, found and fixed in Entry 093 — bubbles had been crossing the rail in 30 of 30 sampled frames). When you rename or retag a UI element, check this list in the same change, and add a case to the bubble spec.

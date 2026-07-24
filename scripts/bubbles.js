@@ -70,6 +70,14 @@
     '.project-desc',
     '.project-hero',
     '.project-section',
+    // The Projects rail. These were `.brand-btn` + `.brand-btn-primary`/
+    // `-secondary` -- all three of which are excluded below -- until they were
+    // restyled to `.project-tab` (2026-07-24, LOGBOOK Entry 085), at which
+    // point they silently stopped being exclusion zones and bubbles began
+    // crossing the rail. Same trap as the hero logo, one line down: this list
+    // is matched by selector, so ANY rename or retag drops an element out of
+    // it with no error and nothing red in the suite.
+    '.project-tab',
     '.wip-notice',
     '.gallery-item',
     '.about-box',
