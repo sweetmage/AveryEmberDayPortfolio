@@ -1,3 +1,31 @@
+## Entry 092 — 2026-07-24
+
+**Agent:** Opus 4.8 (main)
+**Cycle:** shxdowflow — nav gutter
+**Branch:** `portfoliowebsite` (still unpushed)
+**Task:** User: the wordmark "needs equal space on the left and right; move to hug left edge closer; move toggle to hug right."
+
+### Headline
+
+**Measured before changing anything, and the symmetry was already exact.** At every breakpoint the nav had 28px to the left of the logo box and 28px to the right of the toggle, with 20px inside the logo box on both sides of its contents. So "equal space" was already true arithmetically — the imbalance being perceived is optical, since the left side terminates in a round bubble mark carrying its own internal whitespace while the right terminates at a tight glyph edge.
+
+That left the actionable part: hug the edges. `.brand-nav .brand-container` gutters went `clamp(12px, 2.5vw, 28px)` → `clamp(4px, 0.5vw, 6px)` after the user halved a first pass — **6px at desktop, 4px at mobile**, equal on both sides. The logo link and toggle keep their own internal padding, so their hover/active fills still have margin inside the gutter rather than colliding with the viewport edge.
+
+### The gate's blind spot, demonstrated live
+
+The first pass (12px/8px) failed **24 of 40** visual baselines. The other 16 showed the very same nav shift but passed, because `maxDiffPixelRatio: 0.001` is a ratio of total page area and those pages are tall enough to absorb it. That is precisely the deferred `TODO.md` item about tolerance scaling with page height, reproduced by accident.
+
+The operational consequence: this re-baseline had to run `--update-snapshots=all`. The default `changed` mode only rewrites snapshots whose tests **failed**, so it would have left those 16 captures silently stale — showing the old nav while the site shipped the new one.
+
+### Verification
+
+- All 40 baselines regenerated and **adjudicated numerically** before acceptance: every one changed, and every one confined to the nav band (rows ≤ 80). No page content moved anywhere. Contact's band is narrower (rows 16–45) because it has no active nav link, so only glyphs differ.
+- `npm test` green twice consecutively, 49 passed, modified-snapshot count stable at exactly 40 across both runs.
+- Nav captured and reviewed at 640 / 1440 / 2560 px: logo hugs left, toggle hugs right, gutters equal, fills not clipped at any width.
+- `style.css` rebuilt; the diff is wider than the one rule because the committed artifact was stale — the symptom AGENTS.md already documents. Build verified deterministic (three consecutive builds byte-identical), and the emitted rule confirmed as `padding:0 clamp(4px,.5vw,6px)`.
+
+---
+
 ## Entry 091 — 2026-07-24
 
 **Agent:** Opus 4.8 (main)

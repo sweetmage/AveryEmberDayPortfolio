@@ -583,7 +583,12 @@
     width: 100%;
     max-width: none;
     margin: 0;
-    padding: 0 clamp(12px, 2.5vw, 28px);
+    /* Deliberately tight, and symmetric: the logo hugs the left edge and the
+       theme toggle hugs the right by the same amount. The gutters were 28px
+       either side, which read as floating rather than anchored on a full-bleed
+       bar. The logo link and the toggle carry their own internal padding, so
+       their hover/active fills still have breathing room inside this gutter. */
+    padding: 0 clamp(4px, 0.5vw, 6px);
 }
 
 .brand-nav-logo {
