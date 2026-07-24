@@ -26,8 +26,15 @@ export default defineConfig({
       // The build lives in globalSetup, NOT here: reuseExistingServer skips
       // this command entirely when the port is already held, which silently
       // served a stale out/ and graded the wrong artifact.
-      command: 'npx serve out -l 3001',
-      url: 'http://localhost:3001',
+      //
+      // Port 4322, NOT 3001. `next dev` defaults to 3000 and auto-increments
+      // to 3001 when 3000 is taken, so a developer with a dev server running
+      // hands this webServer the dev app under reuseExistingServer -- the
+      // exact trap the sibling entry above documents for 3000. Observed live
+      // 2026-07-24: `npm run dev` landed on 3001 because a stale dev server
+      // from the previous session still held 3000.
+      command: 'npx serve out -l 4322',
+      url: 'http://localhost:4322',
       reuseExistingServer: !process.env.CI,
       timeout: 120 * 1000,
     },

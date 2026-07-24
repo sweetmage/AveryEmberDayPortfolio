@@ -133,7 +133,7 @@ Modern desktop monitors commonly exceed 1920px. A layout that looks correct at 1
 - Content is locked to a small max-width while the viewport stretches
 - Asymmetric padding (left rail vs. none on right) makes the page feel off-balance
 
-**Rule:** After any layout change, capture or preview at **2560px and 3440px** in both themes. The projects-page rail-and-content pattern (Entry 086–089) uses a centered container (`lg:max-w-[1400px] lg:mx-auto`) so the whole layout stays centered with equal whitespace on both sides at all widths, rather than hugging one edge.
+**Rule:** After any layout change, capture or preview at **2560px and 3440px** in both themes. The projects-page rail-and-content pattern (Entry 086) uses a centered container (`lg:max-w-[1400px] lg:mx-auto`) so the whole layout stays centered with equal whitespace on both sides at all widths, rather than hugging one edge.
 
 ## File Conventions
 

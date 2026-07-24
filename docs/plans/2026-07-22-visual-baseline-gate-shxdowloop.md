@@ -1,9 +1,14 @@
 # Visual Baseline Gate — shxdowloop process plan
 
 **Date:** 2026-07-22
-**Branch:** `shxdowloop/2026-07-22/visual-baseline-gate` (from `portfoliowebsite` @ `493b054`)
+**Status:** **Complete** — all stages landed; branch merged to `portfoliowebsite` and pushed
+2026-07-24 as `098f0b1` (LOGBOOK Entry 087).
+**Branch:** `shxdowloop/2026-07-22/visual-baseline-gate` (from `portfoliowebsite` @ `493b054`) — merged
 **Remote:** `origin` — pushed, tracking
 **Mode:** Normal (unattended stage loop)
+
+> Nothing in this plan is outstanding. The one surviving follow-up — running the gate in CI, blocked
+> on the `-win32` snapshot suffix — is owned by `TODO.md` under **Standalone**, not by this document.
 
 ## Goal
 
@@ -74,59 +79,82 @@ Sequential by nature — noted here so the absence is a decision, not an oversig
 
 ## Stage 0 — Pre-change green
 
-**Status:** Active
+**Status:** Complete
 **Goal:** Prove the suite passes before touching it (executable verification gate).
 **Phases:**
-- [ ] 0.1 Run `npm test` on the untouched tree, capture result
-- [ ] 0.2 Discard the resulting PNG churn
+- [x] 0.1 Run `npm test` on the untouched tree, capture result — 45 passed
+- [x] 0.2 Discard the resulting PNG churn
 **Verification:** exit 0, 45 tests
 **Checkpoint:** no commit (no intentional changes)
 
 ## Stage 1 — Compare-based gate
 
-**Status:** Pending
+**Status:** Complete (`833d46a`)
 **Goal:** Replace capture-only assertions with `toHaveScreenshot()`; make captures deterministic.
 **Phases:**
-- [ ] 1.1 Freeze animation: `animations: 'disabled'` + init script neutralizing bubble physics / hero blobs
-- [ ] 1.2 Swap the `p.screenshot(path)` + `existsSync` block for `expect(p).toHaveScreenshot(name)`
-- [ ] 1.3 Configure `maxDiffPixelRatio` / `threshold` conservatively; keep the existing image-eager/decode preamble
-- [ ] 1.4 Fix the port-3000 `reuseExistingServer` collision
-- [ ] 1.5 Delete the now-unused `tests/baselines/` path handling
+- [x] 1.1 Freeze animation — **solved differently than planned:** no init script was needed.
+  `page.emulateMedia({ reducedMotion: 'reduce' })` makes the bubble engine return before creating a
+  single bubble (`bubbles.js:13`) and zeroes the CSS animations `brand.css` already guards. Hero
+  blobs stay rendered but static, so hero coverage is retained rather than masked away.
+  **Load-bearing detail:** it must be `emulateMedia()`, not `test.use()` — on Playwright 1.61.1 the
+  declarative option is silently ignored for `reducedMotion` specifically (probed: `colorScheme` and
+  `viewport` from the same `test.use` applied while `matchMedia` still reported false).
+- [x] 1.2 Swap the `p.screenshot(path)` + `existsSync` block for `expect(p).toHaveScreenshot(name)`
+- [x] 1.3 Configure `maxDiffPixelRatio` / `threshold` conservatively — initial value proved far too
+  loose and was fixed in Stage 3; see the Stage 3 outcome below
+- [x] 1.4 Fix the port-3000 `reuseExistingServer` collision — legacy static server moved to 4321
+  (4000 was held by an unrelated process)
+- [x] 1.5 Delete the now-unused `tests/baselines/` path handling
+**Also landed:** `next-env.d.ts` untracked + gitignored (it oscillates between `.next/types` and
+`out/types` depending on which command ran last); dropped the fixed 1500 ms settle sleep for
+`document.fonts.ready`, cutting suite time 46.2s → 19.7s.
 **Verification:** `next build` clean; spec parses; a single-page subset runs
-**Checkpoint:** commit + push
+**Checkpoint:** commit + push — `833d46a` (committed jointly with Stage 2, same coupled surface)
 
 ## Stage 2 — Regenerate authoritative baselines
 
-**Status:** Pending
+**Status:** Complete (`833d46a`)
 **Goal:** Produce the 40 compared baselines under the new conditions and accept them deliberately.
 **Phases:**
-- [ ] 2.1 `npm test -- --update-snapshots`
-- [ ] 2.2 Visually adjudicate a sample across breakpoints/themes (not a rubber stamp)
-- [ ] 2.3 Remove the 40 obsolete `tests/baselines/*.png`
+- [x] 2.1 `npm test -- --update-snapshots`
+- [x] 2.2 Visually adjudicate a sample across breakpoints/themes — `index-1440-dark` and
+  `gallery-360-light` adjudicated: full render, all 11 gallery images decoded, no blanks
+- [x] 2.3 Remove the obsolete `tests/baselines/*.png` — **48 removed, not the 40 estimated here**,
+  including 8 for a `patriots` page the spec no longer captures
 **Verification:** written verdict per sampled capture
-**Checkpoint:** commit + push
+**Checkpoint:** commit + push — `833d46a`
 
 ## Stage 3 — Prove the gate actually gates
 
-**Status:** Pending
+**Status:** Complete (`ce3fe3a`) — and the stage earned its keep; see the outcome section below
 **Goal:** Demonstrate red-on-change and green-on-no-op. A gate that cannot fail is not a gate.
 **Phases:**
-- [ ] 3.1 Run `npm test` twice unchanged — both green, `git status` clean after each (flake check)
-- [ ] 3.2 Inject a deliberate visual change, confirm the suite goes red and names the right captures
-- [ ] 3.3 Revert the injection, confirm green again
+- [x] 3.1 Run `npm test` twice unchanged — both green, `git status` clean after each (flake check)
+- [x] 3.2 Inject a deliberate visual change — **first attempt passed 45/45, exposing two defects
+  that made the gate blind.** Both fixed, then the injection correctly went red (16 failures, all
+  dark-theme, matching the dark-only edit)
+- [x] 3.3 Revert the injection, confirm green again
 **Verification:** recorded exit codes + failing capture names for each step
-**Checkpoint:** commit + push
+**Checkpoint:** commit + push — `ce3fe3a`
 
 ## Stage 4 — Docs and handoff
 
-**Status:** Pending
+**Status:** Complete (`75842e5`, `6ddccd2`)
 **Goal:** Repo knowledge matches reality.
 **Phases:**
-- [ ] 4.1 `AGENTS.md` Build & Test section — currently describes the baselines as self-refreshing
-- [ ] 4.2 `TODO.md` — close the baseline item, condense to house format
-- [ ] 4.3 `LOGBOOK.md` entry
-- [ ] 4.4 Oracle-class shippability review + main-agent final diff review
-**Checkpoint:** commit + push
+- [x] 4.1 `AGENTS.md` Build & Test section — rewritten: baselines now compare, `--update-snapshots`
+  documented as the explicit accept path, plus the two load-bearing details (`emulateMedia` over
+  `test.use`; `next build` in `globalSetup`, not `webServer.command`) and why `threshold 0.02` is
+  not arbitrary
+- [x] 4.2 `TODO.md` — baseline item closed
+- [x] 4.3 `LOGBOOK.md` — Entry 081
+- [x] 4.4 Shippability review + main-agent final diff review — **routing deviation:** the oracle-class
+  OpenCode route wedged, so the review ran on a pro nano-agent via the kilo route. Verdict: real
+  compare-based gate, low flakiness risk. Four residual risks triaged in `6ddccd2`; the CI gap was
+  deferred to `TODO.md` with its blocker named, and one finding (reused server serving a different
+  directory) was assessed as loud rather than silent and left unchanged — disagreement recorded
+  rather than churned.
+**Checkpoint:** commit + push — `75842e5`, `6ddccd2`
 
 ---
 
@@ -137,7 +165,8 @@ Sequential by nature — noted here so the absence is a decision, not an oversig
 | 0 | — | n/a | 45 passed pre-change; no intentional edits to commit |
 | 1-2 | `833d46a` | ✅ | migration + 40 regenerated snapshots; committed together (same coupled surface) |
 | 3 | `ce3fe3a` | ✅ | gate proven to fail correctly; threshold + stale-build defects fixed |
-| 4 | — | pending | docs |
+| 4 | `75842e5`, `6ddccd2` | ✅ | AGENTS/TODO/LOGBOOK sync; review outcome + CI gap deferred |
+| merge | `098f0b1` | ✅ | branch merged into `portfoliowebsite` 2026-07-24 (Entry 087) |
 
 ## Stage 3 outcome — the gate was blind
 
@@ -166,21 +195,31 @@ dark-only edit.
 | Update path works | Stage 2.1 `--update-snapshots` regenerates |
 | Build unaffected | `next build` green each stage |
 
-## Open risks
+## Risks — closed at merge
 
-- Bubble physics may not fully freeze via init script; fallback is masking the
-  bubble layers, which reduces coverage of the hero area. Record which was used.
-- `fullPage` captures at 4 breakpoints can differ by a pixel row on font
-  settling; `maxDiffPixelRatio` needs to be tight enough to catch real changes
-  but loose enough to survive that. Tune with evidence from Stage 3.1, not guesswork.
-- Windows/Chromium snapshot names are platform-suffixed; baselines generated here
-  will not match a Linux CI. Out of scope (no CI configured) but noted.
+- ~~Bubble physics may not fully freeze via init script~~ — **resolved better than planned.**
+  `emulateMedia({ reducedMotion: 'reduce' })` stops the engine at source, so no masking was needed
+  and hero coverage was retained in full.
+- ~~`fullPage` captures may differ by a pixel row on font settling~~ — **did not materialise.**
+  Tuned with Stage 3.1 evidence; two consecutive green runs on an unchanged tree, clean `git status`
+  after each.
+
+### Still open — but owned elsewhere
+
+- **Windows/Chromium snapshots are platform-suffixed (`-chromium-win32`)**, so a Linux CI runner
+  cannot reuse them. This is the sole blocker on running the gate in CI, and it is now tracked in
+  `TODO.md` under **Standalone** (user decision 2026-07-23: containerise capture via the official
+  `mcr.microsoft.com/playwright` image, requiring a one-time regeneration of all baselines). Do not
+  re-plan it here.
+- **`--update-snapshots` review is unenforced** — inherent to the tool. Documentation in `AGENTS.md`
+  is the only available lever and is already prominent. Accepted, not tracked.
 
 ## Merge readiness checklist
 
-- [ ] Two consecutive green runs, clean tree
-- [ ] Injected-change run goes red
-- [ ] 40 obsolete PNGs removed, new snapshots committed
-- [ ] AGENTS.md / TODO.md / LOGBOOK.md updated
-- [ ] Oracle-class review passed
-- [ ] Main-agent final diff review
+- [x] Two consecutive green runs, clean tree
+- [x] Injected-change run goes red (after the two Stage 3 defects were fixed)
+- [x] Obsolete PNGs removed (48), new snapshots committed
+- [x] AGENTS.md / TODO.md / LOGBOOK.md updated
+- [x] Shippability review passed — pro nano (kilo route); the oracle-class OpenCode route wedged
+- [x] Main-agent final diff review
+- [x] Merged to `portfoliowebsite` and pushed — `098f0b1`, 2026-07-24

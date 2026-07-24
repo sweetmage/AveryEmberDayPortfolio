@@ -51,13 +51,17 @@ The nav restructure itself shipped in Entry 075 (commits `94664d6`→`7bcc45a`).
 | Derived sync state | `parse-todo.js` regen + `sync-all.js --dry-run` | deterministic match, clean |
 | Tree intentional | `git status --short` | clean post-checkpoint |
 
-## Open risks
+## Risks — closed
 
-- Baselines may legitimately differ if rendering drifted since `229806f` (fonts/AA nondeterminism noted in Entry 075 for gallery 360/768). If restore-and-test goes red, adjudicate visually before choosing a side.
-- Production push of `portfoliowebsite` (6 commits) deliberately withheld — user decision pending. Netlify form-detection toggle + redirect verification remain deploy-gated.
+- ~~Baselines may legitimately differ if rendering drifted since `229806f`~~ — suite came back
+  45/45 green; no adjudication needed.
+- ~~Production push deliberately withheld pending user decision~~ — pushed and deployed 2026-07-22,
+  live behaviour verified in Entries 077/078. The Netlify form-detection toggle is the only
+  deploy-gated item still outstanding and is tracked in `TODO.md` under *Awaiting a user step*.
 
 ## Merge readiness checklist
 
-- [ ] Tree clean, suite green
-- [ ] Plan docs + TODO + LOGBOOK consistent with reality
-- [ ] Loop branch pushed; production push decision handed to user
+- [x] Tree clean, suite green — 45/45, `git status` clean post-checkpoint
+- [x] Plan docs + TODO + LOGBOOK consistent with reality
+- [x] Loop branch pushed; production push decision handed to user (subsequently taken — deployed
+  2026-07-22, Entry 077)

@@ -2,7 +2,16 @@
 
 **Date:** 2026-07-14
 **Source:** User request (2026-07-14): top nav gets Home, Projects, Gallery, Contact; landing page drops the Work section; Gallery unchanged (tag system stays a later plan); new Projects page switches between projects with tabs on one page.
-**Status:** Implemented 2026-07-14 (LOGBOOK Entry 075, commits `94664d6` → `7bcc45a`; wrap-up in Entry 076). Deploy-gated leftovers: Netlify form-detection opt-in (UI toggle) and hash-fragment redirect verification post-deploy.
+**Status:** Implemented 2026-07-14 (LOGBOOK Entry 075, commits `94664d6` → `7bcc45a`; wrap-up in
+Entry 076). Deployed and verified live 2026-07-22 (Entries 077, 078) — hash-fragment redirects
+confirmed.
+
+**One blocker remains, and it needs you, not an agent:** Netlify form detection is off, so the
+Contact links stay commented out in `Nav.tsx` and `Footer.tsx` (`144a190`). Enabling it is a UI
+toggle in the Netlify dashboard followed by one test submission. Before uncommenting, note the
+360px nav-fit caveat: the pill group has only ~6px of slack with three labels (Entry 082), so a
+fourth will overflow — shrink the 360px padding clamp or move to a drawer at that width, then
+re-baseline. Tracked in `TODO.md` under *Awaiting a user step*.
 
 ## Goal
 
