@@ -210,6 +210,7 @@ matches the adjudication table, and the plan-doc reconciliation from Entry 088 v
 | Stage | SHA | Push | Notes |
 |---|---|---|---|
 | pre | — | — | branch created + pushed; dev servers killed |
+| 0-3 | `87a8b3e` | ✅ | single checkpoint: padding change, 30 regenerated baselines, port fix, docs |
 
 ## Verification matrix
 
