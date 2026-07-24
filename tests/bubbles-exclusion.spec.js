@@ -26,7 +26,7 @@ const BASE_URL = 'http://localhost:4322';
  * integrates per frame, so under `fullyParallel` contention a fixed
  * wall-clock wait buys far fewer frames of settling than it does standalone.
  */
-async function waitForEngine(page, settleFrames = 180) {
+async function waitForEngine(page, settleFrames = 300) {
   await page.waitForFunction(() => typeof window.__bubbleEngine !== 'undefined', null, { timeout: 15000 });
   await page.waitForFunction(() => document.querySelectorAll('.brand-bubble').length > 0, null, { timeout: 15000 });
   await page.evaluate(async (frames) => {
@@ -38,31 +38,41 @@ async function waitForEngine(page, settleFrames = 180) {
 
 /**
  * Largest overlap between any `.brand-bubble` and the elements matching
- * `selector`, sampled over several intervals. Bubbles are hard-constrained by
- * `resolveZoneCollisions`, so the correct answer is zero at every instant, not
- * merely on average.
+ * `selector`, sampled over several animation frames. Bubbles are hard-constrained
+ * by `resolveZoneCollisions`, so the correct answer is zero at every instant,
+ * not merely on average.
+ *
+ * Sampling is per ANIMATION FRAME, not per millisecond. Under `fullyParallel`
+ * contention rAF is starved and bubbles travel less per wall-clock second; a
+ * time-based sample then measures fewer frames of motion and can report
+ * transient overlap that would have resolved in the next frame. This failed
+ * exactly that way for the blob test (Entry 090).
  */
-async function maxBubbleOverlap(page, selector, samples = 6) {
+async function maxBubbleOverlap(page, selector, samples = 6, framesBetween = 60) {
   let worst = 0;
   for (let i = 0; i < samples; i++) {
-    const v = await page.evaluate((sel) => {
-      const targets = [...document.querySelectorAll(sel)];
-      if (!targets.length) return -1;
-      let max = 0;
-      for (const t of targets) {
-        const T = t.getBoundingClientRect();
-        for (const el of document.querySelectorAll('.brand-bubble')) {
-          const b = el.getBoundingClientRect();
-          const ox = Math.max(0, Math.min(T.right, b.right) - Math.max(T.left, b.left));
-          const oy = Math.max(0, Math.min(T.bottom, b.bottom) - Math.max(T.top, b.top));
-          max = Math.max(max, ox * oy);
+    const v = await page.evaluate(({ sel, f }) => {
+      const nextFrame = () => new Promise((r) => requestAnimationFrame(() => r()));
+      const run = async () => {
+        const targets = [...document.querySelectorAll(sel)];
+        if (!targets.length) return -1;
+        let max = 0;
+        for (const t of targets) {
+          const T = t.getBoundingClientRect();
+          for (const el of document.querySelectorAll('.brand-bubble')) {
+            const b = el.getBoundingClientRect();
+            const ox = Math.max(0, Math.min(T.right, b.right) - Math.max(T.left, b.left));
+            const oy = Math.max(0, Math.min(T.bottom, b.bottom) - Math.max(T.top, b.top));
+            max = Math.max(max, ox * oy);
+          }
         }
-      }
-      return max;
-    }, selector);
+        for (let j = 0; j < f; j++) await nextFrame();
+        return max;
+      };
+      return run();
+    }, { sel: selector, f: framesBetween });
     if (v === -1) throw new Error(`no elements matched ${selector}`);
     worst = Math.max(worst, v);
-    await page.waitForTimeout(500);
   }
   return worst;
 }
