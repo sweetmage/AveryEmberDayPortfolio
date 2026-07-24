@@ -75,6 +75,13 @@ _These are backlog items that don't currently have a written plan. Historical re
   decided together with the containerization item above, since that regenerates every baseline
   anyway. Doing both in one pass avoids two full re-baselines.
 
+- [x] **Bubble engine had zero automated coverage.** The visual gate captures under
+  `prefers-reduced-motion`, where the engine creates no bubbles at all, so the whole system was
+  invisible to the suite — a regression that put bubbles across the hero logo survived from Entry
+  083 to 2026-07-24. Closed by `tests/bubbles-exclusion.spec.js` (Entry 090), the only spec that
+  runs with motion enabled. Proven to fail: with `.hero-logo` removed from the exclusion lists,
+  3 of its 4 tests go red.
+
 ### Architecture remediation follow-ups (deferred from 2026-07-01)
 - [ ] Replace generated placeholder `images/og-default.png` with final design asset
 
@@ -84,6 +91,7 @@ _These are backlog items that don't currently have a written plan. Historical re
 
 Full details are in `LOGBOOK.md` (newest-first). Headline items since 2026-07-01:
 
+- **2026-07-24** — Fixed bubbles/blobs covering the hero logo and name: `.hero-logo` was silently dropped from the bubble exclusion zones when the mark was inlined as an `<svg>` (the list matches the `img` tag), and hero blobs never had avoidance at all. Added the repo's first bubble-engine tests (Entry 090).
 - **2026-07-24** — Deleted out-of-cascade CSS duplicates (`src/css/components.css`, `src/css/tokens.css`); aligned Projects page heading with tabs and project titles with tab tops (Entry 086). Removed Patriots motion graphics page from repo (Entry 087). Styled nav home button with active-page indicator matching nav links (Entry 087). Merged `shxdowloop/2026-07-22/visual-baseline-gate` to production as `098f0b1`. Reconciled all `docs/plans/` status headers and checklists against the shipped commits, and consolidated every open plan item into this file (Entry 088). Landed the Projects heading padding with all 40 baselines adjudicated numerically; found and fixed a Playwright preview-server port that collided with `next dev`, and found (deferred) a gate tolerance that scales with page height (Entry 089).
 - **2026-07-23** — Nav buttons restyled into a segmented pill group; `#theme-toggle` ID-override trap documented; focus-visible contract in AGENTS.md corrected to `--brand-accent` (Entry 082).
 - **2026-07-22** — Visual-baseline spec converted from capture-only to a real compare-based gate; fixed a too-loose per-pixel `threshold` and a `reuseExistingServer` bug that made the suite grade a stale `out/` (Entry 081).
