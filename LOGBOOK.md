@@ -1,3 +1,34 @@
+## Entry 091 — 2026-07-24
+
+**Agent:** Opus 4.8 (main)
+**Cycle:** shxdowflow — merge
+**Branch:** `portfoliowebsite`
+**Task:** Merge both of today's feature branches. **Not pushed** — held at the user's request for review before deploy.
+
+### Headline
+
+Merged `shxdowloop/2026-07-24/projects-heading-padding` (`04f496e`) and `shxdowloop/2026-07-24/bubble-hero-exclusions` (`61cf727`). Both branched from `098f0b1`, so neither had seen the other's changes.
+
+**One textual conflict, one semantic conflict git could not see, and one failure only the merged suite could produce.**
+
+1. **`TODO.md` (textual).** Both branches prepended a 2026-07-24 headline. Kept both lines, taking the padding branch's enriched version — the bubble side's copy of that line predated Entries 088/089. `AGENTS.md` and `LOGBOOK.md` auto-merged; both sides' additions were verified present rather than assumed.
+
+2. **The test port (semantic).** The padding branch moved the Playwright preview server from 3001 to 4322, because `next dev` lands on 3001 whenever 3000 is taken. The bubble branch's new spec was written against 3001. Different files, so git saw no conflict — but the merged suite would have pointed a brand-new spec at a port with nothing serving it. This is the failure mode where two individually-correct branches produce a broken merge.
+
+3. **Frame starvation.** See Entry 090's closing section: the blob test passed 3/3 standalone and failed the moment it ran alongside 45 other browser contexts. `fullyParallel` starves rAF, and the physics integrates a fixed velocity per frame rather than by elapsed time, so wall-clock sampling under-reported motion. Fixed by sampling in animation frames. **Neither branch could have caught this alone** — it only exists when the specs share a runner.
+
+### Verification
+
+- `npm test` green on the merged result across four runs (three after the frame fix, one after the final doc commit), 49 passed each, zero snapshot churn, clean tree after every run.
+- Oracle-class review (`verifier` @ fable, fresh context): **PASS**. It did not take the frame-starvation diagnosis on trust — it grepped `scripts/bubbles.js` for delta-time scaling, found none, and confirmed the physics genuinely steps a fixed distance per frame. It also diffed the merged docs against both branch tips to confirm nothing was lost, checked every port reference, and ran the suite itself.
+- One review finding applied: the engine cancels rAF on `visibilitychange` → hidden, so a backgrounded page would stall the frame waits rather than failing. Acceptable and already bounded by `test.setTimeout`, but now written down.
+
+### Not done
+
+**Not pushed.** `AGENTS.md` is explicit that pushing `portfoliowebsite` publishes to production and that the note is informational, not standing authorization. The user chose to review the merged result before deploying. 8 commits sit local and ahead of origin.
+
+---
+
 ## Entry 090 — 2026-07-24
 
 **Agent:** Opus 4.8 (main)
