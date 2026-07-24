@@ -83,6 +83,12 @@ export default function Nav() {
           </button>
         </div>
       </div>
+      <div
+        className="brand-spectrum-bar absolute inset-x-0 bottom-0 h-[2px]"
+        aria-hidden="true"
+      >
+        <div />
+      </div>
     </nav>
   );
 }

@@ -1,3 +1,84 @@
+## Entry 096 — 2026-07-24
+
+**Agent:** Opus 4.8 (vellum, main)
+**Cycle:** shxdowflow — interactive UI iteration
+**Branch:** `portfoliowebsite` (uncommitted; no commit requested)
+**Task:** Gallery art framing + a shared iridescent-underline header on Projects/Gallery + a nav-bottom spectrum bar site-wide. Driven live in `next dev` + Chrome, iterated turn by turn with the user.
+
+### Gallery pieces
+
+Removed the hover ring. Each `figure` now sits in a translucent dark-gray card: `bg-[#1c1c20]/80` (settled after `#0a0a0c` read too close to the page, then opacity so the bubble layer shows faintly through), `p-4` frame, `rounded-sm`. Titles are now `text-white font-medium tracking-wide text-[0.95em]` (was `text-text-muted`), reading clearly on the dark card.
+
+### Shared page header
+
+New `app/PageHeader.tsx`: left-aligned title in the 1400px content container with the hero's `.brand-spectrum-bar` underlining it across the page (`h-[3px]` — a Tailwind utility-layer override of the bar's default 6px, scoped so the hero bar is untouched). Used on both pages so the title lands in the **identical** spot when switching — verified numerically: `h2` top/left and bar top/left/width/height match to the pixel across Gallery and Projects at 1440 and 768.
+
+This required lifting the `Projects` `<h2>` out of the 260px tab-rail column (where its underline could never span the page) into a full-width header above the rail/content flex. Retuned the now-headerless rail (`lg:pt-8`) and the content column (`lg:pt-[5.5rem]` → `lg:pt-8`) so tabs and panel still top-align. Gallery's own header block was replaced by the shared component; grid gained `mt-8` for the space the old `py-8` header used to provide.
+
+Tradeoff recorded: the header container is a flat `max-w-[1400px]` on both pages, while the Gallery grid still steps 900→1400 at `xl`, so below `xl` the underline is wider than the grid. Accepted deliberately — "same place on both pages" was the explicit ask and outranks header-vs-grid edge alignment.
+
+### Nav spectrum bar (all pages)
+
+`.brand-nav` `border-bottom` (1px gray) replaced by a `.brand-spectrum-bar absolute inset-x-0 bottom-0 h-[2px]` inside `Nav.tsx` — full-bleed, on every page since the nav is global. Sticky nav is the positioning context, so the absolute bar anchors to its bottom edge (measured: bar top 74 / height 2 / nav bottom 76 at 1440).
+
+### Verification
+
+Target: Windows PowerShell 5.1 on AVERYBOT.
+
+| Check | Result |
+|---|---|
+| `css:build` + `build:next` | clean; confirmed `bg-[#1c1c20]/80` → `oklab(… / .8)`, `.brand-nav` `border-bottom:none`, `h-[3px]`/`h-[2px]` present |
+| `npx playwright test` (51) | green after re-baseline |
+| Visual gate | **all 40** baselines moved — the nav bar is on every page. Adjudicated before accepting: index and contact diffs (pages I did not touch) are confined to the nav band; Projects is a whole-page vertical shift from the header lift; Gallery is frames+title+header. |
+| Header parity probe | identical `h2`/bar geometry on both pages @ 1440 and 768 |
+
+Bubble exclusion unaffected: `.gallery-item` is still the exclusion selector (the frame is padding on the same element), and `tests/bubbles-exclusion.spec.js` stays green.
+
+---
+
+## Entry 095 — 2026-07-24
+
+**Agent:** Opus 4.8 (vellum, main)
+**Cycle:** shxdowflow — plan then implement
+**Branch:** `portfoliowebsite` (uncommitted; no commit was requested)
+**Task:** Widen the gallery on wide screens, and frame every item to a uniform cell so titles bottom-align.
+
+Plan: `docs/plans/2026-07-24-gallery-widening.md` (written plan-only first, then implemented after the user settled the width question and added the uniform-framing requirement).
+
+### The cap that wasn't in the ticket
+
+The TODO item blamed `max-w-[900px]` on the grid. That was not the binding constraint: `src/css/site.css:104` puts `max-width: var(--brand-content-max)` = 1200px on **every** `main`, so the gallery could never exceed 1120px usable no matter what the grid asked for. Widening required opting the gallery `<main>` out of that cap the same way `app/projects/page.tsx:28` does, then re-supplying the gutters `main` used to provide via `px-[clamp(16px,4vw,40px)]` on both sections.
+
+That gutter replacement was the one real regression risk, and `gallery-360` coming back **byte-identical** is the proof it reproduces the old padding exactly.
+
+### Shipped
+
+- 1400px centered container at `xl`, 3 columns — matching `ProjectTabs.tsx:87` so the two content pages share a measure. Three columns rather than two wider ones is a constraint, not taste: the image rungs stop at 1200w native, and 2 columns in 1400px would be ~685px, whose 2× request is above the largest asset. 424px columns keep 2× inside the existing 900w rung.
+- Uniform cells via `md:auto-rows-[1fr]`, `figure` as `flex h-full flex-col`, `img` as `min-h-0 flex-1 object-contain`, `figcaption` as `mt-auto`. Verified numerically rather than by eye: at both 768 and 1440 every row reports a single caption-top, caption-bottom, and cell-height value.
+- `gallerySizes` updated to the measured widths (424px `xl`, 398px `lg`). Stale `sizes` is the silent half of a widening change.
+
+### Scoped to md+ after measuring
+
+`auto-rows-[1fr]` at one column made every cell as tall as the tallest piece, adding **~1,170px of dead scroll** at 360px (5,815 → 6,987) and buying no alignment at all, since a single-column item is its own row. Caught by probing page height at every breakpoint, not by the gate — 360 would have passed rebaselining as "intentional".
+
+### Verification
+
+Target: Windows PowerShell 5.1 on AVERYBOT.
+
+| Check | Result |
+|---|---|
+| `npm run css:build` + `build:next` | clean export |
+| `npx playwright test` (all 51) | green |
+| Visual gate | 6 gallery baselines regenerated; 360 byte-identical; the other 34 captures untouched |
+| Geometry probe @ 360/768/1024/1440/2560/3440 | `scrollWidth === clientWidth` everywhere; container centered (gridLeft 580 @ 2560, 1020 @ 3440) |
+| Ultrawide review, 2560 + 3440, both themes | per `AGENTS.md:133` |
+
+The first 3440 capture showed an empty cell where *Shadow* should be. Probed rather than assumed: all 11 images report `complete && naturalWidth > 0` before any scrolling, so it was a `fullPage` stitch artifact against `loading="lazy"`, not a product bug. Re-captured with a scroll pass; all 11 present.
+
+Also corrected in `TODO.md`: the old item warned that bubble redistribution would make gallery captures noisy. It doesn't — the gate captures under `prefers-reduced-motion`, where the engine returns before creating a single bubble, so exclusion-zone changes are invisible to it. `tests/bubbles-exclusion.spec.js` (motion-enabled) was run separately and passes.
+
+---
+
 ## Entry 094 — 2026-07-24
 
 **Agent:** Opus 4.8 (main)

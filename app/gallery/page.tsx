@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import PageHeader from '../PageHeader';
 
 export const metadata: Metadata = {
   title: 'Art Gallery — Avery Ember Day',
@@ -42,26 +43,32 @@ function buildSrcSet(src: string, width: number, variants: number[]): string {
   return rungs.join(', ');
 }
 
-const gallerySizes = '(min-width: 1000px) 438px, (min-width: 768px) 46vw, 92vw';
+const gallerySizes =
+  '(min-width: 1280px) 424px, (min-width: 1000px) 398px, (min-width: 768px) 46vw, 92vw';
 
 export default function GalleryPage() {
   return (
-    <main id="main">
+    /* `max-w-none mx-0 px-0` opts out of the global 1200px `main` cap in
+       src/css/site.css so the grid can reach 1400px, matching the Projects
+       page. Both sections below re-supply the gutters `main` used to give. */
+    <main id="main" className="mx-0 max-w-none px-0">
       <h1 className="sr-only">Art Gallery</h1>
-      <section className="gallery-header py-8 pb-6">
-        <h2 className="mt-1 border-none p-0 text-left font-display text-[clamp(2rem,5vw,3rem)] leading-[1.1] normal-case tracking-normal font-normal text-text [text-shadow:0_0_30px_rgba(217,154,255,0.20),0_0_60px_rgba(0,255,255,0.10)]">
-          Art Gallery
-        </h2>
-      </section>
+      <PageHeader title="Art Gallery" />
 
       <section
-        className="gallery-grid mx-auto mb-12 grid max-w-[900px] grid-cols-1 gap-6 md:grid-cols-2"
+        /* auto-rows-[1fr] equalizes every row to the tallest, so all cells are
+           the same size and every caption sits on the same baseline. The 70vh
+           image cap bounds what "tallest" can be. Deliberately md+ only: at
+           one column every item is its own row, so equalizing there buys no
+           alignment and costs ~1000px of dead scroll under the landscape
+           pieces (measured at 360px). */
+        className="gallery-grid mx-auto mt-8 mb-12 grid max-w-[900px] grid-cols-1 gap-6 px-[clamp(16px,4vw,40px)] md:auto-rows-[1fr] md:grid-cols-2 xl:max-w-[1400px] xl:grid-cols-3"
         aria-label="Art gallery"
       >
         {galleryItems.map((item) => (
           <figure
             key={item.src}
-            className="gallery-item m-0 [&_figcaption]:py-1 [&_figcaption]:text-center [&_figcaption]:text-[0.85em] [&_figcaption]:text-text-muted [&_img]:mx-auto [&_img]:block [&_img]:max-h-[70vh] [&_img]:w-full [&_img]:rounded-sm [&_img]:object-contain [&_img]:object-center [&_img]:transition-shadow [&_img:hover]:shadow-[0_0_0_1px_var(--brand-accent),var(--brand-shadow-lg)]"
+            className="gallery-item m-0 flex h-full flex-col rounded-sm bg-[#1c1c20]/80 p-4 [&_figcaption]:mt-auto [&_figcaption]:pt-3 [&_figcaption]:text-center [&_figcaption]:text-[0.95em] [&_figcaption]:font-medium [&_figcaption]:tracking-wide [&_figcaption]:text-white [&_img]:mx-auto [&_img]:block [&_img]:min-h-0 [&_img]:w-full [&_img]:flex-1 [&_img]:object-contain [&_img]:object-center [&_img]:max-h-[70vh]"
           >
             <img
               src={item.src}

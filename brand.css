@@ -569,7 +569,9 @@
        should stay visually centred (logo, actions) center their own contents. */
     align-items: stretch;
     background: var(--brand-bg);
-    border-bottom: 1px solid var(--brand-border-mid);
+    /* The iridescent spectrum bar (added in Nav.tsx) is the bottom edge now,
+       so no gray border here. */
+    border-bottom: none;
 }
 
 .brand-nav-inner {

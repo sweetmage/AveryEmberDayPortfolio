@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import BrandProject from './BrandProject';
 import MistrustProject from './MistrustProject';
+import PageHeader from '../PageHeader';
 
 const TABS = [
   { id: 'brand', label: 'Brand' },
@@ -84,17 +85,17 @@ export default function ProjectTabs() {
   );
 
   return (
-    <div className="lg:flex lg:items-start lg:max-w-[1400px] lg:mx-auto">
+    <>
+      <PageHeader title="Projects" />
+
+      <div className="lg:flex lg:items-start lg:max-w-[1400px] lg:mx-auto">
       <div className="lg:w-[260px] lg:shrink-0">
-        <h2 className="px-6 pt-6 pb-2 text-center font-display text-[clamp(2rem,5vw,3rem)] leading-[1.1] normal-case tracking-normal font-normal text-text [text-shadow:0_0_30px_rgba(217,154,255,0.20),0_0_60px_rgba(0,255,255,0.10)] lg:px-0 lg:pt-8 lg:pb-4">
-          Projects
-        </h2>
         <div
           ref={tablistRef}
           role="tablist"
           aria-label="Projects"
           aria-orientation={isRail ? 'vertical' : 'horizontal'}
-          className="flex flex-wrap gap-0 px-6 pt-2 pb-4 lg:sticky lg:top-16 lg:flex-col lg:flex-nowrap lg:px-0 lg:pt-2 lg:pb-0"
+          className="flex flex-wrap gap-0 px-6 pt-6 pb-4 lg:sticky lg:top-16 lg:flex-col lg:flex-nowrap lg:px-0 lg:pt-8 lg:pb-0"
         >
         {TABS.map((tab, i) => {
           const isActive = activeTab === tab.id;
@@ -117,7 +118,7 @@ export default function ProjectTabs() {
       </div>
       </div>
 
-      <div className="lg:min-w-0 lg:flex-1 lg:pt-[5.5rem]">
+      <div className="lg:min-w-0 lg:flex-1 lg:pt-8">
         <div
           id="panel-brand"
           role="tabpanel"
@@ -136,6 +137,7 @@ export default function ProjectTabs() {
           <MistrustProject />
         </div>
       </div>
-    </div>
+      </div>
+    </>
   );
 }
