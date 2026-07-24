@@ -108,6 +108,19 @@ test.describe('bubble exclusion zones', () => {
     });
   }
 
+  // Gallery filter bar uses .bubble-exclude (already in DEFAULT_EXCLUSIONS) to
+  // avoid bubbles crossing the interactive filter buttons.
+  for (const width of [768, 1440]) {
+    test(`physics bubbles never cover the Gallery filter bar @ ${width}px`, async ({ page }) => {
+      await page.setViewportSize({ width, height: 900 });
+      await page.goto(`${BASE_URL}/gallery/`, { waitUntil: 'networkidle' });
+      await waitForEngine(page);
+
+      expect(await allRegisteredAsZones(page, '.gallery-filter-bar')).toBe(true);
+      expect(await maxBubbleOverlap(page, '.gallery-filter-bar')).toBe(0);
+    });
+  }
+
   test('the hero logo is a registered exclusion zone', async ({ page }) => {
     await page.goto(`${BASE_URL}/`, { waitUntil: 'networkidle' });
     await waitForEngine(page);

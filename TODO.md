@@ -20,6 +20,12 @@ _None. All written plans are complete; see **Completed plans** below._
 
 ### Completed plans
 
+- `2026-07-24-cross-page-css-consistency.md` — Home/Gallery title, frame, and color styles unified on
+  a new `.brand-page-title` / `.brand-title-bar` primitive in `brand.css`; gallery cards moved off
+  hardcoded dark values onto brand tokens (they were broken in the light theme); Gallery header
+  renamed "Art Gallery" → "Gallery". Entry 097. Follow-on (Entry 098): Projects text reduced to
+  black/white/gray, and every framed image on Projects + Gallery moved to one `.brand-frame`
+  neutral translucent frame that is the same declared color in light and dark.
 - `2026-07-24-gallery-widening.md` — gallery widened to a 1400px centered container with 3 columns
   at `xl`, matching the Projects measure; cells equalized so captions share a baseline. Entry 095.
 - `2026-07-23-nav-button-restyle.md` — nav buttons restyled to a square, no-chrome-at-rest group;
@@ -42,11 +48,31 @@ _All prior plans are consolidated in `docs/archives/plans.md` (see the Consolida
 
 _These are backlog items that don't currently have a written plan. Historical retrospectives moved to `LOGBOOK.md` / `docs/archives/plans.md`._
 
-### Gallery tag system (explicitly deferred by user 2026-07-14 — nav restructure first)
+### Gallery tag system (plan: `docs/plans/2026-07-24-gallery-tag-system.md` — explicitly deferred by user 2026-07-14, plan refined 2026-07-24)
 - [x] Design tag taxonomy — done 2026-07-14. Medium split is **Digital (4: In Danger, Chill, Gross, Emergence) / Painting (5: Faces, Lollipop, Overflow, Beheaded, Shadow) / Drawing (2: Stairs — colored pencil, TX Lake Landscape — pastel)**; no photography, so the originally suggested mixed-media/photography buckets don't apply. **Needs user confirmation of per-work assignments before shipping.**
-- [ ] Implement filter UI in `app/gallery/page.tsx` (all / medium toggles; page must become a server-metadata + client-grid split)
-- [ ] Wire tag metadata into gallery items
-- [ ] Verify responsive layout with filter bar at 360 / 768 / 1024 / 1440 px
+- **Source tag data provided by user 2026-07-24** (per-work Tool Tags + Production category — this is the real per-piece data the taxonomy above should be checked against before implementing):
+
+  | Work | Tool Tags | Production |
+  |---|---|---|
+  | In Danger | Photoshop, Photography | Digital |
+  | Chill | Photoshop, Colored Pencil | Traditional, Digital |
+  | Gross | Photoshop, Acrylic Paint | Traditional, Digital |
+  | Emergence | Procreate | Digital |
+  | Faces | Watercolor Paint, Marker, Photography | Traditional |
+  | Lollipop | Acrylic Paint | Traditional |
+  | Overflow | Photoshop, Acrylic Paint | Traditional, Digital |
+  | Stairs | Photoshop, Colored Pencil | Traditional, Digital |
+  | Beheaded | Photoshop, Acrylic Paint | Traditional, Digital |
+  | Shadow | Acrylic Paint | Traditional |
+  | TX Lake Landscape | Photoshop, Chalk Pastel | Traditional, Digital |
+
+  **User decision 2026-07-24:** Production tags only (no Tools facet). Filter simplified to `All | Digital | Traditional | Both`. Hybrid pieces (Chill, Gross, Overflow, Stairs, Beheaded, TX Lake Landscape) display **both** "Traditional" and "Digital" tags on the card. "Photography, Digital" (In Danger) maps to "Digital" only. Description field added to data model now (empty strings) but **not rendered yet** — user will fill descriptions and ask for UI inclusion separately.
+- **Plan refined 2026-07-24:** `docs/plans/2026-07-24-gallery-tag-system.md`.
+- [ ] Implement filter UI in `app/gallery/page.tsx` (All / Digital / Traditional / Both toggles; page becomes server-metadata + client-grid split). **Type decision, set by the user 2026-07-24 (Entry 098): tags render in the body font (Inter), not the heading font.** The artwork titles moved to Outfit heading treatment that same day, so typeface is what separates title from metadata in a gallery cell — keep tags on `font-body`.
+- [ ] Wire tag metadata into gallery items — `tags: string[]` and `description: string` fields added per item. Hybrid pieces get both tags.
+- [ ] Verify responsive layout with filter bar at 360 / 768 / 1024 / 1440 / 2560 / 3440 px
+
+**Bonus data, out of scope for the gallery (Projects page, not Gallery — recorded here only so it isn't lost):** the user also supplied Tool Tags / Production for two Projects-page entries: **Avery Ember Day Brand** — Photoshop, Illustrator, InDesign, Tailwind CSS, JavaScript (user flagged an open question: whether to also list the portfolio site's frameworks here) / Production: Digital; **History of Mistrust** — Figma / Production: Digital. No tag system exists on the Projects page (`app/projects/BrandProject.tsx`, `MistrustProject.tsx`) today — this is reference data only, not a scoped task.
 
 ### History of Mistrust — post-framework polish
 - [ ] Final polish on the continuous horizontal carousel
@@ -61,6 +87,36 @@ _These are backlog items that don't currently have a written plan. Historical re
   reduced motion, where the engine makes no bubbles, so exclusion-zone changes are invisible to
   it), and 6 of the 8 gallery baselines moved, not 8 — `gallery-360` stayed byte-identical.
 - [ ] Watermark artwork
+- [ ] **Flaky under parallel load: `bubbles-exclusion › Projects tabs @768`.** Failed twice during
+  full-suite runs in one session (Entry 098) and passed 6/6 across three isolated re-runs both
+  times, so it is worker-contention timing in the physics sim, not a real exclusion-zone break.
+  Confirm by re-running that spec alone before treating it as a regression.
+- [ ] **Visual gate: `--update-snapshots` intermittently writes a bad baseline.** Pre-existing, not
+  introduced by any current change, and deferred because it needs its own investigation rather than
+  a tweak. **Five occurrences in one session (Entry 098), in two distinct failure modes:**
+  - *Partial paint* — `gallery @768 dark`: the newly written baseline caught the first two gallery
+    images half-painted. The spec already force-eagers and `decode()`s in-layout images, so that
+    isn't the gap; `captureBeyondViewport` is the remaining suspect.
+  - *Stale content* — `projects @360 light` (203px short), `projects-mistrust @1024 light` (95px
+    tall, ≈ the three caption lines removed that turn), and `projects @1024 light` (292px tall,
+    exactly that turn's spacing reduction). In every case
+    the page measured a stable height across 4 consecutive loads while the just-written baseline
+    disagreed, i.e. the update run captured a pre-change render. Suspect the interaction between
+    `globalSetup`'s build and `reuseExistingServer` on the `serve out` webServer.
+
+- [ ] **Visual gate: small-area changes pass silently.** Distinct from the flake above and arguably
+  worse, because it is deterministic. `maxDiffPixelRatio: 0.001` allows ~3685 differing pixels on a
+  1440×2559 page, so any change smaller than that is invisible to the gate *and its stale baseline
+  keeps passing*. Confirmed twice in Entry 098: the 2px tab divider (~520 px) passed in light while
+  the baseline lacked it entirely — dark caught it only because the bar's glow spreads further on
+  near-black; and dark-mode `projects-mistrust` heading recolours passed at 1024/1440 for the same
+  reason. **Consequence: a green suite is not evidence that a small visual change shipped.** Verify
+  small changes by cropping the committed baseline or probing computed styles, not by a pass.
+
+  **Mitigation that works, and should stay the habit: after ANY `--update-snapshots`, re-run the
+  full suite before committing snapshots.** A bad baseline is silent otherwise — it passes on the
+  update run and only surfaces later as a phantom regression. Recovery is to re-update the single
+  offending snapshot, confirm the dimensions against a repeated-load measurement, then re-run.
 - [x] **Homepage scrolls horizontally at narrow widths.** Fixed 2026-07-24 (Entry 085):
   `overflow: hidden` added to `.brand-hero` clips the `.brand-hero-blobs` layer
   (`inset: -20%`) so it cannot spill into the document scrollbox. Verified:
