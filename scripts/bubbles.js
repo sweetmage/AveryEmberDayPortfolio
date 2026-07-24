@@ -27,6 +27,7 @@
   const MAX_SPEED       = 3.0;  // slower top speed for floatier feel
   const DRIFT_KICK      = 0.12;
   const ZONE_PADDING    = 24;   // px buffer around exclusion zones
+  const BLOB_ZONE_PUSH  = 0.06; // hero-blob steering force away from hero content
   const ZONE_THROTTLE   = 250;  // ms between rect queries
   const SCROLL_STIR     = 0.02; // velocity imparted per px of scroll delta
   const SCROLL_STIR_MAX = 40;   // px of scroll delta considered per frame
@@ -74,6 +75,13 @@
     '.about-box',
     '.hero-name',
     '.hero-sub',
+    // `.hero-logo` must be listed explicitly. The `img` selector above used to
+    // cover it, but the hero mark was inlined as a React <svg> component so it
+    // could follow `currentColor` (2026-07-24, LOGBOOK Entry 083) -- and an
+    // inline <svg> is not an <img>, so the logo silently stopped being an
+    // exclusion zone and bubbles began drifting across it. Any future
+    // <img> -> inline-<svg> swap needs the same treatment.
+    '.hero-logo',
     '.brand-card-bubble',
     '.brand-hero-blob',
     '.brand-card',
@@ -84,7 +92,40 @@
     '.brand-btn-secondary',
     '.icon-link'
   ];
+  // ── Hero-content zones (blob layer only) ────────────────────────
+  // Deliberately NOT the full exclusion list. The blobs are the hero's
+  // ambient colour wash and should keep filling it; only the mark and the
+  // actual glyphs are protected, so a blob never parks behind the logo or
+  // the name.
+  //
+  // `.hero-name` / `.hero-sub` are full-width block elements with centred
+  // text, so their element boxes span the hero (1104px at 1440px wide).
+  // Excluding those boxes would evict blobs from the entire hero band.
+  // A Range measures the ink instead of the box.
+  function heroContentRects() {
+    const rects = [];
+    const logo = document.querySelector('#hero .hero-logo');
+    if (logo) rects.push(logo.getBoundingClientRect());
+
+    for (const sel of ['#hero .hero-name', '#hero .hero-sub']) {
+      const el = document.querySelector(sel);
+      if (!el) continue;
+      const range = document.createRange();
+      range.selectNodeContents(el);
+      const r = range.getBoundingClientRect();
+      if (r.width > 0 && r.height > 0) rects.push(r);
+    }
+
+    return rects.map(r => ({
+      left:   r.left   - ZONE_PADDING,
+      top:    r.top    - ZONE_PADDING,
+      right:  r.right  + ZONE_PADDING,
+      bottom: r.bottom + ZONE_PADDING
+    }));
+  }
+
   const HOME_EXCLUSIONS = [
+    '#hero .hero-logo',
     '#hero .hero-name',
     '#hero .hero-sub',
     '#work h2',
@@ -669,7 +710,7 @@
       }, 50);
     }
 
-    step(mouse) {
+    step(mouse, heroZones) {
       if (!this.active) return;
       const bounds = this.cachedBounds || this._queryBounds();
       const cRect = this._cRect || (this._cRect = this.container.getBoundingClientRect());
@@ -678,6 +719,16 @@
         x: mouse.x - cRect.left,
         y: mouse.y - cRect.top
       };
+
+      // Viewport -> container-local, same conversion the hero bubble layer does.
+      const zonesLocal = heroZones && heroZones.length
+        ? heroZones.map(z => ({
+            left:   z.left   - cRect.left,
+            top:    z.top    - cRect.top,
+            right:  z.right  - cRect.left,
+            bottom: z.bottom - cRect.top
+          }))
+        : null;
 
       for (const b of this.blobs) {
         // Drift
@@ -700,6 +751,37 @@
           const strength = 0.2 * (1 - dist / 240);
           b.vx += (dx / dist) * strength;
           b.vy += (dy / dist) * strength;
+        }
+
+        // Hero-content repulsion. Steering, not clamping: a hard ejection
+        // would read as a glitch on shapes this large and slow, so the blob
+        // is pushed off the logo/name with the same soft force the mouse
+        // uses, and settles just clear of it.
+        if (zonesLocal) {
+          const bcx = b.x + b.w / 2;
+          const bcy = b.y + b.h / 2;
+          for (const z of zonesLocal) {
+            // Nearest point on the zone to the blob centre.
+            const nx = Math.max(z.left, Math.min(bcx, z.right));
+            const ny = Math.max(z.top,  Math.min(bcy, z.bottom));
+            const zdx = bcx - nx;
+            const zdy = bcy - ny;
+            const zdist = Math.hypot(zdx, zdy);
+            const reach = b.w / 2; // clear when the blob no longer covers it
+
+            if (zdist < reach) {
+              const falloff = 1 - zdist / reach;
+              if (zdist > 1) {
+                b.vx += (zdx / zdist) * BLOB_ZONE_PUSH * falloff;
+                b.vy += (zdy / zdist) * BLOB_ZONE_PUSH * falloff;
+              } else {
+                // Centre sits exactly on the zone: push toward the nearer
+                // horizontal edge rather than dividing by ~zero.
+                const zcx = (z.left + z.right) / 2;
+                b.vx += (bcx < zcx ? -1 : 1) * BLOB_ZONE_PUSH;
+              }
+            }
+          }
         }
 
         // Integrate
@@ -846,6 +928,7 @@
       this._heroRect = null;
       this._zonesLocal = null;
       this._zonesVersion = -1;
+      this._heroContentZones = null; // viewport-relative; see _loop
       this._invalidateBounds = this._invalidateBounds.bind(this);
       window.addEventListener('resize', this._invalidateBounds);
       window.addEventListener('scroll', this._invalidateBounds, { passive: true });
@@ -883,6 +966,7 @@
 
     _invalidateBounds() {
       this._heroRect = null;
+      this._heroContentZones = null; // recomputed lazily in _loop
       if (this.heroBlobLayer && this.heroBlobLayer.active) {
         this.heroBlobLayer._invalidateRect();
       }
@@ -916,7 +1000,16 @@
       }
       // Hero blobs use container-local coordinates; skip when the hero
       // is scrolled out of view (blobs only live inside #hero)
-      if (this._heroVisible) this.heroBlobLayer.step(this.mouse);
+      if (this._heroVisible) {
+        // These zones are viewport-relative, so they go stale on scroll for
+        // exactly the same reason the blob container rect does. Invalidate
+        // them together, or a fresh rect gets paired with stale zones and the
+        // blobs dodge empty space. Cached otherwise: this measures a Range,
+        // and the logo/headings only move on reflow.
+        if (!this.heroBlobLayer._cRect) this._heroContentZones = null;
+        if (!this._heroContentZones) this._heroContentZones = heroContentRects();
+        this.heroBlobLayer.step(this.mouse, this._heroContentZones);
+      }
       this.rAF = requestAnimationFrame(this._loop);
     }
 

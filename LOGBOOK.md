@@ -1,3 +1,51 @@
+## Entry 090 — 2026-07-24
+
+**Agent:** Opus 4.8 (main)
+**Cycle:** shxdowflow
+**Branch:** `portfoliowebsite`
+**Task:** "fix bubbles" — bubbles and blobs were sitting on top of the hero logo and name.
+
+### Headline
+
+Two separate causes, one visible symptom.
+
+**1. A regression hiding behind a tag selector.** `DEFAULT_EXCLUSIONS` in `scripts/bubbles.js` protects the hero mark by matching the `img` tag. When the logo was inlined as a React `<svg>` so it could follow `currentColor` (Entry 083), it stopped being an `<img>` — and silently stopped being an exclusion zone. Physics bubbles had been drifting across the logo ever since. Nothing errored, and nothing went red: **the visual gate runs under `prefers-reduced-motion`, where the engine returns before creating a single bubble**, so the entire bubble system is invisible to the suite. Fixed by listing `.hero-logo` explicitly in `DEFAULT_EXCLUSIONS` and `HOME_EXCLUSIONS`.
+
+**2. Hero blobs never had avoidance at all — by design.** The five `.brand-hero-blob` shapes are the hero's ambient colour wash; `HeroBlobLayer.step(mouse)` simply never received the zones that `BubbleLayer.step(mouse, zones)` gets. That is why a large blob parked directly behind the logo and name. Per user decision, blobs now clear the hero copy *only*, keeping the wash everywhere else: `step(mouse, heroZones)` applies a soft steering force (`BLOB_ZONE_PUSH`) away from `heroContentRects()`.
+
+### The measurement that mattered
+
+`heroContentRects()` measures the **glyph ink via a `Range`**, not the element box. `.hero-name` is a full-width block with centred text — its box is 1104px wide at a 1440px viewport while the actual text is 290px. Excluding the box would have evicted blobs from the entire hero band and destroyed the effect the user explicitly asked to keep.
+
+This also corrected my own instrumentation mid-run: the first overlap probe compared element boxes and reported blob#1 and blob#3 as hitting the name. Re-measured against ink, neither touches it — they were artefacts of the full-width box, and tuning against them would have been tuning against noise.
+
+### Changes
+
+- `scripts/bubbles.js`: `.hero-logo` added to both exclusion lists with the `img`→`svg` trap documented in place; new `heroContentRects()`; `BLOB_ZONE_PUSH` constant; `HeroBlobLayer.step()` takes and applies hero zones; engine caches the zones and invalidates them together with the blob container rect (they are viewport-relative, so they go stale on scroll for the same reason).
+- `public/scripts/bubbles.js`: re-synced — this is the copy the export actually serves.
+- `AGENTS.md`: `.hero-logo` added to the JS-referenced class contract, plus the `img`→inline-`svg` trap and the two-avoidance-systems distinction.
+
+### Verification
+
+- Overlap probe against the built export, repeated samples at 360/768/1024/1440: **zero physics-bubble overlaps** of the logo (previously present in every sample); hero text ink clear at every breakpoint except a ~1,500px² corner graze at 1440 where the blob's soft, faded edge meets the top-right of the name — visually clean in the capture, and tightening further would push blobs out of the hero centre and lose the wash.
+- Blob-over-logo overlap fell from 22,000–46,000px² (varying, always centred) to a stable residual at the box edge, beside the mark rather than over it.
+- Zero console/page errors, no horizontal overflow at any breakpoint.
+- `npm test` — 45/45 green with **zero snapshot churn**, confirming the change is confined to the motion path and does not disturb the reduced-motion captures.
+
+### Closing the coverage gap (same run, `shxdowloop` continuation)
+
+The bubble system had **no automated coverage at all**, precisely because the visual gate neutralises it for determinism — which is why this regression survived from Entry 083 unnoticed. `tests/bubbles-exclusion.spec.js` now covers it, and is the only spec in the repo that runs with motion **enabled**.
+
+**The first version of the blob assertion was wrong, and the data said so.** It asserted an instantaneous maximum overlap under a threshold I had picked by guesswork; it failed at 8,200px². Measuring the distribution first (60 samples over 15s, both breakpoints) showed the overlap is *exactly zero* in 90% of samples at 1440px and 97% at 768px, median 0 at both, with brief transients to ~2,000px² as a blob is steered back out. So the assertion shape was wrong, not just the constant: blobs are steered by a soft force, never clamped, and an instantaneous maximum measures transient pass-through. It now asserts the **zero-fraction** (≥0.6 against a measured 0.90–0.97), which is what "not parked on the copy" actually means — and which would read ~0 on the pre-fix behaviour, where a blob sat on the copy continuously.
+
+Tuning the original constant upward until it went green would have produced a test that passes and proves nothing. That is the same failure this repo already caught once, in Entry 081.
+
+**The gate was proven to fail.** With `.hero-logo` deliberately removed from both exclusion lists, 3 of the 4 tests went red — both bubble-vs-logo cases and the zone-registration guard. The blob test correctly stayed green: the injection touches the *bubble* exclusion lists, while `heroContentRects()` queries the logo directly and was untouched, so blob steering genuinely still worked. The suite discriminates between the two systems rather than failing as a block. Injection reverted; the two `bubbles.js` copies verified byte-identical afterwards.
+
+Final: `npm test` 49 passed (45 + 4 new), zero visual-snapshot churn.
+
+---
+
 ## Entry 087 — 2026-07-24
 
 **Agent:** Kilo (kimi-k2.6)
