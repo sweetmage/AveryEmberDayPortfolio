@@ -1,3 +1,33 @@
+## Entry 094 — 2026-07-24
+
+**Agent:** Opus 4.8 (main)
+**Cycle:** shxdowflow — deploy
+**Branch:** `portfoliowebsite` → pushed
+**Task:** Push the day's work to production, on the user's explicit instruction.
+
+### Deployed
+
+12 commits pushed, `098f0b1` → `ee0f10e`, covering Entries 088–093: the docs/plan reconciliation, the Projects heading padding with its adjudicated baselines, the Playwright port fix, the bubble/blob hero exclusions and the repo's first motion-enabled tests, the nav gutter tightening, and the Projects-tab exclusion fix. Netlify picked it up automatically.
+
+Pre-push gate: `npm test` 51 passed, working tree clean.
+
+### Live verification
+
+Confirmed the deploy actually landed rather than assuming the push implied it — the production CSS bundle (`_next/static/css/56f8ee85aca337ff.css`) was polled until it contained the new nav rule `clamp(4px,.5vw,6px)`.
+
+Then probed all four pages headless against `averyemberday.com`:
+
+| Page | Engine | Bubbles | Protected element | Overflow | Console errors |
+|---|---|---|---|---|---|
+| `/` | ✅ | 10 | `.hero-logo` overlap **0** | none | 0 |
+| `/projects/` | ✅ | 7 | `.project-tab` overlap **0** | none | 0 |
+| `/gallery/` | ✅ | 7 | — | none | 0 |
+| `/contact/` | ✅ | 7 | — | none | 0 |
+
+Both exclusion fixes verified **in production**, not just locally — the hero logo and the Projects rail are each clear of bubbles on the live site, sampled per animation frame. Zero console or page errors anywhere.
+
+---
+
 ## Entry 093 — 2026-07-24
 
 **Agent:** Opus 4.8 (main)
