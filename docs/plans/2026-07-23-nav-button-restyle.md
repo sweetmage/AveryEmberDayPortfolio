@@ -2,7 +2,32 @@
 
 **Date:** 2026-07-23
 **Agent:** Opus 4.8 (quartz, main)
-**Status:** In progress
+**Status:** **Complete** — shipped 2026-07-24, merged to `portfoliowebsite` as `098f0b1`.
+Implemented and verified across LOGBOOK Entries 082–087; scope grew well past the original
+restyle (see *Shipped scope* below).
+
+## Shipped scope
+
+The plan as written covered the nav buttons only. What actually shipped, in order:
+
+- **Entry 082** — segmented pill group implemented and verified. Also documented the
+  `#theme-toggle` ID-override trap, and corrected the focus-visible contract in `AGENTS.md`
+  to `--brand-accent`.
+- **Entry 083** — the logo gained full button affordances (hover/active/focus fills, full bar
+  height), making its role as the home control explicit.
+- **Entry 084** — the explicit `Home` text link was removed from `Nav.tsx`; Projects and Gallery
+  were grouped with the logo at the far left and the theme toggle pushed right via
+  `margin-left: auto`. `.brand-nav .brand-container` gained `max-width: none; margin: 0;` so the
+  bar reaches the viewport edges instead of being trapped in the 1200px container.
+- **Entry 085** — the project tabs were restyled to match the nav buttons (square, no chrome at
+  rest); project content was un-capped from the 1200px max-width; and the hero blob overflow that
+  caused horizontal scroll at 360px was fixed with `overflow: hidden` on `.brand-hero`.
+- **Entry 087** — the logo link now takes `is-active` on the home page, so the active-page
+  indicator is consistent across every nav item including the logo.
+
+Nothing from this plan is outstanding. One adjacent item remains open and is owned by `TODO.md`,
+not here: the nav pill group has only ~6px of slack at 360px with three labels, so re-enabling the
+Contact link needs either a tighter padding clamp or a drawer at that width.
 
 ## Goal
 

@@ -86,7 +86,7 @@ export default function ProjectTabs() {
   return (
     <div className="lg:flex lg:items-start lg:max-w-[1400px] lg:mx-auto">
       <div className="lg:w-[260px] lg:shrink-0">
-        <h2 className="px-6 pt-4 pb-2 text-center font-display text-[clamp(2rem,5vw,3rem)] leading-[1.1] normal-case tracking-normal font-normal text-text [text-shadow:0_0_30px_rgba(217,154,255,0.20),0_0_60px_rgba(0,255,255,0.10)] lg:px-0 lg:pt-6 lg:pb-4">
+        <h2 className="px-6 pt-6 pb-2 text-center font-display text-[clamp(2rem,5vw,3rem)] leading-[1.1] normal-case tracking-normal font-normal text-text [text-shadow:0_0_30px_rgba(217,154,255,0.20),0_0_60px_rgba(0,255,255,0.10)] lg:px-0 lg:pt-8 lg:pb-4">
           Projects
         </h2>
         <div

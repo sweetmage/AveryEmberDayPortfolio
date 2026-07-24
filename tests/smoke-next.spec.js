@@ -1,6 +1,8 @@
 import { test, expect } from '@playwright/test';
 
-const BASE_URL = 'http://localhost:3001';
+// Must match the `serve out` webServer port in playwright.config.js.
+// Deliberately not 3000/3001 -- those are where `next dev` lands.
+const BASE_URL = 'http://localhost:4322';
 
 test.describe('Next.js app smoke', () => {
   const errors = [];

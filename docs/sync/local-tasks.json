@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "generatedAt": "2026-07-24T06:52:17.500Z",
+  "generatedAt": "2026-07-24T10:14:14.387Z",
   "source": "TODO.md",
   "tasks": [
     {
@@ -11,7 +11,7 @@
       "priority": "normal",
       "tags": [],
       "list": "Gallery tag system (explicitly deferred by user 2026-07-14 — nav restructure first)",
-      "sourceLine": 33
+      "sourceLine": 44
     },
     {
       "id": "open-task-threads-gallery-tag-system-explicitly-deferred-by-user-2026-07-14-na-implement-filter-ui-in-appgallerypagetsx",
@@ -21,7 +21,7 @@
       "priority": "normal",
       "tags": [],
       "list": "Gallery tag system (explicitly deferred by user 2026-07-14 — nav restructure first)",
-      "sourceLine": 34
+      "sourceLine": 45
     },
     {
       "id": "open-task-threads-gallery-tag-system-explicitly-deferred-by-user-2026-07-14-na-wire-tag-metadata-into-gallery-items",
@@ -31,7 +31,7 @@
       "priority": "normal",
       "tags": [],
       "list": "Gallery tag system (explicitly deferred by user 2026-07-14 — nav restructure first)",
-      "sourceLine": 35
+      "sourceLine": 46
     },
     {
       "id": "open-task-threads-gallery-tag-system-explicitly-deferred-by-user-2026-07-14-na-verify-responsive-layout-with-filter-bar",
@@ -41,7 +41,7 @@
       "priority": "normal",
       "tags": [],
       "list": "Gallery tag system (explicitly deferred by user 2026-07-14 — nav restructure first)",
-      "sourceLine": 36
+      "sourceLine": 47
     },
     {
       "id": "open-task-threads-history-of-mistrust-post-framework-polish-final-polish-on-the-continuous-horizonta",
@@ -51,7 +51,7 @@
       "priority": "normal",
       "tags": [],
       "list": "History of Mistrust — post-framework polish",
-      "sourceLine": 39
+      "sourceLine": 50
     },
     {
       "id": "open-task-threads-history-of-mistrust-post-framework-polish-standalone-viewer-page-with-all-canonica",
@@ -61,7 +61,7 @@
       "priority": "normal",
       "tags": [],
       "list": "History of Mistrust — post-framework polish",
-      "sourceLine": 40
+      "sourceLine": 51
     },
     {
       "id": "open-task-threads-standalone-watermark-artwork",
@@ -71,17 +71,17 @@
       "priority": "normal",
       "tags": [],
       "list": "Standalone",
-      "sourceLine": 43
+      "sourceLine": 54
     },
     {
       "id": "open-task-threads-standalone-homepage-scrolls-horizontally-at-narrow-",
-      "title": "**Homepage scrolls horizontally at narrow widths (pre-existing).** At a 360px viewport",
+      "title": "**Homepage scrolls horizontally at narrow widths.** Fixed 2026-07-24 (Entry 085):",
       "description": null,
-      "status": "pending",
+      "status": "completed",
       "priority": "normal",
       "tags": [],
       "list": "Standalone",
-      "sourceLine": 44
+      "sourceLine": 55
     },
     {
       "id": "open-task-threads-standalone-delete-the-out-of-cascade-css-duplicates",
@@ -91,7 +91,7 @@
       "priority": "normal",
       "tags": [],
       "list": "Standalone",
-      "sourceLine": 52
+      "sourceLine": 59
     },
     {
       "id": "open-task-threads-standalone-re-check-nav-fit-before-re-enabling-the-",
@@ -101,17 +101,27 @@
       "priority": "normal",
       "tags": [],
       "list": "Standalone",
-      "sourceLine": 58
+      "sourceLine": 62
     },
     {
       "id": "open-task-threads-standalone-run-the-visual-gate-in-ci-the-gate-is-no",
-      "title": "**Run the visual gate in CI.** The gate is now real (Entry 081) but opt-in — `netlify.toml` runs `next build` + publish with no test step, so a visual regression deploys unchallenged if `npm test` is skipped locally. **Blocked on a decision:** snapshots are `-chromium-win32` suffixed, so a Linux CI runner cannot reuse them. **Decision made 2026-07-23 (user):** option (c) — containerize capture (run Playwright in the official `mcr.microsoft.com/playwright` image locally *and* in CI) so one Linux snapshot set is canonical. Not yet implemented; needs a one-time regeneration of all 40 baselines under the container. Raised by the Entry 081 shippability review.",
+      "title": "**Run the visual gate in CI.** The gate is now real (Entry 081) but opt-in — `netlify.toml` runs `next build` + publish with no test step, so a visual regression deploys unchallenged if `npm test` is skipped locally. **Blocked on a decision:** snapshots are `-chromium-win32` suffixed, so a Linux CI runner cannot reuse them. **Decision made 2026-07-23 (user):** option (c) — containerize capture (run Playwright in the official `mcr.microsoft.com/playwright` image locally *and* in CI) so one Linux snapshot set is canonical. Not yet implemented; needs a one-time regeneration of all **40** baselines under the container. Raised by the Entry 081 shippability review. **This is the only open item carried over from a plan doc** (`2026-07-22-visual-baseline-gate-shxdowloop.md`, whose Risks section points here rather than re-planning it).",
       "description": null,
       "status": "pending",
       "priority": "normal",
       "tags": [],
       "list": "Standalone",
-      "sourceLine": 62
+      "sourceLine": 66
+    },
+    {
+      "id": "open-task-threads-standalone-the-visual-gates-tolerance-scales-with-p",
+      "title": "**The visual gate's tolerance scales with page height — tighten it.** `maxDiffPixelRatio: 0.001`",
+      "description": null,
+      "status": "pending",
+      "priority": "normal",
+      "tags": [],
+      "list": "Standalone",
+      "sourceLine": 68
     },
     {
       "id": "open-task-threads-architecture-remediation-follow-ups-deferred-from-2026-07-01-replace-generated-placeholder-imagesog-d",
@@ -121,7 +131,7 @@
       "priority": "normal",
       "tags": [],
       "list": "Architecture remediation follow-ups (deferred from 2026-07-01)",
-      "sourceLine": 65
+      "sourceLine": 79
     }
   ]
 }

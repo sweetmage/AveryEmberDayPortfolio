@@ -11,6 +11,73 @@
 
 2. **Nav home button styled like nav links** — `Nav.tsx` now applies `is-active` to the logo link when on the home page (`isActive('/')`). `brand.css` adds `.brand-nav-logo.is-active` rules matching the nav-link active state (`--brand-accent-dim` background). Added `margin-left: 4px` to `.brand-nav-links` so the gap between logo and first link matches the internal link gap. Hover and active states were already identical; this change makes the active-page indicator consistent across all nav items.
 
+3. **Merged to production** — Branch `shxdowloop/2026-07-22/visual-baseline-gate` merged into `portfoliowebsite` and pushed (`098f0b1`). Netlify deploy triggered automatically.
+
+4. **Projects heading breathing room** — `ProjectTabs.tsx` heading padding raised from `pt-4`/`lg:pt-6` to `pt-6`/`lg:pt-8`, giving the "Projects" title more clearance below the nav bar. Landed and verified in Entry 089.
+
+---
+
+## Entry 089 — 2026-07-24
+
+**Agent:** Opus 4.8 (main)
+**Cycle:** shxdowloop — branch-backed stage loop
+**Branch:** `shxdowloop/2026-07-24/projects-heading-padding`
+**Task:** Land the uncommitted Projects heading padding change: adjudicate and refresh the baselines it invalidates.
+**Plan:** `docs/plans/2026-07-24-projects-heading-padding-shxdowloop.md`
+
+### Headline
+
+The padding change itself was four characters. Verifying it honestly turned up two defects that had nothing to do with it.
+
+**1. The visual gate has a blind spot proportional to page height.** Adjudicating the failing captures showed differences in the *nav band* — which a heading's `padding-top` cannot touch. Measuring the live DOM on `/`, `/projects/` and `/gallery/` gave identical geometry (`.brand-nav-links` at `x=281.28`, `margin-left: 4px`), matching `brand.css` as written. The committed `projects`, `gallery` and `contact` baselines placed those links 4px to the left: they were captured before the `margin-left: 4px` CSS edit from Entry 087, though they landed in the same merge commit as it (`git log --follow` shows `098f0b1` is the last commit to touch those PNGs — the Entry 086 regeneration and the Entry 087 nav change were squashed together, and nothing re-captured the snapshots after the CSS moved). They had been silently stale ever since. The gate never noticed because a 4px shift of one component is only ~1,600 differing pixels, and `maxDiffPixelRatio: 0.001` on a 2,500-4,300px-tall page allows several thousand. **Tolerance measured as a ratio of total page area means the taller the page, the larger the real regression the gate will swallow.** `index` was genuinely unaffected — it is the one captured page where the logo, not a nav link, carries `is-active` — which is why the drift never surfaced as a failure anywhere.
+
+**2. The port trap the config warns about, one port over.** `playwright.config.js` explained at length that the legacy server must avoid port 3000 because `next dev` defaults there and `reuseExistingServer` would hand the suite a dev server instead of the built `out/`. The preview server for `out/` was then put on 3001 — exactly where `next dev` lands when 3000 is taken. At preflight this session, `npm run dev` had done precisely that, because a stale dev server from 2026-07-23 23:52 still held 3000. Running `npm test` in that state would have graded the dev server while reporting on the static export. Moved to 4322 and the two hardcoded `BASE_URL` constants updated to match.
+
+### Changes
+
+- `app/projects/ProjectTabs.tsx` — heading padding `pt-4`/`lg:pt-6` → `pt-6`/`lg:pt-8` (the original task).
+- `playwright.config.js`, `tests/visual-baseline.spec.js`, `tests/smoke-next.spec.js` — preview server 3001 → 4322, reasoning recorded in place.
+- 30 of 40 baselines regenerated under `--update-snapshots=all`.
+
+### Verification
+
+- **Every one of the 40 baselines adjudicated numerically**, before vs after, at a tolerance of 8 per channel — full table in the plan. No unexplained pixel changed. The most satisfying confirmation: at 360px and 768px the Projects page grew by **exactly 8px**, which is exactly what `pt-4`→`pt-6` should do.
+- Causality proven by reverting: with the padding change stashed, the failing capture passed.
+- `npm test` green twice consecutively, 45/45, with the modified-snapshot count stable at 30 across both runs — no flake.
+
+### Gotcha worth keeping
+
+`--update-snapshots` in Playwright 1.61 defaults to `changed` mode, which only rewrites a snapshot when the test **fails**. An early check that ran it against a passing page and saw an unchanged file looked like proof of "no drift" and was nothing of the sort. `--update-snapshots=all` is the flag that actually re-captures a passing test — and it is what exposed the stale nav baselines.
+
+---
+
+## Entry 088 — 2026-07-24
+
+**Agent:** Opus 4.8 (main)
+**Cycle:** shxdowflow — docs sync + TODO consolidation
+**Branch:** `portfoliowebsite`
+**Task:** Reconcile `docs/plans/` with what actually shipped; make `TODO.md` the single surface for open work.
+**Plan:** `docs/plans/2026-07-24-docs-sync-todo-consolidation.md`
+
+### Headline
+
+The plan docs had drifted badly enough to be actively misleading. `2026-07-22-visual-baseline-gate-shxdowloop.md` showed every stage `Pending` with all Stage 0–4 checkboxes empty and an entirely unticked merge checklist — while commits `833d46a`, `ce3fe3a`, `75842e5` and `6ddccd2` had implemented all four stages and the branch had merged to production in `098f0b1`. Anyone picking that plan up cold would have redone finished work. `2026-07-23-nav-button-restyle.md` claimed `In progress` for work shipped across Entries 082–087, and the nav-restructure wrap-up plan left its merge checklist unticked despite all three stages being marked Complete with a green verification matrix.
+
+### Changes
+
+- **Checkboxes ticked against diffs, not commit subjects.** Reading the four gate commits surfaced three places where reality diverged from the plan and the plan won by default: Stage 1.1 was solved with `page.emulateMedia({ reducedMotion: 'reduce' })` rather than the planned init script (better — the bubble engine stops at source, so hero coverage was retained instead of masked); Stage 2.3 removed **48** obsolete `tests/baselines/*.png`, not the 40 estimated; and Stage 4.4's oracle-class review actually ran on a pro nano-agent via the kilo route after the OpenCode route wedged. All three are now recorded as deviations rather than silently absorbed.
+
+  **Correction (same day, caught by the Entry 089 shippability review):** that 48 was the count of *obsolete files deleted*, and I wrongly propagated it into the `TODO.md` CI item, overwriting a correct "40". Those are two different quantities — the current snapshot set is **40** files, which is what a containerized re-baseline would regenerate. `TODO.md` is back to 40. A reminder that "correcting" a number is only safe once you know which quantity it counts.
+- **Open risks pruned to what survives.** Two of the three risks in the gate plan were closed by evidence (bubble freezing solved without masking; font-settling pixel drift never materialised). The third — `-chromium-win32` platform-suffixed snapshots blocking a Linux CI runner — is real, and the plan now points at `TODO.md` as its owner instead of re-planning it.
+- **`TODO.md` restructured.** Active Plans is now empty (everything written has shipped); a header states plainly that the file is the complete surface for open work. The stale "Uncommitted, unpushed" claim is gone — it merged and pushed today. The Netlify form-detection item was rewritten to lead with the fact that it needs a human, and to point at the 360px nav-fit prerequisite before anyone uncomments Contact.
+- **Sync-safe editing.** `scripts/parse-todo.js` derives stable task IDs from h2+h3 heading slugs plus the slugified checkbox text, so the consolidated cross-references were written as plain prose bullets and existing headings and checkbox wording were left untouched. Adding duplicate `- [ ]` entries for already-tracked work would have created phantom tasks in the TickTick mirror.
+
+### Verification
+
+- Every ticked checkbox traced to a commit diff via `git show --stat` — no ticks taken on a commit subject alone.
+- `grep -rn -- "- \[ \]" docs/plans/` — zero unchecked items remain outside the current plan doc's own verification section.
+- Docs-only diff; no `npm test` required. The one pending source change (`ProjectTabs.tsx`, Entry 087 item 4) is user-owned and uncommitted, and is flagged there as needing a snapshot refresh.
+
 ---
 
 ## Entry 086 — 2026-07-24

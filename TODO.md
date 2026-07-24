@@ -1,17 +1,35 @@
 # TODO
 
+> **This file is the complete surface for open work.** Every plan in `docs/plans/` has been
+> reconciled against `LOGBOOK.md` and `git log` as of 2026-07-24; no plan doc holds an unchecked
+> item that isn't represented here. Plan docs record *how* something was built — they are not a
+> second to-do list.
+
 ## Active Plans
 
-- `docs/plans/2026-07-23-nav-button-restyle.md` — Nav buttons become a segmented pill group (taller bar, sentence-case labels, filled active pill replacing the underline). **Status:** Implemented + verified 2026-07-23 (Entry 082) on `shxdowloop/2026-07-22/visual-baseline-gate`. **Extended 2026-07-24 (Entries 083–085):** logo given full button affordances (hover/active/focus fills, full bar height); explicit Home link removed from `Nav.tsx`; Projects + Gallery grouped with logo on the left, toggle on the right via `margin-left: auto`; project tabs restyled to match nav buttons (square, no chrome at rest); project content un-capped from 1200px max-width; hero blob overflow fixed. **Uncommitted, unpushed.**
+_None. All written plans are complete; see **Completed plans** below._
 
 ### Awaiting a user step
 
-- `docs/plans/2026-07-14-nav-restructure.md` — **Remaining:** enable Netlify form detection (UI toggle, user step) + one test submission, then uncomment the Contact links in `Nav.tsx`/`Footer.tsx` and re-baseline. See the 360px nav-fit caveat under Standalone first. (Rest complete: Entries 075/077/078.)
+- **Enable Netlify form detection**, then re-enable Contact. Plan:
+  `docs/plans/2026-07-14-nav-restructure.md`. This is a dashboard UI toggle plus one test
+  submission — an agent cannot do it. Once it's on, uncomment the Contact links in `Nav.tsx` and
+  `Footer.tsx` (commented out in `144a190`) and re-baseline. **Do the 360px nav-fit fix under
+  *Standalone* first** — a fourth label overflows the pill group. (Rest of the plan complete:
+  Entries 075/077/078.)
 
 ### Completed plans
 
+- `2026-07-23-nav-button-restyle.md` — nav buttons restyled to a square, no-chrome-at-rest group;
+  scope grew to cover the logo-as-home-button, Home-link removal, left grouping, project-tab
+  restyle and the 360px hero overflow fix. Entries 082–087, merged `098f0b1` 2026-07-24.
+- `2026-07-22-visual-baseline-gate-shxdowloop.md` — visual baselines converted from capture-only to
+  a real compare-based gate. Entry 081, commits `833d46a` → `6ddccd2`, merged `098f0b1`.
+- `2026-07-14-nav-restructure.md` / `-wrapup-shxdowloop.md` — Home/Projects/Gallery/Contact
+  restructure. Entries 075–078; deployed 2026-07-22. Contact re-enable is the one leftover, listed
+  above.
 - `2026-07-15-projects-vertical-tabs.md` — sticky vertical Projects rail at `lg+`. Shipped to production 2026-07-22 (Entries 079, 080).
-- `2026-07-13-srcset-variants.md` — srcset/@2x thumbnail variants. Done 2026-07-13, commit `f63671d` (local, unpushed) (Entry 073).
+- `2026-07-13-srcset-variants.md` — srcset/@2x thumbnail variants. Done 2026-07-13, commit `f63671d` (Entry 073).
 - `2026-07-12-motion-load-perf.md` — time-to-motion / TTI reductions. Deployed 2026-07-13, commits `249b1b4` + `62ff597` (Entry 072).
 
 _All prior plans are consolidated in `docs/archives/plans.md` (see the Consolidation Stubs section at the bottom for the 2026-07-12 batch)._
@@ -45,7 +63,17 @@ _These are backlog items that don't currently have a written plan. Historical re
   has only ~6px of slack with three labels (Entry 082); a fourth will overflow. Whoever
   uncomments Contact in `Nav.tsx`/`Footer.tsx` needs to either shrink the 360px padding
   clamp or move to a drawer at that width.
-- [ ] **Run the visual gate in CI.** The gate is now real (Entry 081) but opt-in — `netlify.toml` runs `next build` + publish with no test step, so a visual regression deploys unchallenged if `npm test` is skipped locally. **Blocked on a decision:** snapshots are `-chromium-win32` suffixed, so a Linux CI runner cannot reuse them. **Decision made 2026-07-23 (user):** option (c) — containerize capture (run Playwright in the official `mcr.microsoft.com/playwright` image locally *and* in CI) so one Linux snapshot set is canonical. Not yet implemented; needs a one-time regeneration of all 40 baselines under the container. Raised by the Entry 081 shippability review.
+- [ ] **Run the visual gate in CI.** The gate is now real (Entry 081) but opt-in — `netlify.toml` runs `next build` + publish with no test step, so a visual regression deploys unchallenged if `npm test` is skipped locally. **Blocked on a decision:** snapshots are `-chromium-win32` suffixed, so a Linux CI runner cannot reuse them. **Decision made 2026-07-23 (user):** option (c) — containerize capture (run Playwright in the official `mcr.microsoft.com/playwright` image locally *and* in CI) so one Linux snapshot set is canonical. Not yet implemented; needs a one-time regeneration of all **40** baselines under the container. Raised by the Entry 081 shippability review. **This is the only open item carried over from a plan doc** (`2026-07-22-visual-baseline-gate-shxdowloop.md`, whose Risks section points here rather than re-planning it).
+
+- [ ] **The visual gate's tolerance scales with page height — tighten it.** `maxDiffPixelRatio: 0.001`
+  is a ratio of *total page area*, so the taller the page the larger the real regression it swallows.
+  Measured 2026-07-24 (Entry 089): a genuine 4px shift of the whole nav-links group is only ~1,600
+  differing pixels and passed unnoticed on every page for a week, on pages 2,500-4,300px tall.
+  Options: a small absolute `maxDiffPixels` floor alongside the ratio, or per-region assertions for
+  fixed-height furniture like the nav. **Deferred, not skipped:** changing the tolerance re-grades
+  all 40 baselines and will surface further latent drift, so it wants its own run — and it should be
+  decided together with the containerization item above, since that regenerates every baseline
+  anyway. Doing both in one pass avoids two full re-baselines.
 
 ### Architecture remediation follow-ups (deferred from 2026-07-01)
 - [ ] Replace generated placeholder `images/og-default.png` with final design asset
@@ -56,7 +84,7 @@ _These are backlog items that don't currently have a written plan. Historical re
 
 Full details are in `LOGBOOK.md` (newest-first). Headline items since 2026-07-01:
 
-- **2026-07-24** — Deleted out-of-cascade CSS duplicates (`src/css/components.css`, `src/css/tokens.css`); aligned Projects page heading with tabs and project titles with tab tops (Entry 086). Removed Patriots motion graphics page from repo (Entry 087). Styled nav home button with active-page indicator matching nav links (Entry 087).
+- **2026-07-24** — Deleted out-of-cascade CSS duplicates (`src/css/components.css`, `src/css/tokens.css`); aligned Projects page heading with tabs and project titles with tab tops (Entry 086). Removed Patriots motion graphics page from repo (Entry 087). Styled nav home button with active-page indicator matching nav links (Entry 087). Merged `shxdowloop/2026-07-22/visual-baseline-gate` to production as `098f0b1`. Reconciled all `docs/plans/` status headers and checklists against the shipped commits, and consolidated every open plan item into this file (Entry 088). Landed the Projects heading padding with all 40 baselines adjudicated numerically; found and fixed a Playwright preview-server port that collided with `next dev`, and found (deferred) a gate tolerance that scales with page height (Entry 089).
 - **2026-07-23** — Nav buttons restyled into a segmented pill group; `#theme-toggle` ID-override trap documented; focus-visible contract in AGENTS.md corrected to `--brand-accent` (Entry 082).
 - **2026-07-22** — Visual-baseline spec converted from capture-only to a real compare-based gate; fixed a too-loose per-pixel `threshold` and a `reuseExistingServer` bug that made the suite grade a stale `out/` (Entry 081).
 - **2026-07-13** — `srcset`/`@2x` thumbnail variants (Entry 073); zero CSP console violations verified in production (Entry 072).
