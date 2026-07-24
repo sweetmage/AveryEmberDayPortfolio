@@ -53,7 +53,13 @@ export default function HomePage() {
       {/* About */}
       <section id="about" className="brand-section-raised">
         <div className="brand-container">
-          <h2>About Me</h2>
+          {/* Same title recipe as the Gallery/Projects PageHeader, one size
+              step down since this is a section inside a page, not the page
+              title. */}
+          <h2 className="brand-page-title brand-page-title--section">About Me</h2>
+          <div className="brand-spectrum-bar brand-title-bar mb-6" aria-hidden="true">
+            <div />
+          </div>
           <div className="textbox about-box bubble-exclude relative rounded-lg border border-line bg-surface-1 p-6 leading-[1.65] shadow-card [&_p]:text-text-soft [&_p+p]:mt-[0.8em]">
             <p>
               For most of the last decade, I've been building a design practice in

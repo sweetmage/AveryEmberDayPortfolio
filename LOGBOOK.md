@@ -1,3 +1,227 @@
+## Entry 098 — 2026-07-24
+
+**Agent:** Opus 5 (main)
+**Cycle:** shxdowflow
+**Branch:** `portfoliowebsite` (uncommitted; no commit requested)
+**Task:** Projects page text down to black/white/gray only, and one single-color translucent frame around images in both themes.
+
+Two scope forks went to the user up front. Answers: extend the frame to **Projects + Gallery** (not Projects alone — that would have re-split what Entry 097 just unified), and **keep** the title glow (it is a `text-shadow`; the letterforms are already `--brand-text`, and stripping it on Projects only would refragment the shared title style).
+
+### Text
+
+`.section-title` (8 instances across both project panels) was `text-ir-4` — brand blue `#9acdff`. Now `text-text`. The sources list's `[&_a:hover]:text-accent` (purple) → `text-text`. Everything else on the page was already `--brand-text` / `-soft` / `-muted`.
+
+Deliberately left colored, none of it text: the brand-palette chips and the logo-variant canvases (they are the color specimens — neutralizing them destroys the content), the `.project-tab` active fill and the `.set-ss-controls` hover (nav/control chrome shared site-wide), and focus rings (a11y).
+
+### Frames
+
+New in `brand.css`: `--brand-frame-fill: rgba(128,128,128,0.12)` / `--brand-frame-border: rgba(128,128,128,0.32)` / `-hover: 0.55`, declared on a plain `:root` **outside** the theme blocks so they are literally the same declared color in light and dark — a mid-gray at low alpha lifts slightly off the near-black bg and recesses slightly on the off-white one. Classes: `.brand-frame` (fill + border + radius + overflow), `.brand-frame-line` (border only, for elements supplying their own fill), `.brand-frame-divider` (color only — pair with Tailwind's `border-t`/`border-b` for the side), `.brand-frame-interactive` (neutral hover, replacing `hover:border-accent-dim` on the carousel sets).
+
+Applied to `.logo-swatch`, `.swatch-block` (line variant), `.type-specimen` + `.type-row`, `.supporting-card`, `.carousel-set`, `.set-ss-viewer` (in `slideshow.css`), and `.gallery-item`.
+
+### Verification
+
+Target: Git Bash on AVERYBOT.
+
+| Check | Result |
+|---|---|
+| `npx next build` | clean, 8/8 |
+| Shipped-CSS probe | all six frame rules present in the main chunk; `slideshow.css` compiles to its own chunk that references the vars |
+| Grep sweep | zero `text-ir-*` / `text-accent` / `border-line` / `bg-surface-1` left in `app/projects/` or `app/gallery/` |
+| `npx playwright test` (51) | green after re-baseline |
+| Screenshot adjudication | projects + mistrust + gallery @1440 in both themes: text is black/white/gray, frames identical gray in both modes |
+
+### Gallery captions → heading font
+
+Same session, follow-on ask: the gallery artwork titles move to Outfit (`--brand-font-heading`) in heading treatment — `font-heading text-[1.05em] font-semibold tracking-normal text-text`, up from `text-[0.95em] font-medium tracking-wide text-text-soft` in the body font.
+
+Read as the `.section-title` recipe scaled down (normal case, semibold) rather than the uppercase/`0.08em`-tracked label treatment the project `h5`s use — these are work titles, not field labels. Trivially reversible if the label read was intended.
+
+User also specified up front that the **deferred gallery tags will use the body font (Inter)**, deliberately splitting title vs metadata by typeface. Recorded against the tag-system item in `TODO.md` so it survives to whoever builds it.
+
+### Brand page copy
+
+Six logo-swatch labels drop the em dash: `Primary — Blue` → `Primary Blue`, same for Black/White and the three Icon Mark variants. The type-specimen labels (`Display — Sriracha`, `Heading — Outfit 600`, `Body — Inter 400`) **keep** theirs — there the dash separates a role from a typeface name, which the swatch labels weren't doing.
+
+Body specimen: `Multi-Media Designer based in Las Vegas.` → `Designer based in Las Vegas.`
+
+The ask was "remove the hyphenations," which needed pinning down before rewriting a dozen visible strings: `hyphens` is unset repo-wide and the only `break-words` is on the Mistrust sources list, so no browser hyphenation was occurring anywhere on this page — meaning the literal reading was a no-op. The only true hyphen in the copy was `Multi-Media`, which the same instruction already removed. That left the em-dash separators as the only non-redundant reading; user confirmed swatch labels only.
+
+### Mistrust page: order + slideshow scale
+
+Section order is now Description → Slideshow → **All Slides** → **Moodboard & Storyboard** → Sources; the supporting material moved below the finished carousels, so the page runs work-then-process.
+
+`.set-slideshows` drops the `repeat(3, 1fr)` at 900px+ and goes **one set per row at every width**. The 3-across grid was the reason the viewers were unreadable: measured ~348px at 1440, and only ~222px at 1024 once the `lg` rail takes its 260px.
+
+The viewer is `aspect-ratio: 1/1`, so an uncapped full-width frame would be a ~1090px square at 1440 and push the three sets alone to ~3500px of scroll. Capped `.set-slideshow` at `max-width: 720px` with `justify-items: center` — roughly double the old frame without that. Gap 32px → 40px now that the sets stack. Page height went 4808 → 6926px at 1440.
+
+Two follow-ups left as-is, both trivially reversible: the 720px cap is a judgment call, not a user-specified number; and the capped block is centered while every sibling section is left-aligned to the content column, so the slideshows float slightly relative to their own left-aligned `h4`.
+
+### Projects body measure
+
+`.project-desc` was a class hook with no CSS behind it, and the two panels carried an otherwise identical utility string at **different** measures — Brand `max-w-[560px]`, Mistrust `max-w-[640px]`. Extracted the whole recipe into one `.project-desc` rule in `brand.css` at **820px** and stripped the utilities from both call sites, so the two panels now agree by construction rather than by copy-paste.
+
+820px is ~100 characters at 16px Inter, past the 65-75 ideal measure — deliberate, since the ask was explicitly for wider body text, and it still stops well short of the ~1092px content column at 1440. One number in one place if it wants tuning.
+
+Untouched, because neither is body copy: the sources list (already multi-column, full width) and the type-specimen body line (a specimen — it should span its frame).
+
+### Brand description label + full tab titles
+
+Brand's intro paragraph moved out of `.project-hero` into its own labelled `Description` section — the same hero/section split Mistrust already used, so both panels now read title → Description → content instead of one having a bare lede.
+
+Tab labels grew to the full project titles: `Brand` → `Avery Ember Day Brand`, `History of Mistrust` → `A History of Mistrust`. The `id`s are deliberately unchanged — they are the URL hash and the `aria-controls` target, so `/projects/#history-of-mistrust` keeps working, and the smoke test's `toContainText` assertions still hold since the old labels are substrings of the new ones.
+
+`.project-tab` is `white-space: nowrap` inside a fixed 260px `lg` rail, so the longer labels needed a fit probe rather than an eyeball: measured 260px (unclipped) at 1024/1440 and 170px/149px at 768/360, `scrollWidth === clientWidth` on every tab, and no document overflow at any of the four breakpoints. At 360 the pair totals 319px against a 312px row, so they wrap to two rows — handled by the existing `flex-wrap`.
+
+**A third instance of the re-baseline defect**, caught by the mitigation logged below. `projects @360 light` failed after `--update-snapshots` AND again on the confirm run. Not a flake in the render: the baseline had been rewritten at 360x4253 while the page measures 360x4456 deterministically (4 consecutive loads, identical section heights — `Description:249 | Logo Variants:2158 | Brand Palette:585 | Type System:661`). So the update run captured a 203px-short frame and committed it. Re-updated that single snapshot, verified 4456, then two consecutive clean full-suite runs.
+
+Also flaked once under parallel load: `bubbles-exclusion › Projects tabs @768`. Passes 6/6 in isolation — the physics test is timing-sensitive, unrelated to this change.
+
+### Slideshow labels
+
+Three changes to the per-set widgets: `Set 1 · Slides 1–10` → `Set 1` (and 2/3); the `.set-ss-caption` line (`Slide N of 30`) removed entirely; the `.set-ss-counter` (`Slide N of 10`) kept between Prev/Next as asked.
+
+Removing the caption was not a markup-only edit — three connected fixes came with it:
+
+- `public/scripts/history-of-mistrust-slideshow.js` held `caption.textContent = …` inside `update()`. Left alone, the `querySelector` returns null and the first `update()` throws, killing every slideshow on the page. Both the lookup and the write are gone.
+- `const s = setSlides[local]` existed only to feed that caption; now unused, removed.
+- The `.set-ss-caption` rule in `slideshow.css` is dead, removed.
+- The caption carried `aria-live="polite"` — it was the live region announcing slide changes. Moved to `.set-ss-counter` so screen readers still get them.
+
+Verified functionally rather than by screenshot, since this is runtime-built DOM: labels `["Set 1","Set 2","Set 3"]`, zero `.set-ss-caption` nodes, 10 slides built per track, counter stepping 1→3→2 across Next/Next/Prev on set 2, `prevBtn.disabled` tracking correctly, and **no console or page errors**.
+
+### Spectrum divider between the project tabs
+
+A third spectrum-bar size joins the set: `.brand-tab-divider` at **2px** (hero 6px, title underline 3px), rendered as a real `div` between the two tabs via `{i > 0 && …}` so it never lands on the outer edges of the group.
+
+Three constraints it had to respect:
+
+- **ARIA.** A non-tab child inside `role="tablist"` muddies the tablist's children. `aria-hidden="true"` keeps the a11y tree pure tabs.
+- **Roving focus.** `handleKeyDown` resolves siblings via `querySelectorAll('[role="tab"]')`, so a plain div can't shift the indices — confirmed live: ArrowDown/ArrowUp move focus *and* selection correctly with the divider in place.
+- **Breakpoint.** Below `lg` the tablist is a horizontal row, where a horizontal-gradient bar can't act as a separator. Scoped `hidden lg:flex`; measured `display:none` at 768, `display:flex` at 1440.
+
+Geometry probe at 1440: tab 1 spans 208→264, divider 264→266 (2px × 260px), tab 2 starts at 266. Flush, between, nothing outside.
+
+**This change also produced the cleanest example yet of the gate's blind spot.** `projects @1440 light` **passed** while its baseline was missing the divider entirely: the bar is ~520 changed pixels against a `maxDiffPixelRatio: 0.001` allowance of ~3685 on a 1440×2559 page. Dark failed, because the bar's `drop-shadow` glow lights up far more area against near-black. Caught only because I cropped the committed light baseline to eyeball it and the divider wasn't there — the stale baseline would otherwise have been committed silently. Forced a re-baseline and then verified the bar exists in *both* committed PNGs by scanning for the most-saturated row in the rail region (light: row 263, avg chroma 27; dark: row 264, chroma 96) rather than trusting a pass.
+
+### Projects density, swatch labels, palette correctness
+
+**Density.** Vertical rhythm cut across both panels: section `pb-20` → `pb-12`, `h4 mb-8` → `mb-5`, hero `pt-10 pb-12` → `pt-8 pb-6`, project title `mb-4` → `mb-3`, group `h5 mb-4` → `mb-3`, logo group `mb-10` → `mb-8`, type specimen `gap-6 p-8` → `gap-5 p-6` with rows `pb-6` → `pb-5`, supporting/carousel grids `gap-6` → `gap-4`, slideshow grid gap 40px → 28px, set label margin 12px → 8px, controls margin-top 12px → 10px. Also dropped a doubled `mb-10` on `.palette-row` that stacked on top of its section's own bottom padding.
+
+Measured: Brand **2686 → 2394px** at 1440 (−11%) and 3322 → 3022 at 768; Mistrust 6804 → 6502 and 7371 → 7060. Mistrust's percentage is smaller because its height is dominated by the 720px slideshow frames and the three-column sources list, not by section padding.
+
+**Swatch labels.** The per-swatch labels repeated their group header — `Primary Blue` under a `PRIMARY` heading. Labels are now the colour alone (`Blue` / `Black` / `White`), the `PRIMARY` / `ICON MARK` group headers stay, and every swatch's description now leads with its background preference. The icon-mark Blue was the one variant with no background preference at all (`Favicon · App icon · Small use`); it now reads `Dark backgrounds · Favicon, app icon`.
+
+**Palette correctness — this was a real bug, not a cosmetic pass.** The chips used token utilities (`bg-ir-4`, `bg-accent`, `bg-neon`, `bg-gold`) which re-theme, while the printed hex was a hardcoded dark-theme value. Measured in light mode, **4 of 6 chips painted a colour that contradicted the caption directly beneath it**:
+
+| Swatch | printed | rendered (light) |
+|---|---|---|
+| Brand Blue | #9ACDFF | #1A7ACC |
+| Accent | #CC44FF | #8B22E0 |
+| Neon | #00FFFF | #006E82 |
+| Gold | #F5B96A | #995008 |
+
+Chips are now pinned to literal hexes. A brand palette documents absolute colours and must not follow the viewer's theme. Values are the `:root` dark base, which `brand.css` itself treats as canonical with light derived from it. Re-measured after the fix: **zero mismatches in either theme.** Worth noting the site genuinely runs two palettes — the light-theme variants above are real and still in use for UI; the Brand Palette section deliberately documents only the canonical set.
+
+**Fifth instance of the re-baseline defect**, same stale-content signature: `projects @1024 light` was written at 3362px while the page measures 3070px across 3 consecutive loads — a 292px delta, exactly this turn's spacing reduction, so the update run captured a pre-change render. Re-updated, verified 3070, two clean full runs.
+
+### Tab divider: orientation follows the tablist axis
+
+The divider was `hidden lg:flex` — rail-only. It is now always present and flips orientation to match the tablist's **actual** axis, which changes twice across the range:
+
+| Width | Tablist | Divider |
+|---|---|---|
+| `< 400px` | stacked column | horizontal, full width |
+| `400–1023px` | horizontal row | **vertical, 2px wide** |
+| `>= 1024px` | sticky rail column | horizontal, 260px |
+
+`align-self: stretch` does the cross-axis sizing in both orientations; the gradient flips 180deg/90deg to run along the bar. `width/height: auto` resets are needed to unset the 6px `.brand-spectrum-bar` height.
+
+The `< 400px` branch is not decoration. The two tabs total 321px against a 312px row at 360, so they already wrapped to two rows — a vertical rule there dangled off the end of row 1 with nothing after it (measured before fixing: `divider 2x35 @(194,168)` while tab 2 sat at `y203`). `max-[400px]:flex-col` turns that implicit wrap into a real stack so the divider can be a clean full-width rule.
+
+**Boundary bug caught by testing the exact edges.** At precisely 399px the divider rendered `0x2`. Tailwind compiles `max-[N]` to `not all and (min-width: N)`, which **excludes** N — so `max-[399px]:flex-col` did not apply at a 399px viewport while the divider's own `(max-width: 399px)` rule did. The bar got `height: 2px` from the media query but `width: auto` in a still-row container, collapsing it to zero. Fixed by writing the Tailwind side as `max-[400px]`. Verified at 320/360/399/400/480/768/1023/1024/1440: correct orientation, divider strictly between the two tabs on the layout axis, no document overflow at any width.
+
+`aria-orientation` now tracks `(min-width: 1024px), (max-width: 399px)` since the layout is vertical at *both* ends of the range. Arrow-key roving focus re-verified at 768 with the divider present.
+
+`bubbles-exclusion › Projects tabs @768` failed once during the update run and passed **6/6 across three isolated attempts** — parallel-load timing in the physics sim, not a regression from the changed tab geometry. Second time this session it has flaked the same way.
+
+### Debug sweep — site clean, harness had a silent bug
+
+Ran a diagnostic pass over all 5 pages × 2 themes × 3 widths (30 combinations), watching for page errors, console errors, failed requests, HTTP ≥400, horizontal overflow, broken images, and missing `alt`.
+
+**Site result: zero findings.** No JS errors, no failed requests, no overflow, no broken images, no missing alt text anywhere.
+
+The first pass reported a JS error on all 30 combinations — `Cannot read properties of null (reading 'setAttribute')`. That was **self-inflicted by the probe**, and isolating it produced the actually-useful finding:
+
+`document.documentElement` is **null** inside a Playwright `addInitScript` — init scripts run before the document exists. Probe results: with the `setAttribute` line the page throws but `data-theme` still ends up correct; with localStorage alone there is no error and `data-theme` is *still* correct; and `String(document.documentElement)` at init time is literally `"null"`.
+
+**`tests/visual-baseline.spec.js` had that exact line**, so every one of the 40 visual tests silently threw an exception and the line accomplished nothing. Theming has always come from the site's own inline head script reading the localStorage value. Nothing in that spec listened for `pageerror`, so it went unnoticed indefinitely.
+
+Fixed: the dead line is gone, and the previously-silent dependency is now asserted before every capture —
+
+```js
+await expect(p.locator('html')).toHaveAttribute('data-theme', theme);
+```
+
+That matters more than the tidy-up. If the head script ever stopped honouring localStorage, the old spec would have quietly captured all 40 baselines in the default theme and passed. Now it fails loudly.
+
+Behaviour-neutral, as expected: the full suite passes 51/51 with **no baseline changes**, since the theme was already being applied correctly by the real code path.
+
+### Two gate findings worth recording
+
+**1. `projects-mistrust` @1024 and @1440 *dark* passed unchanged.** Not a stale baseline (dark-vs-light baselines differ by 83% of bytes) and not a no-op change — a computed-style probe at 1440 dark confirmed `titleColor rgb(243,243,238)`, `viewerBg rgba(128,128,128,.12)`, `viewerBorder rgba(128,128,128,.32)`. The cause is pixel *area*: the frame fills are entirely covered by full-bleed images, so the only changed pixels are 5 heading glyph runs plus hairline borders, which land just under `maxDiffPixelRatio: 0.001`. The same edit in light mode clears the threshold easily (title ΔYIQ 0.683 vs 0.265 dark). **The gate is thinnest on low-contrast dark-mode changes to small-area elements** — worth knowing before trusting a dark-only pass.
+
+An intermediate probe of mine reported a 13.4% byte diff on that page and looked like a contradiction; it was my ad-hoc capture skipping the suite's force-eager/decode pass, so half its images were blank. The suite's own comparison was right.
+
+**2. `gallery @768 dark` flaked.** It failed once *after* `--update-snapshots`, i.e. the newly written baseline was itself bad: the diff showed solid red blocks over only the first two images, a partial-paint capture. Re-baselined and confirmed stable across two clean re-runs plus a full-suite run. Pre-existing decode race in the capture path, not something this change introduced — the spec already force-eagers and `decode()`s in-layout images, so `captureBeyondViewport` is the remaining suspect. Left as-is; noted here because a re-baseline can silently bake in a bad frame.
+
+---
+
+## Entry 097 — 2026-07-24
+
+**Agent:** Opus 5 (main)
+**Cycle:** shxdowflow
+**Branch:** `portfoliowebsite` (uncommitted; no commit requested)
+**Plan:** `docs/plans/2026-07-24-cross-page-css-consistency.md`
+**Task:** Match text styles — colors, frames, title styles — between Home and Gallery, and rename the Gallery header "Art Gallery" → "Gallery".
+
+### What was actually inconsistent
+
+Entry 096 gave Gallery/Projects the `PageHeader` title language (display font, `clamp(2rem,5vw,3rem)`, normal case, spectrum underline) but left Home's `<h2>About Me</h2>` bare, so it fell through to the `site.css` base `h2`: heading font, `1.1em`, UPPERCASE, `0.06em` tracking, `--brand-text-muted`, flat gray `border-bottom`. Two unrelated type systems one click apart.
+
+Two of the mismatches were theme bugs, not just drift:
+
+- `.gallery-item`'s `bg-[#1c1c20]/80` and the caption's `text-white` (both from Entry 096) are hardcoded dark values. The site has a real light theme, so gallery cards rendered a dark slab with white text on the off-white background.
+- `PageHeader`'s glow was an inline dark-only `text-shadow`. The `.brand-glow-text` helper that would have covered both themes is keyed on `html.dark`, which this site never sets — it switches on `data-theme`. That helper is dead code (left in place; separate cleanup).
+
+### Changes
+
+`brand.css` gains one title primitive instead of the utility string being copy-pasted at four call sites:
+
+- `.brand-page-title` — the full recipe, with a theme-aware glow (dark default plus `[data-theme="light"]` and the `prefers-color-scheme` no-JS fallback).
+- `.brand-page-title--section` — the `clamp(1.5rem,3.5vw,2.25rem)` step for in-page section and project titles.
+- `.brand-title-bar` — `height:3px; margin-top:.75rem` for `.brand-spectrum-bar` used as a title underline. Declared **after** `.brand-spectrum-bar` in the same layer, so it replaces last entry's utility-layer `h-[3px]` override with plain source order. Confirmed in the shipped CSS: bar at offset 29292, title-bar at 29884.
+
+Call sites: `PageHeader.tsx`, Home's About heading (section size + its own underline), and `BrandProject`/`MistrustProject`'s `h3`s, which had been hand-rolling the same recipe.
+
+Gallery frame now matches Home's `.about-box` card — `rounded-lg border border-line bg-surface-1 shadow-card`, all tokens — and the caption moves from `text-white` to `text-text-soft`, the token Home's prose uses. `p-4` kept: art needs less inset than prose. Rename touched the `sr-only` `h1`, `PageHeader title`, and both metadata titles; `Nav.tsx` already said "Gallery".
+
+### Verification
+
+Target: Git Bash on AVERYBOT.
+
+| Check | Result |
+|---|---|
+| `npx next build` | clean, 8/8 static pages |
+| Shipped-CSS probe | all four new rules present, `.brand-title-bar` after `.brand-spectrum-bar` |
+| `npx playwright test` (51) | green after re-baseline |
+| Visual gate | index + gallery baselines moved; **projects and contact did not** — which is the evidence that the `PageHeader`/`project-title` refactor was visually neutral |
+| Screenshot adjudication | gallery @1440 light/dark and index About @1440 light/dark read as one system; gallery cards now follow the light theme instead of staying a dark slab |
+
+`tests/smoke-next.spec.js` asserted `h1` contains "Art Gallery"; updated to "Gallery" with the rename.
+
+---
+
 ## Entry 096 — 2026-07-24
 
 **Agent:** Opus 4.8 (vellum, main)

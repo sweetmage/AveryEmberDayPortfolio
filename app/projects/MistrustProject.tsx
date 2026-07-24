@@ -2,18 +2,18 @@ export default function MistrustProject() {
   return (
     <>
       {/* Hero */}
-      <div className="project-hero px-6 pt-10 pb-12 lg:pt-0">
-        <h3 className="project-title mb-4 font-display text-[clamp(1.5rem,3.5vw,2.25rem)] leading-[1.1] text-text border-none p-0 normal-case tracking-normal font-normal">
+      <div className="project-hero px-6 pt-8 pb-6 lg:pt-0">
+        <h3 className="project-title brand-page-title brand-page-title--section mb-3">
           A History of Mistrust
         </h3>
       </div>
 
       {/* Description */}
-      <section className="project-section px-6 pb-20">
-        <h4 className="section-title mb-8 border-none p-0 text-left font-heading text-xl font-semibold normal-case tracking-normal text-ir-4">
+      <section className="project-section px-6 pb-12">
+        <h4 className="section-title mb-5 border-none p-0 text-left font-heading text-xl font-semibold normal-case tracking-normal text-text">
           Description
         </h4>
-        <p className="project-desc m-0 max-w-[640px] font-body text-base leading-[1.7] text-text-soft">
+        <p className="project-desc">
           A long form Instagram carousel series with 3 sets of 10 slides examining
           the roots and ripple effects of medical mistrust, spanning the Tuskegee
           syphilis study, HIV/AIDS era stigma, contemporary LGBTQ+ health
@@ -24,91 +24,55 @@ export default function MistrustProject() {
       </section>
 
       {/* Per-set slideshows */}
-      <section className="project-section px-6 pb-20">
-        <h4 className="section-title mb-8 border-none p-0 text-left font-heading text-xl font-semibold normal-case tracking-normal text-ir-4">
+      <section className="project-section px-6 pb-12">
+        <h4 className="section-title mb-5 border-none p-0 text-left font-heading text-xl font-semibold normal-case tracking-normal text-text">
           Slideshow
         </h4>
         <div className="set-slideshows">
           <div className="set-slideshow" data-set="1">
-            <p className="set-ss-label">Set 1 · Slides 1–10</p>
+            <p className="set-ss-label">Set 1</p>
             <div className="set-ss-viewer" role="region" aria-label="Set 1 slide viewer">
               <div className="set-ss-track" />
             </div>
-            <p className="set-ss-caption" aria-live="polite" />
             <div className="set-ss-controls">
               <button className="set-ss-prev" aria-label="Previous slide, set 1">&#8249; Prev</button>
-              <span className="set-ss-counter">Slide 1 of 10</span>
+              <span className="set-ss-counter" aria-live="polite">Slide 1 of 10</span>
               <button className="set-ss-next" aria-label="Next slide, set 1">Next &#8250;</button>
             </div>
           </div>
           <div className="set-slideshow" data-set="2">
-            <p className="set-ss-label">Set 2 · Slides 11–20</p>
+            <p className="set-ss-label">Set 2</p>
             <div className="set-ss-viewer" role="region" aria-label="Set 2 slide viewer">
               <div className="set-ss-track" />
             </div>
-            <p className="set-ss-caption" aria-live="polite" />
             <div className="set-ss-controls">
               <button className="set-ss-prev" aria-label="Previous slide, set 2">&#8249; Prev</button>
-              <span className="set-ss-counter">Slide 1 of 10</span>
+              <span className="set-ss-counter" aria-live="polite">Slide 1 of 10</span>
               <button className="set-ss-next" aria-label="Next slide, set 2">Next &#8250;</button>
             </div>
           </div>
           <div className="set-slideshow" data-set="3">
-            <p className="set-ss-label">Set 3 · Slides 21–30</p>
+            <p className="set-ss-label">Set 3</p>
             <div className="set-ss-viewer" role="region" aria-label="Set 3 slide viewer">
               <div className="set-ss-track" />
             </div>
-            <p className="set-ss-caption" aria-live="polite" />
             <div className="set-ss-controls">
               <button className="set-ss-prev" aria-label="Previous slide, set 3">&#8249; Prev</button>
-              <span className="set-ss-counter">Slide 1 of 10</span>
+              <span className="set-ss-counter" aria-live="polite">Slide 1 of 10</span>
               <button className="set-ss-next" aria-label="Next slide, set 3">Next &#8250;</button>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Moodboard & Storyboard */}
-      <section className="project-section px-6 pb-20">
-        <h4 className="section-title mb-8 border-none p-0 text-left font-heading text-xl font-semibold normal-case tracking-normal text-ir-4">
-          Moodboard & Storyboard
-        </h4>
-        <div className="supporting-grid grid grid-cols-1 gap-6 min-[600px]:grid-cols-2">
-          <div className="supporting-card overflow-hidden rounded-lg border border-line bg-surface-1 [&_img]:block [&_img]:h-auto [&_img]:w-full">
-            <img
-              src="/images/myart/A History of Mistrust/supporting material/HistoryofMistrustMoodboard-cropped.png"
-              alt="A History of Mistrust moodboard"
-              loading="lazy"
-              decoding="async"
-            />
-            <div className="supporting-card-label border-t border-line px-4 py-3 [&_span]:font-body [&_span]:text-xs [&_span]:text-text-muted [&_strong]:block [&_strong]:font-body [&_strong]:text-sm [&_strong]:font-medium [&_strong]:text-text">
-              <strong>Moodboard</strong>
-              <span>Visual research and reference</span>
-            </div>
-          </div>
-          <div className="supporting-card overflow-hidden rounded-lg border border-line bg-surface-1 [&_img]:block [&_img]:h-auto [&_img]:w-full">
-            <img
-              src="/images/myart/A History of Mistrust/supporting material/aHistoryOfMistrustStoryboard.jpg"
-              alt="A History of Mistrust storyboard"
-              loading="lazy"
-              decoding="async"
-            />
-            <div className="supporting-card-label border-t border-line px-4 py-3 [&_span]:font-body [&_span]:text-xs [&_span]:text-text-muted [&_strong]:block [&_strong]:font-body [&_strong]:text-sm [&_strong]:font-medium [&_strong]:text-text">
-              <strong>Storyboard</strong>
-              <span>Layout and flow planning</span>
-            </div>
-          </div>
-        </div>
-      </section>
-
       {/* All Slides */}
-      <section className="project-section px-6 pb-20">
-        <h4 className="section-title mb-8 border-none p-0 text-left font-heading text-xl font-semibold normal-case tracking-normal text-ir-4">
+      <section className="project-section px-6 pb-12">
+        <h4 className="section-title mb-5 border-none p-0 text-left font-heading text-xl font-semibold normal-case tracking-normal text-text">
           All Slides
         </h4>
-        <div className="all-sets-full flex w-full flex-col gap-6">
+        <div className="all-sets-full flex w-full flex-col gap-4">
           <div
-            className="carousel-set relative w-full cursor-pointer overflow-hidden rounded-lg border border-line bg-surface-1 transition-colors hover:border-accent-dim [&_img]:block [&_img]:h-auto [&_img]:w-full"
+            className="carousel-set brand-frame brand-frame-interactive relative w-full cursor-pointer [&_img]:block [&_img]:h-auto [&_img]:w-full"
             data-set="1"
           >
             <img
@@ -119,7 +83,7 @@ export default function MistrustProject() {
             />
           </div>
           <div
-            className="carousel-set relative w-full cursor-pointer overflow-hidden rounded-lg border border-line bg-surface-1 transition-colors hover:border-accent-dim [&_img]:block [&_img]:h-auto [&_img]:w-full"
+            className="carousel-set brand-frame brand-frame-interactive relative w-full cursor-pointer [&_img]:block [&_img]:h-auto [&_img]:w-full"
             data-set="2"
           >
             <img
@@ -130,7 +94,7 @@ export default function MistrustProject() {
             />
           </div>
           <div
-            className="carousel-set relative w-full cursor-pointer overflow-hidden rounded-lg border border-line bg-surface-1 transition-colors hover:border-accent-dim [&_img]:block [&_img]:h-auto [&_img]:w-full"
+            className="carousel-set brand-frame brand-frame-interactive relative w-full cursor-pointer [&_img]:block [&_img]:h-auto [&_img]:w-full"
             data-set="3"
           >
             <img
@@ -143,12 +107,46 @@ export default function MistrustProject() {
         </div>
       </section>
 
+      {/* Moodboard & Storyboard — deliberately after All Slides: the finished
+          carousels come first, then the preproduction that led to them. */}
+      <section className="project-section px-6 pb-12">
+        <h4 className="section-title mb-5 border-none p-0 text-left font-heading text-xl font-semibold normal-case tracking-normal text-text">
+          Moodboard & Storyboard
+        </h4>
+        <div className="supporting-grid grid grid-cols-1 gap-4 min-[600px]:grid-cols-2">
+          <div className="supporting-card brand-frame [&_img]:block [&_img]:h-auto [&_img]:w-full">
+            <img
+              src="/images/myart/A History of Mistrust/supporting material/HistoryofMistrustMoodboard-cropped.png"
+              alt="A History of Mistrust moodboard"
+              loading="lazy"
+              decoding="async"
+            />
+            <div className="supporting-card-label brand-frame-divider border-t px-4 py-3 [&_span]:font-body [&_span]:text-xs [&_span]:text-text-muted [&_strong]:block [&_strong]:font-body [&_strong]:text-sm [&_strong]:font-medium [&_strong]:text-text">
+              <strong>Moodboard</strong>
+              <span>Visual research and reference</span>
+            </div>
+          </div>
+          <div className="supporting-card brand-frame [&_img]:block [&_img]:h-auto [&_img]:w-full">
+            <img
+              src="/images/myart/A History of Mistrust/supporting material/aHistoryOfMistrustStoryboard.jpg"
+              alt="A History of Mistrust storyboard"
+              loading="lazy"
+              decoding="async"
+            />
+            <div className="supporting-card-label brand-frame-divider border-t px-4 py-3 [&_span]:font-body [&_span]:text-xs [&_span]:text-text-muted [&_strong]:block [&_strong]:font-body [&_strong]:text-sm [&_strong]:font-medium [&_strong]:text-text">
+              <strong>Storyboard</strong>
+              <span>Layout and flow planning</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Sources */}
-      <section className="project-section px-6 pb-20">
-        <h4 className="section-title mb-8 border-none p-0 text-left font-heading text-xl font-semibold normal-case tracking-normal text-ir-4">
+      <section className="project-section px-6 pb-12">
+        <h4 className="section-title mb-5 border-none p-0 text-left font-heading text-xl font-semibold normal-case tracking-normal text-text">
           Sources & Bibliography
         </h4>
-        <ul className="sources-list m-0 list-none gap-x-12 p-0 columns-1 min-[700px]:columns-2 min-[1100px]:columns-3 [&_a]:break-words [&_a]:text-text-soft [&_a]:underline [&_a]:underline-offset-2 [&_a:hover]:text-accent [&_li]:mb-3 [&_li]:break-inside-avoid [&_li]:pl-6 [&_li]:-indent-6 [&_li]:font-body [&_li]:text-[0.82rem] [&_li]:leading-[1.55] [&_li]:text-text-muted">
+        <ul className="sources-list m-0 list-none gap-x-12 p-0 columns-1 min-[700px]:columns-2 min-[1100px]:columns-3 [&_a]:break-words [&_a]:text-text-soft [&_a]:underline [&_a]:underline-offset-2 [&_a:hover]:text-text [&_li]:mb-3 [&_li]:break-inside-avoid [&_li]:pl-6 [&_li]:-indent-6 [&_li]:font-body [&_li]:text-[0.82rem] [&_li]:leading-[1.55] [&_li]:text-text-muted">
           <li>AIDSVu. (2024). <em>AIDSVu Releases 2024 PrEP Use Data</em>. Emory University Rollins School of Public Health. <a href="https://aidsvu.org/news-updates/aidsvu-releases-2024-prep-use-data-showing-growing-use-across-the-u-s/" target="_blank">Link</a></li>
           <li>Alsan, M., Garrick, O., & Graziani, G. C. (2019). Does Diversity Matter for Health? Experimental Evidence from Oakland. <em>American Economic Review, 109</em>(12), 4071-4111. <a href="https://pubs.aeaweb.org/doi/10.1257/aer.20181446" target="_blank">Link</a></li>
           <li>American Medical Association (AMA). (2023). <em>Physicians can realize their power to advance health equity</em>. National Health Equity Grand Rounds. <a href="https://www.ama-assn.org/public-health/health-equity/physicians-can-realize-their-power-advance-health-equity" target="_blank">Link</a></li>

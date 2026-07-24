@@ -46,7 +46,7 @@ test.describe('Next.js app smoke', () => {
 
   test('gallery page loads without errors', async ({ page }) => {
     await page.goto(`${BASE_URL}/gallery/`, { waitUntil: 'networkidle' });
-    await expect(page.locator('h1')).toContainText('Art Gallery');
+    await expect(page.locator('h1')).toContainText('Gallery');
   });
 
   test('contact page loads with form', async ({ page }) => {

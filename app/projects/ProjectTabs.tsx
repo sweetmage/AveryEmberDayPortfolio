@@ -1,13 +1,16 @@
 'use client';
 
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { Fragment, useCallback, useEffect, useRef, useState } from 'react';
 import BrandProject from './BrandProject';
 import MistrustProject from './MistrustProject';
 import PageHeader from '../PageHeader';
 
+/* `id` is the URL hash and the aria-controls target — deliberately unchanged
+   while the labels grew to the full project titles, so existing deep links
+   like /projects/#history-of-mistrust keep working. */
 const TABS = [
-  { id: 'brand', label: 'Brand' },
-  { id: 'history-of-mistrust', label: 'History of Mistrust' },
+  { id: 'brand', label: 'Avery Ember Day Brand' },
+  { id: 'history-of-mistrust', label: 'A History of Mistrust' },
 ] as const;
 
 type TabId = (typeof TABS)[number]['id'];
@@ -42,10 +45,11 @@ export default function ProjectTabs() {
     }
   }, []);
 
-  /* The tablist is a vertical rail at lg+ and a horizontal row below;
-     aria-orientation has to follow the breakpoint. */
+  /* aria-orientation has to follow the layout, which is vertical at BOTH ends
+     of the range: a stacked column below 400px and the sticky rail at lg+,
+     with a horizontal row in between. */
   useEffect(() => {
-    const mq = window.matchMedia('(min-width: 1024px)');
+    const mq = window.matchMedia('(min-width: 1024px), (max-width: 399px)');
     const update = () => setIsRail(mq.matches);
     update();
     mq.addEventListener('change', update);
@@ -95,24 +99,44 @@ export default function ProjectTabs() {
           role="tablist"
           aria-label="Projects"
           aria-orientation={isRail ? 'vertical' : 'horizontal'}
-          className="flex flex-wrap gap-0 px-6 pt-6 pb-4 lg:sticky lg:top-16 lg:flex-col lg:flex-nowrap lg:px-0 lg:pt-8 lg:pb-0"
+          /* max-[400px]:flex-col — below 400px the two tabs (321px) exceed the
+             row (312px) and wrap anyway; making that an explicit stack keeps
+             the divider a clean full-width rule instead of a dangling sliver.
+             Deliberately `400`, not `399`: Tailwind compiles `max-[N]` to
+             `not all and (min-width: N)`, which EXCLUDES exactly N — with
+             `max-[399px]` the column never applied at a 399px viewport while
+             the divider's own `(max-width: 399px)` rule did, producing a
+             0px-wide bar. Measured. */
+          className="flex flex-wrap gap-0 px-6 pt-6 pb-4 max-[400px]:flex-col lg:sticky lg:top-16 lg:flex-col lg:flex-nowrap lg:px-0 lg:pt-8 lg:pb-0"
         >
         {TABS.map((tab, i) => {
           const isActive = activeTab === tab.id;
           return (
-            <button
-              id={`tab-${tab.id}`}
-              key={tab.id}
-              role="tab"
-              aria-selected={isActive}
-              aria-controls={`panel-${tab.id}`}
-              tabIndex={isActive ? 0 : -1}
-              onClick={() => switchTab(tab.id)}
-              onKeyDown={(e) => handleKeyDown(e, i)}
-              className={`project-tab ${isActive ? 'is-active' : ''}`}
-            >
-              {tab.label}
-            </button>
+            <Fragment key={tab.id}>
+              {/* Spectrum divider BETWEEN tabs only — `i > 0` keeps it off the
+                  outer edges of the group. `aria-hidden` keeps the tablist's
+                  a11y children pure tabs, and the roving-focus handler indexes
+                  by [role="tab"], so this div can't disturb arrow-key nav.
+                  `.brand-tab-divider` flips it vertical/horizontal to match the
+                  tablist's axis at each breakpoint. */}
+              {i > 0 && (
+                <div className="brand-spectrum-bar brand-tab-divider" aria-hidden="true">
+                  <div />
+                </div>
+              )}
+              <button
+                id={`tab-${tab.id}`}
+                role="tab"
+                aria-selected={isActive}
+                aria-controls={`panel-${tab.id}`}
+                tabIndex={isActive ? 0 : -1}
+                onClick={() => switchTab(tab.id)}
+                onKeyDown={(e) => handleKeyDown(e, i)}
+                className={`project-tab ${isActive ? 'is-active' : ''}`}
+              >
+                {tab.label}
+              </button>
+            </Fragment>
           );
         })}
       </div>

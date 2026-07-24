@@ -1,30 +1,38 @@
 /* ── Per-set slideshows ─────────────────────────────────────────── */
+/* One set per row at every width. The old `repeat(3, 1fr)` at 900px+ made the
+   viewers far too small to read a carousel slide in — ~348px at 1440 and only
+   ~222px once the lg rail takes 260px at 1024. */
 .set-slideshows {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 32px;
+  gap: 28px;
+  justify-items: center;
 }
-@media screen and (min-width: 900px) {
-  .set-slideshows { grid-template-columns: repeat(3, 1fr); gap: 24px; }
-}
+/* The viewer is 1:1, so an uncapped full-width frame would be a ~1090px square
+   at 1440 and push the three sets to ~3500px of scroll on their own. 720px
+   keeps each frame roughly double its old size without that. */
 .set-slideshow {
   display: flex;
   flex-direction: column;
   min-width: 0;
+  width: 100%;
+  max-width: 720px;
 }
 .set-ss-label {
   font-family: var(--brand-font-body);
   font-size: 0.85rem;
   font-weight: 600;
   color: var(--brand-text-soft);
-  margin: 0 0 12px;
+  margin: 0 0 8px;
   text-align: center;
 }
+/* Same frame as the Projects cards and the Gallery art: one gray at low
+   alpha, identical in both themes (see `.brand-frame` in brand.css). */
 .set-ss-viewer {
   border-radius: var(--brand-radius-lg);
   overflow: hidden;
-  border: 1px solid var(--brand-border);
-  background: var(--brand-surface-1);
+  border: 1px solid var(--brand-frame-border);
+  background: var(--brand-frame-fill);
   position: relative;
   aspect-ratio: 1 / 1;
   cursor: pointer;
@@ -55,20 +63,12 @@
   object-fit: contain;
   display: block;
 }
-.set-ss-caption {
-  text-align: center;
-  font-family: var(--brand-font-body);
-  font-size: 0.82rem;
-  color: var(--brand-text-muted);
-  margin-top: 10px;
-  min-height: 1.4em;
-}
 .set-ss-controls {
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 12px;
-  margin-top: 12px;
+  margin-top: 10px;
 }
 .set-ss-controls button {
   font-family: var(--brand-font-body);

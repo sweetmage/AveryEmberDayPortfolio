@@ -51,9 +51,19 @@ for (const page of PAGES) {
     for (const theme of THEMES) {
       test.describe(`${page.name} @ ${width}px — ${theme}`, () => {
         test.beforeEach(async ({ context }) => {
+          // localStorage ONLY. This used to also call
+          // `document.documentElement.setAttribute('data-theme', t)`, which
+          // silently threw on every one of these tests: init scripts run before
+          // the document exists, so `document.documentElement` is null there
+          // (verified by probe). Nothing listened for pageerror here, so 40
+          // exceptions per run went unnoticed while the line did nothing.
+          //
+          // Theming has always actually come from the site's own inline head
+          // script reading this value — which is the real code path anyway, so
+          // it is the better thing to exercise. The assertion below turns that
+          // previously-silent dependency into a checked one.
           await context.addInitScript((t) => {
             localStorage.setItem('theme', t);
-            document.documentElement.setAttribute('data-theme', t);
           }, theme);
         });
 
@@ -61,6 +71,11 @@ for (const page of PAGES) {
           await p.emulateMedia({ reducedMotion: 'reduce', colorScheme: theme });
           await p.setViewportSize({ width, height: 900 });
           await p.goto(`${BASE_URL}${page.url}`, { waitUntil: 'networkidle' });
+
+          // Never capture a baseline in the wrong theme: if the head script
+          // stops honouring localStorage, fail loudly instead of quietly
+          // re-baselining every snapshot against the default theme.
+          await expect(p.locator('html')).toHaveAttribute('data-theme', theme);
 
           // For the mistrust tab deep-link, ensure the tab is active before capture.
           if (page.name === 'projects-mistrust') {

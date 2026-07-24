@@ -811,6 +811,20 @@
     border-radius: 0;
 }
 
+/* Project intro copy. One measure for both panels — the two had drifted to
+   560px and 640px while carrying an otherwise identical utility string.
+   820px is a deliberately wide measure (~100 characters at 16px Inter, past
+   the 65-75 ideal) because the ask was explicitly for wider body text; it
+   still stops well short of the ~1092px content column at 1440. */
+.project-desc {
+    max-width: 820px;
+    margin: 0;
+    font-family: var(--brand-font-body);
+    font-size: 1rem;
+    line-height: 1.7;
+    color: var(--brand-text-soft);
+}
+
 /* ── Hero layout ─────────────────────────────────────────────────── */
 .brand-hero {
     position: relative;
@@ -1106,6 +1120,175 @@ html.dark .brand-circle-icon {
     background: linear-gradient(90deg,
         var(--brand-ir-1), var(--brand-ir-2), var(--brand-ir-3),
         var(--brand-ir-4), var(--brand-ir-5), var(--brand-ir-6));
+}
+
+/* ── Page & section titles ───────────────────────────────────────────
+   One recipe for every page/section title (Home "About Me", Gallery,
+   Projects, and the per-project h3s) so switching pages doesn't switch
+   type systems. Overrides the uppercase/muted/gray-rule base `h2` in
+   src/css/site.css, which now only serves the legacy static pages. */
+.brand-page-title {
+    font-family: var(--brand-font-display);
+    font-size: clamp(2rem, 5vw, 3rem);
+    font-weight: var(--brand-weight-regular);
+    line-height: 1.1;
+    letter-spacing: normal;
+    text-transform: none;
+    text-align: left;
+    color: var(--brand-text);
+    margin: 0;
+    padding: 0;
+    border: none;
+    text-shadow: 0 0 30px rgba(217, 154, 255, 0.20),
+                 0 0 60px rgba(0, 255, 255, 0.10);
+}
+
+/* One step down: in-page section titles and project titles. */
+.brand-page-title--section {
+    font-size: clamp(1.5rem, 3.5vw, 2.25rem);
+}
+
+/* Divider between the project tabs — the thinnest of the three bar sizes
+   (hero 6px, title underline 3px, this 2px), so it reads as a separator inside
+   the group rather than another section edge.
+
+   It follows the tablist's actual axis, which changes TWICE across the range:
+
+     < 400px   tabs stack (measured: they wrap at 360 and below) -> horizontal
+     400-1023  tabs sit side by side in one row                  -> vertical
+     >= 1024   sticky rail is a column                           -> horizontal
+
+   The 400px switch is measured, not guessed: the two tabs total 321px against
+   a 312px row at 360, so they wrap, and a vertical rule would dangle off the
+   end of the first row with nothing after it. `max-[399px]:flex-col` on the
+   tablist turns that implicit wrap into a real stack.
+
+   `align-self: stretch` handles cross-axis sizing in both orientations, and
+   the `auto` resets are needed to unset the 6px `.brand-spectrum-bar` height. */
+.brand-tab-divider {
+    width: 2px;
+    height: auto;
+    align-self: stretch;
+}
+
+.brand-tab-divider > div {
+    background: linear-gradient(180deg,
+        var(--brand-ir-1), var(--brand-ir-2), var(--brand-ir-3),
+        var(--brand-ir-4), var(--brand-ir-5), var(--brand-ir-6));
+}
+
+@media (max-width: 399px), (min-width: 1024px) {
+    .brand-tab-divider {
+        width: auto;
+        height: 2px;
+    }
+    .brand-tab-divider > div {
+        background: linear-gradient(90deg,
+            var(--brand-ir-1), var(--brand-ir-2), var(--brand-ir-3),
+            var(--brand-ir-4), var(--brand-ir-5), var(--brand-ir-6));
+    }
+}
+
+/* The spectrum bar as a title underline: thinner than the 6px hero bar.
+   Declared after `.brand-spectrum-bar` in the same layer so the height wins
+   without a utility override at each call site. */
+.brand-title-bar {
+    height: 3px;
+    margin-top: 0.75rem;
+}
+
+/* The dark glow washes out on the off-white background; tighten and dim it. */
+:root[data-theme="light"] .brand-page-title {
+    text-shadow: 0 0 24px rgba(199, 125, 255, 0.18),
+                 0 0 48px rgba(0, 245, 255, 0.10);
+}
+
+@media (prefers-color-scheme: light) {
+    :root:not([data-theme="dark"]) .brand-page-title {
+        text-shadow: 0 0 24px rgba(199, 125, 255, 0.18),
+                     0 0 48px rgba(0, 245, 255, 0.10);
+    }
+}
+
+/* ── Image frames ────────────────────────────────────────────────────
+   One frame treatment for every framed image: the Projects swatches,
+   supporting cards, carousel sets and slideshow viewers, plus the
+   Gallery art cards.
+
+   Deliberately NOT theme tokens. A mid-gray at low alpha is literally the
+   same declared color in light and dark — it reads as a slight lift on the
+   near-black background and a slight recess on the off-white one, so the
+   frame never restates the theme the way `--brand-surface-1` /
+   `--brand-border` do. */
+:root {
+    --brand-frame-fill:         rgba(128, 128, 128, 0.12);
+    --brand-frame-border:       rgba(128, 128, 128, 0.32);
+    --brand-frame-border-hover: rgba(128, 128, 128, 0.55);
+}
+
+.brand-frame {
+    background: var(--brand-frame-fill);
+    border: 1px solid var(--brand-frame-border);
+    border-radius: var(--brand-radius-lg);
+    overflow: hidden;
+}
+
+/* Border only: for elements that supply their own fill and must not be
+   tinted — the color-palette chips, whose fill IS the specimen. */
+.brand-frame-line {
+    border: 1px solid var(--brand-frame-border);
+}
+
+/* Rules inside a frame (label strips, specimen rows). Sets the color only;
+   pair with Tailwind's `border-t` / `border-b` for the side. */
+.brand-frame-divider {
+    border-color: var(--brand-frame-border);
+}
+
+.brand-frame-interactive {
+    transition: border-color var(--brand-transition-fast);
+}
+
+.brand-frame-interactive:hover {
+    border-color: var(--brand-frame-border-hover);
+}
+
+/* ── Chip / tag pills ────────────────────────────────────────────── */
+.brand-chip {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.875rem;
+    font-family: var(--brand-font-body);
+    border: 1px solid var(--brand-border);
+    background: transparent;
+    color: var(--brand-text-soft);
+    transition: background-color var(--brand-transition-fast),
+                border-color var(--brand-transition-fast),
+                color var(--brand-transition-fast);
+}
+
+.brand-chip[data-pressed="true"] {
+    background: var(--brand-accent-dim);
+    color: var(--brand-text);
+    border-color: var(--brand-accent);
+}
+
+button.brand-chip:hover {
+    background: var(--brand-surface-3);
+}
+
+.brand-chip:focus-visible {
+    outline: 2px solid var(--brand-accent);
+    outline-offset: 2px;
+}
+
+.brand-chip-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    align-items: center;
 }
 
 /* ── Iridescent glow helpers ─────────────────────────────────────── */

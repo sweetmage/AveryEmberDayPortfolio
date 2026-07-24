@@ -200,7 +200,6 @@
         const setNum = parseInt(widget.dataset.set, 10);
         const startGlobal = (setNum - 1) * 10; // 0-based index into slides
         const track = widget.querySelector('.set-ss-track');
-        const caption = widget.querySelector('.set-ss-caption');
         const counter = widget.querySelector('.set-ss-counter');
         const viewer = widget.querySelector('.set-ss-viewer');
         const prevBtn = widget.querySelector('.set-ss-prev');
@@ -231,9 +230,7 @@
           track.classList.toggle('no-transition', !animate);
           track.style.transform = `translateX(${-local * 100}%)`;
           if (!animate) setTimeout(() => track.classList.remove('no-transition'), 10);
-          const s = setSlides[local];
           counter.textContent = 'Slide ' + (local + 1) + ' of ' + setSlides.length;
-          caption.textContent = 'Slide ' + s.n + ' of 30';
           prevBtn.disabled = local === 0;
           nextBtn.disabled = local === setSlides.length - 1;
           preload(local - 1);
