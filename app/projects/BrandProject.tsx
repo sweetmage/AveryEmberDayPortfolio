@@ -1,4 +1,4 @@
-const logoSwatches = [
+const primarySwatches = [
   {
     src: '/images/icons/BubbleLogo/bubbleLogo.png',
     alt: 'Blue logo with text',
@@ -20,6 +20,9 @@ const logoSwatches = [
     label: 'Primary — White',
     desc: 'Dark backgrounds · #ffffff',
   },
+];
+
+const iconMarkSwatches = [
   {
     src: '/images/icons/BubbleLogo/bubbleLogo-blue-notxt.png',
     alt: 'Blue icon mark',
@@ -55,7 +58,7 @@ const palette = [
 export default function BrandProject() {
   return (
     <>
-      <div className="project-hero mx-auto max-w-(--brand-content-max) px-6 pt-20 pb-12">
+      <div className="project-hero px-6 pt-10 pb-12 lg:pt-0">
         <h3 className="project-title mb-4 font-display text-[clamp(1.5rem,3.5vw,2.25rem)] leading-[1.1] text-text border-none p-0 normal-case tracking-normal font-normal">
           Avery Ember Day Brand
         </h3>
@@ -67,33 +70,64 @@ export default function BrandProject() {
       </div>
 
       {/* Logo Variants */}
-      <section className="project-section mx-auto max-w-(--brand-content-max) px-6 pb-20">
+      <section className="project-section px-6 pb-20">
         <h4 className="section-title mb-8 border-none p-0 text-left font-heading text-xl font-semibold normal-case tracking-normal text-ir-4">
           Logo Variants
         </h4>
-        <div className="logo-grid grid grid-cols-[repeat(auto-fill,minmax(280px,1fr))] gap-4">
-          {logoSwatches.map((swatch) => (
-            <div
-              key={swatch.src}
-              className="logo-swatch flex flex-col overflow-hidden rounded-lg border border-line [&_img]:h-40 [&_img]:w-40 [&_img]:object-contain"
-            >
+
+        <div className="mb-10">
+          <h5 className="mb-4 font-heading text-sm font-medium uppercase tracking-[0.08em] text-text-muted">
+            Primary
+          </h5>
+          <div className="logo-grid grid grid-cols-[repeat(auto-fill,minmax(280px,1fr))] gap-4">
+            {primarySwatches.map((swatch) => (
               <div
-                className="logo-swatch-canvas flex flex-1 items-center justify-center p-10"
-                style={{ backgroundColor: swatch.bg }}
+                key={swatch.src}
+                className="logo-swatch flex flex-col overflow-hidden rounded-lg border border-line [&_img]:h-40 [&_img]:w-40 [&_img]:object-contain"
               >
-                <img src={swatch.src} alt={swatch.alt} loading="lazy" decoding="async" />
+                <div
+                  className="logo-swatch-canvas flex flex-1 items-center justify-center p-10"
+                  style={{ backgroundColor: swatch.bg }}
+                >
+                  <img src={swatch.src} alt={swatch.alt} loading="lazy" decoding="async" />
+                </div>
+                <div className="logo-swatch-label border-t border-line bg-surface-1 px-4 py-3 [&_span]:font-body [&_span]:text-xs [&_span]:text-text-muted [&_strong]:block [&_strong]:font-body [&_strong]:text-sm [&_strong]:font-medium [&_strong]:text-text">
+                  <strong>{swatch.label}</strong>
+                  <span>{swatch.desc}</span>
+                </div>
               </div>
-              <div className="logo-swatch-label border-t border-line bg-surface-1 px-4 py-3 [&_span]:font-body [&_span]:text-xs [&_span]:text-text-muted [&_strong]:block [&_strong]:font-body [&_strong]:text-sm [&_strong]:font-medium [&_strong]:text-text">
-                <strong>{swatch.label}</strong>
-                <span>{swatch.desc}</span>
+            ))}
+          </div>
+        </div>
+
+        <div>
+          <h5 className="mb-4 font-heading text-sm font-medium uppercase tracking-[0.08em] text-text-muted">
+            Icon Mark
+          </h5>
+          <div className="logo-grid grid grid-cols-[repeat(auto-fill,minmax(280px,1fr))] gap-4">
+            {iconMarkSwatches.map((swatch) => (
+              <div
+                key={swatch.src}
+                className="logo-swatch flex flex-col overflow-hidden rounded-lg border border-line [&_img]:h-40 [&_img]:w-40 [&_img]:object-contain"
+              >
+                <div
+                  className="logo-swatch-canvas flex flex-1 items-center justify-center p-10"
+                  style={{ backgroundColor: swatch.bg }}
+                >
+                  <img src={swatch.src} alt={swatch.alt} loading="lazy" decoding="async" />
+                </div>
+                <div className="logo-swatch-label border-t border-line bg-surface-1 px-4 py-3 [&_span]:font-body [&_span]:text-xs [&_span]:text-text-muted [&_strong]:block [&_strong]:font-body [&_strong]:text-sm [&_strong]:font-medium [&_strong]:text-text">
+                  <strong>{swatch.label}</strong>
+                  <span>{swatch.desc}</span>
+                </div>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       </section>
 
       {/* Color Palette */}
-      <section className="project-section mx-auto max-w-(--brand-content-max) px-6 pb-20">
+      <section className="project-section px-6 pb-20">
         <h4 className="section-title mb-8 border-none p-0 text-left font-heading text-xl font-semibold normal-case tracking-normal text-ir-4">
           Brand Palette
         </h4>
@@ -113,7 +147,7 @@ export default function BrandProject() {
       </section>
 
       {/* Typography */}
-      <section className="project-section mx-auto max-w-(--brand-content-max) px-6 pb-20">
+      <section className="project-section px-6 pb-20">
         <h4 className="section-title mb-8 border-none p-0 text-left font-heading text-xl font-semibold normal-case tracking-normal text-ir-4">
           Type System
         </h4>

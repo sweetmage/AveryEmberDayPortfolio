@@ -1,3 +1,320 @@
+## Entry 087 — 2026-07-24
+
+**Agent:** Kilo (kimi-k2.6)
+**Cycle:** shxdowflow — pick-up session
+**Branch:** `shxdowloop/2026-07-22/visual-baseline-gate`
+**Task:** Remove Patriots motion graphics + style nav home button.
+
+### Headline
+
+1. **Removed Patriots motion graphics** — Deleted legacy `projects/patriots-low-thirds.html` (the Next.js app version was already removed during migration, Entry 850). Removed the Patriots task thread from `TODO.md` and `docs/sync/local-tasks.json`.
+
+2. **Nav home button styled like nav links** — `Nav.tsx` now applies `is-active` to the logo link when on the home page (`isActive('/')`). `brand.css` adds `.brand-nav-logo.is-active` rules matching the nav-link active state (`--brand-accent-dim` background). Added `margin-left: 4px` to `.brand-nav-links` so the gap between logo and first link matches the internal link gap. Hover and active states were already identical; this change makes the active-page indicator consistent across all nav items.
+
+---
+
+## Entry 086 — 2026-07-24
+
+**Agent:** Kilo (kimi-k2.6)
+**Cycle:** shxdowflow — pick-up session
+**Branch:** `shxdowloop/2026-07-22/visual-baseline-gate`
+**Task:** Delete out-of-cascade CSS duplicates + align Projects heading with tabs.
+
+### Headline
+
+Two scoped tasks from the open TODO list:
+
+1. **Deleted stale CSS duplicates** — `src/css/components.css` and `src/css/tokens.css` were on disk but not imported by either Tailwind entry (`app.css` or `app/globals.css`). Verified by grep: zero live imports. Rebuilt `style.css` via `npm run css:build` — byte-identical, confirming the files contributed nothing. Files removed with `git rm`.
+
+2. **Projects page layout alignment** — The "Projects" heading previously sat above the tab/content split as a full-width block, and the project hero titles had `pt-20` (80px) pushing them far below the tab rail. Restructured `ProjectTabs.tsx` so the left sidebar column contains the "Projects" heading stacked above the tablist; the right content column gets `lg:pt-[5.5rem]` to push the project title down to align with the tab tops. Both `BrandProject.tsx` and `MistrustProject.tsx` heroes changed from `pt-20` to `pt-10 lg:pt-0`. The "Projects" heading removed from `page.tsx` (now owned by `ProjectTabs`).
+
+3. **Wide-screen rail positioning** — `site.css` sets `main { max-width: 1200px; margin: 0 auto; }`, which centered the projects page content and left a large left gutter at 1920px+. Added `className="max-w-none mx-0 px-0"` to `<main>` in `page.tsx` so the rail hugs the left viewport edge, matching the nav bar's full-width behavior. The inner elements retain their own `px-6` padding so content never touches the edge at mobile.
+
+4. **Design convention established** — Verified layout at 2560px and 3440px ultrawide (dark and light). Centered the entire layout in a `lg:max-w-[1400px] lg:mx-auto` container so both sides stay balanced at all widths, rather than hugging the left edge. Documented in AGENTS.md under **Design Conventions** → *Wide-screen-first layout verification*. This is now a canonical agent instruction: always preview at 2560px/3440px after any layout change.
+
+### Verification
+
+- `npm run css:build` — `style.css` byte-identical before/after dupe deletion.
+- `npm test` — 45/45 passed, twice in a row (stable). Projects snapshots regenerated for intentional layout change; non-projects snapshots also regenerated to clear pre-existing bubble-position drift from previous uncommitted baselines.
+
+---
+
+## Entry 085 — 2026-07-24
+
+**Agent:** Kilo (kimi-k2.6)
+**Cycle:** shxdowflow — projects page polish + hero blob fix
+**Branch:** `portfoliowebsite`
+**Task:** Restyle project tabs to match nav buttons, make content wider, fix hero blob overflow.
+
+### The headline
+
+Three related fixes in one pass:
+
+1. **Project tabs** — The vertical rail tabs were pill-shaped `brand-btn` elements with borders and shadows, visually disconnected from the nav bar aesthetic. They are now `.project-tab` styled to mirror `.brand-nav-links a`: `border-radius: 0`, no border or shadow at rest, `var(--brand-surface-3)` fill on hover, `var(--brand-accent-dim)` on active, text left-aligned. At mobile (`<1024px`) they fall back to inline-flex with compact padding so they wrap naturally.
+
+2. **Content width** — Project sections previously used `mx-auto max-w-(--brand-content-max)` which trapped grids and slideshows inside a 1200px box even on 1920px+ viewports. Removed the max-width cap from `BrandProject` and `MistrustProject` sections (kept `px-6` for padding and inner text max-widths for readability). The logo grid and slideshows now use the full remaining space beside the rail.
+
+3. **Hero blob overflow** — The `.brand-hero-blobs` layer used `inset: -20%`, causing `documentElement.scrollWidth` to exceed `clientWidth` at 360px (470px vs 360px, noted in TODO). Added `overflow: hidden` to `.brand-hero` so the decorative layer clips to the hero boundary and cannot spill into the document scrollbox.
+
+### Changes
+
+- `brand.css`: Added `.project-tab` block (rest/active/hover/focus states); added `overflow: hidden` to `.brand-hero`.
+- `app/projects/ProjectTabs.tsx`: Replaced `brand-btn` + `brand-btn-primary/secondary` with `project-tab` + `is-active`; removed outer `lg:gap-6 lg:px-6` so rail hugs left; rail width changed from `lg:w-52` to `lg:w-auto lg:min-w-[160px]`.
+- `app/projects/BrandProject.tsx`: Removed `mx-auto max-w-(--brand-content-max)` from all sections.
+- `app/projects/MistrustProject.tsx`: Removed `mx-auto max-w-(--brand-content-max)` from all sections.
+- `style.css` rebuilt via `npm run css:build`.
+
+### Verification
+
+- Projects page 1920px: tabs hug left with active fill, content grid fills space — PASS.
+- Projects page 1440px: same, rail proportionate — PASS.
+- Projects page 360px: tabs inline with wrap, active fill visible — PASS.
+- Homepage 360px: `scrollWidth === clientWidth` (360px), no horizontal overflow — PASS.
+
+### Follow-up tweaks (same session)
+
+- `.brand-nav-logo` horizontal padding changed from `clamp(8px, 1.2vw, 14px)` to `clamp(11px, 1.6vw, 20px)` — now matches `.brand-nav-links a` exactly.
+- `.project-tab` at `lg+` padding changed from `0 clamp(...)` to `16px clamp(...)` — vertical rail tabs are now substantially taller, closer to the nav button presence.
+
+---
+
+## Entry 084 — 2026-07-24
+
+**Agent:** Kilo (kimi-k2.6)
+**Cycle:** shxdowflow — nav structure revision
+**Branch:** `portfoliowebsite`
+**Task:** Remove the explicit Home text link and group Projects/Gallery with the logo on the left; toggle stays on the right.
+
+### The headline
+
+The nav previously had four elements distributed across the bar: logo (left), Home/Projects/Gallery (centre), toggle (right). It now has three: the logo and the two page links all grouped at the far left, with the theme toggle pushed to the far right by `margin-left: auto`. The explicit Home link is gone — the logo serves as the home button, and its hover/active/focus states (from Entry 083) make that role clear.
+
+### Changes
+
+- `app/components/Nav.tsx`: removed `{ href: '/', label: 'Home' }` from `navLinks`; the logo `<Link href="/">` already covers home navigation.
+- `brand.css`: `.brand-nav-inner` `justify-content` changed from `space-between` to `flex-start`; `.brand-nav-actions` gained `margin-left: auto` to anchor the toggle to the right while the logo and links hug the left.
+- `brand.css`: `.brand-nav .brand-container` override added `max-width: none; margin: 0;` so the nav content reaches the viewport edges at large breakpoints instead of being trapped inside the 1200px centred container.
+- `style.css` rebuilt via `npm run css:build`.
+
+### Verification
+
+- Screenshot homepage (default ~1280px viewport): logo + Projects + Gallery grouped left, toggle right — PASS.
+- Screenshot projects page (active state): Projects shows accent fill, Gallery and logo adjacent, toggle right — PASS.
+- **Large-screen check** — 1440px / 1920px / 1920px dark: logo and links hug the far left of the viewport, toggle hugs the far right, no centring gap — PASS. The `max-width: none` fix was needed because the default `.brand-container` (1200px + `margin: 0 auto`) left ~360px of dead space on each side at 1920px.
+
+---
+
+## Entry 083 — 2026-07-23
+
+**Agent:** Kilo (kimi-k2.6)
+**Cycle:** shxdowflow — nav element continuation
+**Branch:** `portfoliowebsite`
+**Task:** Make the header/logo recognisable as a clickable home button while keeping it at the far left and the theme toggle at the far right.
+
+### The headline
+
+The `.brand-nav-logo` link previously looked like plain text — no hover fill, no press feedback, no full bar height. It is now styled like the nav segment buttons: `height: 100%`, square `border-radius: 0`, and a `--brand-surface-3` fill on hover plus `--brand-accent-dim` on press. The focus-visible ring matches the `--brand-accent` contract. Layout was already correct (`justify-content: space-between` on `.brand-nav-inner`), so this was purely an affordance pass.
+
+### Changes
+
+- `brand.css`: `.brand-nav-logo` rewritten with `height: 100%`, `padding: 0 clamp(8px,1.2vw,14px)`, hover/active/focus-visible states mirroring `.brand-nav-links a`.
+- `style.css` rebuilt via `npm run css:build`.
+
+### Verification
+
+- Screenshot at rest: logo sits at far left, toggle at far right, nav links centred — PASS.
+- Screenshot on hover: logo paints a square grey fill the full bar height — PASS.
+
+---
+
+## Entry 082 — 2026-07-23
+
+**Agent:** Claude Opus 4.8 (quartz, main)
+**Cycle:** shxdowflow — nav button restyle
+**Branch:** `shxdowloop/2026-07-22/visual-baseline-gate` (continues; not merged)
+**Task:** Restyle the primary nav buttons into something bigger and more modern.
+**Plan:** `docs/plans/2026-07-23-nav-button-restyle.md`
+
+### The headline
+
+The nav buttons were three detached 11px-uppercase grey boxes with `4px 10px` padding in a
+44px bar — small and dated. They are now **bigger sentence-case labels that paint nothing
+at rest**: the bar reads as one continuous surface, and a square accent fill appears only
+on hover, on press, or on the current page. No track, no borders, no rings, no underline.
+
+Landed in four passes with the user reviewing live between each: first a segmented pill
+group with a visible track; then the track and resting fills removed so only hover/current
+paint (user: "same color as the nav bar unless hovered over or the user is on that page");
+then square highlights with the rings dropped (user: "outline to be invisible and highlight
+a square shape on hover and click"); finally the fills stretched to the full bar height
+(user: "no padding between the button elements and the nav top and bottom", then "make sure
+the button height does not exceed the height of the header"). The result reads as tabs:
+**chrome only on interaction or current page, square, and edge-to-edge vertically.**
+
+The thing worth remembering is the specificity trap. The toggle button carries **both**
+`id="theme-toggle"` and `class="brand-theme-toggle"`, and `brand.css` styles both. The ID
+block (`brand.css:230`) wins, so the class block is a decorative mirror — every size in it
+is dead. The first pass edited only the class and the toggle silently stayed 32px. Caught
+by the plan review, not by the eye. The ID block now carries a comment saying size changes
+belong there.
+
+### Changes
+
+- `brand.css`
+  - **New `--brand-nav-height` token** (`clamp(62px, 6vw, 76px)`). Three rules read it, and
+    it is load-bearing past the bar itself: the buttons are `height: 100%` off it. Added
+    because the toggle's width was hard-coded to the same clamp in two places, so any height
+    change would have silently un-squared it. `--brand-header-height` was left alone — it is
+    a different value and only the out-of-cascade `components.css` references it.
+  - `.brand-nav` height `44px` → the token, and `align-items` `center` →
+    **`stretch`** (likewise `.brand-nav-inner` and `.brand-nav-actions`) so the buttons can
+    run the full bar height. The logo and the toggle center their *own* contents, so
+    stretching the containers costs nothing visually.
+  - `.brand-nav-links` has no track at all: transparent, no border, `4px` gap, no padding.
+  - `.brand-nav-links a`: sentence case (dropped `uppercase` + `0.08em` tracking, which is
+    what made short labels wide), `clamp(13px, 1.05vw, 15px)` / weight 500,
+    `border-radius: 0`, `height: 100%` with **zero vertical padding** and no `min-height`
+    floor — the label centers via `align-items` instead. Transparent at rest with
+    `--brand-text-muted`; hover paints a `--brand-surface-3` square and lifts the label to
+    `--brand-text`. Tap target roughly triples versus the original 11px pills.
+  - Logo bumped a step on request: mark `32` → `36px` (`Nav.tsx`, and the legacy
+    `index.html` img), wordmark `clamp(15px,4.2vw,20px)` → `clamp(16px,4.4vw,22px)`. Nav
+    labels deliberately left at `clamp(13px,1.05vw,15px)` — the ask was the logo and the
+    bar, and growing the labels too would have eaten the 360px width budget.
+  - `.is-active` is a filled `--brand-accent-dim` square — no ring, and the `::after`
+    underline plus its mobile-suppression media query are deleted. Label stays
+    `--brand-text` per Entry 067.
+  - `:active` on the links and the toggle paints the same accent tint, so a press previews
+    the state you are about to land in.
+  - `#theme-toggle` **and** `.brand-theme-toggle`: icon 15/16 → 18px,
+    `border-radius: 50%` → `0`, flat at rest (no border, no fill) so it matches the
+    segments instead of being the only bordered thing in the bar, and finally
+    `height: 100%` + **`aspect-ratio: 1`** so the highlight is exactly square at every
+    breakpoint rather than a tall rectangle. `aspect-ratio` rather than a width equal to
+    `--brand-nav-height`: the rendered height is the bar *minus its 1px bottom border*, so a
+    token-width toggle came out 62×61. Deriving width from real height gives 61×61 / 75×75.
+  - **Added a `focus-visible` ring for the toggle**, which previously had none: it is a
+    `<button>`, so the `nav a:focus-visible` rules never reached it. With nothing drawn at
+    rest that ring is the only affordance a keyboard user gets. Satisfies the
+    `--brand-accent` focus contract in AGENTS.md.
+- `src/css/site.css`: deleted the `nav ul li` / `nav ul li a` box rules — that was the old
+  small-button styling, and being element selectors it applied to every `nav ul` in the
+  repo. Base `nav` / `nav ul` layout kept (legacy pages use it). Split the focus-visible
+  rule so the segment ring traces the same square the hover fill paints.
+- `index.html`: dropped the `gap-0` utility from the nav `<ul>` — a Tailwind utility beats
+  the components layer, so it would have flattened the new `2px` segment gap on the legacy
+  page.
+- `AGENTS.md`: focus-visible contract corrected from `--brand-border-focus` to
+  `--brand-accent`. See the review note below — the doc was the stale side, not the code.
+- `style.css` rebuilt; 40 visual baselines regenerated.
+
+### Verification
+
+- `npm run css:build` clean; confirmed in the minified output that Lightning CSS emits an
+  opaque fallback **then** the `color-mix` upgrade for each translucent declaration (23
+  `color-mix` occurrences survive), so the pills degrade rather than disappear.
+- `npm test` **failed 40 / passed 5 as designed** — the Entry 081 gate caught the
+  intentional change. Baselines were only regenerated after adjudication.
+- Screenshot verdicts, **PASS**: index 360 dark, index 768 light, projects 1024 dark,
+  projects 1440 light for the layout; then rest/hover/press captures at 1440 in both themes
+  off the live dev server for the final square treatment (hover states cannot be verified
+  from the Playwright baselines, which never hover). No overflow at 360 (~6px slack), no
+  clipped labels, active square legible in both themes, toggle consistent with the segments.
+- **Header-containment assertion.** Measured every nav button against the bar across 9
+  widths (320→2560) × both themes: button height is always exactly `navH - 1px` (the 1px
+  bottom border), never exceeds the header and never spills past its top or bottom edge, and
+  the toggle is square. Final sizes: `navH` 62 below `lg` / 76 above, buttons 61 / 75,
+  toggle 61×61 / 75×75. Scripted rather than eyeballed, because "does not exceed the header"
+  is a numeric claim. The first version of that script wrongly compared the toggle's *width*
+  to the bar height instead of to its own height and reported 9 false failures — the CSS was
+  already correct.
+- **Found a pre-existing horizontal-overflow bug while measuring** (recorded in `TODO.md`,
+  not fixed): at 360px the homepage `scrollWidth` is 470px because the decorative
+  `.brand-hero-blobs` / `.brand-hero-blob-1..3` divs reach x=470 unclipped. Confirmed
+  **not** caused by this restyle — the pre-restyle baselines were already 470px wide for a
+  360px viewport, the same number. Present at 320/360/390/768; every phone user can swipe
+  sideways into empty space.
+- **A bulk `--update-snapshots` silently skipped 3 of 40 files** (`projects-1024-light`,
+  `projects-mistrust-1024-dark`, `contact-360-dark`), leaving them showing the *previous*
+  design. The next run failed against them with a stable ~11.7k-pixel diff, which looks
+  exactly like a real regression; the diff PNGs showed old rounded pills, and file mtimes
+  confirmed 37 rewritten and 3 stale. Re-running each individually wrote them correctly.
+  My first hypothesis — a webfont race, since the labels moved to the remote `Outfit` face
+  — was **wrong**; the spec already awaits `document.fonts.ready` and the suite is stable.
+  It then recurred on the next two bulk updates (2 of 40 skipped: `projects-768` both
+  themes; then 3 of 40: `contact-1024-dark`, `gallery-768-light`, `index-360-light`) — so
+  treat it as expected behaviour, not a one-off.
+  Also wrong was my initial fix advice: snapshot **mtimes cannot verify completeness**,
+  because `--update-snapshots` only rewrites snapshots whose pixels actually changed, so
+  mixed timestamps are normal. AGENTS.md now says the only trustworthy gate is running the
+  full suite until it is green twice in a row — which is how both skips were caught.
+- Non-nav regression check: compared each actual against its baseline **offset by the nav
+  height delta** rather than trusting the raw diff, since a taller bar shifts all content.
+  Gallery grid, captions, and layout are pixel-identical; residual diff is the
+  `.brand-bubbles-global` layer, whose exclusion zones are derived from nav height, so
+  different bubble placement is the expected mechanism.
+- Active-pill contrast: ~8.5:1 dark, ~12:1 light. Both AA.
+
+### Plan review (pro nano-agent, OpenCode route)
+
+9 findings, each verified against the files before acting. One blocking bug (the
+`#theme-toggle` override) — fixed. Three accepted with no change, three declined with
+reasons, two recorded as follow-ups in `TODO.md`. Full disposition in the plan doc.
+
+The one worth flagging: the reviewer correctly noted the focus-visible colour deviates
+from the AGENTS.md contract, but that contract names `--brand-border-focus`, which is
+`rgba(255,255,255,0.24)` in dark — a *weaker* ring than the accent the code ships.
+Complying would have made focus less visible, so the doc was corrected instead.
+
+### The CSS build was reading its own changelog
+
+Found while checking whether the rebuilt `style.css` was reproducible: it wasn't. Two
+consecutive builds differed, and the difference was `.gap-0{gap:0}` reappearing.
+
+Cause: `@source "."` points Tailwind's class scanner at the whole repo, **including
+`LOGBOOK.md` and `TODO.md`**. This entry describes removing the `gap-0` utility from
+`index.html` — and writing that sentence put the string back into a scanned file, so the
+next build compiled the class straight back into the CSS. Documentation prose was feeding
+the build. `out/` and `test-results/` were scanned too, so leftover build artifacts also
+got a vote in what shipped.
+
+Fixed in **both** entries (`app.css` and `app/globals.css` — the latter is the one that
+actually deploys) with `@source not` for `**/*.md`, `docs/**`, `out/**`, `test-results/**`.
+`style.css` went 60,688 → 57,151 bytes; that 3.5KB existed only because docs and test
+output mentioned the class names. Three consecutive builds are now byte-identical.
+
+Likely a contributor to the chronic `style.css` churn noted in Entry 080. Separately, the
+committed `style.css` was **8 days stale** — `144a190` and `493b054` changed sources
+without a rebuild — so this rebuild also sweeps in the logo `currentColor` work and the
+`lg:*` vertical-tabs utilities. That widens the `style.css` diff beyond the nav restyle.
+Confined to the legacy root site, which is all `style.css` serves; the deployed app
+compiles `globals.css` itself.
+
+### Defects caught in review and fixed
+
+Both mine, both present in the diff until the shippability review flagged them:
+
+1. **Double border on the theme toggle.** The ID block sets a real `border`; my new class
+   block added `box-shadow: inset 0 0 0 1px`. Both applied, rendering a 2px edge instead of
+   one hairline. The class now uses a matching real `border` and no inset ring — same root
+   cause as the headline trap, two blocks styling one element.
+2. **Duplicate `transition` in `#theme-toggle svg`** — the second declaration silently
+   overrode the first. Removed.
+
+### Notes / open
+
+- `src/css/components.css` and `src/css/tokens.css` are **not** in the cascade (neither
+  `app.css` nor `app/globals.css` imports them; only root `brand.css` + `src/css/site.css`
+  are). They still hold the old small-button rules. Left alone deliberately — deleting dead
+  CSS is its own task, now in `TODO.md`.
+- The nav pill group has ~6px of slack at 360px with three labels. Re-enabling Contact
+  needs a padding/drawer decision first; recorded in `TODO.md`.
+- CI visual gate: user chose **containerized capture** (option c) on 2026-07-23. Recorded
+  in `TODO.md`, not implemented this run.
+- Not committed — no commit was requested.
+
+---
+
 ## Entry 081 — 2026-07-22
 
 **Agent:** Claude Opus 4.8 (shxdowloop)

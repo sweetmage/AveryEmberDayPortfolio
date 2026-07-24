@@ -95,6 +95,10 @@
     --brand-content-max:   1200px;
     --brand-section-gap:   80px;
     --brand-header-height: 80px;
+    /* Sticky nav bar height. Load-bearing beyond the bar itself: the nav buttons are
+       height:100% off it, and the theme toggle's WIDTH is set from it so its square
+       highlight stays square. Change it here only — three rules read this token. */
+    --brand-nav-height:    clamp(62px, 6vw, 76px);
 
     /* Transitions */
     --brand-transition-fast: 140ms ease;
@@ -226,33 +230,47 @@
     }
 }
 
-/* ── Theme toggle button ─────────────────────────────────────────── */
+/* ── Theme toggle button ──────────────────────────────────────────
+   This ID block is what actually renders: the button carries both
+   id="theme-toggle" and class="brand-theme-toggle", and ID specificity beats
+   the class mirror further down. Size/shape changes belong HERE — editing only
+   .brand-theme-toggle is a no-op. Kept at 40px to match the nav pill group. */
 #theme-toggle {
     position: relative;
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    border: 1px solid var(--brand-border-mid);
-    background: var(--brand-surface-2);
+    /* Full bar height like the nav segments, with the width derived from the rendered
+       height via aspect-ratio so the highlight is exactly square. (Setting
+       width: var(--brand-nav-height) left it 1px wide, since the height is the bar
+       minus its 1px bottom border.) Flat at rest, no border. */
+    height: 100%;
+    aspect-ratio: 1;
+    border-radius: 0;
+    border: none;
+    background: none;
     cursor: pointer;
     flex-shrink: 0;
-    transition: border-color var(--brand-transition-fast),
-                background var(--brand-transition-fast);
+    transition: background var(--brand-transition-fast);
 }
 
 #theme-toggle:hover {
-    border-color: var(--brand-accent);
     background: var(--brand-accent-dim);
 }
 
+/* The toggle is a <button>, so the `nav a:focus-visible` rules never reached it and it
+   had no focus style at all. With no resting border that ring is the only affordance a
+   keyboard user gets. Matches the --brand-accent focus contract in AGENTS.md. */
+#theme-toggle:focus-visible,
+.brand-theme-toggle:focus-visible {
+    outline: 2px solid var(--brand-accent);
+    outline-offset: 2px;
+}
+
 #theme-toggle svg {
-    width: 15px;
-    height: 15px;
+    width: 18px;
+    height: 18px;
     fill: var(--brand-text-muted);
-    transition: fill var(--brand-transition-fast);
     position: absolute;
     transition: opacity var(--brand-transition-fast), fill var(--brand-transition-fast);
 }
@@ -544,21 +562,27 @@
     position: sticky;
     top: 0;
     z-index: 50;
-    height: 44px;
+    height: var(--brand-nav-height);
     display: flex;
-    align-items: center;
+    /* stretch, not center: the nav links run edge to edge vertically so their hover /
+       current-page fill spans the full bar height with no gap above or below. Items that
+       should stay visually centred (logo, actions) center their own contents. */
+    align-items: stretch;
     background: var(--brand-bg);
     border-bottom: 1px solid var(--brand-border-mid);
 }
 
 .brand-nav-inner {
     display: flex;
-    align-items: center;
-    justify-content: space-between;
+    align-items: stretch;
+    justify-content: flex-start;
     width: 100%;
 }
 
 .brand-nav .brand-container {
+    width: 100%;
+    max-width: none;
+    margin: 0;
     padding: 0 clamp(12px, 2.5vw, 28px);
 }
 
@@ -566,24 +590,107 @@
     display: flex;
     align-items: center;
     gap: 0.5em;
+    /* Full bar height like the nav segments; the logo content stays centred. */
+    height: 100%;
+    padding: 0 clamp(11px, 1.6vw, 20px);
+    border-radius: 0;
     font-family: var(--brand-font-display);
     font-size: 20px;
     font-weight: normal;
     color: var(--brand-text);
     text-decoration: none;
-    transition: var(--brand-transition);
+    background: transparent;
+    cursor: pointer;
+    transition: background-color var(--brand-transition-fast),
+                color var(--brand-transition-fast);
 }
 
+.brand-nav-logo:hover {
+    background: var(--brand-surface-3);
+    color: var(--brand-text);
+}
+
+.brand-nav-logo:active {
+    background: var(--brand-accent-dim);
+}
+
+.brand-nav-logo.is-active {
+    color: var(--brand-text);
+    background: var(--brand-accent-dim);
+}
+
+.brand-nav-logo.is-active:hover {
+    background: var(--brand-accent-dim);
+    color: var(--brand-text);
+}
+
+.brand-nav-logo:focus-visible {
+    outline: 2px solid var(--brand-accent);
+    outline-offset: 2px;
+    border-radius: 0;
+}
+
+/* No visible track: segments sit directly on the nav bar and only paint a square
+   fill when hovered or current, so the active page is the one thing that reads as
+   filled. No borders or rings anywhere — the fill alone carries the state. */
 .brand-nav-links {
     display: flex;
-    gap: 0;
+    align-items: stretch;
+    align-self: stretch;
+    gap: 4px;
+    margin-left: 4px;
+    padding: 0;
     list-style: none;
+    background: none;
+    border: none;
+}
+
+.brand-nav-links li {
+    display: flex;
+    align-items: stretch;
+    margin: 0;
+}
+
+.brand-nav-links a {
+    display: flex;
+    align-items: center;
+    /* Full bar height, so no vertical padding and no min-height floor — the label stays
+       optically centred via align-items instead. */
+    height: 100%;
+    padding: 0 clamp(11px, 1.6vw, 20px);
+    border-radius: 0;
+    font-family: var(--brand-font-heading);
+    font-size: clamp(13px, 1.05vw, 15px);
+    font-weight: var(--brand-weight-medium);
+    letter-spacing: 0.01em;
+    text-transform: none;
+    white-space: nowrap;
+    background: transparent;
+    color: var(--brand-text-muted);
+    text-decoration: none;
+    transition: background-color var(--brand-transition-fast),
+                color var(--brand-transition-fast),
+                box-shadow var(--brand-transition-fast);
+}
+
+.brand-nav-links a:hover {
+    background: var(--brand-surface-3);
+    color: var(--brand-text);
+}
+
+/* Press feedback: the accent tint the current page uses, so clicking previews the
+   state you are about to land in. */
+.brand-nav-links a:active,
+#theme-toggle:active,
+.brand-theme-toggle:active {
+    background: var(--brand-accent-dim);
 }
 
 .brand-nav-actions {
     display: flex;
-    align-items: center;
+    align-items: stretch;
     gap: 12px;
+    margin-left: auto;
 }
 
 /* ── brand-theme-toggle mirrors #theme-toggle ────────────────────── */
@@ -591,12 +698,12 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 36px;
-    height: 36px;
-    border-radius: 50%;
-    transition: background-color var(--brand-transition-fast);
+    height: 100%;
+    aspect-ratio: 1;
+    border-radius: 0;
+    transition: background var(--brand-transition-fast);
     color: var(--brand-text);
-    background: var(--brand-surface-2);
+    background: none;
     cursor: pointer;
     border: none;
 }
@@ -607,8 +714,8 @@
 }
 
 .brand-theme-toggle svg {
-    width: 16px;
-    height: 16px;
+    width: 18px;
+    height: 18px;
     transition: opacity 0.2s ease;
     position: absolute;
 }
@@ -624,32 +731,77 @@
     :root:not([data-theme="dark"]) .brand-theme-toggle .icon-moon { opacity: 0; }
 }
 
-/* ── Active / current-page nav indicator ────────────────────────── */
+/* ── Active / current-page nav indicator ──────────────────────────
+   A filled square, no ring and no underline. The label stays --brand-text (moved off
+   --brand-accent in Entry 067 for contrast); the accent tint carries the state. */
 .brand-nav-links a.is-active,
 .brand-nav-links li.is-active > a {
     color: var(--brand-text);
-    position: relative;
+    background: var(--brand-accent-dim);
 }
 
-.brand-nav-links > li > a.is-active::after,
-.brand-nav-links > li.is-active > a::after {
-    content: "";
-    display: block;
-    position: absolute;
-    bottom: -2px;
-    left: 8px;
-    right: 8px;
-    height: 2px;
-    background: var(--brand-accent);
-    border-radius: 2px;
+.brand-nav-links a.is-active:hover,
+.brand-nav-links li.is-active > a:hover {
+    background: var(--brand-accent-dim);
+    color: var(--brand-text);
 }
 
-/* Active indicator in mobile drawer (no underline, just color) */
-@media (max-width: 767px) {
-    .brand-nav-links > li > a.is-active::after,
-    .brand-nav-links > li.is-active > a::after {
-        display: none;
+/* ── Project tabs (vertical rail) ─────────────────────────────────
+   Mirrors the nav-link aesthetic: no chrome at rest, square fill on
+   hover / active, flat border-radius, left-aligned text. */
+.project-tab {
+    display: inline-flex;
+    align-items: center;
+    padding: 7px 14px;
+    border-radius: 0;
+    font-family: var(--brand-font-heading);
+    font-size: clamp(13px, 1.05vw, 15px);
+    font-weight: var(--brand-weight-medium);
+    letter-spacing: 0.01em;
+    text-transform: none;
+    white-space: nowrap;
+    background: transparent;
+    color: var(--brand-text-muted);
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    transition: background-color var(--brand-transition-fast),
+                color var(--brand-transition-fast);
+    text-align: left;
+    justify-content: flex-start;
+}
+
+@media (min-width: 1024px) {
+    .project-tab {
+        display: flex;
+        width: 100%;
+        padding: 16px clamp(11px, 1.6vw, 20px);
     }
+}
+
+.project-tab:hover {
+    background: var(--brand-surface-3);
+    color: var(--brand-text);
+}
+
+.project-tab:active {
+    background: var(--brand-accent-dim);
+}
+
+.project-tab.is-active {
+    background: var(--brand-accent-dim);
+    color: var(--brand-text);
+}
+
+.project-tab.is-active:hover {
+    background: var(--brand-accent-dim);
+    color: var(--brand-text);
+}
+
+.project-tab:focus-visible {
+    outline: 2px solid var(--brand-accent);
+    outline-offset: 2px;
+    border-radius: 0;
 }
 
 /* ── Hero layout ─────────────────────────────────────────────────── */
@@ -661,6 +813,9 @@
     justify-content: center;
     text-align: center;
     padding: 120px 0 80px;
+    /* Blobs use inset: -20%, which would overflow the viewport and cause
+       horizontal scroll on narrow widths without this clip. */
+    overflow: hidden;
 }
 
 .brand-hero-content {

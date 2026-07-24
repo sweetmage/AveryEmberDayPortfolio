@@ -84,14 +84,18 @@ export default function ProjectTabs() {
   );
 
   return (
-    <div className="lg:flex lg:items-start lg:gap-6 lg:px-6">
-      <div
-        ref={tablistRef}
-        role="tablist"
-        aria-label="Projects"
-        aria-orientation={isRail ? 'vertical' : 'horizontal'}
-        className="flex flex-wrap gap-2 px-6 pt-2 pb-4 lg:sticky lg:top-16 lg:w-52 lg:shrink-0 lg:flex-col lg:flex-nowrap lg:px-0 lg:pt-6 lg:pb-0"
-      >
+    <div className="lg:flex lg:items-start lg:max-w-[1400px] lg:mx-auto">
+      <div className="lg:w-[260px] lg:shrink-0">
+        <h2 className="px-6 pt-4 pb-2 text-center font-display text-[clamp(2rem,5vw,3rem)] leading-[1.1] normal-case tracking-normal font-normal text-text [text-shadow:0_0_30px_rgba(217,154,255,0.20),0_0_60px_rgba(0,255,255,0.10)] lg:px-0 lg:pt-6 lg:pb-4">
+          Projects
+        </h2>
+        <div
+          ref={tablistRef}
+          role="tablist"
+          aria-label="Projects"
+          aria-orientation={isRail ? 'vertical' : 'horizontal'}
+          className="flex flex-wrap gap-0 px-6 pt-2 pb-4 lg:sticky lg:top-16 lg:flex-col lg:flex-nowrap lg:px-0 lg:pt-2 lg:pb-0"
+        >
         {TABS.map((tab, i) => {
           const isActive = activeTab === tab.id;
           return (
@@ -104,15 +108,16 @@ export default function ProjectTabs() {
               tabIndex={isActive ? 0 : -1}
               onClick={() => switchTab(tab.id)}
               onKeyDown={(e) => handleKeyDown(e, i)}
-              className={`brand-btn ${isActive ? 'brand-btn-primary' : 'brand-btn-secondary'} lg:w-full lg:justify-start`}
+              className={`project-tab ${isActive ? 'is-active' : ''}`}
             >
               {tab.label}
             </button>
           );
         })}
       </div>
+      </div>
 
-      <div className="lg:min-w-0 lg:flex-1">
+      <div className="lg:min-w-0 lg:flex-1 lg:pt-[5.5rem]">
         <div
           id="panel-brand"
           role="tabpanel"

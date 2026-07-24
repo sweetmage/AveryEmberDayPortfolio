@@ -85,7 +85,10 @@ img, iframe, section, video, h1 {
     color: var(--brand-text);
 }
 
-/* ── Nav link boxes (styles .brand-nav-links via element selectors) ── */
+/* ── Nav base layout ──────────────────────────────────────────────
+   The nav buttons themselves are styled by `.brand-nav-links` in brand.css.
+   The old `nav ul li` box rules lived here and leaked to every `nav ul` in the
+   repo; removed 2026-07-23 with the segmented-pill restyle. */
 nav {
     display: flex;
     align-items: center;
@@ -95,34 +98,6 @@ nav {
 nav ul {
     list-style: none;
     display: flex;
-    gap: 0;
-}
-
-nav ul li {
-    display: inline;
-    margin: 0 4px;
-    background: var(--brand-surface-2);
-    border-radius: var(--brand-radius-sm);
-    transition: background var(--brand-transition-fast);
-}
-
-nav ul li:hover {
-    background: var(--brand-accent-dim);
-}
-
-nav ul li a {
-    display: inline-block;
-    color: var(--brand-text);
-    font-size: 11px;
-    font-weight: var(--brand-weight-semibold);
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    padding: 4px 10px;
-    transition: color var(--brand-transition-fast);
-}
-
-nav ul li:hover a {
-    color: var(--brand-text);
 }
 
 /* ── Main / Section ──────────────────────────────────────────────── */
@@ -258,9 +233,15 @@ footer p {
 }
 
 /* ── Accessibility ───────────────────────────────────────────────── */
-.brand-nav-links a:focus-visible,
 nav a:focus-visible {
     outline: 2px solid var(--brand-accent);
     outline-offset: 3px;
     border-radius: 2px;
+}
+
+/* Square segments: the focus ring traces the same square the hover fill paints. */
+.brand-nav-links a:focus-visible {
+    outline: 2px solid var(--brand-accent);
+    outline-offset: 2px;
+    border-radius: 0;
 }

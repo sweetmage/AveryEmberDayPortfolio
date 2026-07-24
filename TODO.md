@@ -2,10 +2,17 @@
 
 ## Active Plans
 
-- `docs/plans/2026-07-15-projects-vertical-tabs.md` — Projects tabs become a sticky vertical rail beside the content at `lg+` (pills on top below `lg`); gallery "← Home" back link removed; palette orphan-swatch stretch fixed; AGENTS.md stale lines corrected. **Status:** Complete — implemented + verified 2026-07-15 (Entry 079), committed + pushed to production 2026-07-22 (Entry 080).
-- `docs/plans/2026-07-14-nav-restructure.md` — Top nav becomes Home / Projects / Gallery / Contact; landing drops the Work section; new tabbed `/projects/` page (Brand + History of Mistrust, hash deep-links, 301 redirects for old URLs); new `/contact/` page with Netlify form + links. **Status:** Complete — implemented 2026-07-14 (Entry 075), deployed + live-verified 2026-07-15 (Entry 077). Contact nav/footer links hidden until forms work (Entry 078). Remaining: enable Netlify form detection (UI toggle, user step) + one test submission, then uncomment the links in `Nav.tsx`/`Footer.tsx` and re-baseline.
-- `docs/plans/2026-07-13-srcset-variants.md` — srcset/@2x variants for project + gallery thumbnails. **Status:** Complete 2026-07-13 (Entry 073), committed `f63671d` (local, unpushed).
-- `docs/plans/2026-07-12-motion-load-perf.md` — Reduce time-to-motion / time-to-interactive on the Next.js site (bubble engine defer, rAF micro-opts, dead-CSS trim, LCP image hints, reduced-motion for smooth-scroll). **Status:** Deployed to production 2026-07-13 (LOGBOOK Entry 072, commits 249b1b4 + 62ff597).
+- `docs/plans/2026-07-23-nav-button-restyle.md` — Nav buttons become a segmented pill group (taller bar, sentence-case labels, filled active pill replacing the underline). **Status:** Implemented + verified 2026-07-23 (Entry 082) on `shxdowloop/2026-07-22/visual-baseline-gate`. **Extended 2026-07-24 (Entries 083–085):** logo given full button affordances (hover/active/focus fills, full bar height); explicit Home link removed from `Nav.tsx`; Projects + Gallery grouped with logo on the left, toggle on the right via `margin-left: auto`; project tabs restyled to match nav buttons (square, no chrome at rest); project content un-capped from 1200px max-width; hero blob overflow fixed. **Uncommitted, unpushed.**
+
+### Awaiting a user step
+
+- `docs/plans/2026-07-14-nav-restructure.md` — **Remaining:** enable Netlify form detection (UI toggle, user step) + one test submission, then uncomment the Contact links in `Nav.tsx`/`Footer.tsx` and re-baseline. See the 360px nav-fit caveat under Standalone first. (Rest complete: Entries 075/077/078.)
+
+### Completed plans
+
+- `2026-07-15-projects-vertical-tabs.md` — sticky vertical Projects rail at `lg+`. Shipped to production 2026-07-22 (Entries 079, 080).
+- `2026-07-13-srcset-variants.md` — srcset/@2x thumbnail variants. Done 2026-07-13, commit `f63671d` (local, unpushed) (Entry 073).
+- `2026-07-12-motion-load-perf.md` — time-to-motion / TTI reductions. Deployed 2026-07-13, commits `249b1b4` + `62ff597` (Entry 072).
 
 _All prior plans are consolidated in `docs/archives/plans.md` (see the Consolidation Stubs section at the bottom for the 2026-07-12 batch)._
 
@@ -15,15 +22,8 @@ _All prior plans are consolidated in `docs/archives/plans.md` (see the Consolida
 
 _These are backlog items that don't currently have a written plan. Historical retrospectives moved to `LOGBOOK.md` / `docs/archives/plans.md`._
 
-### Patriots motion graphics
-- [ ] Adjust speed of the beginning
-- [ ] Save new files
-- [ ] Add project overview to portfolio (Patriots page currently omitted from the live site)
-- [ ] Display final project
-- [ ] Patriots project card thumbnail (`images/projects/patriots-thumb.jpg`) — blocked on the motion-graphics render
-
 ### Gallery tag system (explicitly deferred by user 2026-07-14 — nav restructure first)
-- [x] Design tag taxonomy — groundwork done 2026-07-14: all 11 works visually reviewed; actual medium split is **Digital (4: In Danger, Chill, Gross, Emergence) / Painting (5: Faces, Lollipop, Overflow, Beheaded, Shadow) / Drawing (2: Stairs — colored pencil, TX Lake Landscape — pastel)**. No photography in the gallery, so the originally suggested mixed-media/photography buckets don't apply. Per-work assignments need user confirmation before shipping.
+- [x] Design tag taxonomy — done 2026-07-14. Medium split is **Digital (4: In Danger, Chill, Gross, Emergence) / Painting (5: Faces, Lollipop, Overflow, Beheaded, Shadow) / Drawing (2: Stairs — colored pencil, TX Lake Landscape — pastel)**; no photography, so the originally suggested mixed-media/photography buckets don't apply. **Needs user confirmation of per-work assignments before shipping.**
 - [ ] Implement filter UI in `app/gallery/page.tsx` (all / medium toggles; page must become a server-metadata + client-grid split)
 - [ ] Wire tag metadata into gallery items
 - [ ] Verify responsive layout with filter bar at 360 / 768 / 1024 / 1440 px
@@ -34,13 +34,21 @@ _These are backlog items that don't currently have a written plan. Historical re
 
 ### Standalone
 - [ ] Watermark artwork
-- [ ] **Run the visual gate in CI.** The gate is now real (Entry 081) but opt-in — `netlify.toml` runs `next build` + publish with no test step, so a visual regression deploys unchallenged if `npm test` is skipped locally. **Blocked on a decision:** snapshots are `-chromium-win32` suffixed, so a Linux CI runner cannot reuse them. Options are (a) regenerate a Linux snapshot set and commit both, (b) run CI in a Windows runner, or (c) containerize capture so one platform is canonical. Raised by the Entry 081 shippability review.
-- [x] Visual-baseline spec is capture-only — **done 2026-07-22** (Entry 081): migrated to `toHaveScreenshot()` with reduced-motion determinism and `--update-snapshots`; tree now stays clean. Also fixed two defects found while proving the gate could fail: Playwright's default per-pixel `threshold` was too loose to catch a whole-theme colour shift, and `reuseExistingServer` was skipping `next build` so the suite graded a stale `out/`.
+- [x] **Homepage scrolls horizontally at narrow widths.** Fixed 2026-07-24 (Entry 085):
+  `overflow: hidden` added to `.brand-hero` clips the `.brand-hero-blobs` layer
+  (`inset: -20%`) so it cannot spill into the document scrollbox. Verified:
+  `scrollWidth === clientWidth` at 360px.
+- [x] **Delete the out-of-cascade CSS duplicates.** `src/css/components.css` and
+  `src/css/tokens.css` removed 2026-07-24 (Entry 086). Verified zero live imports;
+  `style.css` byte-identical after rebuild.
+- [ ] **Re-check nav fit before re-enabling the Contact link.** The nav pill group at 360px
+  has only ~6px of slack with three labels (Entry 082); a fourth will overflow. Whoever
+  uncomments Contact in `Nav.tsx`/`Footer.tsx` needs to either shrink the 360px padding
+  clamp or move to a drawer at that width.
+- [ ] **Run the visual gate in CI.** The gate is now real (Entry 081) but opt-in — `netlify.toml` runs `next build` + publish with no test step, so a visual regression deploys unchallenged if `npm test` is skipped locally. **Blocked on a decision:** snapshots are `-chromium-win32` suffixed, so a Linux CI runner cannot reuse them. **Decision made 2026-07-23 (user):** option (c) — containerize capture (run Playwright in the official `mcr.microsoft.com/playwright` image locally *and* in CI) so one Linux snapshot set is canonical. Not yet implemented; needs a one-time regeneration of all 40 baselines under the container. Raised by the Entry 081 shippability review.
 
 ### Architecture remediation follow-ups (deferred from 2026-07-01)
-- [x] `srcset` / `@2x` variants for project + gallery thumbnails — done 2026-07-13: 25 generated variants + `srcset`/`sizes`/`width`/`height` on home cards and gallery grid (Entry 073)
 - [ ] Replace generated placeholder `images/og-default.png` with final design asset
-- [x] Verify zero CSP console violations in production after next deploy — done 2026-07-13: all 4 pages loaded headlessly post-deploy, zero console/page errors (Entry 072)
 
 ---
 
@@ -48,6 +56,10 @@ _These are backlog items that don't currently have a written plan. Historical re
 
 Full details are in `LOGBOOK.md` (newest-first). Headline items since 2026-07-01:
 
+- **2026-07-24** — Deleted out-of-cascade CSS duplicates (`src/css/components.css`, `src/css/tokens.css`); aligned Projects page heading with tabs and project titles with tab tops (Entry 086). Removed Patriots motion graphics page from repo (Entry 087). Styled nav home button with active-page indicator matching nav links (Entry 087).
+- **2026-07-23** — Nav buttons restyled into a segmented pill group; `#theme-toggle` ID-override trap documented; focus-visible contract in AGENTS.md corrected to `--brand-accent` (Entry 082).
+- **2026-07-22** — Visual-baseline spec converted from capture-only to a real compare-based gate; fixed a too-loose per-pixel `threshold` and a `reuseExistingServer` bug that made the suite grade a stale `out/` (Entry 081).
+- **2026-07-13** — `srcset`/`@2x` thumbnail variants (Entry 073); zero CSP console violations verified in production (Entry 072).
 - **2026-07-12** — Netlify production branch repointed to `portfoliowebsite` (Entry 069); `<main>` big-screen layout fix (Entry 070).
 - **2026-07-12** — Next.js 15 static export migration: all 5 pages, `bubbles.js` ported, CSP reworked, Playwright re-baselined (Entries 066–068).
 - **2026-07-09** — Tailwind utility conversion across all pages; nav trimmed to Work + About; submenu/hamburger/Contact/Hire-Me CTA removed.

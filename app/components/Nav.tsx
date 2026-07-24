@@ -5,7 +5,6 @@ import { usePathname } from 'next/navigation';
 import BubbleLogo from './BubbleLogo';
 
 const navLinks = [
-  { href: '/', label: 'Home' },
   { href: '/projects/', label: 'Projects' },
   { href: '/gallery/', label: 'Gallery' },
   // Hidden until Netlify form detection is enabled (LOGBOOK Entry 077):
@@ -36,9 +35,10 @@ export default function Nav() {
       <div className="brand-container brand-nav-inner">
         <Link
           href="/"
-          className="brand-nav-logo whitespace-nowrap text-[clamp(15px,4.2vw,20px)]"
+          aria-current={isActive('/') ? 'page' : undefined}
+          className={`brand-nav-logo whitespace-nowrap text-[clamp(16px,4.4vw,22px)] ${isActive('/') ? 'is-active' : ''}`}
         >
-          <BubbleLogo notxt size={32} />
+          <BubbleLogo notxt size={36} />
           <span className="hidden sm:inline">Avery Ember Day</span>
         </Link>
 

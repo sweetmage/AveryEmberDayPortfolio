@@ -2,14 +2,14 @@ export default function MistrustProject() {
   return (
     <>
       {/* Hero */}
-      <div className="project-hero mx-auto max-w-(--brand-content-max) px-6 pt-20 pb-12">
+      <div className="project-hero px-6 pt-10 pb-12 lg:pt-0">
         <h3 className="project-title mb-4 font-display text-[clamp(1.5rem,3.5vw,2.25rem)] leading-[1.1] text-text border-none p-0 normal-case tracking-normal font-normal">
           A History of Mistrust
         </h3>
       </div>
 
       {/* Description */}
-      <section className="project-section mx-auto max-w-(--brand-content-max) px-6 pb-20">
+      <section className="project-section px-6 pb-20">
         <h4 className="section-title mb-8 border-none p-0 text-left font-heading text-xl font-semibold normal-case tracking-normal text-ir-4">
           Description
         </h4>
@@ -24,7 +24,7 @@ export default function MistrustProject() {
       </section>
 
       {/* Per-set slideshows */}
-      <section className="project-section mx-auto max-w-(--brand-content-max) px-6 pb-20">
+      <section className="project-section px-6 pb-20">
         <h4 className="section-title mb-8 border-none p-0 text-left font-heading text-xl font-semibold normal-case tracking-normal text-ir-4">
           Slideshow
         </h4>
@@ -69,7 +69,7 @@ export default function MistrustProject() {
       </section>
 
       {/* Moodboard & Storyboard */}
-      <section className="project-section mx-auto max-w-(--brand-content-max) px-6 pb-20">
+      <section className="project-section px-6 pb-20">
         <h4 className="section-title mb-8 border-none p-0 text-left font-heading text-xl font-semibold normal-case tracking-normal text-ir-4">
           Moodboard & Storyboard
         </h4>
@@ -102,7 +102,7 @@ export default function MistrustProject() {
       </section>
 
       {/* All Slides */}
-      <section className="project-section mx-auto max-w-(--brand-content-max) px-6 pb-20">
+      <section className="project-section px-6 pb-20">
         <h4 className="section-title mb-8 border-none p-0 text-left font-heading text-xl font-semibold normal-case tracking-normal text-ir-4">
           All Slides
         </h4>
@@ -144,7 +144,7 @@ export default function MistrustProject() {
       </section>
 
       {/* Sources */}
-      <section className="project-section mx-auto max-w-(--brand-content-max) px-6 pb-20">
+      <section className="project-section px-6 pb-20">
         <h4 className="section-title mb-8 border-none p-0 text-left font-heading text-xl font-semibold normal-case tracking-normal text-ir-4">
           Sources & Bibliography
         </h4>

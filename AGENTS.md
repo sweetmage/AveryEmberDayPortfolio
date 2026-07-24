@@ -35,7 +35,9 @@ Do NOT use these in `bash` tool calls (they are PowerShell-specific and often fa
 
 ## Build & Test
 
-`npm run css:build` (alias `build:css`) — CSS build (Tailwind v4, compiles `app.css` → `style.css`, minified). **Run after any CSS or class change and commit the rebuilt `style.css`.**
+`npm run css:build` (alias `build:css`) — CSS build (Tailwind v4, compiles `app.css` → `style.css`, minified). **Run after any CSS or class change and commit the rebuilt `style.css`.** The committed copy was found 8 days stale on 2026-07-23 (Entry 082); if your `style.css` diff is wider than your change, that is why — check `git log -1 -- style.css` against the source commits.
+
+> **Never write a Tailwind class name into a tracked `.md` file expecting it to be inert.** `app.css` and `app/globals.css` both scan the repo for classes, and until 2026-07-23 that included `LOGBOOK.md`/`TODO.md`/`docs/` — merely *mentioning* `gap-0` in a changelog recompiled the class into the shipped CSS (Entry 082). `@source not` rules now exclude `**/*.md`, `docs/**`, `out/**`, and `test-results/**`. Keep those exclusions in both entry files, and expect three consecutive builds to be byte-identical.
 
 `npm run css:watch` — CSS watch
 
@@ -52,6 +54,10 @@ Do NOT use these in `bash` tool calls (they are PowerShell-specific and often fa
 > The visual suite is a real gate: it fails on unintended visual change and leaves the working tree clean. Snapshots live in `tests/visual-baseline.spec.js-snapshots/`; failures write actual/expected/diff PNGs to `test-results/`.
 >
 > **To accept an intentional visual change:** `npm test -- --update-snapshots`, then *review the regenerated PNGs before committing them*. An unreviewed update defeats the gate.
+>
+> **A bulk `--update-snapshots` can silently skip files.** Seen twice on 2026-07-23 (Entry 082): a full-suite update left 3 of 40 snapshots un-rewritten, then a later one left 2. The next run "fails" against baselines still showing the *previous* design, which reads exactly like a real regression. Fix: re-run just those tests, `npx playwright test --update-snapshots -g "<test name>"`, which writes them reliably.
+>
+> **The check is re-running the suite, not file timestamps.** Do not use snapshot mtimes to verify a bulk update was complete — `--update-snapshots` only rewrites snapshots whose pixels changed, so unchanged files legitimately keep old timestamps and a mixed set of mtimes is normal, not evidence of a skip. The only trustworthy gate is: update, then run the full suite until it is green **twice in a row**. One green run does not prove stability.
 >
 > Two things that are load-bearing and easy to break (both cost a debugging cycle on 2026-07-22, Entry 081):
 > - Reduced motion is applied via `page.emulateMedia()`, **not** `test.use({ reducedMotion })` — the declarative option is silently ignored for `reducedMotion` on Playwright 1.61.1, which leaves the bubble engine running and captures unstable.
@@ -96,7 +102,10 @@ In Node.js scripts, load with `import 'dotenv/config'` (or `require('dotenv').co
 - All text must meet WCAG 2.1 AA (4.5:1 for normal text, 3:1 for large text)
 - Brand tokens in `brand.css` are the source of truth for color contrast
 - `prefers-reduced-motion` must disable physics bubbles, spinning rings, and float animations
-- Focus-visible contract: `var(--brand-border-focus)` on all interactive elements
+- Focus-visible contract: **`var(--brand-accent)`**, 2px outline, on all interactive
+  elements. (This line previously named `--brand-border-focus`; that token is
+  `rgba(255,255,255,0.24)` in dark and produces a much weaker ring than the accent the
+  code has always shipped. Corrected 2026-07-23 to match the code, not the reverse.)
 
 ## Tech Stack
 
@@ -106,11 +115,25 @@ In Node.js scripts, load with `import 'dotenv/config'` (or `require('dotenv').co
 - `dark:` variant is keyed to `[data-theme="dark"]` (set by the inline head script + theme toggle), not `prefers-color-scheme`
 - Physics engine: `scripts/bubbles.js` (DOM-based). Exclusion zones come from `DEFAULT_EXCLUSIONS` (includes the semantic `.bubble-exclude` marker class), `HOME_EXCLUSIONS` (index-only), and per-page `data-exclusions` on `.brand-bubbles-global`. Scrolling stirs the global-layer bubbles (`SCROLL_STIR`). `window.__bubbleEngine` is exposed for testing
 - Nav: **Home / Projects / Gallery / Contact** (nav restructure 2026-07-14, Entry 075 — no submenu, Hire Me CTA, or hamburger). Contact is temporarily commented out of nav + footer pending the Netlify Forms toggle (Entry 078)
+- Nav buttons (Entry 082) paint **no chrome at rest** — a square fill appears only on hover (`--brand-surface-3`), press, or current page (`--brand-accent-dim`). They run the full bar height via `height: 100%`, which is why `.brand-nav`, `.brand-nav-inner`, and `.brand-nav-actions` all use `align-items: stretch` rather than `center`. **Bar height lives in `--brand-nav-height`; change it only there** — three rules read it, and the theme toggle uses `height: 100%` + `aspect-ratio: 1` to stay square against it. Note the theme toggle carries both `id="theme-toggle"` and `class="brand-theme-toggle"` and **the ID block wins**, so editing only the class is a no-op
 
 ## Deploy
 
 - Netlify runs `next build` and publishes the static export (`publish = "out"`); the committed `style.css` only serves the undeployed legacy root site
 - `netlify.toml` CSP pins sha256 hashes of the inline theme scripts; if an inline `<script>` changes, recompute and update the hashes or theme init breaks in production
+
+## Design Conventions
+
+### Wide-screen-first layout verification
+
+**Always verify layouts at 2560px and 3440px (ultrawide), not just 1440px.**
+
+Modern desktop monitors commonly exceed 1920px. A layout that looks correct at 1440px can break or look lopsided at 3440px if:
+- A single sidebar rail creates an enormous empty right half
+- Content is locked to a small max-width while the viewport stretches
+- Asymmetric padding (left rail vs. none on right) makes the page feel off-balance
+
+**Rule:** After any layout change, capture or preview at **2560px and 3440px** in both themes. The projects-page rail-and-content pattern (Entry 086–089) uses a centered container (`lg:max-w-[1400px] lg:mx-auto`) so the whole layout stays centered with equal whitespace on both sides at all widths, rather than hugging one edge.
 
 ## File Conventions
 
