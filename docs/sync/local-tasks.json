@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "generatedAt": "2026-07-24T10:14:14.387Z",
+  "generatedAt": "2026-07-24T18:42:41.557Z",
   "source": "TODO.md",
   "tasks": [
     {
@@ -64,6 +64,16 @@
       "sourceLine": 51
     },
     {
+      "id": "open-task-threads-standalone-widen-the-gallery-page-the-grid-is-cappe",
+      "title": "**Widen the gallery page.** The grid is capped at `max-w-[900px]` with `md:grid-cols-2`",
+      "description": null,
+      "status": "pending",
+      "priority": "normal",
+      "tags": [],
+      "list": "Standalone",
+      "sourceLine": 54
+    },
+    {
       "id": "open-task-threads-standalone-watermark-artwork",
       "title": "Watermark artwork",
       "description": null,
@@ -71,7 +81,7 @@
       "priority": "normal",
       "tags": [],
       "list": "Standalone",
-      "sourceLine": 54
+      "sourceLine": 62
     },
     {
       "id": "open-task-threads-standalone-homepage-scrolls-horizontally-at-narrow-",
@@ -81,7 +91,7 @@
       "priority": "normal",
       "tags": [],
       "list": "Standalone",
-      "sourceLine": 55
+      "sourceLine": 63
     },
     {
       "id": "open-task-threads-standalone-delete-the-out-of-cascade-css-duplicates",
@@ -91,7 +101,7 @@
       "priority": "normal",
       "tags": [],
       "list": "Standalone",
-      "sourceLine": 59
+      "sourceLine": 67
     },
     {
       "id": "open-task-threads-standalone-re-check-nav-fit-before-re-enabling-the-",
@@ -101,7 +111,7 @@
       "priority": "normal",
       "tags": [],
       "list": "Standalone",
-      "sourceLine": 62
+      "sourceLine": 70
     },
     {
       "id": "open-task-threads-standalone-run-the-visual-gate-in-ci-the-gate-is-no",
@@ -111,7 +121,7 @@
       "priority": "normal",
       "tags": [],
       "list": "Standalone",
-      "sourceLine": 66
+      "sourceLine": 74
     },
     {
       "id": "open-task-threads-standalone-the-visual-gates-tolerance-scales-with-p",
@@ -121,7 +131,17 @@
       "priority": "normal",
       "tags": [],
       "list": "Standalone",
-      "sourceLine": 68
+      "sourceLine": 76
+    },
+    {
+      "id": "open-task-threads-standalone-bubble-engine-had-zero-automated-coverag",
+      "title": "**Bubble engine had zero automated coverage.** The visual gate captures under",
+      "description": null,
+      "status": "completed",
+      "priority": "normal",
+      "tags": [],
+      "list": "Standalone",
+      "sourceLine": 86
     },
     {
       "id": "open-task-threads-architecture-remediation-follow-ups-deferred-from-2026-07-01-replace-generated-placeholder-imagesog-d",
@@ -131,7 +151,7 @@
       "priority": "normal",
       "tags": [],
       "list": "Architecture remediation follow-ups (deferred from 2026-07-01)",
-      "sourceLine": 79
+      "sourceLine": 94
     }
   ]
 }

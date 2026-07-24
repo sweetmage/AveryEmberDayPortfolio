@@ -51,6 +51,14 @@ _These are backlog items that don't currently have a written plan. Historical re
 - [ ] Standalone viewer page with all canonical slide content + numbered bibliography
 
 ### Standalone
+- [ ] **Widen the gallery page.** The grid is capped at `max-w-[900px]` with `md:grid-cols-2`
+  (`app/gallery/page.tsx:58`), so on a 1920px+ display the artwork occupies under half the
+  viewport while the Projects page now runs to `lg:max-w-[1400px]`. Widen the cap and consider a
+  third column at `xl`, keeping `[&_img]:max-h-[70vh]` so tall pieces still fit without scrolling.
+  Check against the wide-screen convention below (verify at 2560px and 3440px, both themes) and
+  re-baseline the 8 gallery snapshots. Note `.gallery-item` is a bubble exclusion zone, so the
+  rail of bubbles will redistribute — expect the gallery captures to change more than the layout
+  diff alone suggests.
 - [ ] Watermark artwork
 - [x] **Homepage scrolls horizontally at narrow widths.** Fixed 2026-07-24 (Entry 085):
   `overflow: hidden` added to `.brand-hero` clips the `.brand-hero-blobs` layer
@@ -91,6 +99,7 @@ _These are backlog items that don't currently have a written plan. Historical re
 
 Full details are in `LOGBOOK.md` (newest-first). Headline items since 2026-07-01:
 
+- **2026-07-24** — Nav gutters tightened to hug the viewport edges (6px desktop / 4px mobile, symmetric); all 40 baselines regenerated and adjudicated as nav-band-only (Entry 092). Projects tabs added to the bubble exclusion zones — the same silent-drop bug as the hero logo, this time from the Entry 085 rename `.brand-btn` → `.project-tab` (Entry 093). Both feature branches merged to `portfoliowebsite` (Entry 091).
 - **2026-07-24** — Fixed bubbles/blobs covering the hero logo and name: `.hero-logo` was silently dropped from the bubble exclusion zones when the mark was inlined as an `<svg>` (the list matches the `img` tag), and hero blobs never had avoidance at all. Added the repo's first bubble-engine tests (Entry 090).
 - **2026-07-24** — Deleted out-of-cascade CSS duplicates (`src/css/components.css`, `src/css/tokens.css`); aligned Projects page heading with tabs and project titles with tab tops (Entry 086). Removed Patriots motion graphics page from repo (Entry 087). Styled nav home button with active-page indicator matching nav links (Entry 087). Merged `shxdowloop/2026-07-22/visual-baseline-gate` to production as `098f0b1`. Reconciled all `docs/plans/` status headers and checklists against the shipped commits, and consolidated every open plan item into this file (Entry 088). Landed the Projects heading padding with all 40 baselines adjudicated numerically; found and fixed a Playwright preview-server port that collided with `next dev`, and found (deferred) a gate tolerance that scales with page height (Entry 089).
 - **2026-07-23** — Nav buttons restyled into a segmented pill group; `#theme-toggle` ID-override trap documented; focus-visible contract in AGENTS.md corrected to `--brand-accent` (Entry 082).
