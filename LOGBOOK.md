@@ -1,3 +1,62 @@
+## Entry 102 — 2026-07-26
+
+**Agent:** Opus 5 (kestrel, main)
+**Cycle:** netlify-build-minutes
+**Branch:** `portfoliowebsite`
+**Task:** Netlify build minutes running low — cut wasted builds.
+
+### Change
+
+Two `netlify.toml` edits, both aimed at the free tier's 300 build-minutes/month.
+
+- **`[build] ignore`** — a git-diff guard that exits 0 (cancelling the build, and the billed
+  minutes) when a push touched nothing but process docs. Measured against the last 30 days on
+  this branch: **16 of 74 commits (22%) would have skipped**, every sampled one genuinely
+  docs-only. Netlify compares its last-built commit to the incoming head, so a push mixing
+  docs and code still builds.
+- **`PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD = "1"`** — `@playwright/test` pulls `playwright` 1.61.1,
+  whose npm install hook fetches Chromium/Firefox/WebKit. Those land in `~/.cache/ms-playwright`,
+  **outside** the `node_modules` cache Netlify keys off `package-lock.json`, so they re-downloaded
+  on every build. Netlify only ever runs `next build`, never `playwright test` — the binaries were
+  fetched and discarded unused every time.
+
+### Why the ignore list is explicit and not `*.md`
+
+The obvious rule is `':(exclude)*.md'`. It is wrong here: `public/images/myart/A History of
+Mistrust/supporting material/slides.md` is inside `public/`, which the Next export copies verbatim
+into `out/`. A blanket markdown exclusion would skip a build that really does change the deployed
+output. The doc files are therefore named one by one — the failure mode of the lazy version is a
+silently stale site, which is the worst kind.
+
+### Why devDependencies are not omitted
+
+`NPM_FLAGS = "--omit=dev"` looks like a bigger win and breaks the build: `typescript`, `@types/*`,
+`tailwindcss`, `@tailwindcss/postcss` and `postcss` are all dev-scoped and all required by
+`next build`. `sharp` is left alone too — `images.unoptimized: true` means Next never calls it,
+and it is far smaller than the browsers.
+
+### Verification
+
+- `netlify.toml` parses (`tomllib`); both env vars and the `ignore` key present as intended.
+- Ignore rule replayed over all 74 commits from the last 30 days: 58 BUILD / 16 SKIP, skips
+  spot-checked as docs-only (`docs: checkpoint …`, `docs: Entry 099 …`, plan-SHA records).
+- `PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1 npx next build` — green, 8/8 static pages, export clean,
+  6 routes. The `rewrites, redirects, and headers are not applied when exporting` warning is
+  pre-existing and expected (see the `next.config.ts` header comment); production headers come
+  from `netlify.toml`.
+
+### Not done
+
+- Deploy Previews and branch deploys are still on. Dashboard-only (Site configuration → Build &
+  deploy → Branches and deploy contexts), so it needs the user. With ten branches — four of them
+  high-churn `shxdowloop/*` — and previews rebuilding on *every* push to a PR rather than once
+  per PR, this is likely the largest remaining drain.
+- First push after this still builds and still downloads browsers: it touches `netlify.toml`
+  (not excluded), and Netlify reads the env var from the incoming config. Saving starts on the
+  second build.
+
+---
+
 ## Entry 101 — 2026-07-26
 
 **Agent:** Opus 5 (kestrel, main)

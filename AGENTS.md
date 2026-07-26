@@ -128,6 +128,8 @@ In Node.js scripts, load with `import 'dotenv/config'` (or `require('dotenv').co
 
 - Netlify runs `next build` and publishes the static export (`publish = "out"`); the committed `style.css` only serves the undeployed legacy root site
 - `netlify.toml` CSP pins sha256 hashes of the inline theme scripts; if an inline `<script>` changes, recompute and update the hashes or theme init breaks in production
+- **A docs-only push does not deploy.** `netlify.toml`'s `[build] ignore` cancels the build when a push touched only `docs/` or the root process docs (`LOGBOOK.md`, `TODO.md`, `AGENTS.md`, the per-agent pointers) — free-tier build minutes. This is expected, not a broken deploy. The list is explicit rather than `*.md` because `public/**/*.md` **is** copied into the export; add new doc paths to the exclude list, never a blanket markdown glob
+- `PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD = "1"` is set for the Netlify build — the CI never runs Playwright, and the browsers cache outside `node_modules` so they re-downloaded every build. If a test step is ever added to the Netlify build command, drop this or it fails with "browser not found"
 
 ## Design Conventions
 

@@ -1,9 +1,19 @@
 [build]
   command = "next build"
   publish = "out"
+  # Exit 0 cancels the build (and the billed minutes). Agent/process docs never
+  # reach `out/`, so a docs-only push has nothing to deploy. Listed explicitly
+  # rather than globbing '*.md' because public/**/*.md IS copied into the export.
+  ignore = "git diff --quiet $CACHED_COMMIT_REF $COMMIT_REF -- . ':(exclude)docs/' ':(exclude)LOGBOOK.md' ':(exclude)TODO.md' ':(exclude)AGENTS.md' ':(exclude)CLAUDE.md' ':(exclude)CODEX.md' ':(exclude)GEMINI.md' ':(exclude)CURSOR.md' ':(exclude)KILO.md' ':(exclude)COPILOT.md' ':(exclude)BLACKBOX.md'"
 
 [build.environment]
   NODE_VERSION = "20"
+  # Netlify only ever runs `next build`, never `playwright test`. Playwright's
+  # npm install hook otherwise fetches Chromium/Firefox/WebKit on every build
+  # into ~/.cache/ms-playwright, which sits outside Netlify's node_modules cache
+  # and so re-downloads every time. The package still installs; only the
+  # binaries are skipped.
+  PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD = "1"
 
 [[redirects]]
   from = "/projects/brand-avery-ember-day/*"
