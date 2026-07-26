@@ -106,6 +106,10 @@ for (const page of PAGES) {
             // during captureBeyondViewport and screenshot as blanks — force
             // the decode explicitly.
             await Promise.allSettled(inLayout.map((img) => (img.decode ? img.decode() : null)));
+            // Decode completion does not guarantee paint completion. A short
+            // wait lets the browser composite before capture, preventing the
+            // partial-paint baseline defect (gallery images half-rendered).
+            await new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(() => r())));
           });
 
           // Webfonts shift metrics on late swap; wait for them explicitly
@@ -124,7 +128,12 @@ for (const page of PAGES) {
             // do not relax this without re-running the injected-regression
             // check in the plan's Stage 3.
             threshold: 0.02,
-            maxDiffPixelRatio: 0.001,
+            // `maxDiffPixelRatio` scales with page height, so small changes on
+            // tall pages pass silently. A 2px tab divider (~520 px) passed on
+            // a 1440×2559 page because the ratio allowed ~3685 pixels. An
+            // absolute floor catches furniture changes regardless of page
+            // height without re-grading existing baselines.
+            maxDiffPixels: 500,
           });
         });
       });

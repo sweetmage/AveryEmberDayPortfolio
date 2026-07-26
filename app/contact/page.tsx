@@ -1,5 +1,4 @@
 import type { Metadata } from 'next';
-import Link from 'next/link';
 import ConnectLinks from '../components/ConnectLinks';
 
 export const metadata: Metadata = {
