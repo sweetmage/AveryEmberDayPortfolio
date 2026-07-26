@@ -92,7 +92,7 @@ export default function ProjectTabs() {
     <>
       <PageHeader title="Projects" />
 
-      <div className="lg:flex lg:items-start lg:max-w-[1400px] lg:mx-auto">
+      <div className="mx-auto max-w-[1400px] lg:flex lg:items-start">
       <div className="lg:w-[260px] lg:shrink-0">
         <div
           ref={tablistRef}
@@ -107,7 +107,13 @@ export default function ProjectTabs() {
              `max-[399px]` the column never applied at a 399px viewport while
              the divider's own `(max-width: 399px)` rule did, producing a
              0px-wide bar. Measured. */
-          className="flex flex-wrap gap-0 px-6 pt-6 pb-4 max-[400px]:flex-col lg:sticky lg:top-16 lg:flex-col lg:flex-nowrap lg:px-0 lg:pt-8 lg:pb-0"
+          /* `px-6` at EVERY breakpoint, including lg: the left 24px puts the
+             tabs on the same edge as the page title and its bar, and at lg the
+             right 24px is the gutter between the rail and the panel — taken out
+             of the fixed 260px column, so the tabs get narrower rather than the
+             panel moving. The Gallery filter rail is identical, which is what
+             keeps the tab shape the same across the two pages. */
+          className="flex flex-wrap gap-0 px-6 pt-6 pb-4 max-[400px]:flex-col lg:sticky lg:top-16 lg:flex-col lg:flex-nowrap lg:pt-8 lg:pb-0"
         >
         {TABS.map((tab, i) => {
           const isActive = activeTab === tab.id;

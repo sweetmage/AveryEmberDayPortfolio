@@ -76,29 +76,30 @@ export default function GalleryGrid({ items }: GalleryGridProps) {
   );
 
   return (
-    <section
-      className="mt-8 mb-12 px-[clamp(16px,4vw,40px)]"
-      aria-label="Art gallery"
-    >
-      <div className="lg:flex lg:items-start lg:max-w-[1400px] lg:mx-auto">
+    <section className="mt-8 mb-12" aria-label="Art gallery">
+      {/* Same container geometry as PageHeader and the Projects tablist:
+          `max-w-[1400px]` with the 24px gutter supplied by the children, so
+          the rail, the title and the title bar all share one left edge. */}
+      <div className="mx-auto max-w-[1400px] lg:flex lg:items-start">
         <div className="lg:w-[260px] lg:shrink-0">
           {/* Filter bar — a filter group, not a tablist, so no role="tab"/
               aria-selected: aria-pressed on each button is the correct
-              pattern here. Below lg it's the same horizontal wrapping row
-              it always was; at lg it becomes the sticky rail, mirroring
-              ProjectTabs. */}
-          <div className="gallery-filter-bar bubble-exclude flex flex-wrap gap-2 pb-4 lg:sticky lg:top-16 lg:flex-col lg:flex-nowrap lg:gap-0 lg:pb-0 lg:pt-8">
+              pattern here. Below lg it's a horizontal row with the same
+              spectrum dividers and zero gap as the Projects tablist; at lg it
+              becomes the sticky rail, mirroring ProjectTabs. */}
+          {/* `max-[400px]:flex-col` mirrors ProjectTabs for the same reason:
+              `.brand-tab-divider` flips horizontal below 400px, so the group
+              has to actually be a column there or the rules dangle as slivers
+              inside a row. See the note on that rule in brand.css. */}
+          <div className="gallery-filter-bar bubble-exclude flex flex-wrap gap-0 px-6 pt-6 pb-4 max-[400px]:flex-col lg:sticky lg:top-16 lg:flex-col lg:flex-nowrap lg:pt-8 lg:pb-0">
             <span className="sr-only">Filter by production type</span>
             {FILTER_BUTTONS.map(({ key, label }, i) => (
               <Fragment key={key}>
-                {/* Spectrum divider between buttons, lg-only (rail column) —
-                    below lg the filters stay a flex-wrap row and don't need
-                    the divider. */}
+                {/* Spectrum divider between buttons at every breakpoint, same
+                    as the Projects tablist. `.brand-tab-divider` flips it
+                    vertical/horizontal to match the group's axis. */}
                 {i > 0 && (
-                  <div
-                    className="brand-spectrum-bar brand-tab-divider hidden lg:flex"
-                    aria-hidden="true"
-                  >
+                  <div className="brand-spectrum-bar brand-tab-divider" aria-hidden="true">
                     <div />
                   </div>
                 )}
@@ -120,13 +121,13 @@ export default function GalleryGrid({ items }: GalleryGridProps) {
           </div>
 
           {/* Result count (visible) */}
-          <div className="pb-6 text-center text-sm text-text-muted lg:pb-0 lg:pt-4 lg:text-left">
+          <div className="px-6 pb-6 text-center text-sm text-text-muted lg:pb-0 lg:pt-4">
             {resultCountText}
           </div>
         </div>
 
         <div className="lg:min-w-0 lg:flex-1">
-          <div className="gallery-grid mx-auto grid max-w-[900px] grid-cols-1 gap-6 md:auto-rows-[1fr] md:grid-cols-2 lg:mx-0 lg:max-w-none xl:grid-cols-3">
+          <div className="gallery-grid mx-auto grid max-w-[900px] grid-cols-1 gap-6 px-6 md:auto-rows-[1fr] md:grid-cols-2 lg:mx-0 lg:max-w-none xl:grid-cols-3">
             {/* Grid items */}
             {filteredItems.map((item) => (
               <figure

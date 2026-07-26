@@ -73,7 +73,9 @@ _These are backlog items that don't currently have a written plan. Historical re
   **Restructured 2026-07-25 (Entry 099, user request):** the filter is now a vertical left rail at
   `lg+` (sticky 260px column, `.project-tab` styling with spectrum dividers, mirroring the
   Projects rail) with the grid flexing beside it; below `lg` it stays a horizontal row above the
-  grid. All 8 gallery baselines regenerated and adjudicated.
+  grid. All 8 gallery baselines regenerated and adjudicated. **Refined 2026-07-26 (Entry 100):**
+  rail-to-grid gutter added, spectrum dividers extended to mobile widths, result count centered,
+  and the rail put on the shared Projects/Gallery container so the tabs match both pages exactly.
 - [x] Wire tag metadata into gallery items — shipped in `235f254` (`tags` + empty `description`
   fields per item; hybrid pieces carry both tags). Description rendering still awaits user copy.
 - [x] Verify responsive layout with filter bar — covered at 360 / 768 / 1024 / 1440 by the visual
@@ -170,6 +172,13 @@ _These are backlog items that don't currently have a written plan. Historical re
 
 Full details are in `LOGBOOK.md` (newest-first). Headline items since 2026-07-01:
 
+- **2026-07-26** — Projects and Gallery unified on one content container (`mx-auto max-w-[1400px]`,
+  no container padding, 24px gutter supplied by the children) so the page title, its spectrum
+  underline and the tab/filter rail finally share a left edge — they had been on three different
+  recipes at 60 / 40 / 20px. Gives the gallery rail-to-grid gutter, identical tab size/shape across
+  both pages, and a title bar that runs tab-edge to mirrored-inset instead of stopping short. Plus
+  spectrum dividers on the Gallery filters at mobile widths and a centered result count. 24
+  baselines regenerated and adjudicated; verified at 360–3440 in both themes (Entry 100).
 - **2026-07-25** — Visual gate hardened and proven (server moved into `globalSetup` post-build,
   stdio pipe deadlock fixed, `maxDiffPixels: 500` floor; injected 2px change went red on all 40
   snapshots); bubble tabs flake fixed by frame-based sampling; gallery filter restructured into a

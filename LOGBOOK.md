@@ -1,3 +1,56 @@
+## Entry 100 — 2026-07-26
+
+**Agent:** Opus 5 (kestrel, main)
+**Cycle:** shxdowflow
+**Branch:** `shxdowloop/2026-07-24/bubble-visual-cleanup`
+**Task:** Five user-reported layout edits on the Gallery page, four of which turned out to be one root cause shared with Projects.
+
+### Root cause
+
+Asks 1, 3 and 4 were symptoms of a single defect: the page title, the title's spectrum
+underline, and the tab/filter rails each used a *different* container recipe, so they never
+shared a left edge and the mismatch grew with viewport width.
+
+| Surface | Old recipe | Left edge @1440 |
+|---|---|---|
+| `PageHeader` | `max-w-[1400px]` **+ `px-clamp(16,4vw,40)` inside** | 60px |
+| Gallery rail | section `px-clamp(...)` **outside** `lg:max-w-[1400px]` | 40px |
+| Projects rail | `lg:max-w-[1400px]`, tablist `px-6 lg:px-0` | 20px |
+
+Three containers, three edges. Unified on one recipe: outer `mx-auto max-w-[1400px]` with **no**
+padding, and the 24px gutter supplied by the children (`px-6` on the header, the rail, and the
+grid/panel). The rail keeps its `px-6` at `lg` rather than resetting to `lg:px-0` — that right
+24px *is* the rail-to-content gutter (ask 1), taken out of the fixed 260px column so the tabs
+narrow (236px → 212px) instead of the content shifting.
+
+### The five asks
+
+1. **Gutter between tabs and first gallery frame** — 48px at `lg` (tabs end 256, cards start 304), matching the Projects rail exactly.
+2. **Centre the result count under the rail** — dropped `lg:text-left`; `text-center` now applies at every width.
+3. **Title bar spans the section** — resolved per the user's mid-run correction: *not* full-bleed to the window edge, but from the tabs' left edge to a mirrored inset on the right. Falls out of the unified container for free.
+4. **Identical tab size/shape across pages** — both rails now render `.project-tab` at 212×56 at `lg`, 34.8px tall below it, on the same left edge.
+5. **Gallery mobile dividers** — `.brand-tab-divider` was `hidden lg:flex` on Gallery, so the spectrum rules existed only in the rail. Now rendered at every breakpoint like the Projects tablist, with `gap-2` → `gap-0` and matching `px-6 pt-6 pb-4`. Also picked up `max-[400px]:flex-col` for the same measured reason ProjectTabs has it: the divider flips horizontal below 400px, so the group must actually be a column or the rules dangle as slivers inside a row.
+
+### Verification
+
+| Check | Result |
+|---|---|
+| `tsc --noEmit` | clean |
+| `next build` | clean, 8/8 static pages |
+| `npm test` (pre-baseline) | 24 failed / 29 passed — exactly the Projects + Projects-Mistrust + Gallery set; Home and Contact untouched, confirming scope |
+| `npm test` re-run after `--update-snapshots` | **53/53** (no bad baseline written) |
+| Geometry probe @360/768/1024/1440/2200/2560/3440 | `barLeft === tabLeft` and `leftInset === rightInset` at every width, both pages |
+| Ultrawide, both themes (AGENTS.md rule) | 2560: 604/604 · 3440: 1044/1044 · `scrollWidth === clientWidth` throughout |
+
+24 baselines regenerated and adjudicated in both themes.
+
+### Notes
+
+- The `--update-snapshots` → full re-run habit paid off again: green on the re-run is the only evidence no bad baseline slipped in.
+- `AGENTS.md` § Wide-screen-first layout verification now documents the shared container geometry, including the padding-on-children rule and the failure mode it replaces.
+
+---
+
 ## Entry 099 — 2026-07-25
 
 **Agent:** Fable 5 (faewire, orchestrator; execution delegated to native builder agents per the Fable bookend contract)

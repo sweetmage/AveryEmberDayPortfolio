@@ -139,7 +139,15 @@ Modern desktop monitors commonly exceed 1920px. A layout that looks correct at 1
 - Content is locked to a small max-width while the viewport stretches
 - Asymmetric padding (left rail vs. none on right) makes the page feel off-balance
 
-**Rule:** After any layout change, capture or preview at **2560px and 3440px** in both themes. The projects-page rail-and-content pattern (Entry 086) uses a centered container (`lg:max-w-[1400px] lg:mx-auto`) so the whole layout stays centered with equal whitespace on both sides at all widths, rather than hugging one edge.
+**Rule:** After any layout change, capture or preview at **2560px and 3440px** in both themes. The projects-page rail-and-content pattern (Entry 086) uses a centered container so the whole layout stays centered with equal whitespace on both sides at all widths, rather than hugging one edge.
+
+**Shared content geometry (Entry 100).** The Projects and Gallery pages must use one container recipe, because the page title, its spectrum underline, and the tab/filter rail all have to share a left edge:
+
+- Outer container: `mx-auto max-w-[1400px]` with **no** horizontal padding.
+- The 24px gutter is supplied by the *children* — `px-6` on `PageHeader`, on the tablist / filter bar, and on the panel or grid.
+- At `lg` the rail column is `lg:w-[260px] lg:shrink-0` and the rail's own `px-6` (kept at `lg`, not reset to `lg:px-0`) is what produces the gutter between the rail and the content, taking it out of the fixed column so the tabs narrow rather than the content shifting.
+
+The failure mode this replaces: the header carried a `clamp(16px,4vw,40px)` gutter *inside* its container while the two rails padded differently, so the title bar, the Projects tabs and the Gallery filters each sat on a different left edge, and the mismatch grew with viewport width. Verify by measuring — the title bar's left must equal the first tab's left, and its right inset must equal its left inset, at 1440/2560/3440.
 
 ## File Conventions
 
