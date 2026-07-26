@@ -29,14 +29,32 @@ Hiding is a presentation decision; the filter is behavior. Deleting `tags` would
 re-deriving the filter from tool strings (`Adobe Photoshop` ⇒ Digital?), which is exactly the
 kind of implicit mapping that rots. Two explicit fields, one shown.
 
+### Follow-on edits (same session, user)
+
+- **Photography** added to the tool list for Shadow, Texas Lake Landscape, Lollipop and Stairs.
+  Production tags left alone — Photography alone does not imply Digital (Faces carries it and is
+  Traditional). `TODO.md`'s tool table amended to match, so the recorded source data and the code
+  don't drift.
+- **"TX Lake Landscape" → "Texas Lake Landscape"** in `gallery-data.ts` (caption + alt) and in the
+  legacy `gallery/gallery.html`. The image filename (`txlakelandscapeFinal.webp`) is unchanged —
+  renaming it would invalidate the generated srcset variants in `scripts/generate-image-variants.js`
+  for no user-visible gain.
+- **`.gallery-tool { white-space: nowrap }`** added after adjudication caught Stairs breaking as
+  "Adobe Photoshop · Colored / Pencil · Photography" at 1440 and 360. A tool name is one unit; the
+  line now wraps only at the middots. This is why the screenshots get read before the baselines are
+  regenerated — a green pixel diff against a regenerated baseline would have locked the bad break in.
+
 ### Verification
 
 - `npm run css:build`, `npm run build:next` — clean; export contains the rendered tool lines.
 - Screenshot adjudication before regenerating baselines: gallery 1440 light **PASS**, 1440 dark
   **PASS**, 360 light **PASS**. Checked the worst case for wrapping — Faces
   (`Watercolor Paint · Marker · Photography`) fits one line at 360px with no overflow.
+- Re-adjudicated after the follow-on edits: Stairs wraps cleanly at 1440 and 360, three-tool lines
+  fit, Texas Lake Landscape and Shadow read correctly in both themes.
 - 8 gallery visual baselines regenerated (card metadata changed by design); full suite
-  **53/53 green**.
+  **53/53 green**. One flake seen once — `bubbles-exclusion` hero-logo @1440, a physics timing test
+  on the home page, untouched by this diff; passed in isolation and on the next full run.
 
 ---
 

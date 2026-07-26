@@ -1303,6 +1303,12 @@ button.brand-chip:hover {
     text-wrap: balance;
 }
 
+/* A tool name is one unit — a three-tool line may wrap, but only at the
+   middots, never inside "Colored Pencil" or "Adobe Photoshop". */
+.gallery-tools .gallery-tool {
+    white-space: nowrap;
+}
+
 /* ── Iridescent glow helpers ─────────────────────────────────────── */
 .brand-glow-text {
     text-shadow: 0 0 24px rgba(199,125,255,0.18), 0 0 48px rgba(0,245,255,0.10);

@@ -159,7 +159,7 @@ export default function GalleryGrid({ items }: GalleryGridProps) {
                       {item.tools.map((tool, i) => (
                         <Fragment key={tool}>
                           {i > 0 && <span aria-hidden="true"> · </span>}
-                          {tool}
+                          <span className="gallery-tool">{tool}</span>
                         </Fragment>
                       ))}
                     </div>

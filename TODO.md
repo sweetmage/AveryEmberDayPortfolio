@@ -59,12 +59,16 @@ _These are backlog items that don't currently have a written plan. Historical re
   | Gross | Photoshop, Acrylic Paint | Traditional, Digital |
   | Emergence | Procreate | Digital |
   | Faces | Watercolor Paint, Marker, Photography | Traditional |
-  | Lollipop | Acrylic Paint | Traditional |
+  | Lollipop | Acrylic Paint, Photography | Traditional |
   | Overflow | Photoshop, Acrylic Paint | Traditional, Digital |
-  | Stairs | Photoshop, Colored Pencil | Traditional, Digital |
+  | Stairs | Adobe Photoshop, Colored Pencil, Photography | Traditional, Digital |
   | Beheaded | Photoshop, Acrylic Paint | Traditional, Digital |
-  | Shadow | Acrylic Paint | Traditional |
-  | TX Lake Landscape | Photoshop, Chalk Pastel | Traditional, Digital |
+  | Shadow | Acrylic Paint, Photography | Traditional |
+  | Texas Lake Landscape | Adobe Photoshop, Chalk Pastel, Photography | Traditional, Digital |
+
+  **Amended 2026-07-26 (user):** Photography added to Shadow, Texas Lake Landscape, Lollipop and Stairs; "TX"
+  renamed to "Texas"; "Photoshop" written as "Adobe Photoshop" everywhere. Production tags
+  unchanged — Photography alone does not imply Digital (cf. Faces, which is Traditional).
 
   **User decision 2026-07-24:** Production tags only (no Tools facet). Filter simplified to `All | Digital | Traditional | Both`. Hybrid pieces (Chill, Gross, Overflow, Stairs, Beheaded, TX Lake Landscape) display **both** "Traditional" and "Digital" tags on the card. "Photography, Digital" (In Danger) maps to "Digital" only. Description field added to data model now (empty strings) but **not rendered yet** — user will fill descriptions and ask for UI inclusion separately.
 - **Plan refined 2026-07-24:** `docs/plans/2026-07-24-gallery-tag-system.md`.
@@ -81,7 +85,10 @@ _These are backlog items that don't currently have a written plan. Historical re
 - [x] **Card metadata shows tools, not tags (2026-07-26, Entry 101).** Production tags are now
   `sr-only` (still driving the filter); the visible line is the tool list from the table above,
   middot-separated plain text via `.gallery-tools`. `Photoshop` renders as `Adobe Photoshop`
-  per user correction. 8 gallery baselines regenerated; suite 53/53.
+  per user correction; Photography added to Shadow / Texas Lake Landscape / Lollipop / Stairs;
+  "TX Lake Landscape" renamed "Texas Lake Landscape" (image filename unchanged). Tool names are
+  `white-space: nowrap` so multi-tool lines wrap at the middots only. 8 gallery baselines
+  regenerated; suite 53/53.
 - [x] Verify responsive layout with filter bar — covered at 360 / 768 / 1024 / 1440 by the visual
   baselines (regenerated Entry 099) plus both-theme screenshot adjudication; 2560 / 3440 not
   separately captured (grid caps at 1400px, so ultra-wide adds only margin).
