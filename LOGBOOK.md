@@ -1,3 +1,60 @@
+## Entry 103 — 2026-07-26
+
+**Agent:** Opus 5 (kestrel, main)
+**Cycle:** netlify-build-minutes
+**Branch:** `portfoliowebsite`
+**Task:** Fix the Entry 102 `ignore` rule, which skipped the very build that shipped it.
+
+### What went wrong
+
+Entry 102's rule was:
+
+```
+git diff --quiet $CACHED_COMMIT_REF $COMMIT_REF -- . ':(exclude)docs/' …
+```
+
+Deploy `6a669734` (commit `aef8d5a`) came back `state: error`, `skipped: true`, `error_message:
+null`. It should have built — `aef8d5a` changed `netlify.toml`, which is not an excluded path.
+
+**Cause:** with `$CACHED_COMMIT_REF` unset, the command collapses to `git diff --quiet -- <paths>`
+— working tree versus index on a freshly cloned, clean checkout. That is *always* exit 0. Exit 0
+means skip. So the rule did not skip docs pushes; it skipped **every** push, unconditionally and
+silently, and would have kept doing so forever.
+
+Reproduced locally before fixing:
+`CACHED_COMMIT_REF= COMMIT_REF= sh -c 'git diff --quiet … ; echo $?'` → `0`.
+
+### The fix
+
+An explicit empty-ref guard, and an `if/else` so both outcomes are stated rather than inherited
+from git's exit code. The invariant: **any failure to compare must fall through to exit 1 (build).**
+Never exit 0 by accident — a false skip is invisible, and its symptom is a site that silently stops
+updating. Both branches now echo a `netlify-ignore:` line into the build log, so the decision is
+readable in the deploy output instead of being inferred from a `skipped` flag in the API.
+
+Written as a TOML multi-line literal (`'''`) so the `:(exclude)` pathspecs keep their single quotes
+and the shell test keeps its double quotes, with no escaping.
+
+### Verification
+
+The rule was extracted from the parsed TOML (not retyped) and run against five cases:
+
+| Case | Refs | Expected | Result |
+|---|---|---|---|
+| Empty refs — the bug | `""` / `""` | build | **1** build |
+| Docs-only push | `f3b8a2c`→`9a88b6d` | skip | **0** skip |
+| Code push | `183c50f`→`f3b8a2c` | build | **1** build |
+| The push that misfired | `da4b4be`→`aef8d5a` | build | **1** build |
+| Unfetchable ref (shallow clone) | `deadbeef`→`aef8d5a` | build | **1** build |
+
+### Note
+
+The site was never down. Netlify keeps serving the last successful deploy, so `averyemberday.com`
+stayed on `da4b4be` throughout. A skipped build is not a broken site — but it is indistinguishable
+from one at a glance, which is what made this worth an entry.
+
+---
+
 ## Entry 102 — 2026-07-26
 
 **Agent:** Opus 5 (kestrel, main)

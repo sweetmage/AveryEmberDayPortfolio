@@ -4,7 +4,15 @@
   # Exit 0 cancels the build (and the billed minutes). Agent/process docs never
   # reach `out/`, so a docs-only push has nothing to deploy. Listed explicitly
   # rather than globbing '*.md' because public/**/*.md IS copied into the export.
-  ignore = "git diff --quiet $CACHED_COMMIT_REF $COMMIT_REF -- . ':(exclude)docs/' ':(exclude)LOGBOOK.md' ':(exclude)TODO.md' ':(exclude)AGENTS.md' ':(exclude)CLAUDE.md' ':(exclude)CODEX.md' ':(exclude)GEMINI.md' ':(exclude)CURSOR.md' ':(exclude)KILO.md' ':(exclude)COPILOT.md' ':(exclude)BLACKBOX.md'"
+  #
+  # The empty-ref guard is load-bearing: with $CACHED_COMMIT_REF unset this
+  # collapses to `git diff --quiet -- <paths>`, i.e. working tree vs index on a
+  # clean checkout, which always exits 0 and would silently skip EVERY build.
+  # That is exactly what happened on deploy 6a669734 (commit aef8d5a). Any
+  # failure to compare must fall through to exit 1 (build), never exit 0.
+  ignore = '''
+  if [ -z "$CACHED_COMMIT_REF" ] || [ -z "$COMMIT_REF" ]; then echo "netlify-ignore: refs missing -> building"; exit 1; fi; if git diff --quiet "$CACHED_COMMIT_REF" "$COMMIT_REF" -- . ':(exclude)docs/' ':(exclude)LOGBOOK.md' ':(exclude)TODO.md' ':(exclude)AGENTS.md' ':(exclude)CLAUDE.md' ':(exclude)CODEX.md' ':(exclude)GEMINI.md' ':(exclude)CURSOR.md' ':(exclude)KILO.md' ':(exclude)COPILOT.md' ':(exclude)BLACKBOX.md'; then echo "netlify-ignore: docs-only -> skipping"; exit 0; else echo "netlify-ignore: deployable change -> building"; exit 1; fi
+  '''
 
 [build.environment]
   NODE_VERSION = "20"
