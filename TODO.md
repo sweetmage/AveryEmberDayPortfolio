@@ -78,6 +78,10 @@ _These are backlog items that don't currently have a written plan. Historical re
   and the rail put on the shared Projects/Gallery container so the tabs match both pages exactly.
 - [x] Wire tag metadata into gallery items — shipped in `235f254` (`tags` + empty `description`
   fields per item; hybrid pieces carry both tags). Description rendering still awaits user copy.
+- [x] **Card metadata shows tools, not tags (2026-07-26, Entry 101).** Production tags are now
+  `sr-only` (still driving the filter); the visible line is the tool list from the table above,
+  middot-separated plain text via `.gallery-tools`. `Photoshop` renders as `Adobe Photoshop`
+  per user correction. 8 gallery baselines regenerated; suite 53/53.
 - [x] Verify responsive layout with filter bar — covered at 360 / 768 / 1024 / 1440 by the visual
   baselines (regenerated Entry 099) plus both-theme screenshot adjudication; 2560 / 3440 not
   separately captured (grid caps at 1400px, so ultra-wide adds only margin).

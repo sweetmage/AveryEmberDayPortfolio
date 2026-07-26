@@ -5,6 +5,8 @@ export interface GalleryItem {
   width: number;
   height: number;
   tags: string[];
+  /** Media/tools used, rendered under the caption (source: TODO.md tool table). */
+  tools: string[];
   description: string;
 }
 
@@ -16,6 +18,7 @@ export const galleryItems: GalleryItem[] = [
     width: 1200,
     height: 1600,
     tags: ['Digital'],
+    tools: ['Adobe Photoshop', 'Photography'],
     description: '',
   },
   {
@@ -25,6 +28,7 @@ export const galleryItems: GalleryItem[] = [
     width: 1200,
     height: 1970,
     tags: ['Traditional', 'Digital'],
+    tools: ['Adobe Photoshop', 'Colored Pencil'],
     description: '',
   },
   {
@@ -34,6 +38,7 @@ export const galleryItems: GalleryItem[] = [
     width: 1200,
     height: 1481,
     tags: ['Traditional', 'Digital'],
+    tools: ['Adobe Photoshop', 'Acrylic Paint'],
     description: '',
   },
   {
@@ -43,6 +48,7 @@ export const galleryItems: GalleryItem[] = [
     width: 1200,
     height: 1600,
     tags: ['Digital'],
+    tools: ['Procreate'],
     description: '',
   },
   {
@@ -52,6 +58,7 @@ export const galleryItems: GalleryItem[] = [
     width: 1200,
     height: 1556,
     tags: ['Traditional'],
+    tools: ['Watercolor Paint', 'Marker', 'Photography'],
     description: '',
   },
   {
@@ -61,6 +68,7 @@ export const galleryItems: GalleryItem[] = [
     width: 1200,
     height: 1559,
     tags: ['Traditional'],
+    tools: ['Acrylic Paint'],
     description: '',
   },
   {
@@ -70,6 +78,7 @@ export const galleryItems: GalleryItem[] = [
     width: 1200,
     height: 1643,
     tags: ['Traditional', 'Digital'],
+    tools: ['Adobe Photoshop', 'Acrylic Paint'],
     description: '',
   },
   {
@@ -79,6 +88,7 @@ export const galleryItems: GalleryItem[] = [
     width: 1200,
     height: 1953,
     tags: ['Traditional', 'Digital'],
+    tools: ['Adobe Photoshop', 'Colored Pencil'],
     description: '',
   },
   {
@@ -88,6 +98,7 @@ export const galleryItems: GalleryItem[] = [
     width: 1200,
     height: 1571,
     tags: ['Traditional', 'Digital'],
+    tools: ['Adobe Photoshop', 'Acrylic Paint'],
     description: '',
   },
   {
@@ -97,6 +108,7 @@ export const galleryItems: GalleryItem[] = [
     width: 1200,
     height: 1440,
     tags: ['Traditional'],
+    tools: ['Acrylic Paint'],
     description: '',
   },
   {
@@ -106,6 +118,7 @@ export const galleryItems: GalleryItem[] = [
     width: 1200,
     height: 1011,
     tags: ['Traditional', 'Digital'],
+    tools: ['Adobe Photoshop', 'Chalk Pastel'],
     description: '',
   },
 ];

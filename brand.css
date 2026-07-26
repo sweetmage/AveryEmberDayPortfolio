@@ -1291,6 +1291,18 @@ button.brand-chip:hover {
     align-items: center;
 }
 
+/* Gallery card tool line — plain middot-separated text, no pills. The
+   production tags (Digital/Traditional) still drive the filter but are
+   sr-only on the card, so this is the only visible metadata. */
+.gallery-tools {
+    font-family: var(--brand-font-body);
+    font-size: 0.875rem;
+    line-height: 1.4;
+    color: var(--brand-text-muted);
+    text-align: center;
+    text-wrap: balance;
+}
+
 /* ── Iridescent glow helpers ─────────────────────────────────────── */
 .brand-glow-text {
     text-shadow: 0 0 24px rgba(199,125,255,0.18), 0 0 48px rgba(0,245,255,0.10);

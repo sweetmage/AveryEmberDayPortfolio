@@ -149,13 +149,21 @@ export default function GalleryGrid({ items }: GalleryGridProps) {
                   <div className="font-heading text-[1.05em] font-semibold tracking-normal text-text">
                     {item.caption}
                   </div>
-                  <div className="brand-chip-group mt-2 justify-center">
-                    {item.tags.map((tag) => (
-                      <span key={tag} className="brand-chip">
-                        {tag}
-                      </span>
-                    ))}
-                  </div>
+                  {/* Production tags (Digital/Traditional) drive the filter but
+                      are not displayed; the visible line is the tools used,
+                      middot-separated. Tags stay reachable to screen readers so
+                      the filtered result still describes itself. */}
+                  <span className="sr-only">{item.tags.join(', ')}</span>
+                  {item.tools.length > 0 && (
+                    <div className="gallery-tools mt-2">
+                      {item.tools.map((tool, i) => (
+                        <Fragment key={tool}>
+                          {i > 0 && <span aria-hidden="true"> · </span>}
+                          {tool}
+                        </Fragment>
+                      ))}
+                    </div>
+                  )}
                 </figcaption>
               </figure>
             ))}

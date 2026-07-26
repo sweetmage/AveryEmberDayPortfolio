@@ -1,3 +1,45 @@
+## Entry 101 — 2026-07-26
+
+**Agent:** Opus 5 (kestrel, main)
+**Cycle:** shxdowflow
+**Branch:** `shxdowloop/2026-07-24/bubble-visual-cleanup`
+**Task:** Gallery cards show the tools used instead of the production tags.
+
+### Change
+
+The card metadata line was `Digital` / `Traditional` pills (`.brand-chip` spans). The user
+asked for the production tags to be hidden and replaced with the tools that made each piece,
+middot-separated in plain gray text — no pills.
+
+- `GalleryItem` gains `tools: string[]`, populated from the per-work tool table the user
+  supplied 2026-07-24, already recorded in `TODO.md` under the gallery tag thread. That table
+  was the source of truth; no tool data was invented. `Photoshop` is written as
+  **`Adobe Photoshop`** per the user's mid-run correction.
+- `GalleryGrid` renders `.gallery-tools` — plain text, ` · ` separators marked `aria-hidden`.
+- The production tags still drive the `All / Digital / Traditional / Both` filter and are
+  emitted as an `sr-only` span on each card, so a filtered result still describes itself to
+  assistive tech even though the tags are no longer visible.
+- `.gallery-tools` added to `brand.css` (body font, 0.875rem, `--brand-text-muted`, centered,
+  `text-wrap: balance`). The `.brand-chip` rules stay — the filter buttons and the chip group
+  are unused by this page now but remain part of the design system.
+
+### Why the tags stayed in the data
+
+Hiding is a presentation decision; the filter is behavior. Deleting `tags` would have meant
+re-deriving the filter from tool strings (`Adobe Photoshop` ⇒ Digital?), which is exactly the
+kind of implicit mapping that rots. Two explicit fields, one shown.
+
+### Verification
+
+- `npm run css:build`, `npm run build:next` — clean; export contains the rendered tool lines.
+- Screenshot adjudication before regenerating baselines: gallery 1440 light **PASS**, 1440 dark
+  **PASS**, 360 light **PASS**. Checked the worst case for wrapping — Faces
+  (`Watercolor Paint · Marker · Photography`) fits one line at 360px with no overflow.
+- 8 gallery visual baselines regenerated (card metadata changed by design); full suite
+  **53/53 green**.
+
+---
+
 ## Entry 100 — 2026-07-26
 
 **Agent:** Opus 5 (kestrel, main)
