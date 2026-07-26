@@ -1,3 +1,50 @@
+## Entry 099 — 2026-07-25
+
+**Agent:** Fable 5 (faewire, orchestrator; execution delegated to native builder agents per the Fable bookend contract)
+**Cycle:** shxdowflow (continuing the shxdowloop plan `docs/plans/2026-07-24-bubble-visual-cleanup-shxdowloop-nanoagent-plan.md`)
+**Branch:** `shxdowloop/2026-07-24/bubble-visual-cleanup`
+**Task:** Bubble test flake fix verification, visual-gate defect fixes, cleanup probes, and (user request mid-run) the gallery filter rail.
+
+### Visual gate (Stage 2)
+
+Two real root causes, both now fixed in `tests/global-setup.js`:
+
+1. **Server-before-build ordering.** Playwright 1.61.1 starts `webServer`s *before* `globalSetup`, so the build's delete/recreate of `out/` orphaned the already-running `serve out` — the source of every "stale content" baseline in Entry 098. The 4322 server now starts inside `globalSetup` after the build, with a 30s readiness probe and a teardown; the config keeps only the 4321 legacy-site entry.
+2. **stdio pipe deadlock.** `spawn(..., { stdio: 'pipe' })` left stdout undrained; `serve` logs every request, so at ~64KB the pipe filled and its event loop blocked — 30 ERR_ABORTED failures, reproduced twice, gone with `stdio: 'ignore'`.
+
+`maxDiffPixelRatio: 0.001` → absolute `maxDiffPixels: 500` (closes the tall-page silent-pass hole from Entries 089/098), plus a double-`requestAnimationFrame` paint-settle wait after `decode()` for the partial-paint mode. The floor immediately surfaced the predicted latent drift — 4 baselines at 768px (projects light/dark 1014/1339 px, projects-mistrust light/dark 1081/1413 px), all the documented tab-divider boundary — determinism confirmed across 2 runs, then re-baselined.
+
+**Gate proof:** injected `border-bottom: 2px solid red !important` on the nav → **all 40** visual snapshots red; reverted → 53/53 green twice. Gotcha recorded: without `!important`, Tailwind's utilities layer overrides a components-layer injection and the suite stays green — future injection proofs must force the declaration.
+
+### Bubble flake (Stage 1, committed `15fe32d` previous session)
+
+Frame-based sampling held green in 9+ consecutive full-suite runs across this session's verification. Closed in TODO.
+
+### Cleanup (Stage 3)
+
+- Nav fit @360px: **0px slack** (Projects 70.0px + Gallery 65.4px fill the row); a Contact label would overflow by ~68–70px. TODO updated.
+- `images/og-default.png`: confirmed generated placeholder; no final asset in repo. Still user-blocked.
+- Dead code: zero live `patriots` / `tests/baselines/` refs (docs history only); zero unused imports in `app/` after the `Link` removal in `app/contact/page.tsx`.
+
+### Gallery filter rail (Stage 5, user request mid-run)
+
+`app/gallery/GalleryGrid.tsx` restructured onto the `ProjectTabs.tsx` skeleton: `lg:flex` wrapper capped at 1400px; sticky 260px left column holding the filter buttons (now `.project-tab` + `is-active` instead of `.brand-chip`, spectrum dividers between at `lg`, result count beneath); grid flexes beside at `lg+`, sits underneath below `lg` as the same wrapping row as before. Semantics kept: `aria-pressed` filter buttons (deliberately not a tablist), hash sync, sr-only live region, and the `gallery-filter-bar bubble-exclude` classes the bubble-exclusion spec asserts against. All 8 gallery baselines regenerated and adjudicated in both themes at 360/768/1024/1440.
+
+### Verification
+
+| Check | Result |
+|---|---|
+| `npm test` post-revert (Stage 2) | 53/53 ×2 |
+| `npm test` post-rail (Stage 5) | 53/53 ×2 |
+| Injected-regression proof | 40/40 snapshots red |
+| `bubbles-exclusion` incl. gallery filter zones | 8/8 |
+| `npm run build:next` | clean |
+| Fresh-context verifier (Fable, independent `npm test`) | PASS, 6/6 criteria, 53/53 |
+
+**Routing:** Stage 2/3 verification and Stage 5 implementation each ran on a native `builder`; oracle-class gate on native `verifier` @ fable (binding usage 28%, ultracode gate passed); planning, diff review, and screenshot adjudication by the main agent. Nano routes skipped this run: the two execution tracks were tightly coupled to full-suite Playwright runs on this host (native fidelity case), logged here as the ledger.
+
+---
+
 ## Entry 098 — 2026-07-24
 
 **Agent:** Opus 5 (main)

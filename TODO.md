@@ -68,9 +68,17 @@ _These are backlog items that don't currently have a written plan. Historical re
 
   **User decision 2026-07-24:** Production tags only (no Tools facet). Filter simplified to `All | Digital | Traditional | Both`. Hybrid pieces (Chill, Gross, Overflow, Stairs, Beheaded, TX Lake Landscape) display **both** "Traditional" and "Digital" tags on the card. "Photography, Digital" (In Danger) maps to "Digital" only. Description field added to data model now (empty strings) but **not rendered yet** — user will fill descriptions and ask for UI inclusion separately.
 - **Plan refined 2026-07-24:** `docs/plans/2026-07-24-gallery-tag-system.md`.
-- [ ] Implement filter UI in `app/gallery/page.tsx` (All / Digital / Traditional / Both toggles; page becomes server-metadata + client-grid split). **Type decision, set by the user 2026-07-24 (Entry 098): tags render in the body font (Inter), not the heading font.** The artwork titles moved to Outfit heading treatment that same day, so typeface is what separates title from metadata in a gallery cell — keep tags on `font-body`.
-- [ ] Wire tag metadata into gallery items — `tags: string[]` and `description: string` fields added per item. Hybrid pieces get both tags.
-- [ ] Verify responsive layout with filter bar at 360 / 768 / 1024 / 1440 / 2560 / 3440 px
+- [x] Implement filter UI — shipped in `235f254` (All / Digital / Traditional / Both, hash-synced,
+  server-metadata + client-grid split, card tags on `font-body` per the user's type decision).
+  **Restructured 2026-07-25 (Entry 099, user request):** the filter is now a vertical left rail at
+  `lg+` (sticky 260px column, `.project-tab` styling with spectrum dividers, mirroring the
+  Projects rail) with the grid flexing beside it; below `lg` it stays a horizontal row above the
+  grid. All 8 gallery baselines regenerated and adjudicated.
+- [x] Wire tag metadata into gallery items — shipped in `235f254` (`tags` + empty `description`
+  fields per item; hybrid pieces carry both tags). Description rendering still awaits user copy.
+- [x] Verify responsive layout with filter bar — covered at 360 / 768 / 1024 / 1440 by the visual
+  baselines (regenerated Entry 099) plus both-theme screenshot adjudication; 2560 / 3440 not
+  separately captured (grid caps at 1400px, so ultra-wide adds only margin).
 
 **Bonus data, out of scope for the gallery (Projects page, not Gallery — recorded here only so it isn't lost):** the user also supplied Tool Tags / Production for two Projects-page entries: **Avery Ember Day Brand** — Photoshop, Illustrator, InDesign, Tailwind CSS, JavaScript (user flagged an open question: whether to also list the portfolio site's frameworks here) / Production: Digital; **History of Mistrust** — Figma / Production: Digital. No tag system exists on the Projects page (`app/projects/BrandProject.tsx`, `MistrustProject.tsx`) today — this is reference data only, not a scoped task.
 
@@ -87,24 +95,18 @@ _These are backlog items that don't currently have a written plan. Historical re
   reduced motion, where the engine makes no bubbles, so exclusion-zone changes are invisible to
   it), and 6 of the 8 gallery baselines moved, not 8 — `gallery-360` stayed byte-identical.
 - [ ] Watermark artwork
-- [ ] **Flaky under parallel load: `bubbles-exclusion › Projects tabs @768`.** Failed twice during
-  full-suite runs in one session (Entry 098) and passed 6/6 across three isolated re-runs both
-  times, so it is worker-contention timing in the physics sim, not a real exclusion-zone break.
-  Confirm by re-running that spec alone before treating it as a regression.
-- [ ] **Visual gate: `--update-snapshots` intermittently writes a bad baseline.** Pre-existing, not
-  introduced by any current change, and deferred because it needs its own investigation rather than
-  a tweak. **Five occurrences in one session (Entry 098), in two distinct failure modes:**
-  - *Partial paint* — `gallery @768 dark`: the newly written baseline caught the first two gallery
-    images half-painted. The spec already force-eagers and `decode()`s in-layout images, so that
-    isn't the gap; `captureBeyondViewport` is the remaining suspect.
-  - *Stale content* — `projects @360 light` (203px short), `projects-mistrust @1024 light` (95px
-    tall, ≈ the three caption lines removed that turn), and `projects @1024 light` (292px tall,
-    exactly that turn's spacing reduction). In every case
-    the page measured a stable height across 4 consecutive loads while the just-written baseline
-    disagreed, i.e. the update run captured a pre-change render. Suspect the interaction between
-    `globalSetup`'s build and `reuseExistingServer` on the `serve out` webServer.
+- [x] **Flaky under parallel load: `bubbles-exclusion › Projects tabs @768`.** Fixed 2026-07-24/25
+  (Entry 099, commit `15fe32d`): converted to frame-based sampling like the blob test. Held green
+  in 9+ consecutive full-suite runs during Stage 2/3/5 verification.
+- [x] **Visual gate: `--update-snapshots` intermittently writes a bad baseline.** Fixed 2026-07-25
+  (Entry 099). Two root causes: (1) Playwright 1.61.1 starts `webServer`s *before* `globalSetup`,
+  so the build's delete/recreate of `out/` orphaned the running `serve` — the 4322 server now
+  starts inside `globalSetup` after the build, with a readiness probe and teardown; (2) the spawned
+  server's `stdio: 'pipe'` was never drained, so `serve`'s request logging filled the 64KB pipe and
+  deadlocked its event loop — now `stdio: 'ignore'`. Partial-paint defect covered by a
+  double-`requestAnimationFrame` paint-settle wait after `decode()`.
 
-- [ ] **Visual gate: small-area changes pass silently.** Distinct from the flake above and arguably
+- [x] **Visual gate: small-area changes pass silently.** Fixed 2026-07-25 (Entry 099): distinct from the flake above and arguably
   worse, because it is deterministic. `maxDiffPixelRatio: 0.001` allows ~3685 differing pixels on a
   1440×2559 page, so any change smaller than that is invisible to the gate *and its stale baseline
   keeps passing*. Confirmed twice in Entry 098: the 2px tab divider (~520 px) passed in light while
@@ -117,6 +119,13 @@ _These are backlog items that don't currently have a written plan. Historical re
   full suite before committing snapshots.** A bad baseline is silent otherwise — it passes on the
   update run and only surfaces later as a phantom regression. Recovery is to re-update the single
   offending snapshot, confirm the dimensions against a repeated-load measurement, then re-run.
+
+  **Resolution (Entry 099):** `maxDiffPixelRatio: 0.001` replaced with an absolute
+  `maxDiffPixels: 500` floor. Immediately caught the predicted latent drift (4 baselines at 768px,
+  the documented tab-divider defect — re-adjudicated and regenerated) and was proven live: an
+  injected 2px nav border went red on **all 40** snapshots. Injection gotcha for future proofs:
+  a plain declaration in `site.css` loses to Tailwind's utilities layer — use `!important` when
+  injecting a test regression, or the suite stays silently green.
 - [x] **Homepage scrolls horizontally at narrow widths.** Fixed 2026-07-24 (Entry 085):
   `overflow: hidden` added to `.brand-hero` clips the `.brand-hero-blobs` layer
   (`inset: -20%`) so it cannot spill into the document scrollbox. Verified:
@@ -124,13 +133,18 @@ _These are backlog items that don't currently have a written plan. Historical re
 - [x] **Delete the out-of-cascade CSS duplicates.** `src/css/components.css` and
   `src/css/tokens.css` removed 2026-07-24 (Entry 086). Verified zero live imports;
   `style.css` byte-identical after rebuild.
-- [ ] **Re-check nav fit before re-enabling the Contact link.** The nav pill group at 360px
-  has only ~6px of slack with three labels (Entry 082); a fourth will overflow. Whoever
-  uncomments Contact in `Nav.tsx`/`Footer.tsx` needs to either shrink the 360px padding
-  clamp or move to a drawer at that width.
+- [ ] **Re-check nav fit before re-enabling the Contact link.** Re-measured 2026-07-25 (Entry
+  099) with the current two labels: **0px slack at 360px** (Projects 70.0px + Gallery 65.4px fill
+  the inner width; logo text hidden below `sm`). A "Contact" label at the average link width
+  overflows by ~68–70px. Whoever uncomments Contact in `Nav.tsx`/`Footer.tsx` must shrink the
+  360px padding clamp or move to a drawer at that width — there is no headroom.
 - [ ] **Run the visual gate in CI.** The gate is now real (Entry 081) but opt-in — `netlify.toml` runs `next build` + publish with no test step, so a visual regression deploys unchallenged if `npm test` is skipped locally. **Blocked on a decision:** snapshots are `-chromium-win32` suffixed, so a Linux CI runner cannot reuse them. **Decision made 2026-07-23 (user):** option (c) — containerize capture (run Playwright in the official `mcr.microsoft.com/playwright` image locally *and* in CI) so one Linux snapshot set is canonical. Not yet implemented; needs a one-time regeneration of all **40** baselines under the container. Raised by the Entry 081 shippability review. **This is the only open item carried over from a plan doc** (`2026-07-22-visual-baseline-gate-shxdowloop.md`, whose Risks section points here rather than re-planning it).
 
-- [ ] **The visual gate's tolerance scales with page height — tighten it.** `maxDiffPixelRatio: 0.001`
+- [x] **The visual gate's tolerance scales with page height — tighten it.** Done 2026-07-25
+  (Entry 099) via the `maxDiffPixels: 500` floor above — decided *without* waiting for the
+  containerization item after the re-grade surfaced only 4 latently-drifted baselines, all at the
+  documented tab-divider boundary, rather than broad drift. The containerization re-baseline (item
+  above) remains open and independent. Original finding: `maxDiffPixelRatio: 0.001`
   is a ratio of *total page area*, so the taller the page the larger the real regression it swallows.
   Measured 2026-07-24 (Entry 089): a genuine 4px shift of the whole nav-links group is only ~1,600
   differing pixels and passed unnoticed on every page for a week, on pages 2,500-4,300px tall.
@@ -156,6 +170,10 @@ _These are backlog items that don't currently have a written plan. Historical re
 
 Full details are in `LOGBOOK.md` (newest-first). Headline items since 2026-07-01:
 
+- **2026-07-25** — Visual gate hardened and proven (server moved into `globalSetup` post-build,
+  stdio pipe deadlock fixed, `maxDiffPixels: 500` floor; injected 2px change went red on all 40
+  snapshots); bubble tabs flake fixed by frame-based sampling; gallery filter restructured into a
+  Projects-style vertical left rail; nav-fit at 360px re-measured at 0px slack (Entry 099).
 - **2026-07-24** — Gallery art now framed in translucent dark cards with white titles (hover ring
   removed); shared `PageHeader` gives Projects and Gallery an identical left-aligned title with an
   iridescent gradient underline spanning the page (Projects title lifted out of the tab rail to
