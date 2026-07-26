@@ -13,6 +13,7 @@ This is the canonical agent-facing source of truth for the `portfoliowebsite` re
 | `docs/accessibility.md` | WCAG 2.1 / AudioEye compliance reference |
 | `docs/plans/*.md` | Active implementation plans |
 | `docs/archives/plans.md` | Completed/cancelled plan archive |
+| `docs/checkpoints/*.md` | Known-good restore points: deployed SHA, verified state, rollback steps |
 
 ## Branch Policy
 
