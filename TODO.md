@@ -11,6 +11,12 @@ _None. All written plans are complete; see **Completed plans** below._
 
 ### Awaiting a user step
 
+- **Netlify production deploys are paused — out of credits (2026-07-26).** The team used all
+  300 monthly credits (20 production deploys × 15). Published site stays live on `da4b4be`;
+  every push until then returns `skipped: true` with no build log. **Resumes automatically
+  Aug 6, 2026** (billing cycle Jul 7 → Aug 6), or immediately on a paid plan. Nothing to fix in
+  the repo — the two mitigations are already committed (`aef8d5a`, `68c42eb`). See LOGBOOK
+  Entry 104 for the credit model and the workflow that fits 20 deploys/month.
 - **Enable Netlify form detection**, then re-enable Contact. Plan:
   `docs/plans/2026-07-14-nav-restructure.md`. This is a dashboard UI toggle plus one test
   submission — an agent cannot do it. Once it's on, uncomment the Contact links in `Nav.tsx` and

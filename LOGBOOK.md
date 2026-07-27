@@ -1,3 +1,67 @@
+## Entry 104 — 2026-07-26
+
+**Agent:** Opus 5 (kestrel, main)
+**Cycle:** netlify-build-minutes → netlify-credits
+**Branch:** `portfoliowebsite`
+**Task:** Find out why deploys are skipping. Read the dashboard via OpenTabs.
+
+### The actual cause — and two corrections
+
+Deploys `aef8d5a` and `68c42eb` did not skip because of the `ignore` rule. **The team is out of
+credits.** From the Netlify dashboard banner:
+
+> aday6471's team is now running on operational credits. Your published sites are still live, but
+> **production deploys and Agent Runners are paused.** … Upgrade your team or wait for your next
+> billing cycle to resume.
+
+This **corrects Entry 103**, which named the empty-`$CACHED_COMMIT_REF` flaw as the cause. That
+flaw was real and reproducible, and fixing it was right — but it was a *latent* bug, not what
+skipped these deploys. Entry 103's diagnosis was asserted on correlation before the log was read.
+
+It also **corrects Entry 102's framing**: this account is not on build minutes at all.
+
+### Netlify's credit model (Free plan, verified in the dashboard and the docs)
+
+- **300 credits/month, hard limit.** Billing period Jul 7 → Aug 6.
+- **A successful production deploy costs 15 credits.** So the Free plan is **exactly 20
+  production deploys per month** — build *duration* is irrelevant, there is no minutes meter.
+- **Deploy Previews and branch deploys are free.** Netlify: "you have free deployments for
+  previewing, experimenting, and creating versions of your site/app."
+- **Failed deploys and rollbacks cost nothing.**
+
+Usage this cycle: 20 production deploys = 300 credits; web requests (9,834) = 2; bandwidth = 3.
+**Total 305 / 300.** Remaining balance is 29.5 operational credits, which keep the published site
+online but cannot buy a deploy.
+
+### What this means for Entry 102's two changes
+
+| Change | Verdict |
+|---|---|
+| `[build] ignore` (skip docs-only) | **The single most valuable lever.** Each avoided production deploy is 15 credits — ~22% of pushes, ~4 deploys/month. Keep. |
+| `PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD` | **Saves zero credits.** Build time is not metered. Harmless and still worth keeping for faster builds; it is not a cost control. |
+
+The advice given mid-session to disable Deploy Previews and branch deploys was **wrong and would
+have been counterproductive** — previews are free, and they are the correct place to iterate.
+The workflow that fits this plan is: work on a branch, review it on its free preview URL, and
+spend one of the 20 monthly production deploys only when merging something finished.
+
+### Verification
+
+- Dashboard read live via OpenTabs (`browser_get_tab_content`) on the authenticated session:
+  deploy detail page, `teams/aday6471/billing`, and the credits doc.
+- A read-only research nano-agent (kilo/pro), dispatched before the dashboard was read,
+  independently concluded credit exhaustion from the API signature alone (`skipped: true`,
+  `error_message: null`, no log) — the ignore command produces a log; credit exhaustion does not.
+
+### Consequence
+
+**Production deploys resume Aug 6, 2026** (next billing cycle), or immediately on a paid plan.
+Until then the site stays live on `da4b4be` and every push will skip. Nothing in the repo can
+change that. The two committed config changes are correct and will take effect on the first
+build after the reset.
+
+---
+
 ## Entry 103 — 2026-07-26
 
 **Agent:** Opus 5 (kestrel, main)
