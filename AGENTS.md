@@ -31,6 +31,8 @@ This is the canonical agent-facing source of truth for the `portfoliowebsite` re
 >   skill. No Netlify involvement.
 > - On/after Aug 6: merge `develop` → `portfoliowebsite` and push **once**. One production deploy,
 >   15 credits, rather than one per commit.
+>
+> Full details and the lift-the-pause checklist: [`docs/deploys.md`](docs/deploys.md).
 
 **All changes must be committed to the `portfoliowebsite` branch** *(suspended during the deploy
 pause above — use `develop`)*. Do not commit to `main` or `master` without explicit user direction.
@@ -142,11 +144,15 @@ In Node.js scripts, load with `import 'dotenv/config'` (or `require('dotenv').co
 
 ## Deploy
 
+> **Full reference: [`docs/deploys.md`](docs/deploys.md)** — deploy loop, site facts, credit model,
+> cost control, the current deploy pause, and dashboard operation. Read it before changing anything
+> deploy-related. The bullets below are the load-bearing gotchas only.
+
 - Netlify runs `next build` and publishes the static export (`publish = "out"`); the committed `style.css` only serves the undeployed legacy root site
 - `netlify.toml` CSP pins sha256 hashes of the inline theme scripts; if an inline `<script>` changes, recompute and update the hashes or theme init breaks in production
-- **This site is on Netlify's credit model, not build minutes.** Free plan = **300 credits/month, hard limit**; a successful production deploy costs **15 credits**, so the real budget is **20 production deploys per month** (billing period runs the 7th → 6th). Build *duration* is not metered — optimising build speed saves nothing. **Deploy Previews and branch deploys are free**, and failed deploys and rollbacks cost nothing. So: iterate on a branch and review its free preview URL, and spend a production deploy only when merging something finished. Batch commits into one push; each extra push to `portfoliowebsite` is 15 credits. When the balance runs out, published sites stay live but **production deploys pause until the next cycle** — pushes then return `skipped: true` with no build log (Entry 104)
-- **A docs-only push does not deploy.** `netlify.toml`'s `[build] ignore` cancels the build when a push touched only `docs/` or the root process docs (`LOGBOOK.md`, `TODO.md`, `AGENTS.md`, the per-agent pointers) — free-tier build minutes. This is expected, not a broken deploy. The list is explicit rather than `*.md` because `public/**/*.md` **is** copied into the export; add new doc paths to the exclude list, never a blanket markdown glob
-- `PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD = "1"` is set for the Netlify build — the CI never runs Playwright, and the browsers cache outside `node_modules` so they re-downloaded every build. If a test step is ever added to the Netlify build command, drop this or it fails with "browser not found"
+- **Credits, not build minutes.** 300/month hard limit, **15 credits per production deploy** = **20 deploys/month**. Build *duration* is not metered, so optimising build speed saves nothing. **Deploy Previews and branch deploys are free** — never disable them to "save money". Batch commits into one push. Out of credits = published site stays live, but pushes return `skipped: true` with **no build log** (Entry 104)
+- **A docs-only push does not deploy.** `netlify.toml`'s `[build] ignore` cancels the build when a push touched only `docs/` or the root process docs. This is expected, not a broken deploy. Two invariants when editing it: never glob `*.md` (`public/**/*.md` **is** copied into the export), and any failure to compare must exit 1 (build) — a bare `git diff --quiet` with unset refs exits 0 and would silently skip every build forever (Entry 103)
+- `PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD = "1"` is set for the Netlify build — the CI never runs Playwright. If a test step is ever added to the build command, drop this or it fails with "browser not found"
 
 ## Design Conventions
 

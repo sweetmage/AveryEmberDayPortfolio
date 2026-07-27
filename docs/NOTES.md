@@ -6,7 +6,8 @@
 > user has paused all updates to the live URL. Push `develop`, never `portfoliowebsite` (a
 > self-expiring `pre-push` hook enforces it). Preview with `npm run dev` at
 > <http://localhost:3000>. Merge `develop` → `portfoliowebsite` in one push on/after Aug 6.
-> See `AGENTS.md` Branch Policy and `LOGBOOK.md` Entry 104/105.
+> Full reference: [`docs/deploys.md`](deploys.md). See also `AGENTS.md` Branch Policy and
+> `LOGBOOK.md` Entries 104/105.
 
 All changes for this portfolio website must be committed to the **`portfoliowebsite`** branch. Do not commit to `main`/`master` or any other branch without explicit user direction.
 
