@@ -1,3 +1,55 @@
+## Entry 105 — 2026-07-26
+
+**Agent:** Opus 5 (kestrel, main)
+**Cycle:** netlify-credits
+**Branch:** `develop` (new working branch)
+**Task:** User direction — pause all updates to Netlify and the live URL until Aug 6; work from a
+developer branch previewable locally without Netlify.
+
+### Change
+
+- **`develop` fast-forwarded to `portfoliowebsite` @ `41005ed`** and checked out. `develop` was
+  108 commits behind (last touched 2026-05-22) but **fully contained** in `portfoliowebsite`, so
+  this was a fast-forward — no force-push, no history rewritten, no commits orphaned. Reused
+  rather than creating a fifth branch name.
+- **`.git/hooks/pre-push` guard** blocking any push whose refs include `refs/heads/portfoliowebsite`
+  until `20260806`. It **expires by itself** on the date — no cleanup step to forget. Deliberate
+  override is `git push --no-verify`.
+- **Branch policy updated** in `AGENTS.md` and `docs/NOTES.md` with the pause, the local preview
+  route, and the merge-once-on-Aug-6 instruction.
+
+### Why a hook rather than a note
+
+The existing branch policy already says "get explicit go-ahead before pushing `portfoliowebsite`",
+and that convention did not prevent three pushes to it earlier in this same session. A date-bounded
+mechanical block is the difference between a rule and a guarantee. It self-expires so it cannot
+become stale infrastructure.
+
+### Preserving Git LFS
+
+`.git/hooks/pre-push` already ran `git lfs pre-push`. A pre-push hook receives its refs on **stdin**,
+and LFS needs them too — a naive guard that runs `cat` would consume stdin and silently break LFS
+pushes. The guard captures stdin once into `HOOK_STDIN` and replays it into the LFS call.
+
+### Verification
+
+- Hook exercised directly with simulated ref lines (a `--dry-run` push was *not* a valid test —
+  `portfoliowebsite` was already up to date, so git short-circuited before invoking the hook):
+  - `refs/heads/portfoliowebsite` → **exit 1**, block message printed.
+  - `refs/heads/develop` → **exit 0**, LFS path reached and clean.
+- `git push --dry-run origin develop` → `3fb0b32..41005ed` accepted.
+- `npx next dev` → Next 15.5.20 ready; `curl localhost:3000` → **HTTP 200**, title
+  `Avery Ember Day — Brand & Visual Designer`. Local preview confirmed working with no Netlify
+  involvement.
+
+### Note
+
+The 11 modified PNGs and 3 untracked files under `images/myart/A History of Mistrust/` are the
+user's own intentional work (confirmed). They were carried onto `develop` by the checkout and left
+uncommitted and unaltered — not staged, not reverted.
+
+---
+
 ## Entry 104 — 2026-07-26
 
 **Agent:** Opus 5 (kestrel, main)

@@ -11,6 +11,11 @@ _None. All written plans are complete; see **Completed plans** below._
 
 ### Awaiting a user step
 
+- **[Aug 6] Lift the deploy pause.** On/after 2026-08-06: merge `develop` → `portfoliowebsite` and
+  push **once** (one production deploy = 15 credits, not one per commit). The `pre-push` guard
+  expires on its own that day — nothing to uninstall. Then revert the pause banners in
+  `AGENTS.md` / `docs/NOTES.md` Branch Policy. Until then **all work happens on `develop`**;
+  preview with `npm run dev` at <http://localhost:3000>. See LOGBOOK Entry 105.
 - **Netlify production deploys are paused — out of credits (2026-07-26).** The team used all
   300 monthly credits (20 production deploys × 15). Published site stays live on `da4b4be`;
   every push until then returns `skipped: true` with no build log. **Resumes automatically

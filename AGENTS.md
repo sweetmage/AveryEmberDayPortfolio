@@ -17,7 +17,23 @@ This is the canonical agent-facing source of truth for the `portfoliowebsite` re
 
 ## Branch Policy
 
-**All changes must be committed to the `portfoliowebsite` branch.** Do not commit to `main` or `master` without explicit user direction.
+> ### ⏸ DEPLOY PAUSE IN EFFECT UNTIL 2026-08-06
+>
+> **Work on `develop`, not `portfoliowebsite`.** At the user's direction (2026-07-26), all updates
+> to Netlify and the live URL are paused until the credit cycle resets on **Aug 6, 2026** (LOGBOOK
+> Entry 104 — the team is out of credits and production deploys are already refused server-side).
+>
+> - Commit and push to **`develop`**. It was fast-forwarded to `portfoliowebsite` @ `41005ed`.
+> - **Do not push `portfoliowebsite`.** A `.git/hooks/pre-push` guard blocks it and **expires by
+>   itself on 2026-08-06** — no cleanup needed. Override only on explicit user instruction with
+>   `git push --no-verify`.
+> - Preview locally: `npm run dev` → <http://localhost:3000> (hot reload), or the `launchtest`
+>   skill. No Netlify involvement.
+> - On/after Aug 6: merge `develop` → `portfoliowebsite` and push **once**. One production deploy,
+>   15 credits, rather than one per commit.
+
+**All changes must be committed to the `portfoliowebsite` branch** *(suspended during the deploy
+pause above — use `develop`)*. Do not commit to `main` or `master` without explicit user direction.
 
 **`portfoliowebsite` is the branch Netlify deploys from** (repointed 2026-07-12 via the Netlify API at the user's direction — production branch and allowed-branches both changed from `master` to `portfoliowebsite`, verified with a production deploy from the new branch; see `LOGBOOK.md` Entry 069). Pushing `portfoliowebsite` publishes to production. That makes every push to this branch a production-affecting action: get the user's explicit go-ahead in the moment before pushing, every time — this note is informational, not standing authorization. `master` is retained as a historical branch; do not merge into it without explicit user direction.
 
