@@ -92,7 +92,13 @@
     --brand-radius-xl: 20px;
 
     /* Layout */
-    --brand-content-max:   1200px;
+    /* One content width for the whole site. Projects and Gallery hardcoded 1400px while Home,
+       Contact and the footer sat at 1200px, so their left edges diverged by up to 164px and the
+       gap widened with the viewport. Raised to 1400px and made the single source of truth
+       (2026-07-28). Pair it with the gutter rule below: the container carries the max-width and
+       NO horizontal padding, children supply a flat 24px — nesting two padded containers is what
+       pushed the Home About box to a third edge. */
+    --brand-content-max:   1400px;
     --brand-section-gap:   80px;
     --brand-header-height: 80px;
     /* Sticky nav bar height. Load-bearing beyond the bar itself: the nav buttons are
@@ -246,12 +252,23 @@
        minus its 1px bottom border.) Flat at rest, no border. */
     height: 100%;
     aspect-ratio: 1;
+    /* A square toggle is as wide as the bar is tall (62px at 360px), which is a lot of the
+       inner width once a fourth nav label exists. Cap the width below the point where the
+       nav gets tight; 44px still meets WCAG 2.5.5 (AAA, 44px), so nothing is lost. The
+       square highlight becomes a soft rectangle only under 480px. */
+    max-width: 44px;
     border-radius: 0;
     border: none;
     background: none;
     cursor: pointer;
     flex-shrink: 0;
     transition: background var(--brand-transition-fast);
+}
+
+@media (min-width: 480px) {
+    #theme-toggle {
+        max-width: none;
+    }
 }
 
 #theme-toggle:hover {
@@ -537,7 +554,10 @@
     width: 100%;
     max-width: var(--brand-content-max);
     margin: 0 auto;
-    padding: 0 clamp(20px, 5vw, 48px);
+    /* Flat 24px, matching the `px-6` that Projects and Gallery supply on their own children.
+       This was clamp(20px, 5vw, 48px), which is why a `.brand-container` nested inside `main`
+       landed 48px further in than a Projects section at the same viewport. */
+    padding: 0 24px;
 }
 
 .brand-section {
@@ -599,7 +619,9 @@
     gap: 0.5em;
     /* Full bar height like the nav segments; the logo content stays centred. */
     height: 100%;
-    padding: 0 clamp(11px, 1.6vw, 20px);
+    /* Lower bound cut 11px -> 7px to buy horizontal room at 360px, where a fourth nav
+       label (Contact) would otherwise overflow the bar. Upper bound unchanged. */
+    padding: 0 clamp(7px, 1.6vw, 20px);
     border-radius: 0;
     font-family: var(--brand-font-display);
     font-size: 20px;
@@ -644,8 +666,9 @@
     display: flex;
     align-items: stretch;
     align-self: stretch;
-    gap: 4px;
-    margin-left: 4px;
+    /* 4px -> 2px at narrow widths only; four labels have no slack at 360px. */
+    gap: clamp(2px, 0.4vw, 4px);
+    margin-left: clamp(2px, 0.4vw, 4px);
     padding: 0;
     list-style: none;
     background: none;
@@ -664,7 +687,10 @@
     /* Full bar height, so no vertical padding and no min-height floor — the label stays
        optically centred via align-items instead. */
     height: 100%;
-    padding: 0 clamp(11px, 1.6vw, 20px);
+    /* Lower bound cut 11px -> 6px. This is the main lever that lets four labels fit at 360px;
+       at that width a link still renders ~55px wide, well clear of the 24px WCAG 2.5.8 target
+       minimum, and the 62px bar height carries the vertical dimension. Upper bound unchanged. */
+    padding: 0 clamp(6px, 1.6vw, 20px);
     border-radius: 0;
     font-family: var(--brand-font-heading);
     font-size: clamp(13px, 1.05vw, 15px);
@@ -1051,8 +1077,13 @@ html.dark .brand-circle-icon {
     white-space: nowrap;
 }
 
+/* --brand-accent, not --brand-border-focus. This was the only focus rule in the file still on
+   the border token, which is rgba(255,255,255,0.24) in dark — a translucent ring so faint it was
+   effectively no focus indicator on a surface-1 button. #theme-toggle, .brand-nav-logo,
+   .project-tab and .brand-chip all use the accent, and AGENTS.md documents the accent as the
+   contract. Fixed 2026-07-28; affects every .brand-btn on the site. */
 .brand-btn:focus-visible {
-    outline: 2px solid var(--brand-border-focus);
+    outline: 2px solid var(--brand-accent);
     outline-offset: 2px;
 }
 
@@ -1061,6 +1092,60 @@ html.dark .brand-circle-icon {
     color: var(--brand-bg);
 }
 .brand-btn-primary:hover { background: var(--brand-surface-inverse-soft); }
+
+/* Spectrum-underline CTA. Reuses the same iridescent ramp as .brand-spectrum-bar (under the nav
+   and page titles) so a prominent button reads as part of the existing system instead of a new
+   button language. Square rather than pill: it is a form submit sitting under square-cornered
+   inputs, and the pill radius fought that. */
+.brand-btn-spectrum {
+    position: relative;
+    background: var(--brand-surface-inverse);
+    color: var(--brand-bg);
+    border-radius: 6px;
+    padding: 12px 24px;
+    font-size: 14px;
+    overflow: hidden;
+}
+
+.brand-btn-spectrum::after {
+    content: '';
+    position: absolute;
+    inset-inline: 0;
+    bottom: 0;
+    height: 3px;
+    background: linear-gradient(90deg,
+        var(--brand-ir-1), var(--brand-ir-3), var(--brand-ir-6), var(--brand-ir-1));
+    background-size: 200% 100%;
+    transform: scaleX(0);
+    transform-origin: left center;
+    transition: transform var(--brand-transition-fast);
+}
+
+.brand-btn-spectrum:hover,
+.brand-btn-spectrum:focus-visible {
+    background: var(--brand-surface-inverse-soft);
+}
+
+.brand-btn-spectrum:hover::after,
+.brand-btn-spectrum:focus-visible::after {
+    transform: scaleX(1);
+}
+
+.brand-btn-spectrum:active {
+    transform: translateY(1px);
+}
+
+/* The sweep is a transform transition, not an animation, so it is not caught by the blanket
+   animation rules. Reduced-motion users still get the full-width bar — the state change is the
+   affordance, the slide is decoration. */
+@media (prefers-reduced-motion: reduce) {
+    .brand-btn-spectrum::after {
+        transition: none;
+    }
+    .brand-btn-spectrum:active {
+        transform: none;
+    }
+}
 
 .brand-btn-secondary {
     background: transparent;

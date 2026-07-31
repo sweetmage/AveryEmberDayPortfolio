@@ -92,7 +92,7 @@ export default function ProjectTabs() {
     <>
       <PageHeader title="Projects" />
 
-      <div className="mx-auto max-w-[1400px] lg:flex lg:items-start">
+      <div className="mx-auto max-w-(--brand-content-max) lg:flex lg:items-start">
       <div className="lg:w-[260px] lg:shrink-0">
         <div
           ref={tablistRef}

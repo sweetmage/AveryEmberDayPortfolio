@@ -78,9 +78,9 @@ export default function GalleryGrid({ items }: GalleryGridProps) {
   return (
     <section className="mt-8 mb-12" aria-label="Art gallery">
       {/* Same container geometry as PageHeader and the Projects tablist:
-          `max-w-[1400px]` with the 24px gutter supplied by the children, so
+          `max-w-(--brand-content-max)` with the 24px gutter supplied by the children, so
           the rail, the title and the title bar all share one left edge. */}
-      <div className="mx-auto max-w-[1400px] lg:flex lg:items-start">
+      <div className="mx-auto max-w-(--brand-content-max) lg:flex lg:items-start">
         <div className="lg:w-[260px] lg:shrink-0">
           {/* Filter bar — a filter group, not a tablist, so no role="tab"/
               aria-selected: aria-pressed on each button is the correct

@@ -7,8 +7,7 @@ import BubbleLogo from './BubbleLogo';
 const navLinks = [
   { href: '/projects/', label: 'Projects' },
   { href: '/gallery/', label: 'Gallery' },
-  // Hidden until Netlify form detection is enabled (LOGBOOK Entry 077):
-  // { href: '/contact/', label: 'Contact' },
+  { href: '/contact/', label: 'Contact' },
 ];
 
 export default function Nav() {

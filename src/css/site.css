@@ -102,7 +102,12 @@ nav ul {
 
 /* ── Main / Section ──────────────────────────────────────────────── */
 main {
-    padding: 0 clamp(16px, 4vw, 40px);
+    /* No horizontal padding by design. `main` used to supply clamp(16px, 4vw, 40px), which
+       compounded with the padding of any `.brand-container` nested inside it — that double
+       gutter is what put the Home About box 164px further in than the Projects title at 1440px.
+       The container carries the width; children carry the 24px gutter (`px-6`, or the
+       `.brand-container` rule in brand.css). Changed 2026-07-28. */
+    padding: 0;
     max-width: var(--brand-content-max);
     margin: 0 auto;
     width: 100%;

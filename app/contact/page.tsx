@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import ConnectLinks from '../components/ConnectLinks';
+import { ogImage } from '../og';
 
 export const metadata: Metadata = {
   title: 'Contact — Avery Ember Day',
@@ -7,7 +7,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'Contact — Avery Ember Day',
     description: 'Get in touch with Avery Ember Day — collaborations, commissions, and inquiries.',
-    images: ['/images/og-default.png'],
+    images: [ogImage],
     type: 'website',
   },
   twitter: {
@@ -26,20 +26,21 @@ export default function ContactPage() {
       </h1>
       <p className="m-0 max-w-[560px] font-body text-base leading-[1.7] text-text-soft">
         If something here caught your eye, I&apos;m always looking for new opportunities
-        to collaborate. Reach me through the form below or at the links.
+        to collaborate. Reach me through the form below, or at the links in the footer.
       </p>
 
-      <div className="my-10">
-        <ConnectLinks />
-      </div>
-
+      {/* `bubble-exclude` is the semantic marker in DEFAULT_EXCLUSIONS (scripts/bubbles.js).
+          The engine matches exclusions by SELECTOR, and nothing in that list matches form,
+          input, textarea or label — so without this one class the physics bubbles drift
+          straight across the form fields. Covered by tests/bubbles-exclusion.spec.js; keep the
+          class if this element is ever retagged. */}
       <form
         name="contact"
         method="POST"
         action="/contact/thanks/"
         data-netlify="true"
         netlify-honeypot="bot-field"
-        className="mx-auto max-w-[600px] rounded-lg border border-line bg-surface-1 p-6 shadow-card"
+        className="bubble-exclude mt-10 max-w-[720px] rounded-lg border border-line bg-surface-1 p-6 shadow-card"
       >
         <input type="hidden" name="form-name" value="contact" />
         <div className="hidden">
@@ -90,7 +91,7 @@ export default function ContactPage() {
 
         <button
           type="submit"
-          className="brand-btn brand-btn-primary w-full"
+          className="brand-btn brand-btn-spectrum w-full"
         >
           Send Message
         </button>

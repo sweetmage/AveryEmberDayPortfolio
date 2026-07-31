@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import BubbleLogo from './components/BubbleLogo';
+import { ogImage } from './og';
 
 export const metadata: Metadata = {
   title: 'Avery Ember Day — Brand & Visual Designer',
@@ -7,7 +8,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'Avery Ember Day — Brand & Visual Designer',
     description: 'Avery Ember Day — illustrator, graphic designer, and motion artist.',
-    images: ['/images/og-default.png'],
+    images: [ogImage],
     type: 'website',
   },
   twitter: {
@@ -60,7 +61,11 @@ export default function HomePage() {
           <div className="brand-spectrum-bar brand-title-bar mb-6" aria-hidden="true">
             <div />
           </div>
-          <div className="textbox about-box bubble-exclude relative rounded-lg border border-line bg-surface-1 p-6 leading-[1.65] shadow-card [&_p]:text-text-soft [&_p+p]:mt-[0.8em]">
+          {/* The container is the full site width so this box's left edge lines up with the
+              Projects and Gallery titles, but the prose stops at a readable measure — at the
+              full 1352px these paragraphs would run ~180 characters per line. Left-aligned, not
+              centred, so the cap does not break that shared edge. */}
+          <div className="textbox about-box bubble-exclude relative max-w-[72ch] rounded-lg border border-line bg-surface-1 p-6 leading-[1.65] shadow-card [&_p]:text-text-soft [&_p+p]:mt-[0.8em]">
             <p>
               For most of the last decade, I've been building a design practice in
               the margins: freelancing nights and weekends while managing a team of
