@@ -7,13 +7,13 @@ This document contains the full slide text for the three-set series *A History o
 ## Set 1 — A History of Mistrust
 
 **Slide 1**
-A History of Mistrust: Why Minority Communities Struggle to Trust Doctors
+A History of Mistrust: Why Some Communities Struggle to Trust Doctors
 
 **Slide 2**
 Fun Fact: Being LGBTQ+ is normal and okay
 
 **Slide 3**
-Un-funfact: Homosexuality was classified as a mental disorder that was treated with harmful conversion therapy or even shock therapy until 1973.
+Un-Fun Fact: Homosexuality was classified as a mental disorder that was treated with harmful conversion therapy or even shock therapy until 1973. Even after guidelines were changed, harmful treatments persisted through the 1980s, and discrimination persists today.
 > *Research: APA's removal of homosexuality from DSM-II in 1973; history of conversion therapy practices.*
 
 **Slide 4**
@@ -21,11 +21,11 @@ POC & LGBTQ+ individuals often face systemic discrimination when seeking healthc
 > *Research: Study or report documenting healthcare discrimination by race/sexual orientation (e.g., KFF, Lambda Legal, AAMC).*
 
 **Slide 5**
-Black, Indigenous, and Latinx women have been sterilized without consent well into the 20th century.
-> *Research: Specific documented programs — NC Eugenics Board, IHS sterilizations of Native women (1970s), California prison sterilizations (through 2010), Madrigal v. Quilligan.*
+Black, Indigenous, and Latinx women have been sterilized without consent as recently as 2013.
+> *Research: Specific documented programs — NC Eugenics Board, IHS sterilizations of Native women (1970s), California prison sterilizations (through 2013), Madrigal v. Quilligan.*
 
 **Slide 6**
-Tuskegee Experiment (1932–1972): American healthcare providers lied to and denied Black men treatment for syphilis to study the progression of the disease, even after a widespread cure was developed.
+Tuskegee Experiment (1932-1972): American healthcare providers lied to Black men and denied them treatment for syphilis to study the disease, even after a widespread cure was developed.
 > *Research: CDC/NCBI historical record of the USPHS Syphilis Study.*
 
 **Slide 7**
@@ -42,7 +42,7 @@ Mistrust leads to:
 
 **Slide 9**
 "Health is more than the absence of disease. Health is about jobs and employment, education, the environment, and all of those things that go into making us healthy."
-— Dr. Joycelyn Elders
+-Dr. Joycelyn Elders
 > *Research: Original source + year for this quote (speech, interview, or publication).*
 
 **Slide 10**
@@ -56,8 +56,10 @@ The first step to rebuilding trust is understanding why it was broken. Share thi
 AIDS Care in Marginalized Communities
 
 **Slide 12**
-Anyone who is sexually active could be at risk for sexually transmitted diseases or infections. However, Black & Latinx individuals are 3x more likely to contract HIV. LGBTQ+ individuals are at an even higher risk. Why?
-> *Research: CDC HIV surveillance data — racial/ethnic and sexual orientation disparities in HIV rates.*
+Black people represent only 12% of the population but bear 38% of new diagnoses (which is a >3x disparity ratio), while Hispanic individuals represent 18% of the population but bear 32% of new diagnoses.
+
+Why?
+> *Research: CDC HIV surveillance data — share of new diagnoses vs. population share by race/ethnicity.*
 
 **Slide 13**
 Systemic barriers prevent access to life-saving treatments like PrEP
@@ -67,7 +69,8 @@ Systemic barriers prevent access to life-saving treatments like PrEP
 - High costs
 - Lack of access to healthcare
 - Stigma & discrimination
-- ...all contribute to these disparities.
+
+...all contribute to these disparities.
 > *Research: KFF or Commonwealth Fund report on cost/access barriers; stigma and treatment-seeking literature.*
 
 **Slide 15**
@@ -79,11 +82,11 @@ This discrimination leads to avoidance of crucial treatment.
 > *Research: Medical mistrust and treatment avoidance research — connects naturally from slide 15 sources.*
 
 **Slide 17**
-This directly leads these communities towards later diagnoses & worse health outcomes.
+This directly leads these communities to later diagnoses & worse health outcomes.
 > *Research: Late HIV diagnosis rate disparities by race (CDC); cancer staging at diagnosis by race.*
 
 **Slide 18**
-The AIDS crisis emerged in the early 1980s, claiming the lives of over 39 million people worldwide.
+The AIDS crisis emerged in the early 1980s, claiming the lives of over 44 million people worldwide.
 > *Research: UNAIDS global HIV/AIDS statistics — specify the cumulative figure and data year.*
 
 **Slide 19**
@@ -126,12 +129,12 @@ Training doctors and nurses to understand diverse experiences is key to changing
 
 **Slide 27**
 "We do have the power, if we come together, to make change."
-— Dr. Karthik Sivashanker
+-Dr. Karthik Sivashanker
 > *Research: Original source + year for this quote.*
 
 **Slide 28**
 Advocate for Policy Changes
-We need policies that require inclusive care and punish discriminatory practices enforced in healthcare systems.
+We need policies that require inclusive care and punish discriminatory practices in healthcare systems.
 
 **Slide 29**
 Community support for policy changes is necessary to ensure inclusive healthcare for all!

@@ -5,7 +5,12 @@
       /* ── Slide data ── */
       const BASE = '/images/myart/A History of Mistrust/slides/';
 
-      /* Exact words written on each slide (used as alt text + caption) */
+      /* Exact words written on each slide (used as alt text + caption).
+         Transcribed directly from the artwork on 2026-07-27. Entries 7-18 had been out of
+         order since before that date: the four slides that close Set 1 (7-10) were sitting
+         behind Set 2's opening block (11-18), so screen readers got the wrong words on
+         twelve slides and the lightbox paired wrong captions with wrong images. Set title
+         cards must land on 1 / 11 / 21 to match the Math.ceil(n / 10) set math below. */
       const SLIDE_ALT = [
         "A History of Mistrust: Why Some Communities Struggle to Trust Doctors",
         "Fun Fact: Being LGBTQ+ is normal and okay",
@@ -13,19 +18,19 @@
         "POC & LGBTQ+ individuals often face systemic discrimination when seeking healthcare.",
         "Black, Indigenous, and Latinx women have been sterilized without consent as recently as 2013.",
         "Tuskegee Experiment (1932-1972): American healthcare providers lied to Black men and denied them treatment for syphilis to study the disease, even after a widespread cure was developed.",
+        "The US Government's slow response disproportionately harmed LGBTQ+ & POC communities. Current information on the subject has been removed from USA.gov.",
+        "Mistrust leads to: Late diagnoses, Poorer mental health, Non-adherence to necessary treatment, Higher mortality rates",
+        "“Health is more than the absence of disease. Health is about jobs and employment, education, the environment, and all of those things that go into making us healthy.” -Dr. Joycelyn Elders",
+        "The first step to rebuilding trust is understanding why it was broken. Share this series with your community and let's start that conversation together.",
         "AIDS Care in Marginalized Communities",
         "Black people represent only 12% of the population but bear 38% of new diagnoses (which is a >3x disparity ratio), while Hispanic individuals represent 18% of the population but bear 32% of new diagnoses. Why?",
         "Systemic barriers prevent access to life-saving treatments like PrEP",
-        "High costs, lack of access to healthcare, stigma & discrimination all contribute to these disparities.",
+        "High costs, Lack of access to healthcare, Stigma & discrimination all contribute to these disparities.",
         "LGBTQ+ individuals and POC often receive disproportionately inferior treatment and face dismissal of symptoms.",
         "This discrimination leads to avoidance of crucial treatment.",
         "This directly leads these communities to later diagnoses & worse health outcomes.",
         "The AIDS crisis emerged in the early 1980s, claiming the lives of over 44 million people worldwide.",
-        "The US Government's slow response disproportionately harmed LGBTQ+ & POC communities. Current information on the subject has been removed from USA.gov.",
-        "Mistrust leads to: late diagnoses, poorer mental health, non-adherence to necessary treatment, higher mortality rates.",
-        "“Health is more than the absence of disease. Health is about jobs and employment, education, the environment, and all of those things that go into making us healthy.” —Dr. Joycelyn Elders",
-        "The first step to rebuilding trust is understanding why it was broken. Share this series with your community and let's start that conversation together.",
-        "Do your part: get yourself tested, end the stigma behind STDs, educate yourself, encourage your loved ones to get tested.",
+        "Do your part: Get yourself tested, End the stigma behind STDs, Educate yourself, Encourage your loved ones to get tested",
         "Awareness is only effective in numbers. Share this post among your community. Let's work towards a better future together.",
         "Rebuilding Trust Between Marginalized Communities & Healthcare Providers",
         "Rebuilding trust is critical to closing the gap in medical care for marginalized communities. Okay sounds cool, but...",
@@ -33,7 +38,7 @@
         "Support Community-led Clinics. Clinics run by LGBTQ+ & POC often provide safe, affirming care.",
         "Representation Matters. Patients trust providers who reflect their race, culture, & experiences.",
         "Cultural Competency is Essential. Training doctors and nurses to understand diverse experiences is key to changing how marginalized communities receive care.",
-        "“We do have the power, if we come together, to make change.” —Dr. Karthik Sivashanker",
+        "“We do have the power, if we come together, to make change.” -Dr. Karthik Sivashanker",
         "Advocate for Policy Changes. We need policies that require inclusive care and punish discriminatory practices in healthcare systems.",
         "Community support for policy changes is necessary to ensure inclusive healthcare for all!",
         "Share this to spread awareness so we can secure a future with healthcare that is: inclusive, affordable, accessible, culturally competent."
