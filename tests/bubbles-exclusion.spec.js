@@ -19,6 +19,23 @@ const BASE_URL = 'http://localhost:4322';
  * geometry.
  */
 
+/*
+ * Serial, not parallel. Every test in this file runs the physics engine with motion enabled, and
+ * the engine integrates a fixed velocity PER FRAME rather than scaling by elapsed time — so when
+ * several of these run concurrently under `fullyParallel`, rAF is starved and bubbles get fewer
+ * frames to be pushed out of their exclusion zones. The result reads exactly like a real
+ * regression: a bubble left grazing a zone edge by ~100px².
+ *
+ * That mechanism is documented in AGENTS.md and cost a debugging cycle in Entry 090. It bit again
+ * on 2026-07-28: adding the two Contact-form cases pushed the concurrent count high enough that
+ * the pre-existing "Projects tabs @ 768px" case began failing about half the time, while passing
+ * standalone every time. The app was fine; the harness was starving itself.
+ *
+ * Running this file serially fixes the cause rather than loosening the assertion. It costs wall
+ * clock, and that is the right trade for the only coverage the bubble engine has.
+ */
+test.describe.configure({ mode: 'serial' });
+
 /**
  * Wait for the idle-deferred engine, then let the physics settle.
  *
@@ -130,6 +147,51 @@ test.describe('bubble exclusion zones', () => {
       expect(await maxBubbleOverlap(page, '.gallery-filter-bar')).toBe(0);
     });
   }
+
+  // The Contact form. DEFAULT_EXCLUSIONS matches h1/p/.brand-btn but nothing that matches
+  // form/input/textarea/label, so before 2026-07-28 the physics bubbles drifted straight across
+  // the form fields. Coverage comes from a single `.bubble-exclude` on the <form>. That is a
+  // selector match, which is exactly the trap that silently un-excluded the hero logo and the
+  // Projects rail -- so assert the zone is registered, not just that this frame looks clean.
+  test('physics bubbles never cover the Contact form @ 1440px', async ({ page }) => {
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await page.goto(`${BASE_URL}/contact/`, { waitUntil: 'networkidle' });
+    await waitForEngine(page);
+
+    expect(await allRegisteredAsZones(page, 'form[name="contact"]')).toBe(true);
+    expect(await maxBubbleOverlap(page, 'form[name="contact"]')).toBe(0);
+  });
+
+  // At 768px the form spans 24..744 of a 768px viewport, so the channels either side are 24px --
+  // narrower than a 10-28px bubble. Zero overlap is geometrically impossible at that width, and
+  // asserting it would only invite someone to relax the threshold later. The requirement that
+  // actually matters is that no bubble PARKS on the form, so assert on bubble centres instead:
+  // grazing the edge is allowed, entering is not.
+  test('no physics bubble parks on the Contact form @ 768px', async ({ page }) => {
+    await page.setViewportSize({ width: 768, height: 900 });
+    await page.goto(`${BASE_URL}/contact/`, { waitUntil: 'networkidle' });
+    await waitForEngine(page);
+
+    expect(await allRegisteredAsZones(page, 'form[name="contact"]')).toBe(true);
+
+    let worstInside = 0;
+    for (let i = 0; i < 6; i++) {
+      worstInside = Math.max(worstInside, await page.evaluate(async () => {
+        const nextFrame = () => new Promise((r) => requestAnimationFrame(() => r()));
+        const T = document.querySelector('form[name="contact"]').getBoundingClientRect();
+        let inside = 0;
+        for (const el of document.querySelectorAll('.brand-bubble')) {
+          const b = el.getBoundingClientRect();
+          const cx = b.left + b.width / 2;
+          const cy = b.top + b.height / 2;
+          if (cx > T.left && cx < T.right && cy > T.top && cy < T.bottom) inside++;
+        }
+        for (let j = 0; j < 60; j++) await nextFrame();
+        return inside;
+      }));
+    }
+    expect(worstInside).toBe(0);
+  });
 
   test('the hero logo is a registered exclusion zone', async ({ page }) => {
     await page.goto(`${BASE_URL}/`, { waitUntil: 'networkidle' });
