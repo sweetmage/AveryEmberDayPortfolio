@@ -1,3 +1,277 @@
+## Entry 108 — 2026-07-31
+
+**Agent:** Opus 5 (vesper, main)
+**Cycle:** land-106-107
+**Branch:** `develop` (deploy pause until Aug 6 — committed, **nothing pushed**)
+**Task:** Verify and commit the two finished-but-uncommitted cycles (Entries 106 and 107).
+
+### Why this entry exists
+
+Entries 106 and 107 both claimed "committed here, nothing pushed". Neither was committed. The
+whole of both cycles — 140 dirty files, including the regenerated Mistrust assets, `app/og.ts`,
+three new scripts and two plan docs — was sitting in the working tree on `develop`, unlanded, for
+three days. Nothing was lost, but a working tree is not a checkpoint: an accidental `git checkout`
+or a `--update-snapshots` mishap would have taken all of it. Both entry headers now carry the real
+SHAs instead of the false claim.
+
+**Lesson for future sessions: verify the commit actually happened before writing "committed" into
+LOGBOOK.** `git log --oneline -1` costs nothing and the claim is load-bearing — the next session
+reads the LOGBOOK to decide what state the repo is in.
+
+### Verification before landing
+
+Re-verified the whole tree rather than trusting the prior entries:
+
+- `npm test` — **55/55 green, twice consecutively**, per the repo's own stability rule. The gate
+  left the working tree clean both times.
+- `npx tsc --noEmit` — clean.
+- `npm run css:build` — `style.css` **byte-identical** after rebuild (md5 unchanged), so the
+  committed copy was already current and is not the stale-CSS trap from Entry 082.
+- `node scripts/measure-content-widths.js` — exit 0, one section edge at every viewport:
+  24px at 768/1024, 44 at 1440, 604 at 2560, 1044 at 3440. Matches Entry 107's numbers exactly.
+- **`SLIDE_ALT` reorder spot-checked against the artwork**, not against the prior entry's claim.
+  Read `Instagram post - 7.png` and `- 11.png` directly: slide 7 is the "US Government's slow
+  response" card and slide 11 is the "AIDS Care in Marginalized Communities" set-title card, which
+  is what the `Math.ceil(n / 10)` set math requires. The Entry 106 correction is right.
+
+### Landed as five commits
+
+| SHA | Scope |
+|---|---|
+| `4355541` | Mistrust webp resync, generator script, `SLIDE_ALT` + `slides.md` corrections |
+| `66ca5d8` | og card generated from the live hero, shared `app/og.ts` descriptor |
+| `0e72c97` | Contact unhidden, nav-fit clamps, site-wide content-width unification, Contact polish, focus-visible fix, hydration fix |
+| `e7a8a5b` | bubble spec serial mode + Contact cases, 40 regenerated baselines |
+| this entry | docs |
+
+`0e72c97` deliberately spans both cycles: `brand.css` carries Entry 106's nav-fit clamps and Entry
+107's width unification interleaved in one file, and splitting them by hunk would have produced two
+commits that were never independently verified.
+
+### Also fixed in passing
+
+- Both plan docs still said **Status: planned** though the work had shipped. Reconciled to
+  `shipped`, per the convention established in Entry 088.
+- The three `A History of Mistrust Set N.png` exports were committed as source-of-record, matching
+  Entry 106's stated intent. They are still the defective exports (Set 1 clipped, Set 3 holding
+  Set 2's slides) and nothing consumes them; the re-export-or-drop decision stays open in `TODO.md`
+  because it is the user's call, and committing preserves that option where deleting would not.
+
+### Notes / risks
+
+- Still nothing pushed. `develop` is now **115 commits ahead of `origin/develop`**. The deploy
+  pause holds until Aug 6; this all ships with that single merge.
+- `tsconfig.tsbuildinfo` is a tracked build artifact and churns on every typecheck. It is committed
+  here with the docs for tidiness, but it arguably belongs in `.gitignore` — noted, not changed.
+
+---
+
+## Entry 107 — 2026-07-28
+
+**Agent:** Opus 5 (marlow, main)
+**Cycle:** contact-polish-width-unification
+**Branch:** `develop` (deploy pause until Aug 6 — nothing pushed)
+**Commits:** the work of this entry sat uncommitted until 2026-07-31, when it was verified and
+landed as `0e72c97` (layout + Contact) and `e7a8a5b` (tests + baselines). See Entry 108.
+**Task:** Contact page polish (bubble repel, drop duplicate socials, redesign Send) + unify content
+widths across every page and viewport + fix the hydration error found in Entry 106.
+**Plan:** [`docs/plans/2026-07-28-contact-polish-width-unification.md`](docs/plans/2026-07-28-contact-polish-width-unification.md)
+
+### One content width, one gutter
+
+Measured before: the Projects/Gallery titles, the Contact heading and the Home About box sat on
+**three different left edges** — 44 / 144 / 208 at 1440px — and the gap widened with the viewport
+(604 / 704 / 768 at 2560). Three causes, all fixed:
+
+- **Three max-widths.** `--brand-content-max` was 1200px while Projects and Gallery hardcoded
+  `max-w-[1400px]` in three places and opted their `<main>` out of the global cap. The token is now
+  **1400px** and is the single source of truth; the three literals now read it.
+- **Three gutter systems.** `main` used `clamp(16px,4vw,40px)`, `.brand-container` used
+  `clamp(20px,5vw,48px)`, Projects/Gallery used a flat `px-6`. Everything is a flat **24px** now.
+- **Compounding nesting.** The About box sits inside `main` *and* `.brand-container`, so their
+  paddings added — that alone accounted for its third edge. `main` now has **no horizontal
+  padding**: the container carries the width, children carry the gutter.
+
+Verified with the new `scripts/measure-content-widths.js`: one section edge at every viewport —
+24px at 768/1024, 44 at 1440, 604 at 2560, 1044 at 3440. The script **exits non-zero** if the
+edges ever diverge again, which the visual suite structurally cannot catch (it grades each page
+against its own past self, so a permanently misaligned page stays green).
+
+Per the user's call, containers align but content keeps a **readable measure inside**: the About
+prose caps at 72ch (818px) rather than stretching to 1352px (~180 characters a line), and the
+Contact form at 720px. Both are left-aligned, so they share the edge without sharing the width.
+The footer picks up the new width and now aligns with page content.
+
+### Contact page
+
+- **Removed the duplicate social links** — `ConnectLinks` was rendering the same three icons the
+  footer already shows. Intro copy now points at the footer.
+- **Bubble repel.** `DEFAULT_EXCLUSIONS` matches `h1`, `p` and `.brand-btn`, but **nothing matched
+  `form`, `input`, `textarea` or `label`** — bubbles drifted straight across the fields. Fixed with
+  one `.bubble-exclude` on the `<form>`, plus two spec cases so the next retag cannot silently
+  un-exclude it (the trap that already bit the hero logo and the Projects rail).
+- **Send button** redesigned as `.brand-btn-spectrum`: square-cornered to sit under square inputs,
+  with the spectrum ramp sweeping the bottom edge on hover/focus — reusing the treatment already
+  under the nav and page titles instead of inventing a button language. Reduced-motion path drops
+  the slide but keeps the state change.
+
+### `.brand-btn:focus-visible` was effectively invisible
+
+Found by a nano-agent inventory, verified directly: it was the **only** focus rule in `brand.css`
+still using `--brand-border-focus` — `rgba(255,255,255,0.24)` in dark — while `#theme-toggle`,
+`.brand-nav-logo`, `.project-tab` and `.brand-chip` all use `--brand-accent`, which AGENTS.md
+documents as the contract. Now accent, measured at `#CC44FF` dark / `#8B22E0` light. **This
+affected every `.brand-btn` on the site**, not just Send.
+
+### Hydration error fixed (carried from Entry 106)
+
+`<Script strategy="beforeInteractive">` was a direct child of `<html>`; moved inside `<body>`.
+Console on `/` is now clean, no theme flash. AGENTS.md claimed `netlify.toml` pins sha256 hashes
+of inline theme scripts — **that is stale**: line 44 is `script-src 'self' 'unsafe-inline'` with no
+hashes, and `theme-init.js` is external anyway. Corrected in AGENTS.md.
+
+### The bubble spec was starving itself
+
+Adding two motion-enabled Contact cases pushed the concurrent count high enough that the
+**pre-existing** "Projects tabs @ 768px" case began failing ~50% of runs with a ~100px² graze,
+while passing standalone every time. Same rAF-starvation mechanism as Entry 090: the engine
+integrates per frame, so `fullyParallel` contention buys fewer frames to push bubbles out of
+zones. Fixed at the cause — `tests/bubbles-exclusion.spec.js` now runs `mode: 'serial'` — rather
+than by loosening the assertion. Suite went 54s → 2.2m and green **3/3** where it had been ~50%.
+
+One assertion is deliberately not "zero overlap": at 768px the Contact form spans 24..744 of a
+768px viewport, so the side channels are 24px, narrower than a 10-28px bubble. Zero is
+geometrically impossible there, and asserting it would only invite someone to relax the threshold
+later. That case asserts no bubble *centre* enters the form — grazing allowed, parking not.
+
+### Verification
+
+`npm test` green **3/3 consecutive** (55 tests, up from 53). 40 visual baselines re-graded: run red
+first, every failure traced to an intended region (Contact body, Home About band, and a footer-only
+band on Projects/Gallery/Mistrust confirming pages already at 1400px did not move). No horizontal
+scroll at 360px on any of the five routes. Both themes checked for the new button; contrast >15:1
+either way.
+
+### Notes / risks
+
+- **Legacy `projects/*.html`** also consume `--brand-content-max` and silently widened to 1400px.
+  Not deployed (the Next export is what ships), but they are tracked files.
+- Left-aligning the Contact form leaves the right half of the page empty at 1440px+. That is the
+  direct consequence of the chosen "align edges" option over a two-column layout; flagged for the
+  user rather than quietly re-centred (a nano-agent review suggested restoring `mx-auto`, which
+  would have broken the shared edge — rejected).
+
+---
+
+## Entry 106 — 2026-07-27
+
+**Agent:** Opus 5 (marlow, main)
+**Cycle:** contact-unhide-mistrust-resync
+**Branch:** `develop` (deploy pause in effect until Aug 6 — nothing pushed)
+**Commits:** the work of this entry sat uncommitted until 2026-07-31, when it was verified and
+landed as `4355541` (Mistrust assets + alt text), `66ca5d8` (og card) and `0e72c97` (nav-fit,
+whose CSS is interleaved with Entry 107's in `brand.css`). See Entry 108.
+**Task:** Unhide the Contact page in nav + footer, resync the "A History of Mistrust" assets after
+the user's Figma re-export, and open Contact in Chrome for manual review.
+**Plan:** [`docs/plans/2026-07-27-contact-unhide-mistrust-assets.md`](docs/plans/2026-07-27-contact-unhide-mistrust-assets.md)
+
+### `SLIDE_ALT` was misordered on the live site — pre-existing, unrelated to the Figma export
+
+Filed separately because it is **not** part of the asset resync and would not have been found
+without it. `SLIDE_ALT` in `public/scripts/history-of-mistrust-slideshow.js` is documented as "the
+exact words written on each slide" and feeds both `<img alt>` and the lightbox caption. Entries for
+**slides 7-18 were in the wrong positions**: the four slides that close Set 1 (7-10) sat behind Set
+2's opening block (11-18). Screen-reader users got the wrong words on twelve slides, and the
+lightbox paired wrong captions and wrong set numbers with wrong images. Slides 1-6 and 19-30 were
+already correct.
+
+This shipped and is live on the published site; it cannot be corrected in production until the Aug 6
+merge. Verified by reading all 30 source PNGs directly — the artwork is the source of truth, and
+both text files disagreed with it in different ways (`SLIDE_ALT` on ordering, `slides.md` on
+wording), so neither could be used to check the other.
+
+### Change
+
+**Contact unhidden (Track A).**
+- `app/components/Nav.tsx` / `app/components/Footer.tsx` — Contact uncommented in both.
+- `brand.css` — narrow-width room for a fourth label, all **lower** clamp bounds only, upper bounds
+  untouched so nothing changes above ~480px: nav-link padding `11px→6px`, logo padding `11px→7px`,
+  link gap/margin `4px→2px` (now clamped), and `#theme-toggle` capped at `max-width: 44px` below
+  480px. The cap went in the **ID** block (`brand.css:238`), not `.brand-theme-toggle` — the ID wins
+  and editing the class would have been a no-op.
+- Entry 099 measured 0px slack at 360px with two labels; measured after this change at
+  360/390/768/1440/2560/3440 in both themes: **12/12 pass**, ~77px slack at 360px, links render
+  55-60px wide (WCAG 2.5.8 floor is 24px), toggle 44px (meets 2.5.5 AAA), no clipped labels, and
+  `documentElement.scrollWidth === clientWidth` at 360px.
+
+**Mistrust assets resynced (Track B).**
+- New `scripts/generate-mistrust-assets.js` regenerates `slides/slide-NN.webp` + `@2x` and the three
+  `sets/set-N.webp` strips into **both** the `images/` and `public/` trees. Default mode rebuilds only
+  sources whose *content* changed per `git status`; `--all` forces everything. Content-based rather
+  than mtime-based on purpose: the Figma re-export rewrote the mtime of all 30 PNGs while only 10
+  differed, so mtime would have rebuilt all 60 slide files and buried the real diff under encoder
+  noise from a different libwebp build.
+- **The user's three set PNG exports are defective and are not consumed.** Verified by matching every
+  tile against the individual slides: `Set 1.png` is 10750px, clipping 50px off the right edge of its
+  first slide, and `Set 3.png` contains Set 2's slides (11-20) rather than its own (21-30). The strips
+  are now composed from the per-slide PNGs instead, which is deterministic and always current. The set
+  PNGs are committed as source-of-record only.
+- Strips are laid out at each slide's **native** width, not fixed 1080px slots, because slide 21 is
+  1056x1080 (and was before this run). This reproduces the previously committed geometry exactly —
+  set-1/2 at 10800px, set-3 at 10776px — so the aspect ratios did not change and no layout shifted.
+- `public/` source PNGs re-synced to match `images/`; both trees verified byte-identical across all
+  30 slides + 3 sets.
+
+**Alt text and slide docs corrected (Track C).**
+- `SLIDE_ALT` rebuilt from the artwork: the 7-18 reorder above, plus list-item capitalization on
+  slides 8/14/19 to match the slides, and the two pull-quote attributions changed from em dash to the
+  hyphen the artwork actually uses.
+- `slides.md` (both copies, kept byte-identical) — ordering was already right, so this was a wording
+  pass: slide 1 "Minority"→"Some", slide 3 "Un-funfact:"→"Un-Fun Fact:" plus the missing trailing
+  sentence, slide 5 "well into the 20th century"→"as recently as 2013", slide 6 Tuskegee rewording,
+  slide 12 replaced wholesale (it described a claim the slide no longer makes), slide 17
+  "towards"→"to", slide 18 "39 million"→"44 million", slide 28 dropped "enforced". Research notes
+  re-checked against the claims that changed.
+
+**Verification (Track D).** `npm run css:build`; smoke + bubble specs green (12/12); visual gate run
+**red first** and every one of the 40 failures traced to an intended region before regenerating —
+nav band (y0-99) and footer band on all five pages, current-page accent on Contact, Mistrust artwork
+bands on the case study. Then re-baselined, and `npm test` green **twice in a row** (53 tests).
+
+**Social share card regenerated from the hero (added mid-run at user request).**
+- `scripts/generate-og-image.js` renders `images/og-default.png` by screenshotting the **live
+  homepage hero** rather than hand-drawing a lookalike, so the card cannot drift from the site —
+  re-run it after any hero change. Captured under `prefers-reduced-motion` so the ambient blobs
+  stop at their declared positions and two runs of an unchanged hero produce the same card.
+- The old card predated the current hero entirely: no bubble logo, and a two-tone
+  "BRAND & VISUAL **DESIGNER**" treatment the site no longer uses.
+- Rendered at 2x for crisp type, then downsampled to the declared 1200x630: **1.87 MB → 153 KB**.
+  Chrome: nav, footer, return-to-top, skip link, and `nextjs-portal` all hidden. That last one
+  matters — the dev-tools overlay is a real DOM element and the first render baked a red
+  "3 Issues" badge into the card.
+- New `app/og.ts` holds one shared image descriptor consumed by all four pages, so the URL,
+  dimensions and alt cannot drift apart across them. Declaring `og:image:width`/`height`/`alt`
+  (rather than a bare URL string) is what lets Discord/Slack/Twitter lay the unfurl out without
+  fetching the image first. Verified in the built export: absolute URL via `metadataBase`, plus
+  width/height/alt on `/`, `/projects/`, `/gallery/`, `/contact/`. `npx tsc --noEmit` clean;
+  `npm test` 53/53 after the change.
+
+### Notes / risks
+
+- **Pre-existing hydration error found incidentally** while checking why the dev overlay said
+  "3 Issues": `app/layout.tsx:26-29` renders `<Script strategy="beforeInteractive">` as a direct
+  child of `<html>`, outside `<head>`, which React rejects. Logged in `TODO.md`, deliberately not
+  fixed here — it changes the theme boot path and `netlify.toml` pins CSP hashes for the inline
+  theme scripts, so it wants its own verification rather than riding along on an image task.
+- Contact is visible but Netlify **form detection is still off** — the form renders and validates,
+  but submissions are not captured until the user flips it in the dashboard and sends one test
+  submission. An agent cannot do this.
+- Nothing deployed. Deploy pause holds until Aug 6; this all ships with that single merge.
+- `public/` still carries the full-size source PNGs (~6 MB) that nothing references. Left as-is
+  rather than expanding scope; logged in `TODO.md`.
+
+---
+
 ## Entry 105 — 2026-07-26
 
 **Agent:** Opus 5 (kestrel, main)

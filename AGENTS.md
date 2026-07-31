@@ -68,7 +68,7 @@ Do NOT use these in `bash` tool calls (they are PowerShell-specific and often fa
 
 `npm run serve` — serves the repo root on :8080 (**legacy static site only** — not the Next.js app)
 
-`npm test` / `npx playwright test` — smoke tests + a **compare-based** visual regression gate, plus bubble-engine coverage (51 tests: 40 visual = 5 pages × 4 breakpoints × 2 themes, plus smoke and 6 bubble-exclusion specs).
+`npm test` / `npx playwright test` — smoke tests + a **compare-based** visual regression gate, plus bubble-engine coverage (**55 tests**: 40 visual = 5 pages × 4 breakpoints × 2 themes, plus smoke and 10 bubble-exclusion specs).
 
 > The visual suite is a real gate: it fails on unintended visual change and leaves the working tree clean. Snapshots live in `tests/visual-baseline.spec.js-snapshots/`; failures write actual/expected/diff PNGs to `test-results/`.
 >
@@ -86,7 +86,25 @@ Do NOT use these in `bash` tool calls (they are PowerShell-specific and often fa
 
 > **`tests/bubbles-exclusion.spec.js` is the only motion-enabled spec**, and the only coverage the bubble engine has — the visual gate captures under `prefers-reduced-motion`, where the engine creates nothing, so bubbles are otherwise invisible to the suite (that blind spot hid a regression for a week; Entry 090).
 >
+> **That file runs `test.describe.configure({ mode: 'serial' })` — do not remove it.** Every test in it drives the live engine, and the engine integrates per frame, so running several concurrently starves rAF and leaves bubbles grazing zone edges. It reads exactly like a real regression. Adding two Contact cases in Entry 107 made the pre-existing "Projects tabs @ 768px" case fail ~50% of runs while passing standalone every time. Serial costs wall clock (54s → 2.2m for the suite) and is the right trade.
+>
+> **One assertion there is deliberately not "zero overlap".** At 768px the Contact form spans 24..744 of a 768px viewport, so the channels either side are 24px — narrower than a 10-28px bubble, making zero overlap geometrically impossible. That case asserts no bubble *centre* enters the form instead. Don't "fix" it by loosening a threshold.
+>
 > **Sample per animation frame, not per millisecond, when asserting on the physics.** The engine integrates a fixed velocity per frame rather than scaling by elapsed time, so under `fullyParallel` contention rAF is starved and bubbles/blobs travel less per wall-clock second. A time-based sample then observes fewer frames of motion and under-reports, which looks exactly like a regression. This bit once already: the blob test passed 3/3 standalone and failed in the full suite (Entry 090). Frame-based sampling needs a raised `test.setTimeout`, since wall-clock duration then depends on the frame rate the worker gets.
+
+`node scripts/generate-mistrust-assets.js [--all]` — rebuild the "A History of Mistrust" webp assets (30 slides × 2 sizes + 3 set strips) into **both** `images/` and `public/`. Run after any Figma re-export of those PNGs.
+
+> Default mode rebuilds only sources whose **content** changed per `git status`, not mtime — a Figma re-export rewrites the mtime of all 30 PNGs even when only a few differ, and rebuilding all of them re-encodes unchanged slides with a different libwebp build, producing 60 files of byte noise that hides the real diff.
+>
+> The wide `sets/set-N.webp` strips are composed from the individual slide PNGs, **not** from the `sets/A History of Mistrust Set N.png` exports — those were verified defective on 2026-07-27 (Set 1 clipped, Set 3 containing Set 2's slides; Entry 106). Tiles are laid out at native width, not fixed 1080px slots, because slide 21 is 1056px wide.
+>
+> `SLIDE_ALT` in `public/scripts/history-of-mistrust-slideshow.js` must stay in sync with the artwork — it is the alt text *and* the lightbox caption source. It drifted out of order for twelve slides before Entry 106. **The artwork is the source of truth**; `slides.md` is documentation and has been wrong independently. There is no `scripts/` copy of the slideshow file, unlike `bubbles.js`.
+
+`node scripts/generate-og-image.js` — regenerate the social share card `images/og-default.png` (+ `public/`) by screenshotting the **live homepage hero**. Needs `npm run dev` running. **Re-run after any hero change** — the card is a capture, so it is only current if regenerated.
+
+> Hides `nextjs-portal` before capturing: the dev-tools overlay is a real DOM element and will otherwise be baked into the card (a red "3 Issues" badge shipped into the first render). Captures under `prefers-reduced-motion` so the hero blobs stop at declared positions and the output is reproducible. Renders at 2x then downsamples to 1200x630 — the raw 2x PNG is ~1.9 MB, the downsample ~150 KB.
+>
+> All four pages pull the image descriptor from `app/og.ts`; add new pages there rather than re-typing the URL, so the URL/width/height/alt cannot drift apart. `metadataBase` in `app/layout.tsx` is what makes `og:image` absolute — unfurls break without it.
 
 `node scripts/parse-todo.js` — Parse TODO into `docs/sync/local-tasks.json`
 
@@ -126,7 +144,8 @@ In Node.js scripts, load with `import 'dotenv/config'` (or `require('dotenv').co
 - Brand tokens in `brand.css` are the source of truth for color contrast
 - `prefers-reduced-motion` must disable physics bubbles, spinning rings, and float animations
 - Focus-visible contract: **`var(--brand-accent)`**, 2px outline, on all interactive
-  elements. (This line previously named `--brand-border-focus`; that token is
+  elements. `.brand-btn` was the last holdout on `--brand-border-focus` (a near-invisible
+  `rgba(255,255,255,0.24)` in dark) until Entry 107 — if you add a button variant, use the accent. (This line previously named `--brand-border-focus`; that token is
   `rgba(255,255,255,0.24)` in dark and produces a much weaker ring than the accent the
   code has always shipped. Corrected 2026-07-23 to match the code, not the reverse.)
 
@@ -139,7 +158,7 @@ In Node.js scripts, load with `import 'dotenv/config'` (or `require('dotenv').co
 - Physics engine: `scripts/bubbles.js` (DOM-based). Exclusion zones come from `DEFAULT_EXCLUSIONS` (includes the semantic `.bubble-exclude` marker class), `HOME_EXCLUSIONS` (index-only), and per-page `data-exclusions` on `.brand-bubbles-global`. Scrolling stirs the global-layer bubbles (`SCROLL_STIR`). `window.__bubbleEngine` is exposed for testing
 - **Two bubble systems, two avoidance rules.** The `.brand-bubble` physics layers honour the full exclusion list. The five `.brand-hero-blob` shapes are the hero's ambient colour wash and deliberately do **not** — they roam the whole hero. Their one constraint is `heroContentRects()`: the logo plus the *Range-measured glyph extents* of `.hero-name`/`.hero-sub`, which steer blobs off the hero copy via a soft force (`BLOB_ZONE_PUSH`). Measure the ink, not the element box — those headings are full-width blocks with centred text, so their boxes span the hero and excluding them would evict blobs from the entire band
 - `scripts/bubbles.js` is **duplicated** to `public/scripts/bubbles.js`, which is the copy the Next export actually serves. Edit the former and copy it to the latter, or the built site silently keeps the old behaviour
-- Nav: **Home / Projects / Gallery / Contact** (nav restructure 2026-07-14, Entry 075 — no submenu, Hire Me CTA, or hamburger). Contact is temporarily commented out of nav + footer pending the Netlify Forms toggle (Entry 078)
+- Nav: **Home / Projects / Gallery / Contact** (nav restructure 2026-07-14, Entry 075 — no submenu, Hire Me CTA, or hamburger). Contact was re-enabled in nav + footer 2026-07-27 (Entry 106); the Netlify Forms toggle is still off, so the form renders but does not capture submissions. **The nav has no spare horizontal room at 360px** — fitting the fourth label took the *lower* bound of every nav clamp (link padding 6px, logo 7px, gap 2px) plus a 44px cap on `#theme-toggle` below 480px. A fifth label does not fit without a drawer. Re-measure at 360px before adding one
 - Nav buttons (Entry 082) paint **no chrome at rest** — a square fill appears only on hover (`--brand-surface-3`), press, or current page (`--brand-accent-dim`). They run the full bar height via `height: 100%`, which is why `.brand-nav`, `.brand-nav-inner`, and `.brand-nav-actions` all use `align-items: stretch` rather than `center`. **Bar height lives in `--brand-nav-height`; change it only there** — three rules read it, and the theme toggle uses `height: 100%` + `aspect-ratio: 1` to stay square against it. Note the theme toggle carries both `id="theme-toggle"` and `class="brand-theme-toggle"` and **the ID block wins**, so editing only the class is a no-op
 
 ## Deploy
@@ -149,7 +168,7 @@ In Node.js scripts, load with `import 'dotenv/config'` (or `require('dotenv').co
 > deploy-related. The bullets below are the load-bearing gotchas only.
 
 - Netlify runs `next build` and publishes the static export (`publish = "out"`); the committed `style.css` only serves the undeployed legacy root site
-- `netlify.toml` CSP pins sha256 hashes of the inline theme scripts; if an inline `<script>` changes, recompute and update the hashes or theme init breaks in production
+- `netlify.toml` CSP is `script-src 'self' 'unsafe-inline'` — it does **not** pin sha256 hashes (that claim was stale, corrected 2026-07-28). Theme init loads from the external `/scripts/theme-init.js`. Its `<Script strategy="beforeInteractive">` must live **inside `<body>`** in `app/layout.tsx`: as a direct child of `<html>` React throws a hydration error on every load (fixed Entry 107)
 - **Credits, not build minutes.** 300/month hard limit, **15 credits per production deploy** = **20 deploys/month**. Build *duration* is not metered, so optimising build speed saves nothing. **Deploy Previews and branch deploys are free** — never disable them to "save money". Batch commits into one push. Out of credits = published site stays live, but pushes return `skipped: true` with **no build log** (Entry 104)
 - **A docs-only push does not deploy.** `netlify.toml`'s `[build] ignore` cancels the build when a push touched only `docs/` or the root process docs. This is expected, not a broken deploy. Two invariants when editing it: never glob `*.md` (`public/**/*.md` **is** copied into the export), and any failure to compare must exit 1 (build) — a bare `git diff --quiet` with unset refs exits 0 and would silently skip every build forever (Entry 103)
 - `PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD = "1"` is set for the Netlify build — the CI never runs Playwright. If a test step is ever added to the build command, drop this or it fails with "browser not found"
@@ -167,9 +186,13 @@ Modern desktop monitors commonly exceed 1920px. A layout that looks correct at 1
 
 **Rule:** After any layout change, capture or preview at **2560px and 3440px** in both themes. The projects-page rail-and-content pattern (Entry 086) uses a centered container so the whole layout stays centered with equal whitespace on both sides at all widths, rather than hugging one edge.
 
-**Shared content geometry (Entry 100).** The Projects and Gallery pages must use one container recipe, because the page title, its spectrum underline, and the tab/filter rail all have to share a left edge:
+**Shared content geometry (Entry 100, extended site-wide in Entry 107).** *Every* page uses one container recipe — Home, Projects, Gallery and Contact all share one left edge and one right inset at every viewport. Verify with **`node scripts/measure-content-widths.js [port]`**, which exits non-zero if the section edges diverge. The visual suite cannot catch this: it grades each page against its own past self, so a permanently misaligned page stays green.
 
-- Outer container: `mx-auto max-w-[1400px]` with **no** horizontal padding.
+- **`--brand-content-max` (1400px) is the single source of truth.** Never hardcode `max-w-[1400px]`; three literals had drifted out of sync with the 1200px token before Entry 107.
+- **The container carries the width, children carry the gutter — a flat 24px (`px-6`).** `main` has **no** horizontal padding on purpose: it used to supply `clamp(16px,4vw,40px)`, which *compounded* with any nested `.brand-container` and put the Home About box 164px further in than the Projects title. Do not re-add padding to `main`.
+- Content that needs a readable measure (prose, form fields) caps *inside* the shared container and stays **left-aligned** — `mx-auto` on such a block breaks the shared edge. The About box is 72ch, the Contact form 720px.
+
+- Outer container: `mx-auto max-w-(--brand-content-max)` with **no** horizontal padding.
 - The 24px gutter is supplied by the *children* — `px-6` on `PageHeader`, on the tablist / filter bar, and on the panel or grid.
 - At `lg` the rail column is `lg:w-[260px] lg:shrink-0` and the rail's own `px-6` (kept at `lg`, not reset to `lg:px-0`) is what produces the gutter between the rail and the content, taking it out of the fixed column so the tabs narrow rather than the content shifting.
 

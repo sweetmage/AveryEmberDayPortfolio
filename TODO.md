@@ -23,12 +23,10 @@ _None. All written plans are complete; see **Completed plans** below._
   Aug 6, 2026** (billing cycle Jul 7 → Aug 6), or immediately on a paid plan. Nothing to fix in
   the repo — the two mitigations are already committed (`aef8d5a`, `68c42eb`). See LOGBOOK
   Entry 104 for the credit model and the workflow that fits 20 deploys/month.
-- **Enable Netlify form detection**, then re-enable Contact. Plan:
-  `docs/plans/2026-07-14-nav-restructure.md`. This is a dashboard UI toggle plus one test
-  submission — an agent cannot do it. Once it's on, uncomment the Contact links in `Nav.tsx` and
-  `Footer.tsx` (commented out in `144a190`) and re-baseline. **Do the 360px nav-fit fix under
-  *Standalone* first** — a fourth label overflows the pill group. (Rest of the plan complete:
-  Entries 075/077/078.)
+- **Enable Netlify form detection.** Dashboard UI toggle plus one test submission — an agent cannot
+  do it. The Contact page is now **live in nav + footer** (Entry 106) and the form renders and
+  validates, but submissions are not captured until this is flipped. Nothing else is blocked on it.
+  (Rest of the nav restructure complete: Entries 075/077/078; nav-fit + unhide done in Entry 106.)
 
 ### Completed plans
 
@@ -158,11 +156,11 @@ _These are backlog items that don't currently have a written plan. Historical re
 - [x] **Delete the out-of-cascade CSS duplicates.** `src/css/components.css` and
   `src/css/tokens.css` removed 2026-07-24 (Entry 086). Verified zero live imports;
   `style.css` byte-identical after rebuild.
-- [ ] **Re-check nav fit before re-enabling the Contact link.** Re-measured 2026-07-25 (Entry
-  099) with the current two labels: **0px slack at 360px** (Projects 70.0px + Gallery 65.4px fill
-  the inner width; logo text hidden below `sm`). A "Contact" label at the average link width
-  overflows by ~68–70px. Whoever uncomments Contact in `Nav.tsx`/`Footer.tsx` must shrink the
-  360px padding clamp or move to a drawer at that width — there is no headroom.
+- [x] **Re-check nav fit before re-enabling the Contact link.** Done 2026-07-27 (Entry 106) via the
+  padding-clamp route: nav-link padding `11px→6px`, logo `11px→7px`, gap/margin `4px→2px`, and
+  `#theme-toggle` capped to 44px below 480px — **lower clamp bounds only**, so nothing above ~480px
+  moved. Measured 12/12 pass at 360/390/768/1440/2560/3440 × both themes: ~77px slack at 360px,
+  links 55-60px wide, no clipped labels, no page-level horizontal scroll.
 - [ ] **Run the visual gate in CI.** The gate is now real (Entry 081) but opt-in — `netlify.toml` runs `next build` + publish with no test step, so a visual regression deploys unchallenged if `npm test` is skipped locally. **Blocked on a decision:** snapshots are `-chromium-win32` suffixed, so a Linux CI runner cannot reuse them. **Decision made 2026-07-23 (user):** option (c) — containerize capture (run Playwright in the official `mcr.microsoft.com/playwright` image locally *and* in CI) so one Linux snapshot set is canonical. Not yet implemented; needs a one-time regeneration of all **40** baselines under the container. Raised by the Entry 081 shippability review. **This is the only open item carried over from a plan doc** (`2026-07-22-visual-baseline-gate-shxdowloop.md`, whose Risks section points here rather than re-planning it).
 
 - [x] **The visual gate's tolerance scales with page height — tighten it.** Done 2026-07-25
@@ -187,7 +185,21 @@ _These are backlog items that don't currently have a written plan. Historical re
   3 of its 4 tests go red.
 
 ### Architecture remediation follow-ups (deferred from 2026-07-01)
-- [ ] Replace generated placeholder `images/og-default.png` with final design asset
+- [x] **Replace generated placeholder `images/og-default.png`.** Done 2026-07-27 (Entry 106): the
+  card is now rendered from the live homepage hero by `scripts/generate-og-image.js`, so it tracks
+  the site instead of drifting. Re-run it after any hero change.
+- [x] **Hydration error from the theme-init `<Script>` placement.** Fixed 2026-07-28 (Entry 107):
+  moved inside `<body>`. Console on `/` is clean and there is no theme flash. The CSP concern that
+  deferred it turned out to be stale — `netlify.toml` uses `'unsafe-inline'`, not pinned hashes.
+- [ ] **Re-export "A History of Mistrust" Set 1 and Set 3 from Figma, or drop the set PNGs.** Both
+  exports are defective (Entry 106): `Set 1.png` clips 50px off its first slide, and `Set 3.png`
+  contains Set 2's slides. Nothing is broken on the site — `scripts/generate-mistrust-assets.js`
+  composes the strips from the individual slide PNGs and ignores these files — so this is only about
+  whether the repo keeps a correct source-of-record. Deciding to drop them is a fine outcome.
+- [ ] **`public/` ships ~6 MB of unreferenced source PNGs.** The 30 `Instagram post - N.png` files
+  plus the 3.1 MB cover live in `public/`, so Next copies them into the export, but only the derived
+  webp assets are ever requested. Deleting them from `public/` (keeping `images/`) would cut the
+  export. Left alone in Entry 106 to avoid scope creep.
 
 ---
 
@@ -195,6 +207,23 @@ _These are backlog items that don't currently have a written plan. Historical re
 
 Full details are in `LOGBOOK.md` (newest-first). Headline items since 2026-07-01:
 
+- **2026-07-31** — Landed Entries 106 and 107, which had been finished but left **entirely
+  uncommitted** for three days (both entries falsely claimed "committed here"). Re-verified the
+  whole tree before landing — suite 55/55 twice, `tsc` clean, `style.css` byte-identical after
+  rebuild, shared-geometry check exit 0, and the `SLIDE_ALT` reorder spot-checked against the
+  source artwork rather than against the prior entry's claim. Five commits, `4355541`→docs;
+  both entry headers corrected to carry the real SHAs (Entry 108).
+- **2026-07-28** — Contact page polish (bubble-repel on the form, duplicate socials dropped, Send
+  redesigned on the spectrum ramp) and one content width site-wide: `--brand-content-max` raised to
+  1400px as the single source of truth, a flat 24px gutter, and no horizontal padding on `main`,
+  which collapsed three divergent left edges (44/144/208 at 1440px) into one. Backed by a new
+  `scripts/measure-content-widths.js` that exits non-zero if they ever diverge again — the visual
+  suite structurally cannot catch it. Plus the `.brand-btn:focus-visible` fix (site-wide) and the
+  theme-init hydration fix (Entry 107).
+- **2026-07-27** — Contact unhidden in nav + footer with the 360px nav-fit solved on lower clamp
+  bounds only; "A History of Mistrust" assets resynced via a new content-diffing generator; twelve
+  slides of misordered `SLIDE_ALT` alt text corrected against the artwork; og share card
+  regenerated from the live hero with a shared `app/og.ts` descriptor (Entry 106).
 - **2026-07-26** — Projects and Gallery unified on one content container (`mx-auto max-w-[1400px]`,
   no container padding, 24px gutter supplied by the children) so the page title, its spectrum
   underline and the tab/filter rail finally share a left edge — they had been on three different
