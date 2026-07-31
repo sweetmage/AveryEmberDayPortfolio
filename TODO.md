@@ -196,6 +196,13 @@ _These are backlog items that don't currently have a written plan. Historical re
   contains Set 2's slides. Nothing is broken on the site — `scripts/generate-mistrust-assets.js`
   composes the strips from the individual slide PNGs and ignores these files — so this is only about
   whether the repo keeps a correct source-of-record. Deciding to drop them is a fine outcome.
+- [ ] **Untrack the stale scratch directories.** `tmp/` (10 files — one-off Python screenshot and
+  inspection scripts, a spawn test) and `output/playwright/` (6 files — `test-nav*.js` plus PNGs of
+  a submenu nav that no longer exists) are tracked, plus root-level `Script.js` and
+  `run_git_commands.py`. `.gitignore` already lists `/tmp/` and `/run_git_commands.py`, but
+  gitignore does not untrack files already committed. Nothing imports any of it. Surfaced 2026-07-31
+  (Entry 109) because they now show up as code directories in the `docs/ARCHITECTURE.md` module map,
+  where they mislead. Fix is `git rm -r --cached`, but deleting tracked files is the user's call.
 - [ ] **`public/` ships ~6 MB of unreferenced source PNGs.** The 30 `Instagram post - N.png` files
   plus the 3.1 MB cover live in `public/`, so Next copies them into the export, but only the derived
   webp assets are ever requested. Deleting them from `public/` (keeping `images/`) would cut the
@@ -207,6 +214,12 @@ _These are backlog items that don't currently have a written plan. Historical re
 
 Full details are in `LOGBOOK.md` (newest-first). Headline items since 2026-07-01:
 
+- **2026-07-31** — `docs/ARCHITECTURE.md` built as the agent-facing structural map (module map,
+  execution model, data/config model, per-task entry points, footgun list), with a deterministic
+  `post-commit` staleness gate. Caught and fixed a regression the install itself created:
+  `core.hooksPath = .githooks` silently bypassed `.git/hooks/`, disarming the **deploy-pause
+  `pre-push` guard** and three Git LFS hooks — all migrated and effect-probed (`portfoliowebsite`
+  push → exit 1, `develop` → exit 0). Entry 109.
 - **2026-07-31** — Landed Entries 106 and 107, which had been finished but left **entirely
   uncommitted** for three days (both entries falsely claimed "committed here"). Re-verified the
   whole tree before landing — suite 55/55 twice, `tsc` clean, `style.css` byte-identical after

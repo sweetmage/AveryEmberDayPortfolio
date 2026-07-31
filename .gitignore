@@ -20,7 +20,11 @@
 
 # Node / Tailwind build pipeline (app.css → style.css)
 # NOTE: style.css is intentionally NOT ignored — it's the compiled Tailwind
-# output and Netlify (publish = ".", no build command) ships it directly.
+# output for the LEGACY root site (index.html, gallery/, projects/*.html).
+# Netlify no longer ships it: netlify.toml runs `next build` and publishes
+# `out/`, so the deployed app's CSS comes from app/globals.css instead. This
+# comment used to claim `publish = "."` with no build command, which stopped
+# being true at the Next.js migration (Entry 066); corrected 2026-07-31.
 
 # Next.js build output
 /.next/
@@ -34,3 +38,4 @@ next-env.d.ts
 
 # Playwright test artifacts
 /test-results/
+.shxdowmap/

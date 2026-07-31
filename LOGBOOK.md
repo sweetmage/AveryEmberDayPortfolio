@@ -1,3 +1,80 @@
+## Entry 109 — 2026-07-31
+
+**Agent:** Opus 5 (vesper, main)
+**Cycle:** shxdowloop init — architecture map
+**Branch:** `shxdowloop/2026-07-31/architecture-map` (pushed; `portfoliowebsite` untouched)
+**Task:** `shxdowloop init` — build `docs/ARCHITECTURE.md` as the agent-facing source of truth,
+plus the deterministic on-commit staleness gate.
+
+### The map
+
+New [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md), built via `shxdowmap`. Seeded with an ad-hoc
+`npx repomix --compress` digest (130 files / 327k tokens) rather than installing a backend
+globally; the digest is gitignored under `.shxdowmap/` and is not committed.
+
+It deliberately does **not** duplicate `AGENTS.md`: this file is *structure* (module map, execution
+model, data/config model, entry points per task, footguns), `AGENTS.md` is *process* (branch policy,
+deploy rules, build commands, design conventions). Each links the other.
+
+The three structural sections (`module-map`, `key-files`, `dependencies`) are engine-generated
+marker blocks populated by `refresh --auto`; everything else is agent-owned prose.
+
+### The hook migration — a real regression this run created and fixed
+
+`shxdowmap install-hook` sets `core.hooksPath = .githooks`, and **that makes git ignore
+`.git/hooks/` entirely.** This repo had four active hooks there. Among them: the **deploy-pause
+`pre-push` guard** that blocks pushing `portfoliowebsite` to the live URL while Netlify credits are
+exhausted. Installing the architecture gate therefore silently disarmed the production-push guard.
+
+The engine printed a one-line warning about it, which is easy to scroll past. Caught and fixed in
+the same run:
+
+- `pre-push` (deploy guard + LFS), `post-checkout` (LFS), `post-merge` (LFS) copied into
+  `.githooks/`.
+- `post-commit` rewritten to run **both** the shxdowmap staleness check and `git lfs post-commit` —
+  the engine's version would have replaced the LFS hook outright. Its `exit 0` inside the resolver
+  loop became `break` so the LFS half still runs.
+- All four verified: LF endings, `sh -n` clean, executable.
+- **Effect-probed, not assumed.** Fed representative refs to `.githooks/pre-push` directly:
+  `refs/heads/portfoliowebsite` → **exit 1, guard message printed**;
+  `refs/heads/develop` → exit 0. The guard is still armed after the move.
+
+**Lesson: `core.hooksPath` is a repo-wide switch, not an addition.** Any tool that sets it silently
+disables every hook in `.git/hooks/`. After running one, inventory the old directory and migrate
+what was live — and prove each migrated hook still fires by invoking the file, since a bypassed hook
+looks identical to a working one (executable file, no error, just never runs).
+
+### Also corrected
+
+- `.gitignore` claimed Netlify ships `style.css` directly with `publish = "."` and no build command.
+  That stopped being true at the Next.js migration (Entry 066) — `netlify.toml` runs `next build`
+  and publishes `out/`. `style.css` now serves only the legacy root site.
+- One factual error in my own first draft of the map: it described `gallery-data.ts` items as
+  `{ src, title, … }`. There is no `title` field — the real shape is
+  `{ src, alt, caption, width, height, tags, tools, description }`. Caught by verifying against the
+  file instead of trusting the draft.
+
+### Verification
+
+- Every one of the 35 file paths referenced in the map resolves on disk (scripted existence check).
+- Counts checked against the tree, not the prose: 40 visual snapshots, 10 bubble specs, 5 routes,
+  7 components, 16 plan docs.
+- `shxdowmap status` → **fresh**; baseline recorded at `dec5ec54`.
+- `refresh --auto` run twice → second run is a no-op, so the idempotence contract holds.
+
+### Notes / risks
+
+- The module map surfaces `tmp/` (10 files) and `output/playwright/` (6 files) as tracked code
+  directories. They are stale debug scratch — old Python screenshot scripts and PNGs of a nav that
+  no longer exists. `.gitignore` lists `/tmp/` but gitignore does not untrack committed files.
+  Documented as dead weight in the map and recorded in `TODO.md`; **not deleted**, because removing
+  tracked files is the user's call and is outside init mode's scope.
+- A fresh clone needs `git config core.hooksPath .githooks` once for the hooks to be active.
+- Init mode: no application code was changed. The only non-doc edits are the hook migration (a
+  safety fix for a regression this run introduced) and the `.gitignore` comment.
+
+---
+
 ## Entry 108 — 2026-07-31
 
 **Agent:** Opus 5 (vesper, main)

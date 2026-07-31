@@ -24,9 +24,10 @@ This is the canonical agent-facing source of truth for the `portfoliowebsite` re
 > Entry 104 — the team is out of credits and production deploys are already refused server-side).
 >
 > - Commit and push to **`develop`**. It was fast-forwarded to `portfoliowebsite` @ `41005ed`.
-> - **Do not push `portfoliowebsite`.** A `.git/hooks/pre-push` guard blocks it and **expires by
+> - **Do not push `portfoliowebsite`.** A `.githooks/pre-push` guard blocks it and **expires by
 >   itself on 2026-08-06** — no cleanup needed. Override only on explicit user instruction with
->   `git push --no-verify`.
+>   `git push --no-verify`. (This guard moved from `.git/hooks/` to the tracked `.githooks/` on
+>   2026-07-31 — see **Git hooks** below. Verified still blocking after the move.)
 > - Preview locally: `npm run dev` → <http://localhost:3000> (hot reload), or the `launchtest`
 >   skill. No Netlify involvement.
 > - On/after Aug 6: merge `develop` → `portfoliowebsite` and push **once**. One production deploy,
@@ -38,6 +39,44 @@ This is the canonical agent-facing source of truth for the `portfoliowebsite` re
 pause above — use `develop`)*. Do not commit to `main` or `master` without explicit user direction.
 
 **`portfoliowebsite` is the branch Netlify deploys from** (repointed 2026-07-12 via the Netlify API at the user's direction — production branch and allowed-branches both changed from `master` to `portfoliowebsite`, verified with a production deploy from the new branch; see `LOGBOOK.md` Entry 069). Pushing `portfoliowebsite` publishes to production. That makes every push to this branch a production-affecting action: get the user's explicit go-ahead in the moment before pushing, every time — this note is informational, not standing authorization. `master` is retained as a historical branch; do not merge into it without explicit user direction.
+
+## Git hooks
+
+**`core.hooksPath` is set to `.githooks/`** (2026-07-31, by `shxdowmap install-hook`). That setting
+makes git ignore `.git/hooks/` **entirely**. All four previously-active hooks were migrated into the
+tracked `.githooks/` directory in the same change, because leaving them behind would have silently
+disabled them:
+
+| Hook | Contents |
+|---|---|
+| `pre-push` | **Deploy-pause guard** (blocks `portfoliowebsite` until 2026-08-06) + Git LFS |
+| `post-commit` | shxdowmap architecture-doc staleness gate + Git LFS |
+| `post-checkout` | Git LFS |
+| `post-merge` | Git LFS |
+
+> **If you add a hook, put it in `.githooks/`, not `.git/hooks/`** — the latter is dead while
+> `core.hooksPath` is set, and a hook placed there will appear to work (the file is executable, no
+> error) while never running. Verify a new hook by invoking the file directly with representative
+> stdin/args, not by assuming git ran it.
+>
+> `.githooks/` is tracked, so these travel with the repo; a fresh clone still needs
+> `git config core.hooksPath .githooks` once (or a `shxdowmap install-hook` run).
+
+## Architecture map
+
+[`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) is the agent-facing structural map — **read it
+instead of re-exploring the tree**. It carries the module map, execution model, data/config model,
+key entry points per task, and the footgun list. Freshness is enforced by the `post-commit` gate
+above, which fingerprints code-file paths, the code-dir set, and manifest blob SHAs.
+
+```bash
+shxdowmap status          # fresh / STALE / no baseline
+shxdowmap refresh --auto  # deterministic rebuild of the generated blocks
+```
+
+Sections wrapped in `<!-- shxdowmap:begin:… -->` / `<!-- shxdowmap:end:… -->` markers are
+engine-owned and overwritten wholesale — put prose outside them. Run `refresh --auto` at the end of
+any run that changes repo structure, before handoff.
 
 ## Environment Constraints
 
