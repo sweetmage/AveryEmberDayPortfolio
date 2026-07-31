@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import './slideshow.css';
 import SlideshowScript from './SlideshowScript';
 import ProjectTabs from './ProjectTabs';
+import { ogImage } from '../og';
 
 export const metadata: Metadata = {
   title: 'Projects — Avery Ember Day',
@@ -9,7 +10,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'Projects — Avery Ember Day',
     description: 'Selected projects by Avery Ember Day — brand identity, visual design, and narrative work.',
-    images: ['/images/og-default.png'],
+    images: [ogImage],
     type: 'website',
   },
   twitter: {

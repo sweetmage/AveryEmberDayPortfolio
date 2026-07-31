@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import PageHeader from '../PageHeader';
 import GalleryGrid from './GalleryGrid';
 import { galleryItems } from './gallery-data';
+import { ogImage } from '../og';
 
 export const metadata: Metadata = {
   title: 'Gallery — Avery Ember Day',
@@ -9,7 +10,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'Gallery — Avery Ember Day',
     description: 'Art gallery — selected works by Avery Ember Day, including digital art, illustration, and mixed media.',
-    images: ['/images/og-default.png'],
+    images: [ogImage],
     type: 'website',
   },
   twitter: {
