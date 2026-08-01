@@ -1,103 +1,285 @@
-/* ── Per-set slideshows ─────────────────────────────────────────── */
-/* One set per row at every width. The old `repeat(3, 1fr)` at 900px+ made the
-   viewers far too small to read a carousel slide in — ~348px at 1440 and only
-   ~222px once the lg rail takes 260px at 1024. */
-.set-slideshows {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 28px;
-  justify-items: center;
-}
-/* The viewer is 1:1, so an uncapped full-width frame would be a ~1090px square
-   at 1440 and push the three sets to ~3500px of scroll on their own. 720px
-   keeps each frame roughly double its old size without that. */
-.set-slideshow {
+/* ── Mistrust slide stage ─────────────────────────────────────────
+   One viewer for all three sets, replacing the three stacked 1:1 viewers
+   (`.set-ss-*`) removed on 2026-07-31. Those were capped at 720px and cost
+   ~2200px of scroll between them; one stage gets 860px and about one screen.
+
+   `.mistrust-*` is NOT in the bubble engine's exclusion list — the enclosing
+   `.project-section` is (`scripts/bubbles.js:72`). Keep this markup inside one. */
+.mistrust-slideshow {
   display: flex;
   flex-direction: column;
-  min-width: 0;
+  align-items: center;
   width: 100%;
-  max-width: 720px;
 }
-.set-ss-label {
+
+/* Set switcher — segmented, matching the `.project-tab` accent-dim active state. */
+.mistrust-sets {
+  display: flex;
+  gap: 4px;
+  padding: 4px;
+  margin: 0 0 18px;
+  border: 1px solid var(--brand-border);
+  border-radius: var(--brand-radius-sm);
+  background: var(--brand-surface-2);
+}
+.mistrust-set-tab {
   font-family: var(--brand-font-body);
   font-size: 0.85rem;
-  font-weight: 600;
-  color: var(--brand-text-soft);
-  margin: 0 0 8px;
-  text-align: center;
+  font-weight: 500;
+  /* 44px minimum touch target (WCAG 2.5.5). */
+  min-height: 44px;
+  padding: 8px 20px;
+  border: none;
+  border-radius: calc(var(--brand-radius-sm) - 2px);
+  background: transparent;
+  color: var(--brand-text-muted);
+  cursor: pointer;
+  transition:
+    background var(--brand-transition-fast),
+    color var(--brand-transition-fast);
 }
-/* Same frame as the Projects cards and the Gallery art: one gray at low
-   alpha, identical in both themes (see `.brand-frame` in brand.css). */
-.set-ss-viewer {
-  border-radius: var(--brand-radius-lg);
+.mistrust-set-tab:hover {
+  background: var(--brand-surface-3);
+  color: var(--brand-text);
+}
+.mistrust-set-tab.is-active {
+  background: var(--brand-accent-dim);
+  color: var(--brand-text);
+}
+.mistrust-set-tab:focus-visible {
+  outline: 2px solid var(--brand-accent);
+  outline-offset: 2px;
+}
+
+.mistrust-stage-row {
+  position: relative;
+  width: 100%;
+  max-width: 860px;
+}
+
+/* `touch-action: pan-y` is what lets a vertical flick scroll the page while a
+   horizontal one drives the deck. It is the mechanism, not a hint — without it
+   `useSwipeDeck` cannot own the gesture. */
+.mistrust-stage {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1 / 1;
   overflow: hidden;
+  border-radius: var(--brand-radius-lg);
   border: 1px solid var(--brand-frame-border);
   background: var(--brand-frame-fill);
-  position: relative;
-  aspect-ratio: 1 / 1;
-  cursor: pointer;
+  cursor: grab;
+  touch-action: pan-y;
+  user-select: none;
+  -webkit-user-select: none;
 }
-.set-ss-track {
+.mistrust-stage.is-dragging {
+  cursor: grabbing;
+}
+.mistrust-stage:focus-visible {
+  outline: 2px solid var(--brand-accent);
+  outline-offset: 2px;
+}
+
+.mistrust-track {
   display: flex;
   width: 100%;
   height: 100%;
-  transform: translateX(0);
-  transition: transform 300ms cubic-bezier(0.34, 1.56, 0.64, 1);
+  will-change: transform;
+  /* Cross-fade on set change — the track is keyed on the set, so it remounts. */
+  animation: mistrust-fade-in 200ms ease;
 }
-.set-ss-track.no-transition { transition: none; }
-@media (prefers-reduced-motion: reduce) {
-  .set-ss-track { transition: none; }
+@keyframes mistrust-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
-.set-ss-slide {
+.mistrust-slide {
   min-width: 100%;
   width: 100%;
   height: 100%;
+  flex-shrink: 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  flex-shrink: 0;
 }
-.set-ss-slide img {
+.mistrust-slide img {
   max-width: 100%;
   max-height: 100%;
   object-fit: contain;
   display: block;
 }
-.set-ss-controls {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 12px;
-  margin-top: 10px;
-}
-.set-ss-controls button {
+
+/* Shown only on coarse pointers — a mouse user does not need to be told to
+   swipe, and a permanent hint is clutter. */
+.mistrust-stage-hint {
+  position: absolute;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
   font-family: var(--brand-font-body);
-  font-size: 0.82rem;
-  padding: 6px 12px;
-  border-radius: var(--brand-radius-sm);
+  font-size: 0.7rem;
+  color: var(--brand-text-soft);
+  background: var(--brand-surface-2);
+  border: 1px solid var(--brand-border);
+  border-radius: 999px;
+  padding: 3px 10px;
+  opacity: 0;
+  pointer-events: none;
+}
+@media (hover: none) {
+  .mistrust-stage-hint { opacity: 0.8; }
+}
+
+.mistrust-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 2;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
   border: 1px solid var(--brand-border);
   background: var(--brand-surface-2);
   color: var(--brand-text);
+  font-size: 1.3rem;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   cursor: pointer;
-  transition: background var(--brand-transition-fast), border-color var(--brand-transition-fast);
+  transition:
+    background var(--brand-transition-fast),
+    border-color var(--brand-transition-fast);
 }
-.set-ss-controls button:hover { background: var(--brand-accent-dim); border-color: var(--brand-accent); }
-.set-ss-controls button:focus-visible { outline: 2px solid var(--brand-accent); outline-offset: 2px; }
-.set-ss-controls button:disabled {
-  opacity: 0.4;
+.mistrust-nav:hover:not(:disabled) {
+  background: var(--brand-accent-dim);
+  border-color: var(--brand-accent);
+}
+.mistrust-nav:disabled {
+  opacity: 0.35;
   cursor: not-allowed;
-  background: var(--brand-surface-2);
-  border-color: var(--brand-border);
 }
-.set-ss-counter {
+.mistrust-nav:focus-visible {
+  outline: 2px solid var(--brand-accent);
+  outline-offset: 2px;
+}
+.mistrust-nav-prev { left: 10px; }
+.mistrust-nav-next { right: 10px; }
+
+.mistrust-filmstrip {
+  display: flex;
+  gap: 8px;
+  width: 100%;
+  max-width: 860px;
+  margin-top: 14px;
+  padding: 4px 2px;
+  overflow-x: auto;
+  scroll-snap-type: x proximity;
+  scrollbar-width: thin;
+}
+.mistrust-thumb {
+  flex: 0 0 auto;
+  width: 64px;
+  height: 64px;
+  padding: 0;
+  overflow: hidden;
+  border: 1px solid var(--brand-frame-border);
+  border-radius: var(--brand-radius-sm);
+  background: var(--brand-frame-fill);
+  cursor: pointer;
+  opacity: 0.55;
+  scroll-snap-align: center;
+  transition:
+    opacity var(--brand-transition-fast),
+    border-color var(--brand-transition-fast);
+}
+.mistrust-thumb:hover { opacity: 1; }
+.mistrust-thumb.is-active {
+  opacity: 1;
+  border-color: var(--brand-accent);
+  box-shadow: 0 0 0 1px var(--brand-accent);
+}
+.mistrust-thumb:focus-visible {
+  outline: 2px solid var(--brand-accent);
+  outline-offset: 2px;
+}
+.mistrust-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.mistrust-counter {
   font-family: var(--brand-font-body);
   font-size: 0.8rem;
   color: var(--brand-text-muted);
-  min-width: 84px;
+  margin: 12px 0 0;
   text-align: center;
 }
 
-/* ── Lightbox ─────────────────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  .mistrust-track { animation: none; }
+  .mistrust-set-tab,
+  .mistrust-nav,
+  .mistrust-thumb { transition: none; }
+}
+
+/* ── All-slides grid ──────────────────────────────────────────────
+   Replaces the three stitched `sets/set-N.webp` strips (1.37 MB, ten slides
+   tall each). The 30 base webps total ~1.0 MB, so this is lighter than what
+   it replaces, and every slide becomes individually addressable. */
+.mistrust-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  width: 100%;
+}
+@media (min-width: 600px) {
+  .mistrust-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+@media (min-width: 1100px) {
+  .mistrust-grid { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+}
+.mistrust-grid-cell {
+  position: relative;
+  padding: 0;
+  aspect-ratio: 1 / 1;
+  overflow: hidden;
+  cursor: pointer;
+}
+.mistrust-grid-cell img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.mistrust-grid-cell:focus-visible {
+  outline: 2px solid var(--brand-accent);
+  outline-offset: 2px;
+}
+.mistrust-grid-num {
+  position: absolute;
+  right: 6px;
+  bottom: 6px;
+  font-family: var(--brand-font-body);
+  font-size: 0.66rem;
+  color: #fff;
+  background: rgba(10, 10, 10, 0.62);
+  border-radius: 999px;
+  padding: 1px 7px;
+}
+
+/* ── Lightbox ─────────────────────────────────────────────────────
+   Mounted/unmounted by `MistrustLightbox.tsx`; `.active` is applied one frame
+   after mount and removed 200ms before unmount, so both the enter and the exit
+   fade survive the port off the old always-present `<div id="lightbox">`. */
+/* Deliberately NO `visibility` in this fade. The old always-in-the-DOM markup
+   needed it; now the component unmounts on close, and a `visibility` transition
+   breaks focus on open — during the 200ms hidden→visible transition the
+   computed value is still `hidden` when the focus effect runs, and `focus()`
+   inside a hidden subtree is a silent no-op, which left Escape landing outside
+   the dialog. Opacity + pointer-events covers both directions. */
 .lightbox-overlay {
   position: fixed;
   inset: 0;
@@ -108,15 +290,15 @@
   justify-content: center;
   padding: 48px 24px;
   opacity: 0;
-  visibility: hidden;
-  transition: opacity 200ms ease, visibility 200ms ease;
+  pointer-events: none;
+  transition: opacity 200ms ease;
 }
 @media (prefers-reduced-motion: reduce) {
   .lightbox-overlay { transition: none; }
 }
 .lightbox-overlay.active {
   opacity: 1;
-  visibility: visible;
+  pointer-events: auto;
 }
 .lightbox-frame {
   position: relative;
@@ -125,16 +307,22 @@
   overflow: hidden;
   border-radius: var(--brand-radius-sm);
   touch-action: pan-y;
+  user-select: none;
+  -webkit-user-select: none;
   cursor: grab;
 }
 .lightbox-frame.dragging {
   cursor: grabbing;
 }
+.lightbox-frame:focus-visible {
+  outline: 2px solid var(--brand-accent);
+  outline-offset: 2px;
+}
 .lightbox-track {
   display: flex;
   transform: translateX(0);
-  transition: transform 240ms ease;
   width: 100%;
+  will-change: transform;
 }
 .lightbox-slide {
   min-width: 100%;
@@ -184,7 +372,8 @@
   justify-content: center;
   z-index: 101;
 }
-.lightbox-arrow:hover { background: rgba(255,255,255,0.2); }
+.lightbox-arrow:hover:not(:disabled) { background: rgba(255,255,255,0.2); }
+.lightbox-arrow:disabled { opacity: 0.35; cursor: not-allowed; }
 .lightbox-arrow:focus-visible { outline: 2px solid var(--brand-accent); outline-offset: 2px; }
 .lightbox-prev { left: 16px; }
 .lightbox-next { right: 16px; }

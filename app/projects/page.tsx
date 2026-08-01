@@ -1,6 +1,5 @@
 import type { Metadata } from 'next';
 import './slideshow.css';
-import SlideshowScript from './SlideshowScript';
 import ProjectTabs from './ProjectTabs';
 import { ogImage } from '../og';
 
@@ -21,39 +20,16 @@ export const metadata: Metadata = {
   },
 };
 
+/* The lightbox used to live here as a static `<div id="lightbox">` driven by
+   `public/scripts/history-of-mistrust-slideshow.js`. Both are gone as of
+   2026-07-31 — `MistrustLightboxProvider` renders it inside the Mistrust panel
+   and unmounts it with the panel, which is what let `ProjectTabs` drop its
+   manual `closeLightbox()` DOM surgery. */
 export default function ProjectsPage() {
   return (
-    <>
-      <SlideshowScript />
-
-      <main id="main" className="max-w-none mx-0 px-0">
-        <h1 className="sr-only">Projects</h1>
-        <ProjectTabs />
-      </main>
-
-      {/* Lightbox */}
-      <div
-        id="lightbox"
-        className="lightbox-overlay"
-        role="dialog"
-        aria-modal="true"
-        aria-label="Image viewer"
-        hidden
-      >
-        <button className="lightbox-close" aria-label="Close image viewer">
-          &times;
-        </button>
-        <button className="lightbox-arrow lightbox-prev" aria-label="Previous image">
-          &#8249;
-        </button>
-        <div className="lightbox-frame" tabIndex={0}>
-          <div className="lightbox-track" />
-        </div>
-        <button className="lightbox-arrow lightbox-next" aria-label="Next image">
-          &#8250;
-        </button>
-        <p id="lightbox-caption" className="lightbox-caption" aria-live="polite" />
-      </div>
-    </>
+    <main id="main" className="max-w-none mx-0 px-0">
+      <h1 className="sr-only">Projects</h1>
+      <ProjectTabs />
+    </main>
   );
 }

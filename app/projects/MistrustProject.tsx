@@ -1,6 +1,14 @@
+import { MistrustLightboxProvider } from './MistrustLightbox';
+import MistrustSlideshow from './MistrustSlideshow';
+import SlideGrid from './SlideGrid';
+
+/* Note: this module is already part of the CLIENT graph — `ProjectTabs.tsx` is
+   `'use client'` and imports it — so it carries no `'use client'` of its own but
+   is not server-only either. The provider/children split below is for ownership,
+   not bundle size: the lightbox mounts and unmounts with this panel. */
 export default function MistrustProject() {
   return (
-    <>
+    <MistrustLightboxProvider>
       {/* Hero */}
       <div className="project-hero px-6 pt-8 pb-6 lg:pt-0">
         <h3 className="project-title brand-page-title brand-page-title--section mb-3">
@@ -28,41 +36,7 @@ export default function MistrustProject() {
         <h4 className="section-title mb-5 border-none p-0 text-left font-heading text-xl font-semibold normal-case tracking-normal text-text">
           Slideshow
         </h4>
-        <div className="set-slideshows">
-          <div className="set-slideshow" data-set="1">
-            <p className="set-ss-label">Set 1</p>
-            <div className="set-ss-viewer" role="region" aria-label="Set 1 slide viewer">
-              <div className="set-ss-track" />
-            </div>
-            <div className="set-ss-controls">
-              <button className="set-ss-prev" aria-label="Previous slide, set 1">&#8249; Prev</button>
-              <span className="set-ss-counter" aria-live="polite">Slide 1 of 10</span>
-              <button className="set-ss-next" aria-label="Next slide, set 1">Next &#8250;</button>
-            </div>
-          </div>
-          <div className="set-slideshow" data-set="2">
-            <p className="set-ss-label">Set 2</p>
-            <div className="set-ss-viewer" role="region" aria-label="Set 2 slide viewer">
-              <div className="set-ss-track" />
-            </div>
-            <div className="set-ss-controls">
-              <button className="set-ss-prev" aria-label="Previous slide, set 2">&#8249; Prev</button>
-              <span className="set-ss-counter" aria-live="polite">Slide 1 of 10</span>
-              <button className="set-ss-next" aria-label="Next slide, set 2">Next &#8250;</button>
-            </div>
-          </div>
-          <div className="set-slideshow" data-set="3">
-            <p className="set-ss-label">Set 3</p>
-            <div className="set-ss-viewer" role="region" aria-label="Set 3 slide viewer">
-              <div className="set-ss-track" />
-            </div>
-            <div className="set-ss-controls">
-              <button className="set-ss-prev" aria-label="Previous slide, set 3">&#8249; Prev</button>
-              <span className="set-ss-counter" aria-live="polite">Slide 1 of 10</span>
-              <button className="set-ss-next" aria-label="Next slide, set 3">Next &#8250;</button>
-            </div>
-          </div>
-        </div>
+        <MistrustSlideshow />
       </section>
 
       {/* All Slides */}
@@ -70,41 +44,7 @@ export default function MistrustProject() {
         <h4 className="section-title mb-5 border-none p-0 text-left font-heading text-xl font-semibold normal-case tracking-normal text-text">
           All Slides
         </h4>
-        <div className="all-sets-full flex w-full flex-col gap-4">
-          <div
-            className="carousel-set brand-frame brand-frame-interactive relative w-full cursor-pointer [&_img]:block [&_img]:h-auto [&_img]:w-full"
-            data-set="1"
-          >
-            <img
-              src="/images/myart/A History of Mistrust/sets/set-1.webp"
-              alt="A History of Mistrust carousel, slides 1 through 10 combined"
-              loading="lazy"
-              decoding="async"
-            />
-          </div>
-          <div
-            className="carousel-set brand-frame brand-frame-interactive relative w-full cursor-pointer [&_img]:block [&_img]:h-auto [&_img]:w-full"
-            data-set="2"
-          >
-            <img
-              src="/images/myart/A History of Mistrust/sets/set-2.webp"
-              alt="A History of Mistrust carousel, slides 11 through 20 combined"
-              loading="lazy"
-              decoding="async"
-            />
-          </div>
-          <div
-            className="carousel-set brand-frame brand-frame-interactive relative w-full cursor-pointer [&_img]:block [&_img]:h-auto [&_img]:w-full"
-            data-set="3"
-          >
-            <img
-              src="/images/myart/A History of Mistrust/sets/set-3.webp"
-              alt="A History of Mistrust carousel, slides 21 through 30 combined"
-              loading="lazy"
-              decoding="async"
-            />
-          </div>
-        </div>
+        <SlideGrid />
       </section>
 
       {/* Moodboard & Storyboard — deliberately after All Slides: the finished
@@ -231,6 +171,6 @@ export default function MistrustProject() {
           <li>Professional Heart Daily. <em>Priority for Cardiovascular Health Equity among U.S. Women</em>. <a href="https://professional.heart.org/en/science-news/cardiovascular-disease-risk-factors-in-women-impact-of-race/commentary" target="_blank">Link</a></li>
         </ul>
       </section>
-    </>
+    </MistrustLightboxProvider>
   );
 }
