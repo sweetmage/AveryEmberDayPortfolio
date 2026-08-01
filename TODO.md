@@ -7,6 +7,30 @@
 
 ## Active Plans
 
+### Copy pass + gallery descriptions — **planned, not started** (2026-08-01)
+
+Proofread and rewrite the Contact page, both project summaries, and the About box; write and render
+descriptions for the 11 gallery pieces. Plan:
+[`docs/plans/2026-08-01-copy-pass-and-gallery-descriptions.md`](docs/plans/2026-08-01-copy-pass-and-gallery-descriptions.md).
+
+Visual/motion spec for the gallery interaction:
+[`docs/plans/2026-08-01-gallery-expand-motion-concept.md`](docs/plans/2026-08-01-gallery-expand-motion-concept.md).
+
+- **Decided (2026-08-01):** descriptions render as a one-line preview on the card that **expands on
+  click** — card grows in both axes and pushes the grid over, no lightbox; card movement, expansion
+  and filter changes are animated. `alt` becomes a real image description, and the current
+  "captions" are titles so they become `<h3>` headers. **The user writes the first draft** of all
+  copy; the agent proofreads only.
+- `GalleryItem.description` **already exists** in the interface and is `''` on all 11 items, and is
+  never rendered — so the copy side is data plus a render change, not a schema change.
+- **Not started, and the copy tracks are waiting on the user's draft.** The expand/motion track is
+  *not* blocked and could start independently against placeholder text.
+- Two known traps recorded in the spec: `.gallery-item` is a bubble-exclusion selector (retagging it
+  silently breaks physics exclusion — has happened twice), and the visual gate runs under reduced
+  motion so it cannot see any of the animation.
+- Expect a large visual re-baseline — copy moves rest-state pixels on Home, Contact, both Projects
+  tabs and Gallery, i.e. most of the 40 snapshots.
+
 ### Frame radius + button hover — committed `42ea05c` on `develop`, **not pushed** (2026-08-01)
 
 - **Entry 110 — square images, rounded frames.** `.brand-frame:has(> img)` removed; Mistrust
