@@ -98,7 +98,7 @@ Do NOT use these in `bash` tool calls (they are PowerShell-specific and often fa
 >
 > The wide `sets/set-N.webp` strips are composed from the individual slide PNGs, **not** from the `sets/A History of Mistrust Set N.png` exports — those were verified defective on 2026-07-27 (Set 1 clipped, Set 3 containing Set 2's slides; Entry 106). Tiles are laid out at native width, not fixed 1080px slots, because slide 21 is 1056px wide.
 >
-> `SLIDE_ALT` in `public/scripts/history-of-mistrust-slideshow.js` must stay in sync with the artwork — it is the alt text *and* the lightbox caption source. It drifted out of order for twelve slides before Entry 106. **The artwork is the source of truth**; `slides.md` is documentation and has been wrong independently. There is no `scripts/` copy of the slideshow file, unlike `bubbles.js`.
+> `SLIDE_ALT` in `app/projects/mistrustSlides.ts` must stay in sync with the artwork — it is the alt text *and* the lightbox caption source. It drifted out of order for twelve slides before Entry 106. **The artwork is the source of truth**; `slides.md` is documentation and has been wrong independently. (Moved 2026-07-31 from `public/scripts/history-of-mistrust-slideshow.js` when the slideshow was ported to React components — that script no longer exists; the array was machine-verified verbatim across the move. `tests/mistrust-slideshow.spec.js` asserts the set title cards still land on slides 1/11/21.)
 
 `node scripts/generate-og-image.js` — regenerate the social share card `images/og-default.png` (+ `public/`) by screenshotting the **live homepage hero**. Needs `npm run dev` running. **Re-run after any hero change** — the card is a capture, so it is only current if regenerated.
 

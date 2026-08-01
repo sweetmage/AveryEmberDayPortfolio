@@ -64,12 +64,12 @@ array — 30/30 identical; set title cards confirmed at 1 / 11 / 21.
 
 ## Stage 1 — Stage + swipe (Track A)
 
-**Status:** Pending
+**Status:** Complete
 **Goal:** One 860px stage with finger swipe, animated Prev/Next, set switcher, filmstrip.
 **Phases:**
-- [ ] 1.1 `MistrustSlideshow.tsx` — switcher, stage, controls, filmstrip, live region
-- [ ] 1.2 `.mistrust-*` rules in `slideshow.css`, `touch-action: pan-y` on the stage
-- [ ] 1.3 Wire into `MistrustProject.tsx`, replacing the three `.set-slideshow` widgets
+- [x]  `MistrustSlideshow.tsx` — switcher, stage, controls, filmstrip, live region
+- [x]  `.mistrust-*` rules in `slideshow.css`, `touch-action: pan-y` on the stage
+- [x]  Wire into `MistrustProject.tsx`, replacing the three `.set-slideshow` widgets
 **Constraint:** new markup MUST stay inside a `.project-section` wrapper — that selector
 is the bubble-engine exclusion zone (`scripts/bubbles.js:72`).
 **Verification:** `npx tsc --noEmit`; dev-server manual swipe/tap/keyboard pass.
@@ -77,29 +77,29 @@ is the bubble-engine exclusion zone (`scripts/bubbles.js:72`).
 
 ## Stage 2 — Lightbox port (Track B)
 
-**Status:** Pending
+**Status:** Complete
 **Goal:** React-owned lightbox; delete the vanilla script and the global-DOM hack.
 **Phases:**
-- [ ] 2.1 `MistrustLightbox.tsx` — same `useSwipeDeck` hook over all 30 slides
-- [ ] 2.2 Remove the static lightbox markup from `page.tsx`
-- [ ] 2.3 Remove `closeLightbox()` + call from `ProjectTabs.tsx`
-- [ ] 2.4 Delete `public/scripts/history-of-mistrust-slideshow.js`, `SlideshowScript.tsx`
+- [x]  `MistrustLightbox.tsx` — same `useSwipeDeck` hook over all 30 slides
+- [x]  Remove the static lightbox markup from `page.tsx`
+- [x]  Remove `closeLightbox()` + call from `ProjectTabs.tsx`
+- [x]  Delete `public/scripts/history-of-mistrust-slideshow.js`, `SlideshowScript.tsx`
 **Verification:** focus trap, Esc, arrows, swipe, scroll lock, focus restore on close.
 **Checkpoint:** _pending_
 
 ## Stage 3 — Grid, wire-up, full verification (Track C + D + E)
 
-**Status:** Pending
+**Status:** Complete
 **Goal:** 30-thumb grid, docs sync, green suite, browser demo.
 **Phases:**
-- [ ] 3.1 `SlideGrid.tsx` replacing the three `.carousel-set` stitched images
-- [ ] 3.2 `AGENTS.md` — move the `SLIDE_ALT` pointer to `mistrustSlides.ts`
-- [ ] 3.3 `npm run css:build`, commit regenerated `style.css`
-- [ ] 3.4 `npm run build:next` (dev stopped first — `distDir` is `out`)
-- [ ] 3.5 `npm test`; re-baseline the 8 `projects-mistrust` snapshots per-test; Brand-tab
+- [x]  `SlideGrid.tsx` replacing the three `.carousel-set` stitched images
+- [x]  `AGENTS.md` — move the `SLIDE_ALT` pointer to `mistrustSlides.ts`
+- [x]  `npm run css:build`, commit regenerated `style.css`
+- [x]  `npm run build:next` (dev stopped first — `distDir` is `out`)
+- [x]  `npm test`; re-baseline the 8 `projects-mistrust` snapshots per-test; Brand-tab
       snapshots must stay byte-identical
-- [ ] 3.6 `node scripts/measure-content-widths.js` exit 0
-- [ ] 3.7 LOGBOOK entry + TODO condense
+- [x]  `node scripts/measure-content-widths.js` exit 0
+- [x]  LOGBOOK entry + TODO condense
 - [ ] 3.8 Dev server + Chrome for the user
 **Checkpoint:** _pending_
 
@@ -129,15 +129,14 @@ is the bubble-engine exclusion zone (`scripts/bubbles.js:72`).
 
 | Stage | SHA | Push | Notes |
 |---|---|---|---|
-| 1 | _pending_ | commit-only | |
-| 2 | _pending_ | commit-only | |
-| 3 | _pending_ | commit-only | |
+| 1+2 | `c2e0838` | commit-only (user choice) | Stage/lightbox landed together — shared integration files. Spec found 2 real defects, both fixed in-run (visibility-transition focus no-op; below-fold mouse drag in the test helper). |
+| 3 | this commit | commit-only (user choice) | Grid landed in c2e0838; this checkpoint = AGENTS.md pointer, smoke-next fix, 8 re-baselined snapshots, LOGBOOK 109, TODO, suite 67/67 ×2, geometry exit 0, css ×3 identical. |
 
 ## Merge readiness checklist
 
-- [ ] Full suite green twice
-- [ ] 8 re-baselined PNGs individually reviewed
-- [ ] `style.css` regenerated and committed
-- [ ] AGENTS.md `SLIDE_ALT` pointer updated
-- [ ] LOGBOOK entry landed, TODO condensed
-- [ ] User has seen it in the browser
+- [x] Full suite green twice
+- [x] 8 re-baselined PNGs individually reviewed (per-test updates; 1440-dark + 360-light inspected, zero Brand-tab drift)
+- [x] `style.css` regenerated and committed — ×3 byte-identical builds; the diff vs the old commit is the class-scan picking up the replaced markup
+- [x] AGENTS.md `SLIDE_ALT` pointer updated
+- [x] LOGBOOK Entry 109 landed, TODO updated
+- [ ] User has seen it in the browser (next: dev server + Chrome)
