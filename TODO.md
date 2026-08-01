@@ -7,14 +7,13 @@
 
 ## Active Plans
 
-### Mistrust slideshow redesign — implemented on `slides`, awaiting user review + merge to `develop`
+### Mistrust slideshow redesign — MERGED to `develop` (`152cf2f`, 2026-08-01, user-reviewed in browser)
 
-- **[User step] Review the `slides` branch and merge to `develop`.** The rebuilt Mistrust display
-  (one swipeable stage + set switcher + filmstrip + 30-thumb grid, React lightbox, vanilla script
-  deleted) is complete and verified on branch `slides` — 67/67 tests green twice, 8 mistrust
-  snapshots re-baselined, nothing pushed. Design plan:
-  `docs/plans/2026-07-31-mistrust-slideshow-redesign.md`; process + checkpoint log:
-  `…-shxdowloop.md`; LOGBOOK Entry 109.
+- Shipped: one swipeable stage (touch + mouse, `useSwipeDeck`) with Set 1/2/3 switcher, filmstrip,
+  and full-height side-bar nav; React lightbox; seamless set mosaics with 8px row gaps replacing
+  the stitched strips; square image corners site-wide (text keeps radius); About/Contact/project-desc
+  measure caps removed. LOGBOOK Entry 109; plans `2026-07-31-mistrust-slideshow-redesign.md` +
+  `-shxdowloop.md`. Local only — nothing pushed (deploy pause until Aug 6).
 - Optional follow-up (future milestone, deferred — current weight already beats what it replaced):
   `slide-NN-thumb.webp` variants in `scripts/generate-mistrust-assets.js`; `mistrustSlides.ts#thumb`
   is the one-line swap point.
