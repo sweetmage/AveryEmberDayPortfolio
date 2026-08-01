@@ -54,25 +54,32 @@ export default function MistrustProject() {
           Moodboard & Storyboard
         </h4>
         <div className="supporting-grid grid grid-cols-1 gap-4 min-[600px]:grid-cols-2">
+          {/* The image is padded off the frame edge on purpose: the frame keeps
+              its radius, the artwork stays square, and the two never meet at a
+              corner. Same inset the gallery cards use. */}
           <div className="supporting-card brand-frame [&_img]:block [&_img]:h-auto [&_img]:w-full">
-            <img
-              src="/images/myart/A History of Mistrust/supporting material/HistoryofMistrustMoodboard-cropped.png"
-              alt="A History of Mistrust moodboard"
-              loading="lazy"
-              decoding="async"
-            />
+            <div className="p-4">
+              <img
+                src="/images/myart/A History of Mistrust/supporting material/HistoryofMistrustMoodboard-cropped.png"
+                alt="A History of Mistrust moodboard"
+                loading="lazy"
+                decoding="async"
+              />
+            </div>
             <div className="supporting-card-label brand-frame-divider border-t px-4 py-3 [&_span]:font-body [&_span]:text-xs [&_span]:text-text-muted [&_strong]:block [&_strong]:font-body [&_strong]:text-sm [&_strong]:font-medium [&_strong]:text-text">
               <strong>Moodboard</strong>
               <span>Visual research and reference</span>
             </div>
           </div>
           <div className="supporting-card brand-frame [&_img]:block [&_img]:h-auto [&_img]:w-full">
-            <img
-              src="/images/myart/A History of Mistrust/supporting material/aHistoryOfMistrustStoryboard.jpg"
-              alt="A History of Mistrust storyboard"
-              loading="lazy"
-              decoding="async"
-            />
+            <div className="p-4">
+              <img
+                src="/images/myart/A History of Mistrust/supporting material/aHistoryOfMistrustStoryboard.jpg"
+                alt="A History of Mistrust storyboard"
+                loading="lazy"
+                decoding="async"
+              />
+            </div>
             <div className="supporting-card-label brand-frame-divider border-t px-4 py-3 [&_span]:font-body [&_span]:text-xs [&_span]:text-text-muted [&_strong]:block [&_strong]:font-body [&_strong]:text-sm [&_strong]:font-medium [&_strong]:text-text">
               <strong>Storyboard</strong>
               <span>Layout and flow planning</span>

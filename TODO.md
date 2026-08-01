@@ -7,6 +7,18 @@
 
 ## Active Plans
 
+### Frame radius + button hover — done, **uncommitted** on `develop` (2026-08-01)
+
+- **Entry 110 — square images, rounded frames.** `.brand-frame:has(> img)` removed; Mistrust
+  supporting-card images wrapped in a `p-4` inset. Slideshow stage/thumbs/mosaic/lightbox stay
+  square (image-is-the-surface). 67/67 green twice; 16 visual baselines re-generated and reviewed.
+- **Entry 111 — one purple hover for all non-nav action buttons.** New `--brand-hover-tint-inverse`;
+  Send Message, `.brand-btn-primary`/`-secondary` and the lightbox controls joined the treatment the
+  nav toggle / carousel arrows / return-to-top already had. Tabs, filters, chips and thumbs excluded
+  on purpose (their *selected* state is that same purple). 67/67 green, zero baseline changes.
+- Both rules recorded in `AGENTS.md` → Design Conventions.
+- **Working tree is dirty — commit when the user is ready.**
+
 ### Mistrust slideshow redesign — MERGED to `develop` (`152cf2f`, 2026-08-01, user-reviewed in browser)
 
 - Shipped: one swipeable stage (touch + mouse, `useSwipeDeck`) with Set 1/2/3 switcher, filmstrip,

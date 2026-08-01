@@ -1,3 +1,100 @@
+## Entry 111 — 2026-08-01
+
+**Agent:** Opus 5 (wren, main)
+**Cycle:** button-hover-unification
+**Branch:** `develop` (deploy pause until Aug 6 — **nothing committed or pushed**)
+**Task:** The Contact "Send Message" hover was almost invisible. Give it the nav toggle's purple, and
+make that one hover treatment cover every clickable button outside the nav (the user named the
+Mistrust carousel arrows as the reference).
+
+### What changed
+
+The purple hover already existed in three places — `#theme-toggle`, `.mistrust-nav` (the carousel
+arrows the user pointed at) and `#return-to-top` all paint `--brand-accent-dim` plus an accent
+border. The submit button and the lightbox controls were the outliers. Unified on the existing
+language rather than inventing a fourth.
+
+- **`--brand-hover-tint-inverse`** added: `color-mix(in srgb, var(--brand-accent) 32%,
+  var(--brand-surface-inverse))`. `--brand-accent-dim` alone does not work on the inverse-filled
+  buttons — its alpha is tuned per theme *against the page*, so 30% purple over a near-white button
+  (dark theme) or 14% over a near-black one (light) barely moves. Declared once in the base `:root`;
+  the var() chain resolves per theme at use time, so no light-theme override exists or is wanted.
+- **`.brand-btn-spectrum`** (Send Message) and **`.brand-btn-primary`**: hover moved off
+  `--brand-surface-inverse-soft` (a ~6% grey darkening) onto the tint. Measured live: `#f1f1ec` →
+  `rgb(229,186,242)` in dark, `#1a1a18` → `rgb(62,29,88)` in light. The spectrum underline still
+  sweeps in — the purple is now the state change, the sweep is the flourish.
+- **`.brand-btn-secondary`**: transparent base, so plain `--brand-accent-dim` + a
+  `--brand-accent` ring. Retires the gold glow, which was the only hover on the site using that ramp.
+- **Lightbox close + arrows**: `rgba(255,255,255,0.2)` → a hardcoded `rgba(204,68,255,0.35)` with a
+  purple border. Hardcoded for the same reason the rest of the lightbox hardcodes white-alpha — its
+  scrim is near-black in *both* themes, so the light-theme accent-dim would disappear. Both gained
+  the transition they never had.
+
+### Deliberately excluded, and why
+
+`.project-tab` (Projects tabs + Gallery filters), `.mistrust-set-tab`, `.brand-chip` and
+`.mistrust-thumb` keep their grey `--brand-surface-3` hover. Their **selected** state is already
+`--brand-accent-dim` — giving them a purple hover would make "hovered" and "currently selected" the
+same pixel. Recorded in AGENTS.md so the next pass doesn't "unify" them by mistake.
+
+### A specificity trap worth naming
+
+The new `transition` on `.lightbox-close`/`.lightbox-arrow` initially got its `transition: none`
+added to the reduced-motion block near the top of `slideshow.css`. Media queries add **no**
+specificity, and those two rules are defined ~150 lines *below* that block, so the override lost on
+source order and reduced-motion users would have kept the transition. Moved to a second
+reduced-motion block at the end of the file, with a comment saying why it lives there.
+
+### Verification
+- Hover verified live on all four families, both themes, with computed values read off the DOM (not
+  eyeballed): Send Message, `.brand-btn-secondary` (thanks page), lightbox next arrow, carousel arrow.
+- `npx tsc --noEmit` clean; `npm run css:build` ×3 byte-identical.
+- **67/67 green with zero baseline changes.** That is the scope proof: the visual gate captures rest
+  states only, so an all-green run against untouched baselines says no rest state moved.
+
+### Route
+Main agent throughout (session bars agent dispatch). No architecture map on this branch.
+
+## Entry 110 — 2026-08-01
+
+**Agent:** Opus 5 (wren, main)
+**Cycle:** frame-radius-amendment
+**Branch:** `develop` (deploy pause until Aug 6 — **nothing committed or pushed**; working tree handed to the user)
+**Task:** Gallery images must stay square-cornered, but the frames around them get their radius back. Carry the same rule onto the "A History of Mistrust" project page.
+
+### What changed
+
+Entry 109's square-image contract protected the artwork by squaring the *frame* —
+`.brand-frame:has(> img) { border-radius: 0 }`. That was the wrong lever: it traded the frame's
+shape away for a problem that only exists when the image is flush to the corner. Amended to an
+inset rule instead.
+
+- **`.brand-frame:has(> img)` deleted** (`brand.css`). Frames are rounded again with no image
+  exception; `img { border-radius: 0 }` still carries the actual guarantee. The block comment now
+  states the amended contract: *if you frame an image, pad the image — do not square the frame.*
+- **Gallery cards** needed no markup change: they already carry `p-4`, so the square art sits 16px
+  inside the now-rounded frame.
+- **Mistrust supporting cards** (Moodboard/Storyboard) were the one frame holding a flush image —
+  its corners would have been clipped round. Their `<img>` is now wrapped in a `p-4` div, matching
+  the gallery cards and the logo swatches (`p-10` canvas). The label strip stays full-bleed.
+- **Slideshow surfaces stay square** (stage, filmstrip thumbs, mosaic grid, lightbox). The image
+  covers those boxes edge to edge, so the border is the image's own outline, not a frame around it,
+  and the mosaic's four corner cells sit flush in the frame's corners. Comments rewritten to say
+  *why* each one opts out rather than citing the retired blanket rule.
+
+### Verification
+- Browser-verified at 1440 dark, 1440 light, and 390 light: rounded frame, square art, on both the
+  Gallery cards and the Mistrust supporting cards.
+- `npx tsc --noEmit` clean. `npm run css:build` ×3 byte-identical.
+- Suite: 16 failures, and **exactly** the 16 expected (gallery ×8, projects-mistrust ×8 = 4
+  breakpoints × 2 themes each) — no third page moved, which is the scope check. Re-baselined per
+  page group, PNGs reviewed, then **67/67 green twice in a row**.
+
+### Route
+Main agent throughout — one CSS rule and two markup wraps, too small and too coupled to split.
+No architecture map on this branch (it lives on the unmerged `shxdowloop/2026-07-31/architecture-map`
+branch).
+
 ## Entry 109 — 2026-07-31
 
 **Agent:** Opus 5 (vesper, main)

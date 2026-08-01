@@ -175,6 +175,36 @@ In Node.js scripts, load with `import 'dotenv/config'` (or `require('dotenv').co
 
 ## Design Conventions
 
+### Hover contract: one purple for actions, grey for selection
+
+**Every clickable button outside the nav bar hovers to the accent purple** — `--brand-accent-dim`
+where the button sits on a page surface (`.brand-btn-secondary`, `.mistrust-nav` carousel arrows,
+`#return-to-top`, `#theme-toggle`), or `--brand-hover-tint-inverse` where the button has its own
+inverse fill that would swallow a 14–30% alpha (`.brand-btn-primary`, `.brand-btn-spectrum`, i.e.
+the Contact submit). The lightbox controls hardcode `rgba(204,68,255,0.35)` because their scrim is
+near-black in *both* themes, so the light-theme accent-dim would vanish (2026-08-01, Entry 111).
+
+**Controls that carry a selected state are excluded on purpose** — `.project-tab` (Projects tabs +
+Gallery filters), `.mistrust-set-tab`, `.brand-chip`, `.mistrust-thumb`. Their *selected* state is
+already `--brand-accent-dim`; a purple hover would render "hovered" and "currently selected"
+identically. They keep a `--brand-surface-3` grey hover, which is the thing that tells them apart.
+Don't "unify" these without replacing the selected state first.
+
+> `--brand-hover-tint-inverse` is declared once, in the base `:root`, as a `color-mix` over
+> `--brand-accent` / `--brand-surface-inverse`. It resolves per theme at use time — do **not** add a
+> light-theme override.
+
+### Square images, rounded frames
+
+Images never carry a radius (`img { border-radius: 0 }`); the frames around them do. The two are
+reconciled by an **inset**, not by squaring the frame: a framed image is padded off the edge
+(gallery cards `p-4`, logo swatches `p-10`, Mistrust supporting cards `p-4`) so a square image sits
+inside a rounded frame. A `.brand-frame:has(> img)` square-the-frame rule existed 2026-07-31 →
+2026-08-01 and was removed — **if you frame an image, pad the image.** The exception is a surface
+where the image *is* the surface, edge to edge with no frame showing (Mistrust stage, filmstrip
+thumbs, mosaic grid, lightbox): those set `border-radius: 0` in `slideshow.css`, because there is no
+frame there to round and a radius would clip the artwork. Entries 110–111.
+
 ### Wide-screen-first layout verification
 
 **Always verify layouts at 2560px and 3440px (ultrawide), not just 1440px.**

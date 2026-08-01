@@ -54,6 +54,15 @@
     --brand-gold-dim:       rgba(245, 185, 106, 0.28);
     --brand-active-outline: var(--brand-accent);
 
+    /* Hover tint for action buttons. `--brand-accent-dim` is the site's hover
+       purple (nav toggle, carousel arrows, return-to-top) and works anywhere the
+       button sits on a page surface. It does NOT work on the inverse-filled
+       buttons: the dim alpha is tuned per theme against the page, so over a
+       near-white button in dark theme, or a near-black one in light, the shift is
+       barely visible. The mix below lands a perceptible purple on either fill.
+       Declared once — the var() chain resolves against whichever theme is active. */
+    --brand-hover-tint-inverse: color-mix(in srgb, var(--brand-accent) 32%, var(--brand-surface-inverse));
+
     /* Iridescent spectrum */
     --brand-ir-1: #d99aff;
     --brand-ir-2: #c49aff;
@@ -1056,7 +1065,18 @@ html.dark .brand-circle-icon {
     box-shadow: inset 0 0 0 1.5px rgba(217,154,255,0.55), 0 0 24px 6px rgba(217,154,255,0.18);
 }
 
-/* ── Buttons ─────────────────────────────────────────────────────── */
+/* ── Buttons ───────────────────────────────────────────────────────
+   One hover language for every clickable button outside the nav bar: the same
+   purple the nav toggle paints (`--brand-accent-dim`, or the mix above where the
+   button's own fill would swallow it), plus the accent on any ring or icon.
+   `#theme-toggle`, `.mistrust-nav` (carousel arrows), `#return-to-top` and the
+   lightbox controls all read as one family with the Contact submit.
+
+   Deliberately NOT extended to `.project-tab`, `.mistrust-set-tab`, `.brand-chip`
+   or `.mistrust-thumb`. Those carry a *selected* state that is already
+   `--brand-accent-dim`; giving them a purple hover too would make "hovered" and
+   "currently selected" the same pixel. They keep a `--brand-surface-3` grey
+   hover, which is what distinguishes the two. */
 .brand-btn {
     display: inline-flex;
     align-items: center;
@@ -1091,7 +1111,7 @@ html.dark .brand-circle-icon {
     background: var(--brand-surface-inverse);
     color: var(--brand-bg);
 }
-.brand-btn-primary:hover { background: var(--brand-surface-inverse-soft); }
+.brand-btn-primary:hover { background: var(--brand-hover-tint-inverse); }
 
 /* Spectrum-underline CTA. Reuses the same iridescent ramp as .brand-spectrum-bar (under the nav
    and page titles) so a prominent button reads as part of the existing system instead of a new
@@ -1121,9 +1141,13 @@ html.dark .brand-circle-icon {
     transition: transform var(--brand-transition-fast);
 }
 
+/* The old hover was `--brand-surface-inverse-soft` — a ~6% grey darkening that
+   read as almost nothing on a submit button (user call 2026-08-01: make it
+   obvious, like the nav toggle). The spectrum underline still sweeps in; the
+   purple is the state change, the sweep is the flourish. */
 .brand-btn-spectrum:hover,
 .brand-btn-spectrum:focus-visible {
-    background: var(--brand-surface-inverse-soft);
+    background: var(--brand-hover-tint-inverse);
 }
 
 .brand-btn-spectrum:hover::after,
@@ -1152,9 +1176,12 @@ html.dark .brand-circle-icon {
     color: var(--brand-text-muted);
     box-shadow: 0 0 0 1px var(--brand-border);
 }
+/* Transparent base, so the accent-dim tint composites over the page exactly the
+   way the nav toggle's does. The gold glow this replaces was the only hover on
+   the site using that ramp — it read as a different button system. */
 .brand-btn-secondary:hover {
-    box-shadow: 0 0 0 1px var(--brand-border-focus),
-                0 0 12px color-mix(in srgb, var(--brand-gold) 30%, transparent);
+    background: var(--brand-accent-dim);
+    box-shadow: 0 0 0 1px var(--brand-accent);
     color: var(--brand-text);
 }
 
@@ -1318,22 +1345,23 @@ html.dark .brand-circle-icon {
     overflow: hidden;
 }
 
-/* ── Square-image contract (2026-07-31, user call) ────────────────
-   Images never show rounded corners anywhere on the site; text surfaces
-   (cards, pills, buttons, inputs) keep their radius. Two rules enforce it:
-   1. `img` itself never carries a radius.
-   2. Any `.brand-frame` that directly contains an image — gallery cards,
-      logo swatches, the Mistrust supporting cards — is square, so the frame
-      cannot round the artwork it clips. Frames with no image (e.g. the
-      type-specimen card) keep the default radius above.
-   The Mistrust slideshow surfaces (stage, thumbs, mosaic grid, lightbox) set
-   `border-radius: 0` explicitly in slideshow.css — their images sit inside
-   buttons, which `:has(> img)` does not see. */
-img {
-    border-radius: 0;
-}
+/* ── Square-image contract (2026-07-31; amended 2026-08-01, user call) ──
+   Images never show rounded corners anywhere on the site. The *frames* around
+   them do keep their radius — the original rule squared the frame too, which
+   traded the frame's shape away to protect the artwork.
 
-.brand-frame:has(> img) {
+   The resolution is an inset: a frame can only round the artwork when the
+   artwork is flush to its corner, so every framed image is padded off the edge
+   (gallery cards `p-4`, logo swatches `p-10`, Mistrust supporting cards `p-4`)
+   and a square image sits inside a rounded frame.
+   1. `img` itself never carries a radius.
+   2. `.brand-frame` is rounded, with no image exception. If you add a frame
+      around an image, give the image padding — do not square the frame.
+   3. Surfaces where the image IS the surface, edge to edge with no frame
+      showing (the Mistrust stage, filmstrip thumbs, mosaic grid, lightbox),
+      stay square in slideshow.css. There is no frame there to round, and a
+      radius would clip the artwork itself. */
+img {
     border-radius: 0;
 }
 

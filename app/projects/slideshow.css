@@ -71,7 +71,10 @@
   min-width: 0;
   aspect-ratio: 1 / 1;
   overflow: hidden;
-  /* Square: images never show rounded corners (site rule, 2026-07-31). */
+  /* Square. The slide covers this box edge to edge, so the border IS the image
+     outline, not a frame around it — a radius here would round the artwork.
+     Frames that show surface around their image round instead (brand.css,
+     "Square-image contract"). */
   border-radius: 0;
   border: 1px solid var(--brand-frame-border);
   background: var(--brand-frame-fill);
@@ -194,7 +197,7 @@
   padding: 0;
   overflow: hidden;
   border: 1px solid var(--brand-frame-border);
-  border-radius: 0; /* image surface — square (site rule, 2026-07-31) */
+  border-radius: 0; /* thumb is filled edge to edge — square (see brand.css) */
   background: var(--brand-frame-fill);
   cursor: pointer;
   opacity: 0.55;
@@ -256,13 +259,16 @@
   margin: 0 0 8px;
 }
 .mistrust-grid {
-  border-radius: 0; /* image surface — square (site rule, 2026-07-31) */
+  /* Overrides the `.brand-frame` radius on purpose: columns are seamless, so
+     the four corner cells sit flush in the frame's corners and any radius would
+     round those four slides. Square (see brand.css, "Square-image contract"). */
+  border-radius: 0;
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   /* Rows breathe a little, columns stay seamless (user call 2026-07-31). */
   gap: 8px 0;
   width: 100%;
-  overflow: hidden; /* clips cell corners to the frame's radius */
+  overflow: hidden;
 }
 @media (min-width: 900px) {
   .mistrust-grid { grid-template-columns: repeat(5, minmax(0, 1fr)); }
@@ -323,7 +329,7 @@
   width: 100%;
   max-width: 1080px;
   overflow: hidden;
-  border-radius: 0; /* image surface — square (site rule, 2026-07-31) */
+  border-radius: 0; /* the slide fills this box — square (see brand.css) */
   touch-action: pan-y;
   user-select: none;
   -webkit-user-select: none;
@@ -366,12 +372,23 @@
   color: #fff;
   font-size: 1.5rem;
   cursor: pointer;
+  transition:
+    background var(--brand-transition-fast),
+    border-color var(--brand-transition-fast);
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 101;
 }
-.lightbox-close:hover { background: rgba(255,255,255,0.2); }
+/* Hardcoded purple, not `--brand-accent-dim`, for the same reason the rest of the
+   lightbox hardcodes white-alpha: the scrim is near-black in BOTH themes, and the
+   light-theme accent-dim (14% of a dark purple) would vanish against it. Same
+   hover family as the carousel arrows and the nav toggle. */
+.lightbox-close:hover,
+.lightbox-arrow:hover:not(:disabled) {
+  background: rgba(204, 68, 255, 0.35);
+  border-color: rgba(204, 68, 255, 0.7);
+}
 .lightbox-close:focus-visible { outline: 2px solid var(--brand-accent); outline-offset: 2px; }
 .lightbox-arrow {
   position: absolute;
@@ -385,12 +402,14 @@
   color: #fff;
   font-size: 1.2rem;
   cursor: pointer;
+  transition:
+    background var(--brand-transition-fast),
+    border-color var(--brand-transition-fast);
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 101;
 }
-.lightbox-arrow:hover:not(:disabled) { background: rgba(255,255,255,0.2); }
 .lightbox-arrow:disabled { opacity: 0.35; cursor: not-allowed; }
 .lightbox-arrow:focus-visible { outline: 2px solid var(--brand-accent); outline-offset: 2px; }
 .lightbox-prev { left: 16px; }
@@ -407,4 +426,12 @@
   padding: 6px 14px;
   border-radius: var(--brand-radius-sm);
   white-space: nowrap;
+}
+
+/* Has to live at the end of the file, not in the reduced-motion block up by the
+   stage: media queries add no specificity, so a `transition: none` written above
+   `.lightbox-close`/`.lightbox-arrow` loses to their own rule on source order. */
+@media (prefers-reduced-motion: reduce) {
+  .lightbox-close,
+  .lightbox-arrow { transition: none; }
 }
