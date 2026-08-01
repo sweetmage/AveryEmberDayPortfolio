@@ -233,23 +233,39 @@
 
 /* ── All-slides grid ──────────────────────────────────────────────
    Replaces the three stitched `sets/set-N.webp` strips (1.37 MB, ten slides
-   tall each). The 30 base webps total ~1.0 MB, so this is lighter than what
-   it replaces, and every slide becomes individually addressable. */
+   tall each). Three seamless mosaics, one per set: zero gutter between cells
+   and one `.brand-frame` around each set block, so each group reads like the
+   original strip while every slide stays individually clickable (user call
+   2026-07-31: no gutter, no number badges, grouped in sets of 10). Column
+   counts divide 10 — 2 and 5 — so no set ends on a ragged row. */
+.mistrust-grid-sets {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  width: 100%;
+}
+.mistrust-grid-label {
+  font-family: var(--brand-font-body);
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--brand-text-soft);
+  margin: 0 0 8px;
+}
 .mistrust-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 12px;
+  gap: 0;
   width: 100%;
+  overflow: hidden; /* clips cell corners to the frame's radius */
 }
-@media (min-width: 600px) {
-  .mistrust-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-}
-@media (min-width: 1100px) {
+@media (min-width: 900px) {
   .mistrust-grid { grid-template-columns: repeat(5, minmax(0, 1fr)); }
 }
 .mistrust-grid-cell {
   position: relative;
   padding: 0;
+  border: none;
+  background: none;
   aspect-ratio: 1 / 1;
   overflow: hidden;
   cursor: pointer;
@@ -260,20 +276,10 @@
   object-fit: cover;
   display: block;
 }
+/* Inset ring — with zero gap an outset outline would hide under neighbours. */
 .mistrust-grid-cell:focus-visible {
   outline: 2px solid var(--brand-accent);
-  outline-offset: 2px;
-}
-.mistrust-grid-num {
-  position: absolute;
-  right: 6px;
-  bottom: 6px;
-  font-family: var(--brand-font-body);
-  font-size: 0.66rem;
-  color: #fff;
-  background: rgba(10, 10, 10, 0.62);
-  border-radius: 999px;
-  padding: 1px 7px;
+  outline-offset: -2px;
 }
 
 /* ── Lightbox ─────────────────────────────────────────────────────
