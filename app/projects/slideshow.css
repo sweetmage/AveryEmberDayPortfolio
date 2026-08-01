@@ -51,10 +51,15 @@
   outline-offset: 2px;
 }
 
+/* Stage flanked by full-height nav bars OUTSIDE the frame — the arrows used to
+   float over the artwork; user call 2026-07-31: controls must not cover the
+   slides. 964px = the 860px stage + two 44px bars + two 8px gaps. */
 .mistrust-stage-row {
-  position: relative;
+  display: flex;
+  align-items: stretch;
+  gap: 8px;
   width: 100%;
-  max-width: 860px;
+  max-width: 964px;
 }
 
 /* `touch-action: pan-y` is what lets a vertical flick scroll the page while a
@@ -62,10 +67,12 @@
    `useSwipeDeck` cannot own the gesture. */
 .mistrust-stage {
   position: relative;
-  width: 100%;
+  flex: 1;
+  min-width: 0;
   aspect-ratio: 1 / 1;
   overflow: hidden;
-  border-radius: var(--brand-radius-lg);
+  /* Square: images never show rounded corners (site rule, 2026-07-31). */
+  border-radius: 0;
   border: 1px solid var(--brand-frame-border);
   background: var(--brand-frame-fill);
   cursor: grab;
@@ -136,14 +143,13 @@
   .mistrust-stage-hint { opacity: 0.8; }
 }
 
+/* Full-height side bars, not floating circles — they stretch to the stage's
+   height and sit beside the frame, never over the artwork. Buttons keep the
+   small radius (text/control elements stay rounded; only images are square). */
 .mistrust-nav {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  z-index: 2;
-  width: 44px;
-  height: 44px;
-  border-radius: 50%;
+  flex: 0 0 44px;
+  align-self: stretch;
+  border-radius: var(--brand-radius-sm);
   border: 1px solid var(--brand-border);
   background: var(--brand-surface-2);
   color: var(--brand-text);
@@ -169,8 +175,6 @@
   outline: 2px solid var(--brand-accent);
   outline-offset: 2px;
 }
-.mistrust-nav-prev { left: 10px; }
-.mistrust-nav-next { right: 10px; }
 
 .mistrust-filmstrip {
   display: flex;
@@ -190,7 +194,7 @@
   padding: 0;
   overflow: hidden;
   border: 1px solid var(--brand-frame-border);
-  border-radius: var(--brand-radius-sm);
+  border-radius: 0; /* image surface — square (site rule, 2026-07-31) */
   background: var(--brand-frame-fill);
   cursor: pointer;
   opacity: 0.55;
@@ -252,6 +256,7 @@
   margin: 0 0 8px;
 }
 .mistrust-grid {
+  border-radius: 0; /* image surface — square (site rule, 2026-07-31) */
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   /* Rows breathe a little, columns stay seamless (user call 2026-07-31). */
@@ -318,7 +323,7 @@
   width: 100%;
   max-width: 1080px;
   overflow: hidden;
-  border-radius: var(--brand-radius-sm);
+  border-radius: 0; /* image surface — square (site rule, 2026-07-31) */
   touch-action: pan-y;
   user-select: none;
   -webkit-user-select: none;

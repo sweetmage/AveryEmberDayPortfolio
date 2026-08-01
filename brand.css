@@ -1318,6 +1318,25 @@ html.dark .brand-circle-icon {
     overflow: hidden;
 }
 
+/* ── Square-image contract (2026-07-31, user call) ────────────────
+   Images never show rounded corners anywhere on the site; text surfaces
+   (cards, pills, buttons, inputs) keep their radius. Two rules enforce it:
+   1. `img` itself never carries a radius.
+   2. Any `.brand-frame` that directly contains an image — gallery cards,
+      logo swatches, the Mistrust supporting cards — is square, so the frame
+      cannot round the artwork it clips. Frames with no image (e.g. the
+      type-specimen card) keep the default radius above.
+   The Mistrust slideshow surfaces (stage, thumbs, mosaic grid, lightbox) set
+   `border-radius: 0` explicitly in slideshow.css — their images sit inside
+   buttons, which `:has(> img)` does not see. */
+img {
+    border-radius: 0;
+}
+
+.brand-frame:has(> img) {
+    border-radius: 0;
+}
+
 /* Border only: for elements that supply their own fill and must not be
    tinted — the color-palette chips, whose fill IS the specimen. */
 .brand-frame-line {
