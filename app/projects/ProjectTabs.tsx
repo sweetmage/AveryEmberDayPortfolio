@@ -19,17 +19,16 @@ function isValidHash(hash: string): hash is TabId {
   return TABS.some((t) => t.id === hash);
 }
 
-function closeLightbox() {
-  const overlay = document.getElementById('lightbox');
-  if (overlay) {
-    overlay.classList.remove('active');
-    overlay.setAttribute('hidden', '');
-  }
-  if (document.body.style.overflow === 'hidden') {
-    document.body.style.overflow = '';
-  }
-}
+/* There used to be a `closeLightbox()` here that reached into
+   `document.getElementById('lightbox')` and mutated classes by hand on every tab
+   switch, because the lightbox was global DOM owned by a vanilla script.
 
+   The lightbox is React-owned now, but `hidden` alone would NOT have retired that
+   hack: a hidden panel is still mounted, so an open lightbox would keep
+   `document.body.style.overflow = 'hidden'` set and leave the page unscrollable
+   behind the other tab. The panels below therefore render their contents
+   conditionally as well as setting `hidden` — that is what actually unmounts the
+   lightbox and runs its scroll-lock and focus-restore cleanup. */
 export default function ProjectTabs() {
   const [activeTab, setActiveTab] = useState<TabId>('brand');
   const [isRail, setIsRail] = useState(false);
@@ -58,7 +57,6 @@ export default function ProjectTabs() {
 
   const switchTab = useCallback((id: TabId) => {
     setActiveTab(id);
-    closeLightbox();
     try {
       history.replaceState(null, '', `#${id}`);
     } catch {
@@ -155,7 +153,7 @@ export default function ProjectTabs() {
           aria-labelledby="tab-brand"
           hidden={activeTab !== 'brand'}
         >
-          <BrandProject />
+          {activeTab === 'brand' && <BrandProject />}
         </div>
 
         <div
@@ -164,7 +162,7 @@ export default function ProjectTabs() {
           aria-labelledby="tab-history-of-mistrust"
           hidden={activeTab !== 'history-of-mistrust'}
         >
-          <MistrustProject />
+          {activeTab === 'history-of-mistrust' && <MistrustProject />}
         </div>
       </div>
       </div>

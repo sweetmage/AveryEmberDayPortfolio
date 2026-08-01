@@ -7,7 +7,19 @@
 
 ## Active Plans
 
-_None. All written plans are complete; see **Completed plans** below._
+### Mistrust slideshow redesign — implemented on `slides`, awaiting user review + merge to `develop`
+
+- **[User step] Review the `slides` branch and merge to `develop`.** The rebuilt Mistrust display
+  (one swipeable stage + set switcher + filmstrip + 30-thumb grid, React lightbox, vanilla script
+  deleted) is complete and verified on branch `slides` — 67/67 tests green twice, 8 mistrust
+  snapshots re-baselined, nothing pushed. Design plan:
+  `docs/plans/2026-07-31-mistrust-slideshow-redesign.md`; process + checkpoint log:
+  `…-shxdowloop.md`; LOGBOOK Entry 109.
+- Optional follow-up (future milestone, deferred — current weight already beats what it replaced):
+  `slide-NN-thumb.webp` variants in `scripts/generate-mistrust-assets.js`; `mistrustSlides.ts#thumb`
+  is the one-line swap point.
+- At the eventual merge of `shxdowloop/2026-07-31/architecture-map`: its ARCHITECTURE.md runtime
+  diagram names the deleted `history-of-mistrust-slideshow.js` — reconcile then.
 
 ### Awaiting a user step
 

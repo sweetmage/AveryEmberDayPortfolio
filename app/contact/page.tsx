@@ -40,7 +40,9 @@ export default function ContactPage() {
         action="/contact/thanks/"
         data-netlify="true"
         netlify-honeypot="bot-field"
-        className="bubble-exclude mt-10 max-w-[720px] rounded-lg border border-line bg-surface-1 p-6 shadow-card"
+        /* Full container width — the 720px cap is gone (user call 2026-07-31: the
+           form spans the shared container, bounded by padding, not max-width). */
+        className="bubble-exclude mt-10 rounded-lg border border-line bg-surface-1 p-6 shadow-card"
       >
         <input type="hidden" name="form-name" value="contact" />
         <div className="hidden">

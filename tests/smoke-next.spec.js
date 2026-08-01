@@ -29,19 +29,26 @@ test.describe('Next.js app smoke', () => {
 
   test('projects page — tab switch and lightbox', async ({ page }) => {
     await page.goto(`${BASE_URL}/projects/`, { waitUntil: 'networkidle' });
-    await expect(page.locator('button[aria-selected="true"]')).toContainText('Brand');
+    // Scope to the page-level tablist: the Mistrust panel now contains a second
+    // tablist (the Set 1/2/3 switcher), so a bare aria-selected query matches two.
+    const projectTabs = page.getByRole('tablist', { name: 'Projects' });
+    await expect(projectTabs.locator('button[aria-selected="true"]')).toContainText('Brand');
 
     // Switch to mistrust tab
     await page.click('button[aria-controls="panel-history-of-mistrust"]');
-    await expect(page.locator('button[aria-selected="true"]')).toContainText('History of Mistrust');
+    await expect(projectTabs.locator('button[aria-selected="true"]')).toContainText(
+      'History of Mistrust'
+    );
 
-    // Lightbox should be hidden initially
-    const lightbox = page.locator('#lightbox');
-    await expect(lightbox).toHaveAttribute('hidden', '');
+    // The lightbox is React-owned as of 2026-07-31: absent from the DOM until a
+    // slide is opened, unmounted again on tab switch. Deeper coverage lives in
+    // tests/mistrust-slideshow.spec.js.
+    await expect(page.locator('.lightbox-overlay')).toHaveCount(0);
+    await expect(page.locator('.mistrust-stage')).toBeVisible();
 
     // Switch back to brand tab
     await page.click('button[aria-controls="panel-brand"]');
-    await expect(page.locator('button[aria-selected="true"]')).toContainText('Brand');
+    await expect(projectTabs.locator('button[aria-selected="true"]')).toContainText('Brand');
   });
 
   test('gallery page loads without errors', async ({ page }) => {

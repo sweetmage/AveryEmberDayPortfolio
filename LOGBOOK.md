@@ -1,3 +1,35 @@
+## Entry 109 — 2026-07-31
+
+**Agent:** Opus 5 (vesper, main)
+**Cycle:** mistrust-slideshow-redesign (shxdowloop)
+**Branch:** `slides` off `develop` @ `81040a7` (deploy pause until Aug 6 — committed, **nothing pushed** at the user's direction)
+**Task:** Rebuild the "A History of Mistrust" display: one modern swipeable stage (touch + mouse) with animated Prev/Next, a Set 1/2/3 switcher, a thumbnail filmstrip, and a 30-thumb grid replacing the stitched "All Slides" strips.
+
+### What changed
+- **One 860px stage replaces the three stacked 720px viewers** (~2200px of scroll → ~one screen). Set switcher above (nested tablist, accent-dim active state), circular 44px Prev/Next overlaying the stage, 10-thumb filmstrip with scroll-snap below, counter + polite live region.
+- **Finger swipe everywhere** via a shared `useSwipeDeck` hook (`app/projects/useSwipeDeck.ts`): Pointer Events + capture, 8px axis race (vertical scroll wins cleanly), 1:1 finger tracking, commit on 20%-of-width OR 0.4px/ms flick, 0.35 edge resistance, tap/drag discrimination with capture-phase click suppression, `pointercancel` handled and `pointerleave` deliberately unbound. Fixes the old fixed-80px threshold, the swipe-also-opens-lightbox collision, and the pointerleave half-drag commit.
+- **Lightbox ported to React** (`MistrustLightbox.tsx`, provider + context). Mounts on open, unmounts with the panel — which retired `ProjectTabs`' global-DOM `closeLightbox()` hack. Panels in `ProjectTabs` now render conditionally (hidden alone would have left the scroll lock stuck when switching tabs with the lightbox open). Only the current±1 slides load eagerly (the old script loaded all 30 @2x up front, ~1.1MB).
+- **All Slides → 30-thumb grid** (`SlideGrid.tsx`), each cell opening the lightbox at its slide; number badges; ~1.0MB total vs the 1.37MB stitched strips (which stay on disk for the legacy site).
+- **`SLIDE_ALT` moved verbatim** into `app/projects/mistrustSlides.ts` — machine-diffed 30/30 identical, set title cards verified at 1/11/21. AGENTS.md pointer updated.
+- **Deleted:** `public/scripts/history-of-mistrust-slideshow.js`, `app/projects/SlideshowScript.tsx`, the static `#lightbox` markup in `page.tsx`.
+
+### Defects found by the new spec (both fixed in-run)
+1. **`focus()` no-op under the visibility transition.** The overlay mounted `visibility: hidden` (`.active` lands one rAF later), and during a 200ms hidden→visible *transition* the computed value stays hidden at effect time — so the dialog frame never took focus and Escape landed outside the dialog. Fix: drop `visibility` from the fade (the component unmounts now); opacity + `pointer-events` covers both directions, and focus is gated on the shown state.
+2. **Test-side:** raw `page.mouse` doesn't auto-scroll, and the 860px stage's centre sits below the 720px viewport — the first drag dispatched into nothing (`0` pointermoves). The drag helper now scrolls into view and clamps the grab point.
+
+### Verification
+- `npx tsc --noEmit` clean; `npm run build:next` clean.
+- `tests/mistrust-slideshow.spec.js` (new, 12 tests): swipe advance, snap-back, tap-vs-drag, touch-action pan-y, Escape + scroll-lock release, set switch, filmstrip, keyboard, grid count + lightbox index, alt-text/set-card alignment. 12/12.
+- Full suite **67/67 green twice in a row**; only the 8 `projects-mistrust` snapshots re-baselined (per-test updates, each PNG reviewed at 1440-dark and 360-light); Brand-tab baselines byte-identical. `smoke-next.spec.js` updated: scoped its tab query to the page tablist (the set switcher is a second tablist) and replaced the `#lightbox[hidden]` assertion with the unmounted-overlay contract.
+- `npm run css:build` ×3 byte-identical; `node scripts/measure-content-widths.js` exit 0.
+
+### Route
+Main agent throughout (session bars agent dispatch; binding usage 77% at preflight, adjacent to the 80% native ban). Checkpoints: `c2e0838` (stages 1–2), stage 3 in this commit. Plans: `docs/plans/2026-07-31-mistrust-slideshow-redesign.md` (design), `-shxdowloop.md` (process).
+
+### `?` Open questions
+- `slide-NN-thumb.webp` variants (~180KB for all 30) would shrink the filmstrip/grid further; `mistrustSlides.ts#thumb` is a one-line swap when `generate-mistrust-assets.js` grows the variant. Deferred: current weight already beats what it replaced.
+- `docs/ARCHITECTURE.md` exists only on the unmerged `shxdowloop/2026-07-31/architecture-map` branch and its runtime diagram names the deleted script — reconcile at that merge.
+
 ## Entry 108 — 2026-07-31
 
 **Agent:** Opus 5 (vesper, main)

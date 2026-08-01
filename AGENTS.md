@@ -98,7 +98,7 @@ Do NOT use these in `bash` tool calls (they are PowerShell-specific and often fa
 >
 > The wide `sets/set-N.webp` strips are composed from the individual slide PNGs, **not** from the `sets/A History of Mistrust Set N.png` exports — those were verified defective on 2026-07-27 (Set 1 clipped, Set 3 containing Set 2's slides; Entry 106). Tiles are laid out at native width, not fixed 1080px slots, because slide 21 is 1056px wide.
 >
-> `SLIDE_ALT` in `public/scripts/history-of-mistrust-slideshow.js` must stay in sync with the artwork — it is the alt text *and* the lightbox caption source. It drifted out of order for twelve slides before Entry 106. **The artwork is the source of truth**; `slides.md` is documentation and has been wrong independently. There is no `scripts/` copy of the slideshow file, unlike `bubbles.js`.
+> `SLIDE_ALT` in `app/projects/mistrustSlides.ts` must stay in sync with the artwork — it is the alt text *and* the lightbox caption source. It drifted out of order for twelve slides before Entry 106. **The artwork is the source of truth**; `slides.md` is documentation and has been wrong independently. (Moved 2026-07-31 from `public/scripts/history-of-mistrust-slideshow.js` when the slideshow was ported to React components — that script no longer exists; the array was machine-verified verbatim across the move. `tests/mistrust-slideshow.spec.js` asserts the set title cards still land on slides 1/11/21.)
 
 `node scripts/generate-og-image.js` — regenerate the social share card `images/og-default.png` (+ `public/`) by screenshotting the **live homepage hero**. Needs `npm run dev` running. **Re-run after any hero change** — the card is a capture, so it is only current if regenerated.
 
@@ -190,7 +190,7 @@ Modern desktop monitors commonly exceed 1920px. A layout that looks correct at 1
 
 - **`--brand-content-max` (1400px) is the single source of truth.** Never hardcode `max-w-[1400px]`; three literals had drifted out of sync with the 1200px token before Entry 107.
 - **The container carries the width, children carry the gutter — a flat 24px (`px-6`).** `main` has **no** horizontal padding on purpose: it used to supply `clamp(16px,4vw,40px)`, which *compounded* with any nested `.brand-container` and put the Home About box 164px further in than the Projects title. Do not re-add padding to `main`.
-- Content that needs a readable measure (prose, form fields) caps *inside* the shared container and stays **left-aligned** — `mx-auto` on such a block breaks the shared edge. The About box is 72ch, the Contact form 720px.
+- Prose and form blocks span the **full shared container** — no measure caps. The About box (72ch), Contact form (720px), and `.project-desc` (820px) caps were all removed 2026-07-31 at the user's direction: these blocks are bounded by the shared padding, not a max-width, so they sit centered (equal insets) on wide screens instead of hugging the left edge. Do not reintroduce a cap or `mx-auto` on them.
 
 - Outer container: `mx-auto max-w-(--brand-content-max)` with **no** horizontal padding.
 - The 24px gutter is supplied by the *children* — `px-6` on `PageHeader`, on the tablist / filter bar, and on the panel or grid.

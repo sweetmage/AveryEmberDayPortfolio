@@ -837,13 +837,13 @@
     border-radius: 0;
 }
 
-/* Project intro copy. One measure for both panels — the two had drifted to
-   560px and 640px while carrying an otherwise identical utility string.
-   820px is a deliberately wide measure (~100 characters at 16px Inter, past
-   the 65-75 ideal) because the ask was explicitly for wider body text; it
-   still stops well short of the ~1092px content column at 1440. */
+/* Project intro copy. One measure for both panels. The width history: the two
+   panels drifted to 560px/640px, were unified at 820px, and on 2026-07-31 the
+   cap was removed entirely (user call) — descriptions span the content column,
+   bounded by the shared padding, not a max-width, so they sit centered in the
+   panel on wide screens. */
 .project-desc {
-    max-width: 820px;
+    max-width: none;
     margin: 0;
     font-family: var(--brand-font-body);
     font-size: 1rem;
@@ -1316,6 +1316,25 @@ html.dark .brand-circle-icon {
     border: 1px solid var(--brand-frame-border);
     border-radius: var(--brand-radius-lg);
     overflow: hidden;
+}
+
+/* ── Square-image contract (2026-07-31, user call) ────────────────
+   Images never show rounded corners anywhere on the site; text surfaces
+   (cards, pills, buttons, inputs) keep their radius. Two rules enforce it:
+   1. `img` itself never carries a radius.
+   2. Any `.brand-frame` that directly contains an image — gallery cards,
+      logo swatches, the Mistrust supporting cards — is square, so the frame
+      cannot round the artwork it clips. Frames with no image (e.g. the
+      type-specimen card) keep the default radius above.
+   The Mistrust slideshow surfaces (stage, thumbs, mosaic grid, lightbox) set
+   `border-radius: 0` explicitly in slideshow.css — their images sit inside
+   buttons, which `:has(> img)` does not see. */
+img {
+    border-radius: 0;
+}
+
+.brand-frame:has(> img) {
+    border-radius: 0;
 }
 
 /* Border only: for elements that supply their own fill and must not be
