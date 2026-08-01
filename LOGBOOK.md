@@ -52,8 +52,32 @@ reduced-motion block at the end of the file, with a comment saying why it lives 
 - **67/67 green with zero baseline changes.** That is the scope proof: the visual gate captures rest
   states only, so an all-green run against untouched baselines says no rest state moved.
 
+### Netlify contact form (same session, config not code)
+
+The user enabled form detection mid-session and asked what was left. A fresh `NETLIFY_AUTH_TOKEN`
+(the old one 401'd) made the state checkable instead of guessable:
+
+- `GET /sites/<id>/forms` → `[]`, `GET /submissions` → `[]`. **Detection alone registers nothing.**
+  Netlify parses forms out of *deployed HTML* at build time, and the published deploy is still
+  `da4b4be` (2026-07-26) — built before the toggle. The live contact form has been dropping
+  messages silently.
+- Verified the form survives the static export (`data-netlify`, hidden `form-name`, honeypot all
+  present in `out/contact/index.html`), and that the CSP's `form-action 'self'` does not block it.
+  Nothing in the code needs changing; it purely needs a build.
+- The site had **no** `submission_created` hook at all — only GitHub deploy checks and
+  deploy-request emails. Created a site-wide email notification to `averyemberday@gmail.com`
+  (hook `6a6e6f4bbb69572bfbd54227`, `form_id: null`, so it covers the form once it registers).
+  Without it, detection would only have filed submissions in the dashboard.
+- Remaining: push `develop` for a free branch deploy, test-submit, then re-test after the Aug 6
+  production deploy. Tracked in TODO.
+
+**Also:** ran `build:next` while `npm run dev` was live — the exact footgun AGENTS.md warns about
+(`distDir` is `out`, so the build deletes the running dev runtime). Restarted the dev server; no
+lasting damage, but it is two-for-two as a trap now.
+
 ### Route
 Main agent throughout (session bars agent dispatch). No architecture map on this branch.
+Committed as `42ea05c` at the user's direction; **push deliberately left to the user.**
 
 ## Entry 110 — 2026-08-01
 

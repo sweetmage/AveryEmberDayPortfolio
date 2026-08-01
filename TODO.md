@@ -7,7 +7,7 @@
 
 ## Active Plans
 
-### Frame radius + button hover — done, **uncommitted** on `develop` (2026-08-01)
+### Frame radius + button hover — committed `42ea05c` on `develop`, **not pushed** (2026-08-01)
 
 - **Entry 110 — square images, rounded frames.** `.brand-frame:has(> img)` removed; Mistrust
   supporting-card images wrapped in a `p-4` inset. Slideshow stage/thumbs/mosaic/lightbox stay
@@ -17,7 +17,8 @@
   nav toggle / carousel arrows / return-to-top already had. Tabs, filters, chips and thumbs excluded
   on purpose (their *selected* state is that same purple). 67/67 green, zero baseline changes.
 - Both rules recorded in `AGENTS.md` → Design Conventions.
-- **Working tree is dirty — commit when the user is ready.**
+- Committed at the user's direction; **push deliberately left to the user.** Pushing `develop` also
+  triggers the free branch deploy the contact form needs (see below).
 
 ### Mistrust slideshow redesign — MERGED to `develop` (`152cf2f`, 2026-08-01, user-reviewed in browser)
 
@@ -46,10 +47,19 @@
   Aug 6, 2026** (billing cycle Jul 7 → Aug 6), or immediately on a paid plan. Nothing to fix in
   the repo — the two mitigations are already committed (`aef8d5a`, `68c42eb`). See LOGBOOK
   Entry 104 for the credit model and the workflow that fits 20 deploys/month.
-- **Enable Netlify form detection.** Dashboard UI toggle plus one test submission — an agent cannot
-  do it. The Contact page is now **live in nav + footer** (Entry 106) and the form renders and
-  validates, but submissions are not captured until this is flipped. Nothing else is blocked on it.
-  (Rest of the nav restructure complete: Entries 075/077/078; nav-fit + unhide done in Entry 106.)
+- **Contact form: detection ON, but the form is still unregistered — needs a deploy.** The user
+  enabled form detection 2026-08-01, and the email notification is configured (site-wide
+  `submission_created` hook → `averyemberday@gmail.com`, hook id `6a6e6f4bbb69572bfbd54227`).
+  **Netlify registers forms by parsing deployed HTML at build time**, and the published deploy is
+  still `da4b4be` (2026-07-26), built before the toggle. API confirms `forms: []` and
+  `submissions: []` — the live contact form currently drops messages silently.
+  - **Next:** push `develop` for a **free branch deploy** (branch deploys cost 0 credits), then
+    test-submit against the branch-deploy URL and confirm the submission appears. Whether
+    non-production submissions file into the main site's form list is a Netlify setting — verify it
+    lands rather than assuming.
+  - Then on Aug 6, the production deploy re-registers it on the live domain; re-test there.
+  - Until a test submission passes, `/contact/thanks/` promises "Your message has been sent" without
+    that being true.
 
 ### Completed plans
 
