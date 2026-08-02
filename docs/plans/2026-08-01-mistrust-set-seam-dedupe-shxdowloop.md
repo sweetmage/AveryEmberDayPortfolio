@@ -47,7 +47,7 @@ The user chose "investigate first, then decide". Method and results:
 | | before | after | verdict |
 |---|---|---|---|
 | Set 1 | 10750px, 50px short | 10781px, 19px short | improved; the 19px is a real shared bleed, not a defect |
-| Set 2 | 10800px | byte-identical | was already correct |
+| Set 2 | 10800px | same pixels, re-encoded | was already correct |
 | Set 3 | 10800px, **held slides 11–20** | 10775px, **holds 21–30** | genuinely fixed — the real bug |
 
 **Decision (user):** compose from slides, but dedupe the overlap using export-derived offsets.
@@ -63,10 +63,20 @@ approach takes offsets from the export rather than inferring them.
 
 ## Helper routing
 
-Main agent throughout. Image forensics is precision work where a wrong helper summary would have
-inverted the conclusion — the whole finding hinges on d=0.00 vs d≈4, and on 99.7% vs byte-exact.
-Binding usage 25% leaves native subagents available, but none of the four reserved cases applies.
-Final shippability review is oracle-class per the standing contract (Opus session).
+Main agent throughout — exploration, forensics, implementation, verification, docs, and the final
+diff review. Image forensics is precision work where a wrong helper summary would have inverted the
+conclusion: the finding hinges on d=0.00 vs d≈4, and on 99.7% vs byte-exact. Binding usage 25%
+left native subagents available, but none of the four reserved cases applied.
+
+**Deviation from the standing contract, stated plainly:** on an Opus session the final shippability
+review should be oracle-class in a fresh context. This session runs under a harness instruction not
+to dispatch subagents unless the user asks, and the user did not. The final review was therefore
+done by the main agent — the same context that wrote the code, which is exactly the blind-spot risk
+the maker-verifier split exists to avoid. The compensating evidence is mechanical rather than
+judgemental: both new guards were verified **non-vacuous** by replaying known-bad inputs (the July
+Set 3 export against the build; the pre-fix `set-1.webp` against the spec), so the claims rest on
+observed failures, not on self-certification. A fresh-context review before merge is still worth
+having.
 
 ## Stage outline
 
@@ -81,7 +91,7 @@ Final shippability review is oracle-class per the standing contract (Opus sessio
 same pixels (every tile d=0.00, same dimensions) but a different hash, so git shows it modified;
 "byte-identical" in the first read of the export folder was imprecise. Note the old Set 3 file was
 973495 bytes, *exactly* Set 2's size — the wrong-slides bug visible in a directory listing.
-**Checkpoint:** see Stage 2
+**Checkpoint:** `83e9f44`
 
 ## Stage 2 — Teach the composer to dedupe shared bleed
 
@@ -113,7 +123,7 @@ stray `unable to open for write` on `slide-02@2x.webp` aborted one `--all` run m
 cleared it and the following default run was clean. `--all` is a re-encode hazard, not a
 convenience — the default path is the correct one after a re-export.
 
-**Checkpoint:**
+**Checkpoint:** `83e9f44` (local only, not pushed)
 
 ## Stage 3 — Visual and suite verification
 
@@ -140,7 +150,7 @@ identical across the `images/` and `public/` trees. It uses no browser. **Verifi
 restoring the pre-fix `set-1.webp` and confirming the width assertion fails.
 
 **Verification:** full suite **73 passed** (67 + 6 new).
-**Checkpoint:**
+**Checkpoint:** `d380d95` (local only, not pushed)
 
 ## Stage 4 — Docs and handoff
 
@@ -153,8 +163,7 @@ restoring the pre-fix `set-1.webp` and confirming the width assertion fails.
       committed; the risk it named pointed at the wrong artefact
 - [x] 4.3 Shippability review + main-agent final diff review
 **Verification:** docs match what the code now does.
-**Checkpoint:**
-
+**Checkpoint:** `d380d95` (local only, not pushed)
 ## Verification matrix
 
 | Claim | How it is checked |
@@ -168,17 +177,27 @@ restoring the pre-fix `set-1.webp` and confirming the width assertion fails.
 
 ## Open risks
 
-- **Baseline churn.** Fixing the seam legitimately moves `projects-mistrust` baselines. Every
-  re-recorded PNG is read before commit — `--update-snapshots` without looking is laundering.
-- **Slide 21 is 1056px wide**, not square. Any offset logic must keep using native widths, not an
-  assumed 1080 grid.
-- **Set PNGs live in `images/` only**, never mirrored to `public/`. Preserve that asymmetry.
+- ~~**Baseline churn.**~~ Did not materialise, for a worse reason than expected: the baselines
+  cannot see these strips at all (Stage 3). No snapshot was re-recorded.
+- **Slide 21 is 1056px wide**, not square. Offset logic uses native widths throughout, never an
+  assumed 1080 grid — but anything added later must keep that in mind.
+- **Set PNGs live in `images/` only**, never mirrored to `public/`. Preserved; the new spec asserts
+  the *derived* strips match across trees, not the source PNGs.
+- **The strips now depend on the exports being present and current.** That is the point of the
+  design, but it means deleting the set PNGs — an option the old TODO item explicitly allowed —
+  would now break the build rather than being free. The build says so when they are missing.
+- **`--all` re-encodes every slide** into different bytes on a different libwebp. Not introduced
+  here, but this run tripped over it; the default path is correct after a re-export.
+- **Reach.** The strips are consumed only by the legacy root page, which nothing links to. The fix
+  is correct but its audience is small — see the `?` in LOGBOOK Entry 114.
 
 ## Merge readiness checklist
 
-- [ ] Suite green
-- [ ] Seam crops read
-- [ ] Header comment no longer claims composition is defect-free
-- [ ] LOGBOOK + TODO + this plan reconciled
-- [ ] Main-agent final diff review
-- [ ] Not merged to `develop`; push timing left to the user (deploy pause)
+- [x] Suite green — 73 passed
+- [x] Seam crops read at 1:1
+- [x] Header comment no longer claims composition is defect-free
+- [x] LOGBOOK + TODO + this plan reconciled
+- [x] Main-agent final diff review — no hardcoded strip widths anywhere downstream; the legacy page
+      uses intrinsic `<img>` sizing, so the new dimensions are safe
+- [ ] **Fresh-context review still recommended** — see the deviation noted under Helper routing
+- [x] Not merged to `develop`; push timing left to the user (deploy pause until Aug 6)
