@@ -6,15 +6,30 @@
  * and the `public/` mirror, because `public/` is what the Next export serves and `images/` is
  * what the legacy root site links.
  *
- * The three wide `sets/set-N.webp` strips are composed here from the individual slide PNGs
- * rather than from the `sets/A History of Mistrust Set N.png` Figma exports. Those exports were
- * verified defective on 2026-07-27: Set 1 clipped 50px off the right edge of its first slide
- * (10750px wide instead of 10800), and Set 3 contained Set 2's slides (11-20) instead of its own
- * (21-30). Composing from the per-slide files is deterministic, always current, and removes the
- * whole class of bad-export bug. The set PNGs are kept as source-of-record but are not consumed.
+ * The three wide `sets/set-N.webp` strips take their PIXELS from the individual slide PNGs and
+ * their GEOMETRY from the `sets/A History of Mistrust Set N.png` Figma exports. That split is
+ * deliberate, and both halves of it were learned the hard way:
+ *
+ *   - Pixels from slides, because the exports have shipped wrong content before. On 2026-07-27
+ *     Set 3 was found to contain Set 2's slides (11-20) instead of its own (21-30). Sourcing
+ *     pixels per-slide makes that class of bug structurally impossible.
+ *   - Geometry from the exports, because consecutive slides can SHARE artwork. Slides 1 and 2
+ *     overlap by 19px: slide 1's trailing 19 columns and slide 2's leading 19 are 99.7% the same
+ *     pixels (the residue is antialiasing on the orange arc). Laying slides out at cumulative
+ *     native widths therefore DUPLICATED that band, which is what put the visible notch in the
+ *     orange arc of `set-1.webp` between 2026-07-27 and 2026-08-01. The export knows the true
+ *     offsets; deriving them by matching each slide into the strip recovers them exactly.
+ *
+ * The 2026-07-27 note that composition "removes the whole class of bad-export bug" was half
+ * right: it removes wrong-content bugs and introduced a seam bug of its own.
+ *
+ * Offsets are derived, not trusted: each slide is template-matched into its strip and must land
+ * at a near-zero distance, and the resulting layout must reproduce the export's width exactly.
+ * Anything else throws rather than quietly shipping a bad mosaic.
  *
  * Usage: node scripts/generate-mistrust-assets.js [--all]
- * Plan: docs/plans/2026-07-27-contact-unhide-mistrust-assets.md
+ * Plans: docs/plans/2026-07-27-contact-unhide-mistrust-assets.md
+ *        docs/plans/2026-08-01-mistrust-set-seam-dedupe-shxdowloop.md
  */
 
 const { execFileSync } = require('child_process');
@@ -78,13 +93,110 @@ function jobs() {
   return out;
 }
 
+function setExport(n) {
+  return path.join(ROOT, REL, 'sets', `A History of Mistrust Set ${n}.png`);
+}
+
 /**
- * Compose set n as a horizontal strip of its 10 slides laid out at their NATIVE widths.
+ * Collapse an image to one row of per-column average brightness.
  *
- * Not every slide is square — slide 21 is 1056x1080, and has been since before this run. Packing
- * into fixed 1080px slots would leave a visible blank gutter beside it, so tiles butt against
- * each other at whatever width they are. This reproduces the layout of the previously committed
- * strips (set-3 was 10776px = 1056 + 9x1080), which is why they read as seamless.
+ * `resize(width, 1)` is exactly a column mean, which turns a 10800px strip into a 1D signal that
+ * a slide-sized template can be slid along. It matches to 1px while staying cheap enough to run
+ * for every slide on every build.
+ */
+async function columnProfile(file) {
+  const meta = await sharp(file).metadata();
+  const data = await sharp(file)
+    .greyscale()
+    .resize(meta.width, 1, { fit: 'fill' })
+    .raw()
+    .toBuffer();
+  return { data, width: meta.width, height: meta.height };
+}
+
+/** Mean absolute difference of `tmpl` against `strip` at `off`, or Infinity if it overruns. */
+function matchAt(strip, tmpl, off) {
+  if (off < 0 || off + tmpl.length > strip.length) return Infinity;
+  let sum = 0;
+  for (let i = 0; i < tmpl.length; i++) sum += Math.abs(strip[off + i] - tmpl[i]);
+  return sum / tmpl.length;
+}
+
+// A correct match sits at ~0; the nearest wrong slide in the same set scores >12. Anything above
+// this is a layout we do not understand, and guessing would ship a broken mosaic.
+const MATCH_TOLERANCE = 2.0;
+// Slides may overlap their predecessor, never by more than this. Bounds the search window.
+const MAX_OVERLAP = 96;
+
+/**
+ * Recover each slide's true x offset inside set n's Figma export.
+ *
+ * Slides are placed left to right; each one is searched for in a window that starts up to
+ * MAX_OVERLAP before where it would sit if it simply butted against its predecessor. The window
+ * extends a little past that point too, so a gap is detected rather than silently mismatched.
+ */
+async function deriveOffsets(n, members, metas) {
+  const exportPath = setExport(n);
+  if (!fs.existsSync(exportPath)) {
+    throw new Error(
+      `Missing set export: ${path.relative(ROOT, exportPath)}\n` +
+        'Set strips take their geometry from these files; see this script\'s header.'
+    );
+  }
+
+  const strip = await columnProfile(exportPath);
+  const offsets = [];
+  let cursor = 0;
+
+  for (let i = 0; i < members.length; i++) {
+    const tmpl = await columnProfile(sourceSlide(members[i]));
+
+    let best = { off: -1, d: Infinity };
+    for (let off = Math.max(0, cursor - MAX_OVERLAP); off <= cursor + MAX_OVERLAP; off++) {
+      const d = matchAt(strip.data, tmpl.data, off);
+      if (d < best.d) best = { off, d };
+    }
+
+    if (best.d > MATCH_TOLERANCE) {
+      throw new Error(
+        `Set ${n}: slide ${members[i]} does not match its strip ` +
+          `(best distance ${best.d.toFixed(2)} at x=${best.off}, tolerance ${MATCH_TOLERANCE}).\n` +
+          `Either ${path.basename(exportPath)} holds the wrong slides, or the slide PNGs and the ` +
+          'set export are from different Figma revisions. Re-export before regenerating.'
+      );
+    }
+
+    offsets.push(best.off);
+    cursor = best.off + metas[i].width;
+  }
+
+  const composedWidth = Math.max(...offsets.map((o, i) => o + metas[i].width));
+  if (composedWidth !== strip.width) {
+    throw new Error(
+      `Set ${n}: derived layout is ${composedWidth}px but ${path.basename(exportPath)} is ` +
+        `${strip.width}px. The offsets do not reproduce the export; refusing to ship the mosaic.`
+    );
+  }
+
+  // The canvas takes the export's height, so a taller slide would be silently cropped.
+  const tallest = Math.max(...metas.map((m) => m.height));
+  if (tallest !== strip.height) {
+    throw new Error(
+      `Set ${n}: tallest slide is ${tallest}px but ${path.basename(exportPath)} is ` +
+        `${strip.height}px tall. Composing would crop; refusing.`
+    );
+  }
+
+  const overlap = members.reduce((sum, _, i) => sum + metas[i].width, 0) - composedWidth;
+  return { offsets, width: composedWidth, height: strip.height, overlap };
+}
+
+/**
+ * Compose set n from its 10 slide PNGs at the offsets its Figma export actually uses.
+ *
+ * Slides keep their NATIVE widths — slide 21 is 1056x1080, not square, so fixed 1080px slots
+ * would leave a blank gutter beside it. Offsets come from `deriveOffsets`, which is what closes
+ * the shared-bleed seams that cumulative-width packing used to duplicate.
  */
 async function buildSet(n) {
   const members = setMembers(n);
@@ -93,18 +205,21 @@ async function buildSet(n) {
     members.map((slide) => sharp(sourceSlide(slide)).metadata())
   );
 
-  let x = 0;
-  const composite = members.map((slide, i) => {
-    const left = x;
-    x += metas[i].width;
-    return { input: sourceSlide(slide), left, top: 0 };
-  });
+  const { offsets, width, height, overlap } = await deriveOffsets(n, members, metas);
 
-  const height = Math.max(...metas.map((m) => m.height));
+  if (overlap > 0) {
+    console.log(`set-${n}: deduped ${overlap}px of shared bleed across ${members.length} slides`);
+  }
+
+  const composite = members.map((slide, i) => ({
+    input: sourceSlide(slide),
+    left: offsets[i],
+    top: 0,
+  }));
 
   const buf = await sharp({
     create: {
-      width: x,
+      width,
       height,
       channels: 3,
       background: { r: 255, g: 255, b: 255 },
@@ -167,10 +282,14 @@ async function main() {
     generated++;
   }
 
-  // Sets are always rebuilt: they are derived from 10 slides each, so "did any member change"
-  // is the real staleness question and recomposing is cheap.
+  // A set is stale when any of its 10 slides changed OR when its Figma export changed — the
+  // export supplies the layout, so a re-export moves the seams even when no slide moved. That is
+  // exactly what happened on 2026-08-01.
   for (let n = 1; n <= SET_COUNT; n++) {
-    const touched = setMembers(n).some((s) => !changed || changed.has(sourceSlide(s)));
+    const touched =
+      !changed ||
+      changed.has(setExport(n)) ||
+      setMembers(n).some((s) => changed.has(sourceSlide(s)));
     if (!touched && fs.existsSync(path.join(TREES[0], 'sets', `set-${n}.webp`))) {
       skipped += TREES.length;
       continue;
