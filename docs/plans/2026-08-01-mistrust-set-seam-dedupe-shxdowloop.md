@@ -117,24 +117,41 @@ convenience — the default path is the correct one after a re-export.
 
 ## Stage 3 — Visual and suite verification
 
-**Status:** Pending
+**Status:** Complete
 **Goal:** Prove the seam artifact is gone and nothing else moved.
 **Phases:**
-- [ ] 3.1 Seam crops at 1:1, composed vs export, read by eye
-- [ ] 3.2 `npx playwright test`; re-record only baselines the fix legitimately moves
-- [ ] 3.3 Read every regenerated baseline before committing it
-**Verification:** full suite green; seam crops smooth.
+- [x] 3.1 Seam crops at 1:1, composed vs export, read by eye — the notch and the broken tan curve
+      are gone; the composed strip now matches the export
+- [x] 3.2 `npx playwright test` — **67 passed**, and **no baseline needed re-recording**
+- [x] 3.3 Read every regenerated baseline before committing — vacuous, none were regenerated
+- [x] 3.4 Close the coverage gap that 3.2's green result exposed
+
+**The finding that made 3.4 necessary.** The suite stayed green through both the defect and the
+fix. That is not the fix being subtle — the `projects-mistrust` baselines *cannot* see these
+strips. `app/projects/SlideGrid.tsx` renders its own CSS mosaic from the individual slides and
+says so at lines 13–14: "The strips stay on disk; they are the shareable full-set artefact and the
+legacy root site still references them." Their only page consumer is
+`projects/history-of-mistrust.html` (lines 347–353), which the suite never screenshots. So a
+duplicated seam could ship for five days without a single red test.
+
+New `tests/mistrust-sets.spec.js`: six assertions holding each committed strip to its export
+(exact width/height, zero columns drifting over 8 grey levels, mean under 1) and each strip
+identical across the `images/` and `public/` trees. It uses no browser. **Verified non-vacuous** by
+restoring the pre-fix `set-1.webp` and confirming the width assertion fails.
+
+**Verification:** full suite **73 passed** (67 + 6 new).
 **Checkpoint:**
 
 ## Stage 4 — Docs and handoff
 
-**Status:** Pending
+**Status:** Complete
 **Goal:** Leave the repo's knowledge true.
 **Phases:**
-- [ ] 4.1 LOGBOOK entry; TODO reconciliation (the standing "re-export or drop the set PNGs" item)
-- [ ] 4.2 Update `docs/plans/2026-08-01-mistrust-asset-reexport.md` Risks — the set PNGs are no
-      longer stale, and the risk it named was the wrong one
-- [ ] 4.3 Oracle-class shippability review; main-agent final diff review
+- [x] 4.1 LOGBOOK Entry 114; TODO reconciled — the standing "re-export or drop the set PNGs" item
+      is closed, with a note that the investigation inverted its premise
+- [x] 4.2 `docs/plans/2026-08-01-mistrust-asset-reexport.md` Risks corrected and its status set to
+      committed; the risk it named pointed at the wrong artefact
+- [x] 4.3 Shippability review + main-agent final diff review
 **Verification:** docs match what the code now does.
 **Checkpoint:**
 

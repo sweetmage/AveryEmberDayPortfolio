@@ -1,6 +1,6 @@
 # Mistrust asset re-export — 2026-08-01
 
-**Status:** In progress (this session).
+**Status:** Complete — committed to `develop` as `06bd820` on 2026-08-01.
 **Trigger:** The user re-exported "A History of Mistrust" from Figma to
 `D:\My Stuff\creations\Best\A History of Mistrust\A History of Mistrust\` and asked for the repo's
 copies to be replaced.
@@ -47,12 +47,14 @@ keeps as source-of-record — see Risks.
 
 ## Risks
 
-- **The set PNGs are now stale.** The export omits `sets/`, so
-  `sets/A History of Mistrust Set 1.png` no longer matches its ten slides. Nothing consumes those
-  files — `generate-mistrust-assets.js` composes `set-N.webp` from the per-slide PNGs precisely
-  because the Figma set exports were verified defective on 2026-07-27 — but the source-of-record
-  claim in that file's header comment is now weaker for Set 1. Recorded, not silently deleted:
-  removing tracked files is the user's call.
+- ~~**The set PNGs are now stale.**~~ **Resolved and inverted the same day — see
+  [`2026-08-01-mistrust-set-seam-dedupe-shxdowloop.md`](2026-08-01-mistrust-set-seam-dedupe-shxdowloop.md).**
+  The user re-exported `sets/` that evening. Investigating those files showed this risk named the
+  wrong artefact: the set PNGs were not the broken ones. `Set 1.png`'s apparent clip is a **19px
+  band of artwork that slides 1 and 2 genuinely share** (99.7% identical pixels), and the composed
+  `set-1.webp` — the file this plan treated as trustworthy — duplicated that band and shipped a
+  visible notch in the orange arc. Strips now take pixels from slides and geometry from the exports,
+  so the exports are consumed rather than merely kept.
 - **Alt-text drift.** If a re-export changes the words on a slide, `SLIDE_ALT` goes wrong silently —
   screen readers and lightbox captions both. Checked explicitly per changed slide, never assumed.
 - **Baseline laundering.** `--update-snapshots` without reading the regenerated PNGs defeats the

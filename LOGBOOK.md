@@ -1,3 +1,86 @@
+## Entry 114 — 2026-08-01
+
+**Agent:** Opus 5 (wren, main)
+**Cycle:** shxdowloop — Mistrust set-strip seam dedupe
+**Branch:** `shxdowloop/2026-08-01/mistrust-set-seam-dedupe` off `develop` @ `06bd820`
+**Task:** "i fixed the set images for a history of mistrust" — the user re-exported the three Figma
+`Set N.png` strips.
+**Plan:** [`docs/plans/2026-08-01-mistrust-set-seam-dedupe-shxdowloop.md`](docs/plans/2026-08-01-mistrust-set-seam-dedupe-shxdowloop.md)
+
+### The fixed exports were not the story
+
+Entry 113 left Entry 106's verdict standing: the set PNGs are defective, nothing consumes them,
+they are kept only as source-of-record. The re-export was expected to close that TODO item. It did
+— `Set 3.png` now holds slides 21–30 instead of Set 2's, and `Set 1.png`'s 50px clip is down to
+19px — but measuring *why* 19px remained inverted the whole premise.
+
+Every slide was template-matched into every strip by column-mean profile. **All 30 landed at
+d=0.00**, so the exports are 1:1 with no rescaling anywhere, and the deficits are single localised
+overlaps: 19px between slides 1 and 2 in Set 1, 1px between 24 and 25 in Set 3, none in Set 2. A
+per-pixel comparison of the disputed band settled it — slide 1's trailing 19 columns and slide 2's
+leading 19 are **99.7% identical**, including the orange arc at mid-height. Real shared artwork,
+not margin, and the residual 0.3% is antialiasing.
+
+So the export was right and **our composed `set-1.webp` was wrong**: laying slides out at
+cumulative native widths drew that shared band twice. The 1:1 seam crops show it plainly — a
+jagged notch in the orange arc and a broken tan curve where the export is smooth. That artifact
+shipped from 2026-07-27 to today.
+
+### What changed
+
+`generate-mistrust-assets.js` now splits the sourcing: **pixels from the slide PNGs** (so a bad
+export can never inject wrong content, which is the failure Set 3 had) and **geometry from the
+export** (so seams are right). Offsets are derived by template-matching and rejected unless they
+reproduce the export's exact width and height. Set staleness now includes the export files, since
+a re-export moves seams without any slide changing.
+
+The 2026-07-27 header comment claiming composition "removes the whole class of bad-export bug" was
+half true and is rewritten: it removed wrong-content bugs and introduced a seam bug of its own.
+
+### Verification
+
+- Composed strips vs their exports: mean |diff| **0.105 / 0.115 / 0.097** grey levels, worst 3,
+  **zero** columns over 8. Widths match exactly. Seam read at 1:1 — the notch is gone.
+- **Negative test.** Replaying the defective July Set 3 export throws
+  `slide 21 does not match its strip (best distance 17.62, tolerance 2)`. That bug would now fail
+  the build.
+- Full suite **73 passed**, no baselines re-recorded.
+
+### The gate could not have caught this
+
+`projects-mistrust` baselines stayed green through both the defect and the fix, because the Next
+app renders its own CSS mosaic from individual slides (`SlideGrid.tsx`) and does not use the
+strips at all. Their only consumer is the legacy root page `projects/history-of-mistrust.html`,
+which the suite never screenshots. New `tests/mistrust-sets.spec.js` closes that blind spot by
+holding the committed strips to their exports; verified non-vacuous by restoring the pre-fix
+`set-1.webp` and watching it fail.
+
+### Weirdness worth remembering
+
+Two auto-detectors for shared bleed both lied. Requiring byte-exact column equality reported "no
+shared columns" (the 0.3% antialiasing), and loosening it to a 99% tolerance produced 1–6px false
+positives on flat cream margins — Set 2 "shared 6px" despite exporting at exactly 10800 with zero
+overlap. Neither is trustworthy without a content-variation guard, which is why offsets come from
+the export instead of being inferred from the slides.
+
+Also: `--all` is a hazard, not a convenience. Running it re-encoded all 60 slide webps into
+different bytes (libwebp noise) and dirtied 44 files that had no business changing; reverted with
+`git checkout -- .../slides/`. The default git-porcelain path is the correct one after a re-export
+— which is exactly what the script's own header has said since 2026-07-27.
+
+### Route
+
+Main agent throughout. Binding usage 25% (Claude session 2%, weekly 25%) left native subagents
+available, but none of the four reserved cases applied and the finding hinges on distinctions —
+d=0.00 vs d≈4, 99.7% vs byte-exact — that a helper summary would have flattened. Nano preflight
+resolved `nano-agent.ps1` as available and unused.
+
+**?** The strips are now correct but reach almost nobody: the Next app doesn't use them and
+nothing links the legacy page. Worth deciding whether they stay a maintained artefact or the
+legacy page retires.
+
+---
+
 ## Entry 113 — 2026-08-01
 
 **Agent:** Opus 5 (wren, main)

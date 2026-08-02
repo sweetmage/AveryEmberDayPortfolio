@@ -39,7 +39,16 @@ Visual/motion spec:
   67/67 green, zero baseline movement.
 - Both contracts recorded in `AGENTS.md` → Design Conventions. **Push deliberately left to the user.**
 
-### Mistrust Figma re-export — done, **uncommitted** (2026-08-01)
+### Mistrust set-strip seam dedupe — done, on `shxdowloop/2026-08-01/mistrust-set-seam-dedupe`
+
+**Entry 114.** The user re-exported the three Figma set strips; investigating them found that the
+shipped `set-1.webp` had a **duplicated 19px seam** — slides 1 and 2 share a band of artwork and
+composing at cumulative native widths drew it twice, notching the orange arc. Set strips now take
+pixels from the slides and geometry from the export, guarded by width/height assertions and a new
+`tests/mistrust-sets.spec.js`. Suite green, 73 passed. **Not pushed, not merged.**
+Plan: [`docs/plans/2026-08-01-mistrust-set-seam-dedupe-shxdowloop.md`](docs/plans/2026-08-01-mistrust-set-seam-dedupe-shxdowloop.md).
+
+### Mistrust Figma re-export — committed to `develop` (`06bd820`, 2026-08-01)
 
 **Entry 113.** New Figma export swapped into both asset trees; only 4 of 31 PNGs actually differed
 (cover collage + slides 1–3), so the rebuild was 12 slide webps plus `set-1.webp`. `SLIDE_ALT`
@@ -108,13 +117,12 @@ Everything genuinely pending, in one place.
 
 ### Repo hygiene
 
-- [ ] **Re-export Mistrust Set 1/2/3 from Figma, or drop the set PNGs.** Three reasons now, none of
-      them breaking the site: `Set 1.png` clips 50px off its first slide and `Set 3.png` contains
-      Set 2's slides (Entry 106), and the **2026-08-01 re-export omitted the `sets/` folder**, so
-      `Set 1.png` no longer matches its ten slides either (Entry 113).
-      `scripts/generate-mistrust-assets.js` composes the strips from individual slide PNGs and
-      ignores these files entirely, so this is purely about whether the repo keeps a correct
-      source-of-record. **Deciding to drop them is a fine outcome.**
+- [x] **Re-export Mistrust Set 1/2/3 from Figma, or drop the set PNGs.** Done (Entry 114). The user
+      re-exported all three; `Set 3.png` now holds slides 21–30 instead of Set 2's, and `Set 1.png`'s
+      50px clip is gone. The investigation inverted the premise of this item: the set PNGs were never
+      the broken artefact. `Set 1.png`'s remaining 19px "deficit" is a **real shared bleed** between
+      slides 1 and 2, and the composed `set-1.webp` was the wrong one — it duplicated that band and
+      shipped a visible notch. The exports are no longer ignored: they now supply the strip geometry.
 - [ ] **`public/` ships ~6 MB of unreferenced source PNGs.** The 30 `Instagram post - N.png` files
       plus the 3.1 MB cover are copied into the export but never requested; only the derived webp
       assets are. Deleting them from `public/` (keeping `images/`) would cut the export. Left alone
