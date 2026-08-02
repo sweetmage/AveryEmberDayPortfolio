@@ -1,5 +1,7 @@
 # Projects vertical tab rail + gallery back-link removal — 2026-07-15
 
+**Status:** Complete — shipped to production 2026-07-22 (LOGBOOK Entries 079, 080).
+
 **Goal:** (1) Projects page tabs become a vertical tab bar beside the content on large screens (user: "tabs need to be horizontal" = tab rail + panel side by side; clarified via structured question to "vertical tab bar"). (2) Remove the gallery page's "← Home" back link (redundant now that the nav has Home).
 
 ## Approach

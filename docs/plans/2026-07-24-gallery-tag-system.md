@@ -1,7 +1,18 @@
 # Plan: Gallery Tag System
 
 **Date:** 2026-07-24
-**Status:** Approved — user decisions applied, implementation started
+**Status:** Complete — shipped `235f254` (filter UI + tag data), restructured to the vertical rail
+2026-07-25 (Entry 099), refined 2026-07-26 (Entry 100), and card metadata switched from tag pills to
+the tool list 2026-07-26 (Entry 101).
+
+> **One deliberate divergence from the decisions below.** Decision 3 specifies tags as visible pills
+> under the title. That shipped, then was replaced in Entry 101 at the user's direction: production
+> tags are now `sr-only` (still driving the filter) and the visible line is the middot-separated
+> tool list. Read decision 3 as superseded.
+>
+> `description` was added to the data model as empty strings here and is **still unrendered** — that
+> is now owned by
+> [`2026-08-01-copy-pass-and-gallery-descriptions.md`](./2026-08-01-copy-pass-and-gallery-descriptions.md).
 **Plan type:** Nanoagent plan (estimated 2–3 nano-agent iterations for implementation)
 
 ## User Decisions (applied 2026-07-24)

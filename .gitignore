@@ -34,3 +34,6 @@ next-env.d.ts
 
 # Playwright test artifacts
 /test-results/
+
+# shxdowmap seed cache (1MB+ repomix dump, rebuilt on demand by `shxdowmap refresh`)
+/.shxdowmap/

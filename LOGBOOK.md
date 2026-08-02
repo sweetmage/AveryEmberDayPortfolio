@@ -1,3 +1,140 @@
+## Entry 113 — 2026-08-01
+
+**Agent:** Opus 5 (wren, main)
+**Cycle:** shxdowflow — Mistrust Figma re-export
+**Branch:** `develop` (deploy pause until Aug 6 — **uncommitted**, handed to the user)
+**Task:** The user re-exported "A History of Mistrust" from Figma and asked for the repo's copies to
+be replaced.
+**Plan:** [`docs/plans/2026-08-01-mistrust-asset-reexport.md`](docs/plans/2026-08-01-mistrust-asset-reexport.md)
+
+### The re-export was four files, not thirty-one
+
+All 31 PNGs were copied into both tracked trees, but `git` says only **4 differ in content**: the
+wide cover collage and `Instagram post - 1/2/3.png`. The other 27 are byte-identical to what was
+already committed.
+
+That number is the whole reason `scripts/generate-mistrust-assets.js` detects changes via
+`git status --porcelain` instead of mtime — a Figma re-export rewrites the mtime of every file it
+writes, so an mtime-driven rebuild would have re-encoded all 30 slides and buried a 4-file revision
+under libwebp noise. Default mode was used deliberately; `--all` would have defeated it. Derived
+rebuild came to 12 slide webps (`slide-01..03` × 1x/2x × both trees) plus `sets/set-1.webp` in both.
+
+### What was checked before trusting the swap
+
+- **Alt text.** `SLIDE_ALT` in `app/projects/mistrustSlides.ts` is alt text *and* the lightbox
+  caption source, and the artwork is its source of truth — a re-worded slide corrupts both silently.
+  Slides 1–3 were read back as images and their on-artwork words compared to `SLIDE_ALT[0..2]`:
+  identical, so no data change.
+- **Geometry.** New slide PNGs are still 1080×1080, so `set-1.webp` composes to the same 10800px
+  strip and the mosaic stays seamless.
+- **Mirror integrity.** Hash-compared `images/` against `public/images/` file by file. The only
+  divergence is the three `sets/*.png` source-of-record files, which have always lived in `images/`
+  only.
+- **Downstream consumers.** `mistrust-thumb.jpg` derives from **slide-09**, which did not change, so
+  `generate-image-variants.js` had nothing to redo. The cover collage is referenced by nothing in
+  the Next app — `index.html` points at the thumb — so it is source-only.
+
+### Verification
+
+- **Full suite: 59 passed, 8 failed** — the 8 being exactly `projects-mistrust` at 360/768/1024/1440
+  × light/dark. Nothing else moved, and `tests/mistrust-slideshow.spec.js` stayed green.
+- The **diff image was read before re-baselining**, not after. Movement is confined to the
+  decorative orange curve in the lower-right of slide 1, plus that slide's appearance in the
+  filmstrip thumb and the Set 1 mosaic. No layout shift, no text reflow — an artwork revision, not a
+  regression, so `--update-snapshots` is legitimate here rather than laundering.
+- 8 baselines re-recorded, then re-run green. The regenerated 1440-light PNG was inspected: full
+  page paints, all three mosaics seamless, no partial-decode blanks.
+
+### Still open
+
+The set PNGs got worse, not better. The export omits the `sets/` folder entirely, so
+`sets/A History of Mistrust Set 1.png` no longer matches its ten slides — on top of the Entry 106
+defects (Set 1 clips 50px, Set 3 holds Set 2's slides). Nothing consumes them; the TODO item to
+re-export or drop them stands, now with a third reason.
+
+### Route
+
+Main agent throughout for exploration, the swap, verification and the final diff review. Nano
+preflight ran (opencode + kilo authenticated, `parallel-max:4`). Oracle-class review took the
+bottom rung again — native dispatch is barred this session, Codex and Cursor both unavailable — so
+two pro nano reviews were dispatched across the two distinct runtimes. **Both returned SHIPPABLE**
+with no critical or major findings — independently confirming tree mirroring, consumer coverage and
+the legitimacy of the re-baselining. Notable for the next session: OpenCode completed fine despite
+showing the `model-probe:timeout` + bare-startup-line signature that four prior sessions treated as
+a reliable wedge tell. It is not one. No architecture map on this branch (`docs/ARCHITECTURE.md` absent; the untracked `.shxdowmap/seed.txt` is from an earlier run).
+
+## Entry 112 — 2026-08-01
+
+**Agent:** Opus 5 (wren, main)
+**Cycle:** shxdowflow — docs-sync re-run
+**Branch:** `develop` (deploy pause until Aug 6 — **uncommitted**, handed to the user)
+**Task:** Execute `docs/plans/2026-07-24-docs-sync-todo-consolidation.md`.
+**Plan:** that file, now carrying a **Re-run** section recording what follows.
+
+### The plan was eight days and 24 entries stale
+
+It was written against Entry 087 on branch `portfoliowebsite`; the repo is at Entry 111 on `develop`.
+**Every one of its seven findings was verified before any file was touched, and five were already
+resolved** by later sessions (Entries 088–093). Its Tracks A/B/C were done. Running it verbatim
+would have redone finished work — precisely the failure its own Finding 1 warned about.
+
+So the *goal* was re-run instead of the *steps*: re-apply the acceptance criterion (grep every plan
+doc for open items; each survivor must have a matching `TODO.md` line) against the repo as it stands.
+
+### What that surfaced — the same defect class, new victims
+
+- **`2026-07-31-mistrust-slideshow-redesign.md` read `Status: Plan only — not implemented. No code
+  has been written.`** for a full day after the work shipped and merged (`152cf2f`, Entry 109). The
+  single highest-value fix here, and Finding 1 recurring verbatim.
+- **`2026-07-24-bubble-visual-cleanup-…-nanoagent-plan.md`: 25 unticked phase boxes** under per-stage
+  `Status: Done` headers. Each stage carries its own evidence-bearing outcome notes, so the work had
+  landed and only the bookkeeping lapsed. Ticked **from those notes, not from commit archaeology** —
+  honouring the original plan's risk about recording partially-landed work as done.
+- **Phase 4.6 (oracle-class review) deliberately not ticked.** No such pass is recorded anywhere and
+  it is not inferable from the surrounding work. Rewritten as a plain "not performed, and will not
+  be" note rather than an open checkbox: the work merged 2026-07-24 and has been green since, so it
+  is a closed process gap, not pending work. Making the grep clean by adding a `TODO.md` line nobody
+  would ever action would have been gaming the criterion.
+- `2026-07-31-mistrust-slideshow-shxdowloop.md` — two boxes ("dev server + Chrome", "user has seen
+  it in the browser") that became true on 2026-08-01.
+- `2026-07-24-gallery-tag-system.md` said "implementation started" when it had fully shipped, **and
+  its decision 3 (visible tag pills) had been superseded** by Entry 101's sr-only-tags + tool-list
+  card without the doc saying so. Divergence now recorded in place.
+- Two docs had **no `Status:` line at all**, so their state was only knowable from `TODO.md`.
+
+### TODO.md condensed to house format
+
+321 → 223 lines. All six pending items preserved verbatim and consolidated under one **Open items**
+heading; completed work reduced to one-line summaries with LOGBOOK pointers; a **Reference data**
+section added for the Projects-page tool tags, which exist nowhere in code. The gallery per-piece
+tool table was **removed as a duplicate** — `app/gallery/gallery-data.ts` is its source of truth, and
+that was verified before deleting rather than assumed. Long visual-gate retrospectives dropped in
+favour of pointers to `AGENTS.md`, which already carries the durable versions.
+
+One item flagged rather than closed: **"final polish on the continuous horizontal carousel" is
+probably superseded by Entry 109**, which replaced that carousel with the swipe deck. Left open with
+the doubt recorded — closing a user's item on my own inference is not mine to do.
+
+### Verification
+- **Acceptance criterion PASS:** `grep -rn "^\s*- \[ \]" docs/plans/` returns **zero** across all 20
+  plan docs. `TODO.md` is provably the complete surface.
+- Diff is **docs-only** — asserted by a filter over `git status`, not by eye.
+- `node scripts/parse-todo.js` → 6 pending / 0 completed, matching the six open items exactly.
+- `node scripts/sync-all.js --dry-run` resolves and completes. **Dry-run only, no remote writes.**
+- No `npm test`: nothing in the diff can move a pixel or a type.
+
+### Needs a decision
+The TickTick dry-run wants **6 CREATE / 95 DELETE** — the deletes are stale mappings for items the
+condense folded into summaries. That is a destructive remote operation on a live list, so it was not
+run. Say the word to sync for real.
+
+### Route
+Main agent throughout. Nano preflight ran (opencode + kilo both authenticated, `parallel-max:4`);
+the oracle-class rung ladder bottomed out because native dispatch is barred this session and Codex
+and Cursor are both unavailable, leaving two nano routes that resolve to the *same* pro model rather
+than the two distinct ones the contract wants — recorded rather than papered over. Every factual
+claim here was verified by direct `git`/`grep` probe. No architecture map on this branch.
+
 ## Entry 111 — 2026-08-01
 
 **Agent:** Opus 5 (wren, main)

@@ -1,8 +1,62 @@
 # Docs sync + TODO consolidation — 2026-07-24
 
-**Status:** Planned (plan-only run; no files changed yet)
-**Branch:** `portfoliowebsite` (up to date with origin, 2 modified files uncommitted)
+**Status:** **Complete — executed 2026-08-01** against re-verified targets (LOGBOOK Entry 112).
+The original Tracks A–C had already been done by later sessions; the *goal* was re-run against the
+repo as it stands. See **Re-run** below.
+**Branch:** written on `portfoliowebsite`; re-run executed on `develop` (deploy pause until Aug 6).
 **Requested by:** user — "plan only / update docs based on recent changes / consolidate all plan todos on todo.md"
+
+---
+
+## Re-run — 2026-08-01
+
+Re-invoked eight days and 24 LOGBOOK entries later (repo at Entry 111, `45f6fcf`). **Every original
+finding was verified before any file was touched, and five of the seven were already resolved.**
+Executing the plan verbatim would have redone finished work — the exact failure the plan itself
+warned about in Finding 1.
+
+| # | Original finding | Verified state, 2026-08-01 |
+|---|---|---|
+| 1 | `2026-07-22-visual-baseline-gate-shxdowloop.md` all checkboxes unticked | **Resolved** — `Status: Complete`, zero unticked boxes |
+| 2 | `2026-07-23-nav-button-restyle.md` says `In progress` | **Resolved** — `Complete — shipped 2026-07-24, merged 098f0b1` |
+| 3 | `TODO.md` says "Uncommitted, unpushed" | **Resolved** — string absent |
+| 4 | Containerized-Playwright CI gate is the only open plan item | **Still true and already consolidated** — `TODO.md` carries it and says so explicitly |
+| 5 | AGENTS.md cites "Entry 086–089" | **Resolved** — now cites `(Entry 086)` only |
+| 6 | `ProjectTabs.tsx` padding tweak unlogged | **Resolved** — LOGBOOK Entry 089 covers it, with its own plan doc |
+| 7 | No `docs/ARCHITECTURE.md` | **Still true** — shxdowmap step still does not apply on this branch |
+
+### What the re-run actually fixed
+
+Re-applying the acceptance criterion (*grep every plan doc for open items; each survivor must have a
+matching `TODO.md` line*) surfaced a fresh crop of the same defect class:
+
+- **`2026-07-31-mistrust-slideshow-redesign.md` read `Status: Plan only — not implemented. No code
+  has been written.`** for a full day after it shipped and merged (`152cf2f`, Entry 109). The single
+  highest-value fix in this run, and Finding 1's failure mode recurring verbatim.
+- **`2026-07-24-bubble-visual-cleanup-…-nanoagent-plan.md` had 25 unticked phase boxes** under
+  per-stage `Status: Done` headers. Each stage carries its own evidence-bearing outcome notes, so the
+  work had landed and only the bookkeeping lapsed. Ticked from *those notes*, not from commit
+  archaeology — honouring this plan's own risk note. **Phase 4.6 (oracle-class review) was left
+  unticked**: no such pass is recorded anywhere, and inferring it from the surrounding work is
+  exactly the over-claim the risk warns about.
+- **`2026-07-31-mistrust-slideshow-shxdowloop.md`** had two open boxes ("dev server + Chrome",
+  "user has seen it in the browser") that became true on 2026-08-01.
+- **`2026-07-24-gallery-tag-system.md` said "implementation started"** when it had fully shipped —
+  and its decision 3 (visible tag pills) had been *superseded* by Entry 101 without the doc saying
+  so. Divergence now recorded in place.
+- **Two docs had no `Status:` line at all** (`2026-07-15-projects-vertical-tabs.md`,
+  `2026-07-24-cross-page-css-consistency.md`), so their state was only knowable from `TODO.md`.
+
+### Standing lesson
+
+This is now the **second** time these plan docs drifted into claiming unstarted work that had
+already shipped. The pattern is not "someone forgot" — it is that a plan doc's status is written
+once at creation and nothing forces it to change at merge. Worth treating the plan header as part of
+the merge checklist rather than scheduling a third reconciliation pass.
+
+---
+
+## Original plan (2026-07-24) — retained for the record
 
 ## Goal
 

@@ -57,10 +57,10 @@ Binding usage 27% → native permitted for the four reserved cases. Default nano
 **Status:** Done — committed `15fe32d` (frame-based sampling). Held green in all 6 full-suite runs during Stage 2/3 verification on 2026-07-25.
 **Goal:** The `Projects tabs @768` test is stable in full-suite runs.
 **Phases:**
-- [ ] 1.1 Reproduce the flake: run full suite 3×, log pass/fail for the tabs test
-- [ ] 1.2 Convert the tabs test to frame-based sampling (matching the blob test's proven fix)
-- [ ] 1.3 If the flake persists, add the test to a separate non-parallel project in `playwright.config.js`
-- [ ] 1.4 Verify: 3 consecutive full-suite runs, tabs test green every time
+- [x] 1.1 Reproduce the flake: run full suite 3×, log pass/fail for the tabs test
+- [x] 1.2 Convert the tabs test to frame-based sampling (matching the blob test's proven fix)
+- [x] 1.3 If the flake persists, add the test to a separate non-parallel project in `playwright.config.js`
+- [x] 1.4 Verify: 3 consecutive full-suite runs, tabs test green every time
 **Helpers:** flash nano for reproduction data; main agent for assertion-shape decision
 **Verification:** `npx playwright test` green 3× in a row
 **Checkpoint:** commit + push after 1.4
@@ -76,13 +76,13 @@ Binding usage 27% → native permitted for the four reserved cases. Default nano
 - Post-revert: 53/53 green twice; tabs test stable both runs.
 **Goal:** `--update-snapshots` writes correct baselines; the gate catches small changes.
 **Phases:**
-- [ ] 2.1 Diagnose stale-content defect: probe the `globalSetup` → `webServer` timing gap
-- [ ] 2.2 Fix stale-content: either a readiness probe post-build, or disable `reuseExistingServer` for the test server in local runs
-- [ ] 2.3 Diagnose partial-paint defect: probe gallery image decode timing under `captureBeyondViewport`
-- [ ] 2.4 Fix partial-paint: add `waitForLoadState('networkidle')` after decode, or force `captureBeyondViewport: false` for pages with lazy images
-- [ ] 2.5 Fix small-area silent pass: add `maxDiffPixels: 500` absolute floor alongside `maxDiffPixelRatio: 0.001`
-- [ ] 2.6 Prove the gate catches small changes: inject a 2px visual change, verify it goes red in at least one theme
-- [ ] 2.7 Revert injection, run full suite twice unchanged to confirm no new flakiness
+- [x] 2.1 Diagnose stale-content defect: probe the `globalSetup` → `webServer` timing gap
+- [x] 2.2 Fix stale-content: either a readiness probe post-build, or disable `reuseExistingServer` for the test server in local runs
+- [x] 2.3 Diagnose partial-paint defect: probe gallery image decode timing under `captureBeyondViewport`
+- [x] 2.4 Fix partial-paint: add `waitForLoadState('networkidle')` after decode, or force `captureBeyondViewport: false` for pages with lazy images
+- [x] 2.5 Fix small-area silent pass: add `maxDiffPixels: 500` absolute floor alongside `maxDiffPixelRatio: 0.001`
+- [x] 2.6 Prove the gate catches small changes: inject a 2px visual change, verify it goes red in at least one theme
+- [x] 2.7 Revert injection, run full suite twice unchanged to confirm no new flakiness
 **Helpers:** pro nano for bounded implementation; main agent for integration
 **Verification:** injected change → red; reverted → green twice; `--update-snapshots` writes correct dimensions
 **Checkpoint:** commit + push after 2.7
@@ -96,10 +96,10 @@ Binding usage 27% → native permitted for the four reserved cases. Default nano
 - 3.3/3.4 Dead code: zero live `patriots` refs (docs-history only), zero live `tests/baselines/` refs, zero unused imports in `app/` (contact `Link` removal already in tree). `next build` clean. Nothing to remove.
 **Goal:** Quick wins from `TODO.md` Standalone.
 **Phases:**
-- [ ] 3.1 360px nav-fit probe: measure current three-label nav at 360px, document slack in plan and `TODO.md`
-- [ ] 3.2 `images/og-default.png`: check if a final design asset exists in repo or user's file system; replace if found, otherwise document the blocker
-- [ ] 3.3 Dead-code sweep: grep for `patriots`, old `tests/baselines/` references, unused imports in `app/`
-- [ ] 3.4 Remove any found dead code; verify build still clean
+- [x] 3.1 360px nav-fit probe: measure current three-label nav at 360px, document slack in plan and `TODO.md`
+- [x] 3.2 `images/og-default.png`: check if a final design asset exists in repo or user's file system; replace if found, otherwise document the blocker
+- [x] 3.3 Dead-code sweep: grep for `patriots`, old `tests/baselines/` references, unused imports in `app/`
+- [x] 3.4 Remove any found dead code; verify build still clean
 **Helpers:** flash nano for grep/inventory; pro nano for bounded removal if safe
 **Verification:** `next build` clean; zero grep hits for dead patterns
 **Checkpoint:** commit + push after 3.4
@@ -114,23 +114,28 @@ Binding usage 27% → native permitted for the four reserved cases. Default nano
 - Hash sync (`#filter=`) behavior unchanged.
 - All gallery visual baselines (8/viewport set) will move — re-baseline, adjudicate dimensions against repeated-load measurement, then full-suite re-run before commit (mandatory habit per TODO.md).
 **Phases:**
-- [ ] 5.1 Implement rail layout in `GalleryGrid.tsx` (+ any small `brand.css` addition if `.project-tab` needs a gallery-rail variant)
-- [ ] 5.2 Verify bubble exclusion test still green; verify 360/768/1024/1440 layouts
-- [ ] 5.3 Re-baseline gallery snapshots, adjudicate, full-suite re-run green
+- [x] 5.1 Implement rail layout in `GalleryGrid.tsx` (+ any small `brand.css` addition if `.project-tab` needs a gallery-rail variant)
+- [x] 5.2 Verify bubble exclusion test still green; verify 360/768/1024/1440 layouts
+- [x] 5.3 Re-baseline gallery snapshots, adjudicate, full-suite re-run green
 **Verification:** `npm test` green; screenshots at 360/768/1440 adjudicated in both themes
 
 ## Stage 4 — Integration, docs, and review
 
-**Status:** Pending
+**Status:** Done — all tracks landed and shipped. Reconciled 2026-08-01 during the docs-sync re-run;
+see the note under 4.5–4.7 for what the review phases actually got.
 **Goal:** All tracks merged, docs updated, final review.
 **Phases:**
-- [ ] 4.1 Integrate all three tracks; resolve any conflicts
-- [ ] 4.2 Run full suite: `npm test` twice in a row, green both times
-- [ ] 4.3 Update `TODO.md`: mark completed items, update nav-fit measurement
-- [ ] 4.4 Update `LOGBOOK.md`: new entry with stage outcomes, helper routes, verification
-- [ ] 4.5 Pro nano shippability review
-- [ ] 4.6 Oracle-class review (if binding < 80% and ultracode gate passes)
-- [ ] 4.7 Main-agent final diff review
+- [x] 4.1 Integrate all three tracks; resolve any conflicts
+- [x] 4.2 Run full suite: `npm test` twice in a row, green both times — 53/53 twice (Stage 5 notes)
+- [x] 4.3 Update `TODO.md`: mark completed items, update nav-fit measurement — 0px slack @360px recorded
+- [x] 4.4 Update `LOGBOOK.md` — Entries 099/100/101 cover the gallery rail; 090–093 the bubble/gate work
+- [x] 4.5 Pro nano shippability review — a **fresh-context verifier returned PASS 6/6** (Stage 5 status)
+- 4.6 Oracle-class review — **not performed, and will not be.** No such pass is recorded anywhere,
+      and it is not inferable from the surrounding work. Deliberately *not* written as an open
+      checkbox: this work merged on 2026-07-24, shipped to production, and has been green through
+      every full-suite run since, so a retrospective review is a closed process gap rather than
+      pending work. Recorded here so the omission stays visible.
+- [x] 4.7 Main-agent final diff review — both-theme screenshots adjudicated by the main agent (Stage 5)
 **Verification:** `npm test` green twice; `git status` clean after each run
 **Checkpoint:** final commit + push
 

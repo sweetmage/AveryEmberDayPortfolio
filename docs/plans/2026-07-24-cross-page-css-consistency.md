@@ -1,5 +1,8 @@
 # Cross-page CSS consistency — Home vs Gallery (2026-07-24)
 
+**Status:** Complete — shipped 2026-07-24 (LOGBOOK Entry 097; follow-on Entry 098 reduced Projects
+text to black/white/gray and moved every framed image onto the one `.brand-frame` treatment).
+
 ## Goal
 
 Home (`app/page.tsx`) and Gallery (`app/gallery/page.tsx`) render titles, frames,

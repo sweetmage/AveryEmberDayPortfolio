@@ -1,9 +1,15 @@
 # A History of Mistrust — slideshow redesign (touch swipe + animated controls)
 
 **Date:** 2026-07-31
-**Status:** Plan only — not implemented. No code has been written.
-**Branch:** work happens on `develop` (deploy pause until 2026-08-06, see `AGENTS.md` → Branch Policy).
-Current checkout is `shxdowloop/2026-07-31/architecture-map`; branch off `develop` before starting.
+**Status:** **Shipped** — implemented on branch `slides`, merged to `develop` as `152cf2f`
+(2026-08-01, user-reviewed in the browser). LOGBOOK Entry 109; stage commits `c2e0838` (stages 1–2)
+and the stage-3 commit. Process log: [`2026-07-31-mistrust-slideshow-shxdowloop.md`](./2026-07-31-mistrust-slideshow-shxdowloop.md).
+**Branch:** work happened on `develop` (deploy pause until 2026-08-06, see `AGENTS.md` → Branch Policy).
+
+> This header read *"Plan only — not implemented. No code has been written."* until 2026-08-01,
+> which was false for a full day after the work merged. Anyone reading it cold would have rebuilt a
+> finished slideshow. Corrected during the docs-sync re-run; see
+> [`2026-07-24-docs-sync-todo-consolidation.md`](./2026-07-24-docs-sync-todo-consolidation.md).
 
 ---
 

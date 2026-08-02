@@ -100,8 +100,8 @@ is the bubble-engine exclusion zone (`scripts/bubbles.js:72`).
       snapshots must stay byte-identical
 - [x]  `node scripts/measure-content-widths.js` exit 0
 - [x]  LOGBOOK entry + TODO condense
-- [ ] 3.8 Dev server + Chrome for the user
-**Checkpoint:** _pending_
+- [x] 3.8 Dev server + Chrome for the user — done 2026-08-01
+**Checkpoint:** complete — merged to `develop` as `152cf2f`
 
 ## Verification matrix
 
@@ -139,4 +139,4 @@ is the bubble-engine exclusion zone (`scripts/bubbles.js:72`).
 - [x] `style.css` regenerated and committed — ×3 byte-identical builds; the diff vs the old commit is the class-scan picking up the replaced markup
 - [x] AGENTS.md `SLIDE_ALT` pointer updated
 - [x] LOGBOOK Entry 109 landed, TODO updated
-- [ ] User has seen it in the browser (next: dev server + Chrome)
+- [x] User has seen it in the browser — 2026-08-01, reviewed and merged (`152cf2f`)
