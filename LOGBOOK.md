@@ -1,3 +1,82 @@
+## Entry 115 — 2026-08-03
+
+**Agent:** Opus 5 (sable, main)
+**Cycle:** shxdowflow — TODO verification and branch audit
+**Branch:** `develop` (deploy pause until Aug 6 — committed, **not pushed**)
+**Task:** "verify to do list task completion, give a summary of what changes are on develop and any
+existing shxdowloop branches"
+
+### The audit found two things the docs got wrong
+
+**The suite was not green.** `TODO.md` and Entries 110-113 all claim "67/67". A cold full run on
+`develop` came back **1 failed, 59 passed, 7 did not run** — `bubbles-exclusion.spec.js` "Projects
+tabs @ 768px", 195px² overlap against an expected 0. The same file then passed **10/10 standalone**.
+
+This is the rAF-starvation mechanism the file's own comment block says was fixed on 2026-07-28. It
+wasn't. `test.describe.configure({ mode: 'serial' })` serializes tests *within* a file; it does
+nothing about other spec files holding workers, and `playwright.config.js` runs `fullyParallel`
+with `workers: undefined` (six on this box). So the bubble physics kept competing for frames with
+the visual baselines, and every green claim from 2026-07-28 onward was a scheduling coin flip that
+happened to land right. Notably `allRegisteredAsZones` passed in the failing run, so this was never
+the exclusion-rename trap — the zones were registered correctly and the bubbles simply had not been
+given enough frames to leave them.
+
+Fixed structurally rather than by loosening the assertion: the suite now has a `chromium` project
+that ignores the bubble file and a `bubbles` project that matches only it, `dependencies:
+['chromium']`. Playwright runs dependency projects as strict phases, so the physics tests execute
+with the worker pool to themselves. The direction is deliberate — bubbles depends on chromium, not
+the reverse, because a dependency failure skips its dependents and the visual gate is the
+deploy-blocking signal. It must never be skipped because a physics test wobbled. Snapshot filenames
+are untouched: the visual specs stayed in the project still named `chromium`.
+
+**The deploy guard was inert.** `AGENTS.md` and `TODO.md` both state that a `.git/hooks/pre-push`
+guard blocks pushes to `portfoliowebsite` until Aug 6. It has not been running. Local
+`core.hooksPath` was set to `.githooks` — a directory that exists only on
+`shxdowloop/2026-07-31/architecture-map` and is absent from `develop`. Git consults `core.hooksPath`
+exclusively when it is set, so it was looking into an empty path and finding no hooks at all. Unset
+it and dry-fired the hook both ways: a simulated `portfoliowebsite` ref exits 1 with the pause
+message, a `develop` ref exits 0. Blast radius was small only by luck — Netlify is out of credits,
+so a push would have been refused server-side anyway.
+
+**This reopens when the architecture-map branch merges.** That branch legitimately wants
+`core.hooksPath=.githooks`. Whoever merges it has to carry the pause guard into `.githooks/pre-push`
+and re-point the config, or the hole comes straight back. Recorded in `TODO.md` under the Aug 6 item.
+
+### Also landed
+
+`shxdowloop/2026-08-01/mistrust-set-seam-dedupe` fast-forwarded onto `develop` as `ada0210`, zero
+conflicts. That merge closes the "Re-export Mistrust Set 1/2/3, or drop the set PNGs" item and
+corrects two `TODO.md` lines that were stale on `develop`: Entry 113's re-export was described as
+"uncommitted" when it had been committed as `06bd820`.
+
+### Verification
+
+Full suite **73 passed** twice after the project split. The failure is not reproducible under the
+new arrangement, which is the expected outcome given the mechanism — nothing else is running.
+
+### Audit results that were accurate
+
+Six open TODO items checked against the tree: watermark, standalone Mistrust viewer page (no route
+exists), carousel polish (correctly flagged as probably superseded by Entry 109), visual gate in CI
+(no `.github/workflows`; `netlify.toml` publishes with no test step), `public/` unreferenced PNGs
+(30 files at 2.49 MB plus the 3.1 MB cover, so the "~6 MB" figure holds). `docs/plans/` has zero
+open checkboxes as claimed. `docs/sync/local-tasks.json` matches. The Contact-form item could not
+be verified without the Netlify API and is blocked on a deploy regardless.
+
+### Branch state
+
+`develop` is 129 ahead of `origin/develop`, nothing pushed, clean.
+`shxdowloop/2026-07-31/architecture-map` is pushed but has gone stale — branched at `81040a7`, so it
+predates the slideshow merge, conflicts in `.gitignore`/`LOGBOOK.md`/`TODO.md`, and its
+ARCHITECTURE.md runtime diagram still names the deleted `history-of-mistrust-slideshow.js`.
+`develop` has no `docs/ARCHITECTURE.md` at all until that lands.
+
+**?** Two separate load-bearing safety mechanisms — the bubble coverage and the push guard — were
+documented as working while silently doing nothing. Both were found by running the thing rather
+than reading about it. Worth asking what else in this repo is only true on paper.
+
+---
+
 ## Entry 114 — 2026-08-01
 
 **Agent:** Opus 5 (wren, main)

@@ -39,14 +39,24 @@ Visual/motion spec:
   67/67 green, zero baseline movement.
 - Both contracts recorded in `AGENTS.md` → Design Conventions. **Push deliberately left to the user.**
 
-### Mistrust set-strip seam dedupe — done, on `shxdowloop/2026-08-01/mistrust-set-seam-dedupe`
+### Mistrust set-strip seam dedupe — MERGED to `develop` (`ada0210`, 2026-08-03)
 
 **Entry 114.** The user re-exported the three Figma set strips; investigating them found that the
 shipped `set-1.webp` had a **duplicated 19px seam** — slides 1 and 2 share a band of artwork and
 composing at cumulative native widths drew it twice, notching the orange arc. Set strips now take
 pixels from the slides and geometry from the export, guarded by width/height assertions and a new
-`tests/mistrust-sets.spec.js`. Suite green, 73 passed. **Not pushed, not merged.**
+`tests/mistrust-sets.spec.js`. Fast-forwarded onto `develop` with zero conflicts. **Not pushed.**
 Plan: [`docs/plans/2026-08-01-mistrust-set-seam-dedupe-shxdowloop.md`](docs/plans/2026-08-01-mistrust-set-seam-dedupe-shxdowloop.md).
+
+### Bubble spec isolated into its own Playwright project (2026-08-03)
+
+**Entry 115.** A verification run of the full suite on `develop` failed
+`bubbles-exclusion.spec.js` "Projects tabs @ 768px" at 195px² overlap, then passed 10/10 standalone.
+The 2026-07-28 in-file `mode: 'serial'` fix only covered contention *within* the file; other spec
+files still starved rAF. Every "67/67 green" claim from 2026-07-28 onward was a lucky scheduling
+draw. `playwright.config.js` now splits the suite into a `chromium` project and a `bubbles` project
+gated behind it, so nothing else holds a worker while the physics tests run. Snapshot names are
+unaffected — the visual specs stay in `chromium`.
 
 ### Mistrust Figma re-export — committed to `develop` (`06bd820`, 2026-08-01)
 
@@ -74,6 +84,13 @@ seamless set mosaics. LOGBOOK Entry 109. Local only — nothing pushed.
   production deploy = 15 credits, not one per commit). The `pre-push` guard expires by itself that
   day. Then revert the pause banners in `AGENTS.md` / `docs/NOTES.md`. Checklist in
   [`docs/deploys.md`](docs/deploys.md#lifting-the-pause-on-2026-08-06); LOGBOOK Entry 105.
+  - **The guard was found inert on 2026-08-03 and repaired** (Entry 115). Local `core.hooksPath`
+    was set to `.githooks`, a directory that exists only on
+    `shxdowloop/2026-07-31/architecture-map` — so on `develop` git looked in an empty path and
+    `.git/hooks/pre-push` never ran. Unset; dry-fired both ways to confirm (portfoliowebsite
+    blocked, develop clean). **Whoever merges the architecture-map branch must re-point
+    `core.hooksPath` at `.githooks` and carry the pause guard into that hook**, or the same hole
+    reopens.
 - **Netlify production deploys paused — out of credits (2026-07-26).** All 300 monthly credits used.
   Published site stays live on `da4b4be`; pushes return `skipped: true` with no build log. Resumes
   automatically **Aug 6** (cycle Jul 7 → Aug 6). Nothing to fix in the repo — both mitigations are

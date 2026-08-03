@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "generatedAt": "2026-08-01T22:50:18.031Z",
+  "generatedAt": "2026-08-03T23:38:03.882Z",
   "source": "TODO.md",
   "tasks": [
     {
@@ -11,7 +11,7 @@
       "priority": "normal",
       "tags": [],
       "list": "Content",
-      "sourceLine": 83
+      "sourceLine": 117
     },
     {
       "id": "open-items-content-standalone-a-history-of-mistrust-viewer-",
@@ -21,7 +21,7 @@
       "priority": "normal",
       "tags": [],
       "list": "Content",
-      "sourceLine": 84
+      "sourceLine": 118
     },
     {
       "id": "open-items-content-final-polish-on-the-continuous-horizonta",
@@ -31,7 +31,7 @@
       "priority": "normal",
       "tags": [],
       "list": "Content",
-      "sourceLine": 86
+      "sourceLine": 120
     },
     {
       "id": "open-items-tooling-ci-run-the-visual-gate-in-ci-the-gate-is-re",
@@ -41,17 +41,17 @@
       "priority": "normal",
       "tags": [],
       "list": "Tooling / CI",
-      "sourceLine": 92
+      "sourceLine": 126
     },
     {
-      "id": "open-items-repo-hygiene-re-export-mistrust-set-1-and-set-3-from-",
-      "title": "**Re-export Mistrust Set 1 and Set 3 from Figma, or drop the set PNGs.** Both exports are",
+      "id": "open-items-repo-hygiene-re-export-mistrust-set-123-from-figma-or",
+      "title": "**Re-export Mistrust Set 1/2/3 from Figma, or drop the set PNGs.** Done (Entry 114). The user",
       "description": null,
-      "status": "pending",
+      "status": "completed",
       "priority": "normal",
       "tags": [],
       "list": "Repo hygiene",
-      "sourceLine": 103
+      "sourceLine": 137
     },
     {
       "id": "open-items-repo-hygiene-public-ships-6-mb-of-unreferenced-source",
@@ -61,7 +61,7 @@
       "priority": "normal",
       "tags": [],
       "list": "Repo hygiene",
-      "sourceLine": 108
+      "sourceLine": 143
     }
   ]
 }

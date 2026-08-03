@@ -68,7 +68,7 @@ Do NOT use these in `bash` tool calls (they are PowerShell-specific and often fa
 
 `npm run serve` — serves the repo root on :8080 (**legacy static site only** — not the Next.js app)
 
-`npm test` / `npx playwright test` — smoke tests + a **compare-based** visual regression gate, plus bubble-engine coverage (**55 tests**: 40 visual = 5 pages × 4 breakpoints × 2 themes, plus smoke and 10 bubble-exclusion specs).
+`npm test` / `npx playwright test` — smoke tests + a **compare-based** visual regression gate, plus bubble-engine coverage and Mistrust set-strip checks (**73 tests**: 40 visual = 5 pages × 4 breakpoints × 2 themes, plus smoke, 10 bubble-exclusion specs, and the strip-vs-export assertions).
 
 > The visual suite is a real gate: it fails on unintended visual change and leaves the working tree clean. Snapshots live in `tests/visual-baseline.spec.js-snapshots/`; failures write actual/expected/diff PNGs to `test-results/`.
 >
@@ -87,6 +87,8 @@ Do NOT use these in `bash` tool calls (they are PowerShell-specific and often fa
 > **`tests/bubbles-exclusion.spec.js` is the only motion-enabled spec**, and the only coverage the bubble engine has — the visual gate captures under `prefers-reduced-motion`, where the engine creates nothing, so bubbles are otherwise invisible to the suite (that blind spot hid a regression for a week; Entry 090).
 >
 > **That file runs `test.describe.configure({ mode: 'serial' })` — do not remove it.** Every test in it drives the live engine, and the engine integrates per frame, so running several concurrently starves rAF and leaves bubbles grazing zone edges. It reads exactly like a real regression. Adding two Contact cases in Entry 107 made the pre-existing "Projects tabs @ 768px" case fail ~50% of runs while passing standalone every time. Serial costs wall clock (54s → 2.2m for the suite) and is the right trade.
+>
+> **Serial mode alone was not enough, and `playwright.config.js` now isolates the file into its own project — do not collapse the two projects back together** (Entry 115). Serial only covers contention *within* the file; other spec files kept holding workers, and a full run on 2026-08-03 still failed "Projects tabs @ 768px" at 195px² while the file passed 10/10 standalone. Every "67/67 green" claim between 2026-07-28 and then was a lucky scheduling draw. The config now has a `chromium` project that `testIgnore`s the bubble file and a `bubbles` project that `testMatch`es only it with `dependencies: ['chromium']`, so the physics tests get the worker pool to themselves. The dependency direction is deliberate: a failed dependency skips its dependents, and the visual gate must never be skipped because a physics test wobbled. Visual specs stay in the project named `chromium`, so snapshot filenames (`*-chromium-win32.png`) are unaffected — renaming that project would orphan all 40 baselines.
 >
 > **One assertion there is deliberately not "zero overlap".** At 768px the Contact form spans 24..744 of a 768px viewport, so the channels either side are 24px — narrower than a 10-28px bubble, making zero overlap geometrically impossible. That case asserts no bubble *centre* enters the form instead. Don't "fix" it by loosening a threshold.
 >

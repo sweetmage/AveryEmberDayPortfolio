@@ -33,6 +33,13 @@ const BASE_URL = 'http://localhost:4322';
  *
  * Running this file serially fixes the cause rather than loosening the assertion. It costs wall
  * clock, and that is the right trade for the only coverage the bubble engine has.
+ *
+ * UPDATE 2026-08-03: serial mode only covers contention WITHIN this file. Other spec files still
+ * held workers alongside it, and a full run failed "Projects tabs @ 768px" at 195px² while the
+ * file passed 10/10 standalone minutes later. Every "67/67 green" claim between 2026-07-28 and
+ * then was a lucky scheduling draw. The real fix lives in `playwright.config.js`: this file is now
+ * its own project, gated behind the rest of the suite, so nothing else is running when it does.
+ * Keep BOTH — the project isolates the file, this line isolates the tests inside it.
  */
 test.describe.configure({ mode: 'serial' });
 
