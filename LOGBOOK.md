@@ -4154,7 +4154,7 @@ The sync pipeline is fully verified in `--dry-run` mode. A manual `--apply` shou
 
 ### Plan
 
-- [docs/plans/2026-06-03-history-of-mistrust-rework.md](docs/plans/2026-06-03-history-of-mistrust-rework.md)
+- `2026-06-03-history-of-mistrust-rework.md` (consolidated into [docs/archives/plans.md](docs/archives/plans.md))
 
 ---
 
@@ -4177,7 +4177,7 @@ The sync pipeline is fully verified in `--dry-run` mode. A manual `--apply` shou
 
 ### Plan
 
-- [docs/plans/2026-06-03-all-slides-fullwidth-stacked-sets.md](docs/plans/2026-06-03-all-slides-fullwidth-stacked-sets.md)
+- `2026-06-03-all-slides-fullwidth-stacked-sets.md` (consolidated into [docs/archives/plans.md](docs/archives/plans.md))
 
 ---
 

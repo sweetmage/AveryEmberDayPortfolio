@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "generatedAt": "2026-08-03T23:38:03.882Z",
+  "generatedAt": "2026-08-04T00:46:00.186Z",
   "source": "TODO.md",
   "tasks": [
     {
@@ -11,7 +11,7 @@
       "priority": "normal",
       "tags": [],
       "list": "Content",
-      "sourceLine": 117
+      "sourceLine": 127
     },
     {
       "id": "open-items-content-standalone-a-history-of-mistrust-viewer-",
@@ -21,7 +21,7 @@
       "priority": "normal",
       "tags": [],
       "list": "Content",
-      "sourceLine": 118
+      "sourceLine": 128
     },
     {
       "id": "open-items-content-final-polish-on-the-continuous-horizonta",
@@ -31,7 +31,7 @@
       "priority": "normal",
       "tags": [],
       "list": "Content",
-      "sourceLine": 120
+      "sourceLine": 130
     },
     {
       "id": "open-items-tooling-ci-run-the-visual-gate-in-ci-the-gate-is-re",
@@ -41,7 +41,7 @@
       "priority": "normal",
       "tags": [],
       "list": "Tooling / CI",
-      "sourceLine": 126
+      "sourceLine": 136
     },
     {
       "id": "open-items-repo-hygiene-re-export-mistrust-set-123-from-figma-or",
@@ -51,7 +51,17 @@
       "priority": "normal",
       "tags": [],
       "list": "Repo hygiene",
-      "sourceLine": 137
+      "sourceLine": 147
+    },
+    {
+      "id": "open-items-repo-hygiene-untrack-the-stale-scratch-directories-do",
+      "title": "**Untrack the stale scratch directories.** Done 2026-08-03 (Entry 116) on the user's explicit",
+      "description": null,
+      "status": "completed",
+      "priority": "normal",
+      "tags": [],
+      "list": "Repo hygiene",
+      "sourceLine": 153
     },
     {
       "id": "open-items-repo-hygiene-public-ships-6-mb-of-unreferenced-source",
@@ -61,7 +71,7 @@
       "priority": "normal",
       "tags": [],
       "list": "Repo hygiene",
-      "sourceLine": 143
+      "sourceLine": 158
     }
   ]
 }

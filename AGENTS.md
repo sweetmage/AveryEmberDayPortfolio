@@ -6,9 +6,10 @@ This is the canonical agent-facing source of truth for the `portfoliowebsite` re
 
 | File | Purpose |
 |---|---|
-| `README.md` | Human-facing project overview |
+| `docs/ARCHITECTURE.md` | **Structural map — read this instead of exploring the tree** |
 | `TODO.md` | Active tasks, handoffs, completed plans |
 | `LOGBOOK.md` | Session history (newest-first) |
+| `docs/deploys.md` | Netlify: deploy loop, credit model, pause state, form registration |
 | `docs/NOTES.md` | Project notes: branch policy, TickTick, Google Docs, environment constraints |
 | `docs/accessibility.md` | WCAG 2.1 / AudioEye compliance reference |
 | `docs/plans/*.md` | Active implementation plans |

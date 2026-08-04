@@ -23,6 +23,10 @@ to dedupe shared bleed, refresh the source-of-record set PNGs, and re-verify the
 Remote `origin` exists. **Not pushed** — `develop` is 128 ahead of origin under a deploy pause
 until Aug 6 (LOGBOOK Entry 113), so push timing is the user's call.
 
+> **Status update 2026-08-03:** merged into `develop` as a clean fast-forward to `ada0210`
+> (Entry 115). Still unpushed. The pause date in the line above was itself wrong — the credit cycle
+> ends **Aug 7**, not Aug 6; corrected repo-wide the same day.
+
 ## Pre-stage: user-directed commit to develop
 
 Per the user's preflight answer, Entry 113's uncommitted re-export was committed **to `develop`**
