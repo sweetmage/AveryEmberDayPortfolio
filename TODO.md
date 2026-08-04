@@ -73,8 +73,9 @@ seamless set mosaics. LOGBOOK Entry 109. Local only — nothing pushed.
 
 - Deferred (future milestone): `slide-NN-thumb.webp` variants in `scripts/generate-mistrust-assets.js`;
   `mistrustSlides.ts#thumb` is the one-line swap point. Current weight already beats what it replaced.
-- At the eventual merge of `shxdowloop/2026-07-31/architecture-map`: its ARCHITECTURE.md runtime
-  diagram names the deleted `history-of-mistrust-slideshow.js` — reconcile then.
+- ~~At the eventual merge of `shxdowloop/2026-07-31/architecture-map`: its ARCHITECTURE.md runtime
+  diagram names the deleted `history-of-mistrust-slideshow.js` — reconcile then.~~ **Done 2026-08-03**
+  (Entry 116): branch merged, diagram now names the React components, all 40 link targets verified.
 
 ---
 
@@ -84,13 +85,12 @@ seamless set mosaics. LOGBOOK Entry 109. Local only — nothing pushed.
   production deploy = 15 credits, not one per commit). The `pre-push` guard expires by itself that
   day. Then revert the pause banners in `AGENTS.md` / `docs/NOTES.md`. Checklist in
   [`docs/deploys.md`](docs/deploys.md#lifting-the-pause-on-2026-08-06); LOGBOOK Entry 105.
-  - **The guard was found inert on 2026-08-03 and repaired** (Entry 115). Local `core.hooksPath`
-    was set to `.githooks`, a directory that exists only on
-    `shxdowloop/2026-07-31/architecture-map` — so on `develop` git looked in an empty path and
-    `.git/hooks/pre-push` never ran. Unset; dry-fired both ways to confirm (portfoliowebsite
-    blocked, develop clean). **Whoever merges the architecture-map branch must re-point
-    `core.hooksPath` at `.githooks` and carry the pause guard into that hook**, or the same hole
-    reopens.
+  - **The guard was found inert on 2026-08-03 and is now permanently fixed** (Entries 115–116).
+    Local `core.hooksPath` pointed at `.githooks`, which existed only on the architecture-map
+    branch, so `develop` ran with no hooks at all — no deploy guard, no Git LFS. Merging that
+    branch landed the tracked `.githooks/` and `core.hooksPath` is pointed back at it. Effect-probed
+    after the merge: `portfoliowebsite` → exit 1 with the guard message, `develop` → exit 0.
+    A fresh clone still needs `git config core.hooksPath .githooks` once.
 - **Netlify production deploys paused — out of credits (2026-07-26).** All 300 monthly credits used.
   Published site stays live on `da4b4be`; pushes return `skipped: true` with no build log. Resumes
   automatically **Aug 6** (cycle Jul 7 → Aug 6). Nothing to fix in the repo — both mitigations are
@@ -140,10 +140,16 @@ Everything genuinely pending, in one place.
       the broken artefact. `Set 1.png`'s remaining 19px "deficit" is a **real shared bleed** between
       slides 1 and 2, and the composed `set-1.webp` was the wrong one — it duplicated that band and
       shipped a visible notch. The exports are no longer ignored: they now supply the strip geometry.
+- [x] **Untrack the stale scratch directories.** Done 2026-08-03 (Entry 116) on the user's explicit
+      instruction. `git rm -r --cached` on 18 files: `tmp/` (10), `output/playwright/` (6),
+      `Script.js`, `run_git_commands.py`. All still on disk, none tracked; `.gitignore` extended with
+      `/output/` and `/Script.js`. They had been showing up as code directories in the
+      `docs/ARCHITECTURE.md` module map, which is how the map surfaced them in the first place.
 - [ ] **`public/` ships ~6 MB of unreferenced source PNGs.** The 30 `Instagram post - N.png` files
       plus the 3.1 MB cover are copied into the export but never requested; only the derived webp
       assets are. Deleting them from `public/` (keeping `images/`) would cut the export. Left alone
-      in Entry 106 to avoid scope creep.
+      in Entry 106 to avoid scope creep. **Related but distinct** from the scratch untrack above:
+      these files ARE referenced as generator inputs, so they cannot simply be dropped from `images/`.
 
 ---
 
@@ -208,9 +214,17 @@ Full detail is in `LOGBOOK.md` (newest-first). Headlines since 2026-07-01:
 - **2026-08-01** — Square images inside rounded frames; one purple hover for every non-nav action
   button (Entries 110–111). Netlify form state diagnosed via API and the missing form-notification
   hook created. Plan docs reconciled a second time and this file condensed (Entry 112).
-- **2026-07-31** — Mistrust slideshow redesigned (Entry 109). Landed Entries 106 and 107, which had
-  been finished but left **entirely uncommitted** for three days while both claimed "committed here"
-  (Entry 108).
+- **2026-08-03** — TODO audit found two load-bearing safety mechanisms documented as working while
+  silently doing nothing: the bubble spec was flaking under cross-file worker contention (isolated
+  into its own Playwright project) and the deploy-pause push guard was inert (`core.hooksPath`
+  pointed at a directory that existed only on an unmerged branch). Entry 115. Then the
+  architecture-map branch merged, landing `docs/ARCHITECTURE.md` and the tracked `.githooks/`,
+  which is the permanent fix for the guard. Entry 116.
+- **2026-07-31** — Mistrust slideshow redesigned (Entry 109). `docs/ARCHITECTURE.md` built as the
+  agent-facing structural map with a deterministic `post-commit` staleness gate, and the four live
+  git hooks migrated into the tracked `.githooks/` (Entry 116, merged 2026-08-03). Landed Entries
+  106 and 107, which had been finished but left **entirely uncommitted** for three days while both
+  claimed "committed here" (Entry 108).
 - **2026-07-28** — Contact polish and one content width site-wide: `--brand-content-max` at 1400px
   as the single source of truth, flat 24px gutter, no padding on `main`, collapsing three divergent
   left edges into one. Backed by `scripts/measure-content-widths.js`, which the visual suite

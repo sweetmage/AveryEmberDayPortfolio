@@ -1,3 +1,92 @@
+## Entry 116 — 2026-07-31 (landed on `develop` 2026-08-03)
+
+**Agent:** Opus 5 (vesper, main)
+**Cycle:** shxdowloop init — architecture map
+**Branch:** `shxdowloop/2026-07-31/architecture-map`, merged to `develop` 2026-08-03 by sable
+**Task:** `shxdowloop init` — build `docs/ARCHITECTURE.md` as the agent-facing source of truth,
+plus the deterministic on-commit staleness gate.
+
+> **Numbering note (sable, 2026-08-03):** written as Entry 109 on its branch, but `develop` had
+> already used 109 for the Mistrust slideshow redesign while this sat unmerged. Renumbered to 116 at
+> the merge and placed by merge date, not authorship date. Body is otherwise unedited.
+
+### The map
+
+New [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md), built via `shxdowmap`. Seeded with an ad-hoc
+`npx repomix --compress` digest (130 files / 327k tokens) rather than installing a backend
+globally; the digest is gitignored under `.shxdowmap/` and is not committed.
+
+It deliberately does **not** duplicate `AGENTS.md`: this file is *structure* (module map, execution
+model, data/config model, entry points per task, footguns), `AGENTS.md` is *process* (branch policy,
+deploy rules, build commands, design conventions). Each links the other.
+
+The three structural sections (`module-map`, `key-files`, `dependencies`) are engine-generated
+marker blocks populated by `refresh --auto`; everything else is agent-owned prose.
+
+### The hook migration — a real regression this run created and fixed
+
+`shxdowmap install-hook` sets `core.hooksPath = .githooks`, and **that makes git ignore
+`.git/hooks/` entirely.** This repo had four active hooks there. Among them: the **deploy-pause
+`pre-push` guard** that blocks pushing `portfoliowebsite` to the live URL while Netlify credits are
+exhausted. Installing the architecture gate therefore silently disarmed the production-push guard.
+
+The engine printed a one-line warning about it, which is easy to scroll past. Caught and fixed in
+the same run:
+
+- `pre-push` (deploy guard + LFS), `post-checkout` (LFS), `post-merge` (LFS) copied into
+  `.githooks/`.
+- `post-commit` rewritten to run **both** the shxdowmap staleness check and `git lfs post-commit` —
+  the engine's version would have replaced the LFS hook outright. Its `exit 0` inside the resolver
+  loop became `break` so the LFS half still runs.
+- All four verified: LF endings, `sh -n` clean, executable.
+- **Effect-probed, not assumed.** Fed representative refs to `.githooks/pre-push` directly:
+  `refs/heads/portfoliowebsite` → **exit 1, guard message printed**;
+  `refs/heads/develop` → exit 0. The guard is still armed after the move.
+
+**Lesson: `core.hooksPath` is a repo-wide switch, not an addition.** Any tool that sets it silently
+disables every hook in `.git/hooks/`. After running one, inventory the old directory and migrate
+what was live — and prove each migrated hook still fires by invoking the file, since a bypassed hook
+looks identical to a working one (executable file, no error, just never runs).
+
+> **Postscript (sable, 2026-08-03):** this lesson cost a second time before the branch merged. The
+> `core.hooksPath` setting is *local config*, so it stayed set on `develop` while `.githooks/` did
+> not — the directory existed only here. For three days `develop` ran with **zero** hooks: no deploy
+> guard, no LFS. Found by Entry 115's audit and patched by unsetting the config; this merge is the
+> permanent fix. The generalisation: `core.hooksPath` and the directory it names must land in the
+> same change, or the config outruns the files it points at.
+
+### Also corrected
+
+- `.gitignore` claimed Netlify ships `style.css` directly with `publish = "."` and no build command.
+  That stopped being true at the Next.js migration (Entry 066) — `netlify.toml` runs `next build`
+  and publishes `out/`. `style.css` now serves only the legacy root site.
+- One factual error in my own first draft of the map: it described `gallery-data.ts` items as
+  `{ src, title, … }`. There is no `title` field — the real shape is
+  `{ src, alt, caption, width, height, tags, tools, description }`. Caught by verifying against the
+  file instead of trusting the draft.
+
+### Verification
+
+- Every one of the 35 file paths referenced in the map resolves on disk (scripted existence check).
+- Counts checked against the tree, not the prose: 40 visual snapshots, 10 bubble specs, 5 routes,
+  7 components, 16 plan docs.
+- `shxdowmap status` → **fresh**; baseline recorded at `dec5ec54`.
+- `refresh --auto` run twice → second run is a no-op, so the idempotence contract holds.
+
+### Notes / risks
+
+- The module map surfaces `tmp/` (10 files) and `output/playwright/` (6 files) as tracked code
+  directories. They are stale debug scratch — old Python screenshot scripts and PNGs of a nav that
+  no longer exists. `.gitignore` lists `/tmp/` but gitignore does not untrack committed files.
+  Documented as dead weight in the map and recorded in `TODO.md`; **not deleted**, because removing
+  tracked files is the user's call and is outside init mode's scope. *(Untracked at the merge on
+  2026-08-03 on the user's explicit instruction — sable.)*
+- A fresh clone needs `git config core.hooksPath .githooks` once for the hooks to be active.
+- Init mode: no application code was changed. The only non-doc edits are the hook migration (a
+  safety fix for a regression this run introduced) and the `.gitignore` comment.
+
+---
+
 ## Entry 115 — 2026-08-03
 
 **Agent:** Opus 5 (sable, main)
@@ -12,22 +101,31 @@ existing shxdowloop branches"
 `develop` came back **1 failed, 59 passed, 7 did not run** — `bubbles-exclusion.spec.js` "Projects
 tabs @ 768px", 195px² overlap against an expected 0. The same file then passed **10/10 standalone**.
 
-This is the rAF-starvation mechanism the file's own comment block says was fixed on 2026-07-28. It
-wasn't. `test.describe.configure({ mode: 'serial' })` serializes tests *within* a file; it does
-nothing about other spec files holding workers, and `playwright.config.js` runs `fullyParallel`
-with `workers: undefined` (six on this box). So the bubble physics kept competing for frames with
-the visual baselines, and every green claim from 2026-07-28 onward was a scheduling coin flip that
-happened to land right. Notably `allRegisteredAsZones` passed in the failing run, so this was never
-the exclusion-rename trap — the zones were registered correctly and the bubbles simply had not been
-given enough frames to leave them.
+**I got this wrong twice before getting it right, and the wrong version is instructive.** The
+obvious reading was the rAF-starvation mechanism the file's own comment block describes: serial mode
+covers contention within a file, not across files, and `playwright.config.js` runs `fullyParallel`
+with six workers. So I split the bubble spec into its own Playwright project gated behind the rest
+of the suite, watched it pass 73/73 twice, and wrote it up as fixed.
 
-Fixed structurally rather than by loosening the assertion: the suite now has a `chromium` project
-that ignores the bubble file and a `bubbles` project that matches only it, `dependencies:
-['chromium']`. Playwright runs dependency projects as strict phases, so the physics tests execute
-with the worker pool to themselves. The direction is deliberate — bubbles depends on chromium, not
-the reverse, because a dependency failure skips its dependents and the visual gate is the
-deploy-blocking signal. It must never be skipped because a physics test wobbled. Snapshot filenames
-are untouched: the visual specs stayed in the project still named `chromium`.
+It failed on the next full run — inside its own project, with nothing else scheduled. Then it passed
+**6/6 standalone**. Contention was never the cause, and two green runs had been noise, exactly like
+the 2026-07-28 "serial fixed it" conclusion they were repeating. The project split was reverted.
+
+Reading `bubbles.js` instead of theorising found it, and it is in the **measurement**, not the app.
+`resolveZoneCollisions` opens with `if (b._relocating) continue`. That flag belongs to the deadlock
+rescue: a bubble trapped in a zone for 90 frames is faded out over 250ms and teleported to free
+space, with `_relocating` held true for ~560ms. For the first ~260ms of that the element is **still
+at its old position** — still matching `.brand-bubble`, still overlapping the zone, and deliberately
+no longer being pushed out, because the engine has already decided to respawn it. `step()` keeps
+moving it, so it can drift further in. Any sample landing in that window measures a bubble fading to
+invisible and reports it as coverage. 195px² is about right for a small one caught mid-fade.
+
+The fix is one condition in the spec's helpers: skip bubbles at `opacity <= 0.05`. Not a loosened
+tolerance — these tests assert bubbles never *cover* the furniture, and a bubble at opacity 0 covers
+nothing. Every visible bubble is still held to exactly zero overlap.
+
+Notably `allRegisteredAsZones` passed in every failing run, so this was never the exclusion-rename
+trap. The zones were always registered correctly.
 
 **The deploy guard was inert.** `AGENTS.md` and `TODO.md` both state that a `.git/hooks/pre-push`
 guard blocks pushes to `portfoliowebsite` until Aug 6. It has not been running. Local
@@ -38,9 +136,11 @@ it and dry-fired the hook both ways: a simulated `portfoliowebsite` ref exits 1 
 message, a `develop` ref exits 0. Blast radius was small only by luck — Netlify is out of credits,
 so a push would have been refused server-side anyway.
 
-**This reopens when the architecture-map branch merges.** That branch legitimately wants
-`core.hooksPath=.githooks`. Whoever merges it has to carry the pause guard into `.githooks/pre-push`
-and re-point the config, or the hole comes straight back. Recorded in `TODO.md` under the Aug 6 item.
+**Closed permanently in the same session** by merging `shxdowloop/2026-07-31/architecture-map`
+(Entry 116), which had already migrated all four hooks into a tracked `.githooks/` back on 07-31.
+`core.hooksPath` is pointed back at it and re-probed after the merge: `portfoliowebsite` → exit 1,
+`develop` → exit 0. The branch also carried `.gitattributes` pinning `.githooks/**` and `*.sh` to
+LF, without which `core.autocrlf` would hand a fresh clone `/bin/sh^M: bad interpreter`.
 
 ### Also landed
 
@@ -51,8 +151,16 @@ corrects two `TODO.md` lines that were stale on `develop`: Entry 113's re-export
 
 ### Verification
 
-Full suite **73 passed** twice after the project split. The failure is not reproducible under the
-new arrangement, which is the expected outcome given the mechanism — nothing else is running.
+Full suite **73 passed, 3/3 consecutive runs** after the opacity fix. Stated with the caveat the
+session earned: the observed failure rate was roughly 1 in 3 full runs and 0 in 6 standalone runs,
+so three green full runs is supporting evidence, not proof. Two green runs are exactly what sold me
+the wrong fix an hour earlier. The claim worth making is narrower and checkable: `_relocating`
+bubbles were definitely being measured while fading inside a zone, and they definitely are not now.
+
+**Method note for next time.** A flake that reproduces at ~30% cannot be diagnosed by running it
+until it passes. Both wrong fixes came from doing that. What actually worked was reading the engine
+for any code path that lets a bubble sit in a zone unpushed, which took one grep — `_relocating` was
+the only `continue` in `resolveZoneCollisions`.
 
 ### Audit results that were accurate
 
@@ -448,7 +556,9 @@ Main agent throughout (session bars agent dispatch; binding usage 77% at preflig
 
 ### `?` Open questions
 - `slide-NN-thumb.webp` variants (~180KB for all 30) would shrink the filmstrip/grid further; `mistrustSlides.ts#thumb` is a one-line swap when `generate-mistrust-assets.js` grows the variant. Deferred: current weight already beats what it replaced.
-- `docs/ARCHITECTURE.md` exists only on the unmerged `shxdowloop/2026-07-31/architecture-map` branch and its runtime diagram names the deleted script — reconcile at that merge.
+- `docs/ARCHITECTURE.md` exists only on the unmerged `shxdowloop/2026-07-31/architecture-map` branch and its runtime diagram names the deleted script — reconcile at that merge. **[Resolved 2026-08-03: branch merged, diagram corrected, map refreshed — Entry 116.]**
+
+---
 
 ## Entry 108 — 2026-07-31
 

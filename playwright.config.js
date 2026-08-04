@@ -25,28 +25,9 @@ export default defineConfig({
     reuseExistingServer: !process.env.CI,
     timeout: 120 * 1000,
   },
-  // The bubble spec runs the physics engine with motion enabled, and the engine
-  // integrates a fixed velocity PER FRAME. Anything else holding a worker starves rAF,
-  // so bubbles get fewer frames to be pushed out of their exclusion zones and the
-  // assertion reads exactly like a real regression. In-file `mode: 'serial'` closed the
-  // within-file case on 2026-07-28 but not the cross-file one: a full run on 2026-08-03
-  // failed "Projects tabs @ 768px" at 195px² overlap, and the same file passed 10/10
-  // standalone minutes later. A dedicated project that runs AFTER everything else is the
-  // only arrangement where nothing else can hold a worker.
-  //
-  // Order matters: `bubbles` depends on `chromium`, not the reverse. A dependency
-  // failure skips its dependents, and the visual gate is the deploy-blocking signal —
-  // it must never be skipped because a physics test wobbled.
   projects: [
     {
       name: 'chromium',
-      testIgnore: /bubbles-exclusion\.spec\.js/,
-      use: { ...devices['Desktop Chrome'] },
-    },
-    {
-      name: 'bubbles',
-      testMatch: /bubbles-exclusion\.spec\.js/,
-      dependencies: ['chromium'],
       use: { ...devices['Desktop Chrome'] },
     },
   ],

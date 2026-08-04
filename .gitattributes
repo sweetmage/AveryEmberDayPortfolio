@@ -1,3 +1,11 @@
 # Auto detect text files and perform LF normalization
 * text=auto
 *.psd filter=lfs diff=lfs merge=lfs -text
+
+# Git hooks and shell scripts MUST keep LF in the working tree, not just in the
+# blob. core.autocrlf is true on the Windows dev box, so `* text=auto` alone
+# writes CRLF on checkout — and a POSIX hook with CRLF fails as
+# `/bin/sh^M: bad interpreter`, which would silently disable the deploy-pause
+# pre-push guard and the Git LFS hooks on a fresh clone. Pinned 2026-07-31.
+.githooks/** text eol=lf
+*.sh text eol=lf

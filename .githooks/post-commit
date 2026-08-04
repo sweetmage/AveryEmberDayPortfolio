@@ -1,0 +1,35 @@
+#!/bin/sh
+# Combined post-commit hook.
+#
+# `shxdowmap install-hook` set core.hooksPath = .githooks, which makes git ignore
+# .git/hooks entirely. The Git LFS hooks that lived there (post-checkout,
+# post-commit, post-merge, pre-push) plus the deploy-pause guard prepended to
+# pre-push were all silently bypassed by that change, so they were migrated into
+# this directory on 2026-07-31. Keep BOTH halves below: dropping the LFS call
+# breaks large-file tracking, dropping the shxdowmap call lets
+# docs/ARCHITECTURE.md drift unnoticed.
+
+# --- shxdowmap architecture-doc staleness gate -----------------------------
+# Deterministic structural-drift check. Writes only the gitignored
+# .shxdowmap/stale marker; never modifies tracked files, never fails the commit.
+# No-ops when the shxdowmap skill is not installed (e.g. a collaborator).
+root=$(git rev-parse --show-toplevel 2>/dev/null)
+if [ -n "$root" ]; then
+  for eng in \
+    "$root/skills/shxdowmap/scripts/shxdowmap.sh" \
+    "$HOME/.claude/skills/shxdowmap/scripts/shxdowmap.sh" \
+    "$HOME/.codex/skills/shxdowmap/scripts/shxdowmap.sh" \
+    "$HOME/.cursor/skills/shxdowmap/scripts/shxdowmap.sh" \
+    "$HOME/.kilo/skills/shxdowmap/scripts/shxdowmap.sh"
+  do
+    if [ -x "$eng" ]; then
+      "$eng" check --hook --root "$root" >/dev/null 2>&1 || true
+      break
+    fi
+  done
+fi
+# --- end shxdowmap ---------------------------------------------------------
+
+# --- Git LFS ---------------------------------------------------------------
+command -v git-lfs >/dev/null 2>&1 || { printf >&2 "\n%s\n\n" "This repository is configured for Git LFS but 'git-lfs' was not found on your path. If you no longer wish to use Git LFS, remove this hook by deleting the 'post-commit' file in the hooks directory (set by 'core.hookspath'; usually '.git/hooks')."; exit 2; }
+git lfs post-commit "$@"

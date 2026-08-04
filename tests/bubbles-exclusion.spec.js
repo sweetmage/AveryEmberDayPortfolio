@@ -34,12 +34,26 @@ const BASE_URL = 'http://localhost:4322';
  * Running this file serially fixes the cause rather than loosening the assertion. It costs wall
  * clock, and that is the right trade for the only coverage the bubble engine has.
  *
- * UPDATE 2026-08-03: serial mode only covers contention WITHIN this file. Other spec files still
- * held workers alongside it, and a full run failed "Projects tabs @ 768px" at 195px² while the
- * file passed 10/10 standalone minutes later. Every "67/67 green" claim between 2026-07-28 and
- * then was a lucky scheduling draw. The real fix lives in `playwright.config.js`: this file is now
- * its own project, gated behind the rest of the suite, so nothing else is running when it does.
- * Keep BOTH — the project isolates the file, this line isolates the tests inside it.
+ * UPDATE 2026-08-03: the contention story above is NOT the whole cause, and treating it as such
+ * produced two wrong fixes in a row. "Projects tabs @ 768px" still failed a full run at 195px²
+ * while passing 6/6 standalone and 10/10 as an isolated Playwright project. Reading the engine
+ * found the actual hole, in the measurement rather than the app:
+ *
+ * `resolveZoneCollisions` skips any bubble with `b._relocating` (bubbles.js). That flag is set by
+ * the deadlock rescue: a bubble trapped in a zone for 90 frames gets faded out over 250ms, then
+ * teleported to free space, and `_relocating` stays true for ~560ms total. For the first ~260ms of
+ * that the element is STILL AT ITS OLD POSITION, still matching `.brand-bubble`, still overlapping
+ * the zone, and deliberately no longer being pushed out — because the engine has already decided to
+ * respawn it. Sampling inside that window measures a bubble that is fading to invisible and reports
+ * it as coverage.
+ *
+ * So the helpers below skip bubbles at opacity <= 0.05. That is not a loosened assertion: these
+ * tests assert bubbles never *cover* the furniture, and a bubble at opacity 0 covers nothing. For
+ * every visible bubble the geometric assertion is still exactly zero overlap.
+ *
+ * Honest status: this closes a definite defect, but the failure was rare enough (0/6 standalone,
+ * ~1 in 3 full runs) that a few green runs are not proof. If it recurs, the next suspect is the
+ * relocation path, not the scheduler — and do NOT "fix" it by raising a tolerance.
  */
 test.describe.configure({ mode: 'serial' });
 
@@ -77,6 +91,7 @@ async function maxBubbleOverlap(page, selector, samples = 6, framesBetween = 60)
   for (let i = 0; i < samples; i++) {
     const v = await page.evaluate(({ sel, f }) => {
       const nextFrame = () => new Promise((r) => requestAnimationFrame(() => r()));
+      const isVisible = (el) => parseFloat(getComputedStyle(el).opacity) > 0.05;
       const run = async () => {
         const targets = [...document.querySelectorAll(sel)];
         if (!targets.length) return -1;
@@ -84,6 +99,7 @@ async function maxBubbleOverlap(page, selector, samples = 6, framesBetween = 60)
         for (const t of targets) {
           const T = t.getBoundingClientRect();
           for (const el of document.querySelectorAll('.brand-bubble')) {
+            if (!isVisible(el)) continue;
             const b = el.getBoundingClientRect();
             const ox = Math.max(0, Math.min(T.right, b.right) - Math.max(T.left, b.left));
             const oy = Math.max(0, Math.min(T.bottom, b.bottom) - Math.max(T.top, b.top));
@@ -188,6 +204,7 @@ test.describe('bubble exclusion zones', () => {
         const T = document.querySelector('form[name="contact"]').getBoundingClientRect();
         let inside = 0;
         for (const el of document.querySelectorAll('.brand-bubble')) {
+          if (parseFloat(getComputedStyle(el).opacity) <= 0.05) continue;
           const b = el.getBoundingClientRect();
           const cx = b.left + b.width / 2;
           const cy = b.top + b.height / 2;

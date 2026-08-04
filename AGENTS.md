@@ -24,9 +24,10 @@ This is the canonical agent-facing source of truth for the `portfoliowebsite` re
 > Entry 104 — the team is out of credits and production deploys are already refused server-side).
 >
 > - Commit and push to **`develop`**. It was fast-forwarded to `portfoliowebsite` @ `41005ed`.
-> - **Do not push `portfoliowebsite`.** A `.git/hooks/pre-push` guard blocks it and **expires by
+> - **Do not push `portfoliowebsite`.** A `.githooks/pre-push` guard blocks it and **expires by
 >   itself on 2026-08-06** — no cleanup needed. Override only on explicit user instruction with
->   `git push --no-verify`.
+>   `git push --no-verify`. (This guard moved from `.git/hooks/` to the tracked `.githooks/` on
+>   2026-07-31 — see **Git hooks** below. Verified still blocking after the move.)
 > - Preview locally: `npm run dev` → <http://localhost:3000> (hot reload), or the `launchtest`
 >   skill. No Netlify involvement.
 > - On/after Aug 6: merge `develop` → `portfoliowebsite` and push **once**. One production deploy,
@@ -38,6 +39,44 @@ This is the canonical agent-facing source of truth for the `portfoliowebsite` re
 pause above — use `develop`)*. Do not commit to `main` or `master` without explicit user direction.
 
 **`portfoliowebsite` is the branch Netlify deploys from** (repointed 2026-07-12 via the Netlify API at the user's direction — production branch and allowed-branches both changed from `master` to `portfoliowebsite`, verified with a production deploy from the new branch; see `LOGBOOK.md` Entry 069). Pushing `portfoliowebsite` publishes to production. That makes every push to this branch a production-affecting action: get the user's explicit go-ahead in the moment before pushing, every time — this note is informational, not standing authorization. `master` is retained as a historical branch; do not merge into it without explicit user direction.
+
+## Git hooks
+
+**`core.hooksPath` is set to `.githooks/`** (2026-07-31, by `shxdowmap install-hook`). That setting
+makes git ignore `.git/hooks/` **entirely**. All four previously-active hooks were migrated into the
+tracked `.githooks/` directory in the same change, because leaving them behind would have silently
+disabled them:
+
+| Hook | Contents |
+|---|---|
+| `pre-push` | **Deploy-pause guard** (blocks `portfoliowebsite` until 2026-08-06) + Git LFS |
+| `post-commit` | shxdowmap architecture-doc staleness gate + Git LFS |
+| `post-checkout` | Git LFS |
+| `post-merge` | Git LFS |
+
+> **If you add a hook, put it in `.githooks/`, not `.git/hooks/`** — the latter is dead while
+> `core.hooksPath` is set, and a hook placed there will appear to work (the file is executable, no
+> error) while never running. Verify a new hook by invoking the file directly with representative
+> stdin/args, not by assuming git ran it.
+>
+> `.githooks/` is tracked, so these travel with the repo; a fresh clone still needs
+> `git config core.hooksPath .githooks` once (or a `shxdowmap install-hook` run).
+
+## Architecture map
+
+[`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) is the agent-facing structural map — **read it
+instead of re-exploring the tree**. It carries the module map, execution model, data/config model,
+key entry points per task, and the footgun list. Freshness is enforced by the `post-commit` gate
+above, which fingerprints code-file paths, the code-dir set, and manifest blob SHAs.
+
+```bash
+shxdowmap status          # fresh / STALE / no baseline
+shxdowmap refresh --auto  # deterministic rebuild of the generated blocks
+```
+
+Sections wrapped in `<!-- shxdowmap:begin:… -->` / `<!-- shxdowmap:end:… -->` markers are
+engine-owned and overwritten wholesale — put prose outside them. Run `refresh --auto` at the end of
+any run that changes repo structure, before handoff.
 
 ## Environment Constraints
 
@@ -88,7 +127,7 @@ Do NOT use these in `bash` tool calls (they are PowerShell-specific and often fa
 >
 > **That file runs `test.describe.configure({ mode: 'serial' })` — do not remove it.** Every test in it drives the live engine, and the engine integrates per frame, so running several concurrently starves rAF and leaves bubbles grazing zone edges. It reads exactly like a real regression. Adding two Contact cases in Entry 107 made the pre-existing "Projects tabs @ 768px" case fail ~50% of runs while passing standalone every time. Serial costs wall clock (54s → 2.2m for the suite) and is the right trade.
 >
-> **Serial mode alone was not enough, and `playwright.config.js` now isolates the file into its own project — do not collapse the two projects back together** (Entry 115). Serial only covers contention *within* the file; other spec files kept holding workers, and a full run on 2026-08-03 still failed "Projects tabs @ 768px" at 195px² while the file passed 10/10 standalone. Every "67/67 green" claim between 2026-07-28 and then was a lucky scheduling draw. The config now has a `chromium` project that `testIgnore`s the bubble file and a `bubbles` project that `testMatch`es only it with `dependencies: ['chromium']`, so the physics tests get the worker pool to themselves. The dependency direction is deliberate: a failed dependency skips its dependents, and the visual gate must never be skipped because a physics test wobbled. Visual specs stay in the project named `chromium`, so snapshot filenames (`*-chromium-win32.png`) are unaffected — renaming that project would orphan all 40 baselines.
+> **Contention is not the whole story, and assuming it was produced two wrong fixes** (Entry 115). "Projects tabs @ 768px" kept failing full runs (195px² overlap) while passing 6/6 standalone and 10/10 as an isolated Playwright project — so worker scheduling was not the cause, and a config-level isolation attempt was reverted. The real hole was in the measurement: `resolveZoneCollisions` in `bubbles.js` **skips bubbles flagged `_relocating`**, which the deadlock rescue sets for ~560ms while a trapped bubble fades out and respawns. For the first ~260ms the element sits at its old position, still matching `.brand-bubble`, still overlapping the zone, deliberately no longer pushed out. The spec's helpers now skip bubbles at `opacity <= 0.05`. That is not a loosened tolerance — these tests assert bubbles never *cover* the furniture, and an invisible bubble covers nothing; visible bubbles are still held to exactly zero. **If it recurs, suspect the relocation path, not the scheduler, and never raise a tolerance to make it green.**
 >
 > **One assertion there is deliberately not "zero overlap".** At 768px the Contact form spans 24..744 of a 768px viewport, so the channels either side are 24px — narrower than a 10-28px bubble, making zero overlap geometrically impossible. That case asserts no bubble *centre* enters the form instead. Don't "fix" it by loosening a threshold.
 >
