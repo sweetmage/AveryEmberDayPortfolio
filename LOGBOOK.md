@@ -1,3 +1,87 @@
+## Entry 117 — 2026-08-03
+
+**Agent:** Opus 5 (sable, main)
+**Cycle:** shxdowflow — docs consolidation
+**Branch:** `develop` (deploy pause until Aug 7 — committed, **not pushed**)
+**Task:** "close the carousel item, add documentation on visual gate, consolidate plans and todo"
+
+### The carousel item is closed as superseded
+
+Entry 109 replaced the continuous horizontal carousel with the swipeable stage, so there was no
+carousel left to polish. Closed rather than done, and recorded that way — `TODO.md` now has a
+**Closed without doing** section, because "we decided this no longer applies" and "we shipped it"
+are different outcomes and collapsing them loses the reasoning.
+
+### `docs/visual-gate.md`
+
+The gate's knowledge was spread across `AGENTS.md`, `ARCHITECTURE.md`, four LOGBOOK entries and a
+plan doc, which meant nobody could read it in one sitting and the `AGENTS.md` copy had grown to
+~1,400 words of detail in a file meant to be an operational index.
+
+New doc carries the coverage matrix (5 pages x 4 breakpoints x 2 themes = 40), the **empirical
+derivation of both tolerances** — `threshold: 0.02` because an 8-point whole-theme colour shift
+passed at Playwright's 0.2 default, and `maxDiffPixels: 500` because a ratio scales with page height
+and swallowed a 4px nav shift for a week on tall pages — the four traps, the motion-spec rules, and
+the CI item. `AGENTS.md` keeps a six-bullet summary and links out. Detail lives in one place now;
+the operational file stays scannable.
+
+Two things the gate cannot see are stated plainly, since both have already caused incidents:
+anything that only exists in motion (captures run under `prefers-reduced-motion`, where the bubble
+engine creates nothing), and layout geometry (a consistently wrong width looks correct to a diff,
+which is why `measure-content-widths.js` exists).
+
+The CI item is recorded as **blocked on a prerequisite, not a decision** — the decision was made
+2026-07-23; Docker simply is not installed on this machine. That distinction was invisible in the
+old phrasing and would have cost whoever picked it up an hour.
+
+### The "zero open checkboxes" claim was false
+
+`TODO.md` opened with an assertion that `docs/plans/` contained zero open checkboxes. Running the
+grep it recommends returned **one**: the seam-dedupe plan's merge-readiness checklist flagged that a
+fresh-context review was still recommended — and that work has since been **merged without one**
+(`ada0210`, by me, in Entry 115).
+
+Both the original run and the merge were main-agent-only. No context other than the author's has
+ever read that diff, and it is image-forensics work whose conclusion turned on `d=0.00` vs `d≈4` and
+99.7% vs byte-exact — exactly the kind of reasoning a second reader exists to check. Promoted to
+`TODO.md` under a new **Waiting validation** heading using the `[~]` state, with the specific files
+to review named. Not silently ticked, and not doable by the session that merged it.
+
+The header note now shows the grep instead of asserting its result. An invariant that is checked by
+running a command should print the command.
+
+### `docs/plans/README.md`
+
+`TODO.md` had been carrying a 20-row index of completed plans, which is bookkeeping rather than open
+work. Moved to an index in the plans directory itself: Active vs Complete, each with its outcome and
+LOGBOOK entry. Includes a note that stale "Branch:"/"not pushed" lines inside completed plans are
+deliberately left alone — they are accurate records of the moment they were written, and the index
+is the current status.
+
+### `TODO.md` condensed to house format
+
+283 lines to 196. The **Active Plans** section had drifted into six subsections of which only one
+was actually an active plan; the other five were finished work. Now: open work first (grouped by
+what is actually blocking each item — ready / waiting validation / blocked on a prerequisite /
+waiting on the user), then user steps, then reference data, then a condensed **Done** by month.
+
+The open-work section leads with the observation that only the contact-form test is deploy-blocked,
+and that landing work before Aug 7 ships it in the same 15-credit deploy. That is the fact that
+actually shapes what to do next, so it goes where it will be read.
+
+### Verification
+
+- `grep -rn "^\s*- \[ \]" docs/plans/` → **0**, and the one it used to miss is now tracked.
+- Every plan doc in `docs/plans/` appears in the new index (scripted check).
+- **113 relative links across the doc set resolve; 0 broken.**
+- TickTick mirror regenerated — 6 pending items.
+
+**?** The mirror only understands `[ ]` and `[x]`, so the `[~]` waiting-validation item does not
+reach TickTick. Minor, but it means the one item most likely to be forgotten is the one item not
+mirrored. Worth teaching `sync-all.js` the third state if `[~]` gets used again.
+
+---
+
 ## Entry 116 — 2026-07-31 (landed on `develop` 2026-08-03)
 
 **Agent:** Opus 5 (vesper, main)

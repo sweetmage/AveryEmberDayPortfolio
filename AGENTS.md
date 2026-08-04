@@ -113,29 +113,29 @@ Do NOT use these in `bash` tool calls (they are PowerShell-specific and often fa
 
 `npm test` / `npx playwright test` — smoke tests + a **compare-based** visual regression gate, plus bubble-engine coverage and Mistrust set-strip checks (**73 tests**: 40 visual = 5 pages × 4 breakpoints × 2 themes, plus smoke, 10 bubble-exclusion specs, and the strip-vs-export assertions).
 
-> The visual suite is a real gate: it fails on unintended visual change and leaves the working tree clean. Snapshots live in `tests/visual-baseline.spec.js-snapshots/`; failures write actual/expected/diff PNGs to `test-results/`.
+> **Full reference: [`docs/visual-gate.md`](docs/visual-gate.md)** — coverage matrix, tolerance
+> rationale, the four traps, motion-spec rules, and the CI containerization item. Read it before
+> changing anything about the gate or re-baselining. The essentials:
 >
-> **To accept an intentional visual change:** `npm test -- --update-snapshots`, then *review the regenerated PNGs before committing them*. An unreviewed update defeats the gate.
->
-> **A bulk `--update-snapshots` can silently skip files.** Seen twice on 2026-07-23 (Entry 082): a full-suite update left 3 of 40 snapshots un-rewritten, then a later one left 2. The next run "fails" against baselines still showing the *previous* design, which reads exactly like a real regression. Fix: re-run just those tests, `npx playwright test --update-snapshots -g "<test name>"`, which writes them reliably.
->
-> **The check is re-running the suite, not file timestamps.** Do not use snapshot mtimes to verify a bulk update was complete — `--update-snapshots` only rewrites snapshots whose pixels changed, so unchanged files legitimately keep old timestamps and a mixed set of mtimes is normal, not evidence of a skip. The only trustworthy gate is: update, then run the full suite until it is green **twice in a row**. One green run does not prove stability.
->
-> Two things that are load-bearing and easy to break (both cost a debugging cycle on 2026-07-22, Entry 081):
-> - Reduced motion is applied via `page.emulateMedia()`, **not** `test.use({ reducedMotion })` — the declarative option is silently ignored for `reducedMotion` on Playwright 1.61.1, which leaves the bubble engine running and captures unstable.
-> - `next build` runs in `tests/global-setup.js`, **not** in `webServer.command` — `reuseExistingServer` skips the command when the port is already held, which made the suite grade a stale `out/`.
->
-> `threshold: 0.02` is empirically derived; at Playwright's 0.2 default an entire-theme text-colour shift passed undetected. Don't relax it without re-running the injected-regression check in the Stage 3 plan.
-
-> **`tests/bubbles-exclusion.spec.js` is the only motion-enabled spec**, and the only coverage the bubble engine has — the visual gate captures under `prefers-reduced-motion`, where the engine creates nothing, so bubbles are otherwise invisible to the suite (that blind spot hid a regression for a week; Entry 090).
->
-> **That file runs `test.describe.configure({ mode: 'serial' })` — do not remove it.** Every test in it drives the live engine, and the engine integrates per frame, so running several concurrently starves rAF and leaves bubbles grazing zone edges. It reads exactly like a real regression. Adding two Contact cases in Entry 107 made the pre-existing "Projects tabs @ 768px" case fail ~50% of runs while passing standalone every time. Serial costs wall clock (54s → 2.2m for the suite) and is the right trade.
->
-> **Contention is not the whole story, and assuming it was produced two wrong fixes** (Entry 115). "Projects tabs @ 768px" kept failing full runs (195px² overlap) while passing 6/6 standalone and 10/10 as an isolated Playwright project — so worker scheduling was not the cause, and a config-level isolation attempt was reverted. The real hole was in the measurement: `resolveZoneCollisions` in `bubbles.js` **skips bubbles flagged `_relocating`**, which the deadlock rescue sets for ~560ms while a trapped bubble fades out and respawns. For the first ~260ms the element sits at its old position, still matching `.brand-bubble`, still overlapping the zone, deliberately no longer pushed out. The spec's helpers now skip bubbles at `opacity <= 0.05`. That is not a loosened tolerance — these tests assert bubbles never *cover* the furniture, and an invisible bubble covers nothing; visible bubbles are still held to exactly zero. **If it recurs, suspect the relocation path, not the scheduler, and never raise a tolerance to make it green.**
->
-> **One assertion there is deliberately not "zero overlap".** At 768px the Contact form spans 24..744 of a 768px viewport, so the channels either side are 24px — narrower than a 10-28px bubble, making zero overlap geometrically impossible. That case asserts no bubble *centre* enters the form instead. Don't "fix" it by loosening a threshold.
->
-> **Sample per animation frame, not per millisecond, when asserting on the physics.** The engine integrates a fixed velocity per frame rather than scaling by elapsed time, so under `fullyParallel` contention rAF is starved and bubbles/blobs travel less per wall-clock second. A time-based sample then observes fewer frames of motion and under-reports, which looks exactly like a regression. This bit once already: the blob test passed 3/3 standalone and failed in the full suite (Entry 090). Frame-based sampling needs a raised `test.setTimeout`, since wall-clock duration then depends on the frame rate the worker gets.
+> - **To accept an intentional visual change:** `npm test -- --update-snapshots`, then *review the
+>   regenerated PNGs before committing them*. An unreviewed update defeats the gate. Then run the
+>   suite until green **twice in a row** — one green run does not prove stability, and a bulk update
+>   can silently skip files.
+> - **Never judge a bulk update by snapshot mtimes.** `--update-snapshots` only rewrites snapshots
+>   whose pixels changed, so mixed timestamps are normal. Re-running the suite is the only check.
+> - **`threshold: 0.02` and `maxDiffPixels: 500` are empirically derived, not defaults.** At
+>   Playwright's 0.2 an entire-theme text-colour shift passed undetected; a ratio-based limit let a
+>   4px nav shift pass for a week on tall pages. Don't relax either without redoing the
+>   injected-regression proof.
+> - **The gate is blind to motion** — it captures under `prefers-reduced-motion`, where the bubble
+>   engine creates nothing. `tests/bubbles-exclusion.spec.js` is the only motion-enabled spec and the
+>   only coverage the engine has. Keep its `mode: 'serial'`, sample per animation frame rather than
+>   per millisecond, and keep the `opacity <= 0.05` skip.
+> - **One bubble assertion is deliberately not "zero overlap".** At 768px the Contact form leaves
+>   24px channels, narrower than a 10-28px bubble, so zero overlap is geometrically impossible; that
+>   case asserts no bubble *centre* enters the form. Don't "fix" it by loosening a threshold.
+> - **Never raise a tolerance to make a physics assertion green.** Twice now the cause was elsewhere
+>   (Entries 090, 115).
 
 `node scripts/generate-mistrust-assets.js [--all]` — rebuild the "A History of Mistrust" webp assets (30 slides × 2 sizes + 3 set strips) into **both** `images/` and `public/`. Run after any Figma re-export of those PNGs.
 

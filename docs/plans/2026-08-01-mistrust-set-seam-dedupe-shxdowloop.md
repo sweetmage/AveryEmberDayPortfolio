@@ -203,5 +203,11 @@ restoring the pre-fix `set-1.webp` and confirming the width assertion fails.
 - [x] LOGBOOK + TODO + this plan reconciled
 - [x] Main-agent final diff review — no hardcoded strip widths anywhere downstream; the legacy page
       uses intrinsic `<img>` sizing, so the new dimensions are safe
-- [ ] **Fresh-context review still recommended** — see the deviation noted under Helper routing
-- [x] Not merged to `develop`; push timing left to the user (deploy pause until Aug 6)
+- [~] **Fresh-context review still recommended** — see the deviation noted under Helper routing.
+      **Still outstanding, and the work has since been merged without it** (`ada0210`, 2026-08-03).
+      Both the original run and the merge were main-agent-only, so no context other than the
+      author's has ever looked at this diff. Tracked in [`../../TODO.md`](../../TODO.md) under Open
+      work; `[~]` means "waiting validation", not done.
+- [x] ~~Not merged to `develop`~~ **Merged** 2026-08-03 as a clean fast-forward to `ada0210`
+      (Entry 115). Still unpushed; the pause date in the original line said Aug 6 and the correct
+      date is Aug 7.

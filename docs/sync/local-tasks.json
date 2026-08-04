@@ -1,77 +1,67 @@
 {
   "version": "1.0",
-  "generatedAt": "2026-08-04T00:46:00.186Z",
+  "generatedAt": "2026-08-04T00:59:32.460Z",
   "source": "TODO.md",
   "tasks": [
     {
-      "id": "open-items-content-watermark-artwork",
-      "title": "**Watermark artwork.**",
+      "id": "open-work-ready-to-build-now-gallery-expand-on-click-motion-track-b-t",
+      "title": "**Gallery expand-on-click + motion (Track B).** The largest ready piece of work, blocked on",
       "description": null,
       "status": "pending",
       "priority": "normal",
       "tags": [],
-      "list": "Content",
-      "sourceLine": 127
+      "list": "Ready to build now",
+      "sourceLine": 25
     },
     {
-      "id": "open-items-content-standalone-a-history-of-mistrust-viewer-",
+      "id": "open-work-ready-to-build-now-standalone-a-history-of-mistrust-viewer-",
       "title": "**Standalone \"A History of Mistrust\" viewer page** with all canonical slide content and a",
       "description": null,
       "status": "pending",
       "priority": "normal",
       "tags": [],
-      "list": "Content",
-      "sourceLine": 128
+      "list": "Ready to build now",
+      "sourceLine": 34
     },
     {
-      "id": "open-items-content-final-polish-on-the-continuous-horizonta",
-      "title": "**Final polish on the continuous horizontal carousel** — **likely superseded by Entry 109**,",
-      "description": null,
-      "status": "pending",
-      "priority": "normal",
-      "tags": [],
-      "list": "Content",
-      "sourceLine": 130
-    },
-    {
-      "id": "open-items-tooling-ci-run-the-visual-gate-in-ci-the-gate-is-re",
-      "title": "**Run the visual gate in CI.** The gate is real (Entry 081) but opt-in — `netlify.toml` runs",
-      "description": null,
-      "status": "pending",
-      "priority": "normal",
-      "tags": [],
-      "list": "Tooling / CI",
-      "sourceLine": 136
-    },
-    {
-      "id": "open-items-repo-hygiene-re-export-mistrust-set-123-from-figma-or",
-      "title": "**Re-export Mistrust Set 1/2/3 from Figma, or drop the set PNGs.** Done (Entry 114). The user",
-      "description": null,
-      "status": "completed",
-      "priority": "normal",
-      "tags": [],
-      "list": "Repo hygiene",
-      "sourceLine": 147
-    },
-    {
-      "id": "open-items-repo-hygiene-untrack-the-stale-scratch-directories-do",
-      "title": "**Untrack the stale scratch directories.** Done 2026-08-03 (Entry 116) on the user's explicit",
-      "description": null,
-      "status": "completed",
-      "priority": "normal",
-      "tags": [],
-      "list": "Repo hygiene",
-      "sourceLine": 153
-    },
-    {
-      "id": "open-items-repo-hygiene-public-ships-6-mb-of-unreferenced-source",
+      "id": "open-work-ready-to-build-now-public-ships-6-mb-of-unreferenced-source",
       "title": "**`public/` ships ~6 MB of unreferenced source PNGs.** The 30 `Instagram post - N.png` files",
       "description": null,
       "status": "pending",
       "priority": "normal",
       "tags": [],
-      "list": "Repo hygiene",
-      "sourceLine": 158
+      "list": "Ready to build now",
+      "sourceLine": 36
+    },
+    {
+      "id": "open-work-ready-to-build-now-watermark-artwork-users-own-task",
+      "title": "**Watermark artwork.** User's own task.",
+      "description": null,
+      "status": "pending",
+      "priority": "normal",
+      "tags": [],
+      "list": "Ready to build now",
+      "sourceLine": 42
+    },
+    {
+      "id": "open-work-blocked-on-a-prerequisite-run-the-visual-gate-in-ci-not-blocked-on",
+      "title": "**Run the visual gate in CI.** Not blocked on a decision — that was made 2026-07-23",
+      "description": null,
+      "status": "pending",
+      "priority": "normal",
+      "tags": [],
+      "list": "Blocked on a prerequisite",
+      "sourceLine": 59
+    },
+    {
+      "id": "open-work-waiting-on-the-users-draft-copy-pass-tracks-a-and-c-11-gallery-desc",
+      "title": "**Copy pass — Tracks A and C.** 11 gallery descriptions, plus rewrites of the About box,",
+      "description": null,
+      "status": "pending",
+      "priority": "normal",
+      "tags": [],
+      "list": "Waiting on the user's draft",
+      "sourceLine": 68
     }
   ]
 }
