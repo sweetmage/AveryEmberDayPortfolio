@@ -48,15 +48,16 @@ pixels from the slides and geometry from the export, guarded by width/height ass
 `tests/mistrust-sets.spec.js`. Fast-forwarded onto `develop` with zero conflicts. **Not pushed.**
 Plan: [`docs/plans/2026-08-01-mistrust-set-seam-dedupe-shxdowloop.md`](docs/plans/2026-08-01-mistrust-set-seam-dedupe-shxdowloop.md).
 
-### Bubble spec isolated into its own Playwright project (2026-08-03)
+### Bubble-flake root cause: `_relocating` bubbles were being measured (2026-08-03)
 
-**Entry 115.** A verification run of the full suite on `develop` failed
-`bubbles-exclusion.spec.js` "Projects tabs @ 768px" at 195px² overlap, then passed 10/10 standalone.
-The 2026-07-28 in-file `mode: 'serial'` fix only covered contention *within* the file; other spec
-files still starved rAF. Every "67/67 green" claim from 2026-07-28 onward was a lucky scheduling
-draw. `playwright.config.js` now splits the suite into a `chromium` project and a `bubbles` project
-gated behind it, so nothing else holds a worker while the physics tests run. Snapshot names are
-unaffected — the visual specs stay in `chromium`.
+**Entry 115.** `bubbles-exclusion.spec.js` "Projects tabs @ 768px" failed full runs at 195px²
+overlap while passing 6/6 standalone. **Contention was not the cause** — an isolated-project fix was
+tried, appeared to work over two green runs, failed on the third, and was reverted. The real hole is
+in the measurement: `resolveZoneCollisions` skips bubbles flagged `_relocating`, which the deadlock
+rescue holds for ~560ms while a trapped bubble fades out **at its old position inside the zone**.
+The spec now ignores bubbles at `opacity <= 0.05`. Visible bubbles are still held to exactly zero.
+73/73 on 3 consecutive full runs, stated as evidence rather than proof — the failure rate was ~1 in
+3 full runs, and two green runs already sold one wrong fix this session.
 
 ### Mistrust Figma re-export — committed to `develop` (`06bd820`, 2026-08-01)
 
@@ -81,10 +82,10 @@ seamless set mosaics. LOGBOOK Entry 109. Local only — nothing pushed.
 
 ## Awaiting a user step
 
-- **[Aug 6] Lift the deploy pause.** Merge `develop` → `portfoliowebsite` and push **once** (one
+- **[Aug 7] Lift the deploy pause.** Merge `develop` → `portfoliowebsite` and push **once** (one
   production deploy = 15 credits, not one per commit). The `pre-push` guard expires by itself that
   day. Then revert the pause banners in `AGENTS.md` / `docs/NOTES.md`. Checklist in
-  [`docs/deploys.md`](docs/deploys.md#lifting-the-pause-on-2026-08-06); LOGBOOK Entry 105.
+  [`docs/deploys.md`](docs/deploys.md#lifting-the-pause-on-2026-08-07); LOGBOOK Entry 105.
   - **The guard was found inert on 2026-08-03 and is now permanently fixed** (Entries 115–116).
     Local `core.hooksPath` pointed at `.githooks`, which existed only on the architecture-map
     branch, so `develop` ran with no hooks at all — no deploy guard, no Git LFS. Merging that
@@ -93,16 +94,25 @@ seamless set mosaics. LOGBOOK Entry 109. Local only — nothing pushed.
     A fresh clone still needs `git config core.hooksPath .githooks` once.
 - **Netlify production deploys paused — out of credits (2026-07-26).** All 300 monthly credits used.
   Published site stays live on `da4b4be`; pushes return `skipped: true` with no build log. Resumes
-  automatically **Aug 6** (cycle Jul 7 → Aug 6). Nothing to fix in the repo — both mitigations are
+  automatically **Aug 7** (cycle Jul 7 → Aug 7, confirmed against the Netlify API: period_end_date 2026-08-07T00:00:00-07:00). Nothing to fix in the repo — both mitigations are
   committed (`aef8d5a`, `68c42eb`). LOGBOOK Entry 104.
 - **Contact form: detection ON, form still unregistered — needs a deploy.** Detection was enabled
   2026-08-01 and the email notification is configured (site-wide `submission_created` hook →
   `averyemberday@gmail.com`, id `6a6e6f4bbb69572bfbd54227`). **Netlify registers forms by parsing
   deployed HTML at build time**, and the published deploy predates the toggle. API confirms
   `forms: []` and `submissions: []` — the live form drops messages silently.
-  - **Next:** push `develop` for a **free branch deploy**, then test-submit and confirm it appears.
-    Whether non-production submissions file into the main form list is a Netlify setting — verify it
-    lands rather than assuming. Aug 6's production deploy re-registers it on the live domain.
+  - ~~**Next:** push `develop` for a **free branch deploy**, then test-submit.~~ **That plan does not
+    work, established 2026-08-03 against the API (Entry 115).** Two independent blockers:
+    `allowed_branches` is `["portfoliowebsite"]`, so pushing `develop` produces **no deploy at all**;
+    and every deploy since 2026-07-26 returns `Skipped due to account credit usage exceeded`, which
+    is an **account-level** block, not a production-branch one. A branch deploy would be skipped the
+    same way even if the branch were allowed.
+  - **The form markup itself is confirmed correct** — `out/contact/index.html` has
+    `name="contact"`, `data-netlify="true"`, the hidden `form-name` input, the `bot-field` honeypot,
+    `method="POST"`, `action="/contact/thanks/"`. Nothing to fix in the code; it only needs a deploy
+    that actually builds.
+  - **Next:** on Aug 7, the production deploy registers the form. Test-submit immediately after and
+    confirm it lands in the form list before trusting it.
   - Until a test submission passes, `/contact/thanks/` promises "Your message has been sent" without
     that being true.
 

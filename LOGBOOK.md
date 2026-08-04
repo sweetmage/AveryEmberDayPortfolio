@@ -162,6 +162,40 @@ until it passes. Both wrong fixes came from doing that. What actually worked was
 for any code path that lets a bubble sit in a zone unpushed, which took one grep — `_relocating` was
 the only `continue` in `resolveZoneCollisions`.
 
+### The contact-form test could not be sent, and the reason kills the documented plan
+
+Asked to send a test submission through. It cannot be done before Aug 7, and the API says the
+recorded plan would never have worked:
+
+- `allowed_branches` is `["portfoliowebsite"]`. The TODO's "push `develop` for a **free branch
+  deploy**" produces **no deploy at all** — `develop` is not an allowed branch on this site.
+- Every deploy since 2026-07-26 returns `Skipped due to account credit usage exceeded`. That is an
+  **account-level** block. A branch deploy would be skipped identically even if the branch were
+  allowed, so "free branch deploy" was wrong on both halves.
+
+What *is* verified: the built markup is correct and complete. `out/contact/index.html` carries
+`name="contact"`, `data-netlify="true"`, the hidden `form-name` input, the `bot-field` honeypot,
+`method="POST"`, `action="/contact/thanks/"`. Netlify's build-time parser registers a form on sight
+of exactly that. Nothing in the code needs fixing; it needs a deploy that actually builds. `forms`
+and `submissions` both still return `[]`.
+
+### Off-by-one in the pause date — everywhere, including the guard
+
+Reading the billing period to answer the above surfaced it: `period_start_date`
+`2026-07-07T00:00:00-07:00`, `period_end_date` **`2026-08-07T00:00:00.000-07:00`**. Every doc, the
+TODO, and `PAUSE_UNTIL` in both copies of the `pre-push` hook said **Aug 6**.
+
+The failure mode that avoids: the guard is written `TODAY -lt PAUSE_UNTIL`, so at `20260806` it
+would have stopped blocking on Aug 6 — the exact day someone would read "resumes Aug 6", push
+`portfoliowebsite`, and get a credit-skipped deploy with no build log, which is precisely the
+confusing non-event that produced Entry 104. Corrected to `20260807` in `.githooks/pre-push` and
+`.git/hooks/pre-push`, and to Aug 7 across `AGENTS.md`, `TODO.md`, `docs/NOTES.md`, `docs/deploys.md`.
+Re-probed after the edit: `portfoliowebsite` → exit 1 with the corrected message, `develop` → exit 0.
+
+Worth generalising: this pause has now been wrong in three different ways — pointing at a hooks
+directory that did not exist, expiring a day early, and documenting a branch-deploy path the site
+was never configured for. None of it was visible without querying the API and invoking the hook.
+
 ### Audit results that were accurate
 
 Six open TODO items checked against the tree: watermark, standalone Mistrust viewer page (no route

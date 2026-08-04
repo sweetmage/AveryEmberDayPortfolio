@@ -2,10 +2,10 @@
 
 ## Branch Policy
 
-> **⏸ Deploy pause until 2026-08-06 — work on `develop`.** Netlify credits are exhausted and the
+> **⏸ Deploy pause until 2026-08-07 — work on `develop`.** Netlify credits are exhausted and the
 > user has paused all updates to the live URL. Push `develop`, never `portfoliowebsite` (a
 > self-expiring `pre-push` hook enforces it). Preview with `npm run dev` at
-> <http://localhost:3000>. Merge `develop` → `portfoliowebsite` in one push on/after Aug 6.
+> <http://localhost:3000>. Merge `develop` → `portfoliowebsite` in one push on/after Aug 7.
 > Full reference: [`docs/deploys.md`](deploys.md). See also `AGENTS.md` Branch Policy and
 > `LOGBOOK.md` Entries 104/105.
 

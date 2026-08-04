@@ -17,20 +17,23 @@ This is the canonical agent-facing source of truth for the `portfoliowebsite` re
 
 ## Branch Policy
 
-> ### ⏸ DEPLOY PAUSE IN EFFECT UNTIL 2026-08-06
+> ### ⏸ DEPLOY PAUSE IN EFFECT UNTIL 2026-08-07
 >
 > **Work on `develop`, not `portfoliowebsite`.** At the user's direction (2026-07-26), all updates
-> to Netlify and the live URL are paused until the credit cycle resets on **Aug 6, 2026** (LOGBOOK
+> to Netlify and the live URL are paused until the credit cycle resets on **Aug 7, 2026** (LOGBOOK
 > Entry 104 — the team is out of credits and production deploys are already refused server-side).
+> The date was **Aug 6 everywhere until 2026-08-03**, when the Netlify API was read directly:
+> `period_end_date` is `2026-08-07T00:00:00.000-07:00`. A push on Aug 6 would have cleared the
+> expiring guard and still been credit-skipped. Corrected in the hook and every doc (Entry 115).
 >
 > - Commit and push to **`develop`**. It was fast-forwarded to `portfoliowebsite` @ `41005ed`.
 > - **Do not push `portfoliowebsite`.** A `.githooks/pre-push` guard blocks it and **expires by
->   itself on 2026-08-06** — no cleanup needed. Override only on explicit user instruction with
+>   itself on 2026-08-07** — no cleanup needed. Override only on explicit user instruction with
 >   `git push --no-verify`. (This guard moved from `.git/hooks/` to the tracked `.githooks/` on
 >   2026-07-31 — see **Git hooks** below. Verified still blocking after the move.)
 > - Preview locally: `npm run dev` → <http://localhost:3000> (hot reload), or the `launchtest`
 >   skill. No Netlify involvement.
-> - On/after Aug 6: merge `develop` → `portfoliowebsite` and push **once**. One production deploy,
+> - On/after Aug 7: merge `develop` → `portfoliowebsite` and push **once**. One production deploy,
 >   15 credits, rather than one per commit.
 >
 > Full details and the lift-the-pause checklist: [`docs/deploys.md`](docs/deploys.md).
@@ -49,7 +52,7 @@ disabled them:
 
 | Hook | Contents |
 |---|---|
-| `pre-push` | **Deploy-pause guard** (blocks `portfoliowebsite` until 2026-08-06) + Git LFS |
+| `pre-push` | **Deploy-pause guard** (blocks `portfoliowebsite` until 2026-08-07) + Git LFS |
 | `post-commit` | shxdowmap architecture-doc staleness gate + Git LFS |
 | `post-checkout` | Git LFS |
 | `post-merge` | Git LFS |

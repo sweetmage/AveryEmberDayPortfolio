@@ -3,11 +3,11 @@
 How this site gets from a git push to `averyemberday.com`, what it costs, and the workflow
 currently in force.
 
-> ## ⏸ Deploy pause until 2026-08-06
+> ## ⏸ Deploy pause until 2026-08-07
 >
 > **Work on `develop`. Do not push `portfoliowebsite`.** Netlify credits are exhausted and the user
 > has paused all updates to the live URL. Preview locally with `npm run dev`. Full details in
-> [Current workflow](#current-workflow-until-2026-08-06).
+> [Current workflow](#current-workflow-until-2026-08-07).
 
 ---
 
@@ -151,13 +151,13 @@ deploy only on a finished merge.
 
 Putting `[skip ci]` in a commit message skips that build entirely — the manual escape hatch.
 
-## Current workflow (until 2026-08-06)
+## Current workflow (until 2026-08-07)
 
 All updates to Netlify and the live URL are paused at the user's direction (LOGBOOK Entry 105).
 
 - **Commit and push to `develop`**, which was fast-forwarded to `portfoliowebsite` @ `41005ed`.
 - **Do not push `portfoliowebsite`.** `.git/hooks/pre-push` blocks it and **expires by itself on
-  2026-08-06** — nothing to uninstall. Deliberate override, on explicit user instruction only:
+  2026-08-07** — nothing to uninstall. Deliberate override, on explicit user instruction only:
   `git push --no-verify`.
 - **Preview locally**, with no Netlify involvement:
 
@@ -171,12 +171,12 @@ All updates to Netlify and the live URL are paused at the user's direction (LOGB
 
 `averyemberday.com` stays live on `da4b4be` throughout.
 
-### Lifting the pause on 2026-08-06
+### Lifting the pause on 2026-08-07
 
 1. `git checkout portfoliowebsite && git merge develop`
 2. `git push origin portfoliowebsite` — **once**. One production deploy, 15 credits, regardless of
    how many commits accumulated.
-3. Remove the pause banners from `AGENTS.md` and `docs/NOTES.md` Branch Policy, and the `[Aug 6]`
+3. Remove the pause banners from `AGENTS.md` and `docs/NOTES.md` Branch Policy, and the `[Aug 7]`
    item from `TODO.md`.
 4. The `pre-push` guard needs no action — it is date-bounded.
 
