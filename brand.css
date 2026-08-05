@@ -118,6 +118,18 @@
     /* Transitions */
     --brand-transition-fast: 140ms ease;
     --brand-transition:      220ms ease;
+    /* Layout moves — a card changing grid span, siblings displacing around it.
+       The two above are tuned for colour and shadow on a stationary element and
+       are both too brisk for something travelling several hundred pixels. The
+       curve decelerates hard so arriving content slows into place.
+
+       Split into duration and easing because the view-transition pseudo-elements
+       need them as separate `animation-*` values and cannot take the shorthand.
+       Keep using the shorthand for ordinary `transition:` declarations so the
+       two never drift apart. */
+    --brand-duration-layout:   320ms;
+    --brand-ease-layout:       cubic-bezier(0.2, 0, 0, 1);
+    --brand-transition-layout: var(--brand-duration-layout) var(--brand-ease-layout);
 }
 
 /* ── Light theme tokens ──────────────────────────────────────────── */
@@ -1439,6 +1451,145 @@ button.brand-chip:hover {
    middots, never inside "Colored Pencil" or "Adobe Photoshop". */
 .gallery-tools .gallery-tool {
     white-space: nowrap;
+}
+
+/* ── Gallery expand-on-click ─────────────────────────────────────────
+   A card is a quiet tile that becomes a spread: clicked, it claims two columns
+   and two rows, the art grows, the description arrives, and the grid steps
+   aside. No lightbox — the point is that you never leave the grid.
+   Concept: docs/plans/2026-08-01-gallery-expand-motion-concept.md */
+
+.gallery-item {
+    position: relative;
+}
+
+/* The whole card is one button. The concept requires both a real <button> with
+   `aria-expanded` AND "click anywhere on the card", and a transparent overlay is
+   the only shape that satisfies both: <figcaption> has to stay a direct child of
+   <figure>, so it cannot live inside the button.
+
+   Nothing else in the card is interactive, and nothing else may become
+   interactive — a link added to the caption would end up nested inside this
+   button, which is invalid and breaks assistive tech. `tests/gallery-expand.spec.js`
+   asserts the card holds exactly one control. */
+.gallery-item-toggle {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    padding: 0;
+    border: none;
+    background: none;
+    cursor: pointer;
+    border-radius: inherit;
+}
+
+/* The ring is INSET, and that is load-bearing rather than a taste call.
+   `.brand-frame` clips with `overflow: hidden`, and an outline is painted
+   outside the element box — so on a button covering the entire card, a ring at
+   any positive offset is clipped away completely and the only control on the
+   page has no visible focus state. Negative offset draws it just inside the
+   frame where nothing clips it. Do NOT fix this by dropping the frame's
+   `overflow: hidden`; that is what holds the artwork inside the radius. */
+.gallery-item-toggle:focus-visible {
+    outline: 2px solid var(--brand-accent);
+    outline-offset: -3px;
+}
+
+/* Two columns AND two row tracks. The second row track is the part that is easy
+   to miss: the grid carries `auto-rows: 1fr`, and in an auto-height grid those
+   tracks all resolve to the tallest row's content — so a card that merely got
+   taller would drag EVERY row in the gallery up to its new height, and the
+   expand would read as "everything got huge". Taking a second track instead
+   leaves the tracks uniform and lets the companion tile keep its natural size.
+
+   md+ ONLY. Below md the grid is a single column, where `grid-column: span 2`
+   would generate an implicit second column and break the layout outright. There
+   the expand is height-only, which is what the concept's breakpoint table asks
+   for anyway. */
+@media (min-width: 768px) {
+    .gallery-item[data-expanded="true"] {
+        grid-column: span 2;
+        grid-row: span 2;
+        /* Reserve two tracks, but only occupy what the content needs. Without
+           this the card stretches to the full height of both tracks while the
+           art stops at its cap, leaving a few hundred pixels of empty card under
+           the piece. It cannot overflow the reservation: doubling the card's
+           width doubles the art's height at most, and two tracks are two arts
+           plus two captions, so the expanded card is always the shorter of the
+           two. */
+        align-self: start;
+    }
+}
+
+/* The art cap lives here rather than as a `max-h-*` utility because it has two
+   states and utilities would win the cascade over this layer. */
+.gallery-item-art {
+    max-height: 70vh;
+}
+
+/* One screen, and no more. `dvh` not `vh`: on mobile `100vh` counts the browser
+   chrome that hides on scroll, so a `100vh` image is cut off at rest. The nav is
+   sticky and overlays the top of the page, so it is subtracted too — without
+   that, "never exceeds one screen" is false for the top ~70px of every tall
+   piece. */
+.gallery-item[data-expanded="true"] .gallery-item-art {
+    max-height: calc(100dvh - var(--brand-nav-height));
+}
+
+/* Collapsed, the description is one teasing line. The clamp is VISUAL ONLY —
+   the full string stays in the DOM, so assistive tech reads the whole thing and
+   the preview is never a truncated source of truth. */
+.gallery-desc {
+    margin-top: 0.5rem;
+    font-family: var(--brand-font-body);
+    font-size: 0.9375rem;
+    line-height: 1.5;
+    color: var(--brand-text-soft);
+    text-align: center;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 1;
+    line-clamp: 1;
+    overflow: hidden;
+}
+
+.gallery-item[data-expanded="true"] .gallery-desc {
+    display: block;
+    -webkit-line-clamp: none;
+    line-clamp: none;
+    overflow: visible;
+}
+
+/* ── Gallery view transitions ────────────────────────────────────────
+   CSS Grid does not animate a span change and does not tween siblings into
+   their new positions: flip `span 1` to `span 2` and every affected card
+   teleports. The View Transitions API snapshots the grid before and after and
+   tweens the difference, siblings included, which is why the expand and the
+   filter reflow share one mechanism.
+
+   Entering and leaving cards keep the browser's default fade. A custom
+   enter/leave animation is deliberately NOT applied here: inside a view
+   transition CSS cannot tell an entering element from a persisting one, so a
+   blanket `::view-transition-new(*)` rule would make every surviving card pulse
+   on every filter change — contradicting the concept's own "staying: tween to
+   their new grid positions". See TODO.md for the staggered-entrance refinement
+   and what it would cost. */
+::view-transition-group(*) {
+    animation-duration: var(--brand-duration-layout);
+    animation-timing-function: var(--brand-ease-layout);
+}
+
+/* Second line of defence only. The real reduced-motion contract is in
+   GalleryGrid.tsx, which bypasses `startViewTransition` entirely and applies the
+   state change directly — a view transition animates by default, so honouring
+   the preference is opt-OUT, not opt-in. This block covers the case where a
+   transition starts anyway. */
+@media (prefers-reduced-motion: reduce) {
+    ::view-transition-group(*),
+    ::view-transition-old(*),
+    ::view-transition-new(*) {
+        animation: none !important;
+    }
 }
 
 /* ── Iridescent glow helpers ─────────────────────────────────────── */

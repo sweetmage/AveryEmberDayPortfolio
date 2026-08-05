@@ -111,7 +111,18 @@ Do NOT use these in `bash` tool calls (they are PowerShell-specific and often fa
 
 `npm run serve` — serves the repo root on :8080 (**legacy static site only** — not the Next.js app)
 
-`npm test` / `npx playwright test` — smoke tests + a **compare-based** visual regression gate, plus bubble-engine coverage and Mistrust set-strip checks (**73 tests**: 40 visual = 5 pages × 4 breakpoints × 2 themes, plus smoke, 10 bubble-exclusion specs, and the strip-vs-export assertions).
+`npm test` / `npx playwright test` — smoke tests + a **compare-based** visual regression gate, plus bubble-engine coverage, gallery expand coverage and Mistrust set-strip checks (**88 tests**: 40 visual = 5 pages × 4 breakpoints × 2 themes, plus smoke, 10 bubble-exclusion specs, 15 gallery-expand specs, and the strip-vs-export assertions).
+
+> **The suite is not reliably green, and that is a known open defect, not your change.**
+> `bubbles-exclusion › Contact form @ 1440px` fails roughly 1 run in 3 with a ~1950px² overlap. Measured
+> across 7 full runs on 2026-08-05 (Entry 118) and reproducible with unrelated specs excluded. If you
+> hit it, check `TODO.md` for the recorded hypothesis before investigating — and **do not raise a
+> tolerance to make it pass.** Twice the cause was somewhere else entirely (Entries 090, 115).
+
+> **The two motion-enabled specs are the only coverage for anything that moves.** `bubbles-exclusion.spec.js`
+> and `gallery-expand.spec.js` both run `test.describe.configure({ mode: 'serial' })`, and both must keep
+> doing so. Neither gets its own Playwright project — that was tried on 2026-08-03 and reverted the same
+> day (Entry 115) once contention turned out not to be the root cause.
 
 > **Full reference: [`docs/visual-gate.md`](docs/visual-gate.md)** — coverage matrix, tolerance
 > rationale, the four traps, motion-spec rules, and the CI containerization item. Read it before

@@ -22,15 +22,28 @@ of 20/month, so anything merged before the pause lifts ships in the same deploy.
 
 ### Ready to build now
 
-- [ ] **Gallery expand-on-click + motion (Track B).** The largest ready piece of work, blocked on
-      nothing. Cards show a one-line description preview and expand in place on click — art and text
-      grow, the grid reflows around them, no lightbox. Fully specified including the CSS-Grid
-      span-animation problem and its View Transitions solution:
-      [`docs/plans/2026-08-01-gallery-expand-motion-concept.md`](docs/plans/2026-08-01-gallery-expand-motion-concept.md).
-      Buildable against placeholder text while the copy is being written.
-      **Traps, both pre-flagged:** `.gallery-item` is a bubble-exclusion selector (retagging silently
-      drops physics exclusion — has happened twice), and the visual gate cannot see any of this
-      because it captures under reduced motion, so it needs a motion-enabled spec.
+- [ ] **The bubble flake survived Entry 115's fix, and it is now the only thing keeping the suite
+      from being reliably green.** `bubbles-exclusion › Contact form @ 1440px`, ~1950px² overlap
+      against an expected 0. Measured 2026-08-05 (Entry 118): **2 failures in 4 full runs** with the
+      new gallery spec present, **1 in 3** with it excluded, **0 in 1** standalone (10/10). So it is
+      not caused by the gallery work, and the sample is too small to say that work worsens it.
+      **Start from the recorded hypothesis, not from scratch:** the overlap is a *whole* bubble, not a
+      graze, which fits the relocation path Entry 115 named as the next suspect — the deadlock rescue
+      teleports a trapped bubble and holds `_relocating` for ~560ms while it fades back in, and
+      `resolveZoneCollisions` skips it that whole time. If the destination is inside a zone, the bubble
+      fades to full opacity *inside the form*, past the `opacity <= 0.05` skip and deliberately not
+      being pushed out.
+      **Do not raise a tolerance** — twice now the cause was elsewhere (Entries 090, 115), and Entry
+      115 produced two wrong fixes by theorising instead of reading `bubbles.js`. Remember the engine
+      is duplicated: `scripts/bubbles.js` and `public/scripts/bubbles.js`.
+- [ ] **Gallery filter entrance stagger (Track B leftover, deliberate).** The concept's §4 asks for
+      entering cards to fade up from `0.96` staggered ~25ms by grid position. The *movement* tween
+      shipped in Entry 118 and is the part that section calls the one that makes filtering feel
+      designed; the stagger did not, for a real reason: inside a view transition CSS cannot tell an
+      entering element from a persisting one, so a blanket `::view-transition-new(*)` rule makes every
+      *surviving* card pulse on every filter change — contradicting the same section's "staying: tween
+      to their new grid positions". Doing it properly means giving entering and leaving cards separate
+      `view-transition-name` values through refs before the snapshot is taken. Scoped, not blocked.
 - [ ] **Standalone "A History of Mistrust" viewer page** with all canonical slide content and a
       numbered bibliography. Slides and a Sources section currently live inside the Projects tab.
 - [ ] **`public/` ships ~6 MB of unreferenced source PNGs.** The 30 `Instagram post - N.png` files
@@ -128,6 +141,10 @@ consolidated in [`docs/archives/plans.md`](docs/archives/plans.md).
 
 ### 2026-08
 
+- **Aug 5** — Gallery cards expand in place (Track B): two columns *and two row tracks* at `md+`, art
+  capped at one screen under the sticky nav, grid reflowed through the View Transitions API. The row
+  span is what stops `auto-rows: 1fr` dragging every row in the gallery to the expanded height. New
+  15-case motion-enabled spec; all 40 visual baselines unchanged by design. Entry 118.
 - **Aug 3** — Audit found two load-bearing safety mechanisms documented as working while silently
   doing nothing: the deploy-pause push guard was inert, and the bubble spec was flaking ~1 in 3 runs.
   The flake's real cause was `_relocating` bubbles being measured while fading inside a zone — *not*

@@ -10,7 +10,7 @@ an unticked box, it belongs in `TODO.md` too. Verify with:
 grep -rn "^\s*- \[ \]" docs/plans/
 ```
 
-That returns nothing as of 2026-08-03.
+That returns nothing as of 2026-08-05.
 
 Older plans are consolidated into [`../archives/plans.md`](../archives/plans.md).
 
@@ -20,8 +20,7 @@ Older plans are consolidated into [`../archives/plans.md`](../archives/plans.md)
 
 | Plan | Status |
 |---|---|
-| [`2026-08-01-copy-pass-and-gallery-descriptions.md`](2026-08-01-copy-pass-and-gallery-descriptions.md) | **Planned, not started.** Tracks A and C wait on the user's first draft; Track B is independent and buildable now. |
-| [`2026-08-01-gallery-expand-motion-concept.md`](2026-08-01-gallery-expand-motion-concept.md) | **Concept, not started.** Visual/motion spec for Track B above. Blocked on nothing. |
+| [`2026-08-01-copy-pass-and-gallery-descriptions.md`](2026-08-01-copy-pass-and-gallery-descriptions.md) | **Tracks A and C wait on the user's first draft.** Track B is done (Entry 118); the render path for `description` now exists, so the copy is data only. |
 
 ## Complete
 
@@ -29,6 +28,7 @@ Newest first. "Entry" refers to `LOGBOOK.md`.
 
 | Plan | Outcome |
 |---|---|
+| [`2026-08-05-gallery-expand-implementation.md`](2026-08-05-gallery-expand-implementation.md) / [`2026-08-01-gallery-expand-motion-concept.md`](2026-08-01-gallery-expand-motion-concept.md) | Gallery cards expand in place — 2 columns × 2 row tracks at `md+`, art capped at one screen, View Transitions for the reflow. Entry 118. The concept's §4 entrance stagger was deliberately not built; reason in `TODO.md`. |
 | [`2026-08-01-mistrust-set-seam-dedupe-shxdowloop.md`](2026-08-01-mistrust-set-seam-dedupe-shxdowloop.md) | Set strips now take pixels from slides and geometry from the Figma export, closing a duplicated 19px seam. Entry 114, merged `ada0210`. |
 | [`2026-08-01-mistrust-asset-reexport.md`](2026-08-01-mistrust-asset-reexport.md) | Figma re-export swapped into both asset trees. Entry 113, commit `06bd820`. |
 | [`2026-07-31-mistrust-slideshow-redesign.md`](2026-07-31-mistrust-slideshow-redesign.md) / [`-shxdowloop.md`](2026-07-31-mistrust-slideshow-shxdowloop.md) | Swipeable stage, React lightbox, set mosaics. Entry 109, merged `152cf2f`. |

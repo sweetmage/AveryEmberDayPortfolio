@@ -1,3 +1,160 @@
+## Entry 118 — 2026-08-05
+
+**Agent:** Opus 5 (wren, main)
+**Cycle:** shxdowflow — Gallery expand-on-click (Track B)
+**Branch:** `develop` (deploy pause until Aug 7 — committed, **not pushed**)
+**Task:** "/shxdowflow" → user selected the Gallery expand-on-click + motion item from `TODO.md`
+
+Gallery cards now expand in place. Click one and it claims two columns and two row tracks, the art
+grows to at most one screen, and the grid reflows around it. No lightbox — the whole point is that
+you never leave the grid.
+Plan: [`docs/plans/2026-08-05-gallery-expand-implementation.md`](docs/plans/2026-08-05-gallery-expand-implementation.md).
+
+### The row span is the part that matters
+
+The concept doc flagged that at `xl` the companion tile beside an expanded card must not stretch to
+match it. The hazard was worse than it knew: the grid carries `md:auto-rows-[1fr]`, and in an
+auto-height grid those tracks all resolve to the tallest row's content — so a card that merely got
+*taller* would have dragged **every row in the gallery** up to its new height. The expand would have
+read as "everything got huge", which is precisely the failure the concept was trying to avoid.
+
+`grid-column: span 2` **plus `grid-row: span 2`** fixes it without touching `auto-rows`. The card
+takes a second track instead of inflating the one it is in, so the tracks stay uniform and the
+neighbour keeps its natural size. Confirmed in the captures: at 1440 the expanded card runs the
+height of two rows while "Chill" beside it is unchanged.
+
+`align-self: start` was added after the first capture pass — without it the card stretches to the
+full height of both tracks while the art stops at its cap, leaving a few hundred pixels of empty card
+under the piece.
+
+Both spans are `md+` only. Below `md` the grid is a single column, where `grid-column: span 2` would
+generate an implicit second column and break the layout outright; there the expand is height-only.
+
+### Two defects the reviews caught before they shipped
+
+**The focus ring would have been invisible.** `.brand-frame` clips with `overflow: hidden`, and an
+outline is painted *outside* the element box — so a ring at the default offset, on a button covering
+the entire card, is clipped away completely. The only control on the page would have had no visible
+focus state, and nothing in the suite would have said so. `outline-offset: -3px` draws it just inside
+the frame. The spec now asserts the offset is negative, read from the stylesheet rather than from a
+focused element, because the invariant *is* the rule.
+
+**`sizes` had to widen with the card.** The collapsed `sizes` tops out at `46vw`; an expanded card at
+`md` is drawn at ~92vw, so the browser would have picked a rung for half the width and the art would
+have rendered soft.
+
+### The scroll fix, which only the screenshots found
+
+`scrollIntoView({ block: 'nearest' })` is the obvious expression of "scroll it back if expanding
+pushed it off-screen", and it is wrong here. By the time it runs the card is often **taller than the
+viewport**, and `nearest` on an oversized element scrolls to an edge — which landed the user in the
+middle of the artwork with the card's head cut off above the nav. It passed every behavioural
+assertion and looked fine in the DOM. It was visible immediately in the 1440 and 2560 captures.
+
+Replaced with an explicit condition: leave the scroll alone while the card's top sits below the nav
+and above the halfway line, otherwise bring that top to just under the nav. Two spec cases now cover
+it, one per branch.
+
+Writing the second of those cases produced a wrong assertion first, worth recording because the
+lesson is general: it aimed the displaced card's top *at* the nav, which fails on the bottom card
+because the page cannot scroll past its own end — the test was measuring document height, not
+behaviour. The assertion is a band now.
+
+### Copy is absent by design
+
+All 11 `description` values are `''` and stay that way; Track A/C is the user's copy pass. The
+description block renders only when the string is non-empty, so expanding grows the art today and the
+text arrives with no code change when the copy lands. Placeholder prose in `gallery-data.ts` would
+have been a lie sitting in the file someone eventually publishes.
+
+### Accessibility
+
+One transparent `<button>` covers the card, carrying `aria-expanded` and an `aria-label` that flips
+between Expand and Collapse. That is the only shape satisfying both "a real button with announced
+state" and "click anywhere on the card": `<figcaption>` has to stay a direct child of `<figure>`, so
+it cannot live inside the button. The card must therefore contain exactly one interactive element —
+a link added to a caption later would end up nested inside a button — and the spec asserts that count
+so it fails the moment someone does.
+
+Escape is a document-level listener, not a handler on the button: after clicking a card the user
+usually moves the mouse away, and a button-scoped listener would leave Escape dead in exactly that
+case. Reduced motion bypasses `startViewTransition` entirely rather than starting a transition and
+hoping CSS disables it — a view transition animates by default, so honouring the preference is
+opt-*out*. Both directions are asserted, including the positive case, since the negative one passes
+just as well if the API is never called at all.
+
+### `.gallery-item` kept its class
+
+Restructuring a card is exactly the shape of change that has silently dropped elements out of
+`DEFAULT_EXCLUSIONS` three times in this repo. The class stayed on the same `<figure>`, and the new
+spec asserts every `.gallery-item` is a registered bubble exclusion zone, so a future rename fails
+loudly instead of quietly.
+
+### What the reviews got wrong
+
+The View-Transitions reviewer led with a critical finding that React 19's `<ViewTransition>` component
+should be used instead of calling `document.startViewTransition` manually. That component ships in
+React's **experimental** channel only; this project pins stable `react: ^19.0.0`, which does not
+export it. The manual pattern is the only one available, not a legacy choice. Recorded in the plan as
+a migration risk rather than acted on.
+
+### Filter stagger, deliberately not built
+
+The concept's §4 asks for entering cards to fade up from `0.96` staggered by grid position. Persisting
+cards must *not* do that — they should only travel. Inside a view transition CSS cannot distinguish an
+entering element from a persisting one, so a blanket `::view-transition-new(*)` rule makes every
+surviving card pulse on every filter change, contradicting the same section. Doing it properly means
+re-tagging entering and leaving cards with separate transition names through refs before the snapshot
+is taken. The movement tween — the part the concept calls the one that makes filtering feel designed —
+is in and works. The stagger is in `TODO.md` with that reasoning.
+
+### Verification
+
+- New `tests/gallery-expand.spec.js`, **15 cases**, motion-enabled, `mode: 'serial'`. Not given its
+  own Playwright project: that was tried for the bubble spec on 2026-08-03 and reverted the same day
+  (Entry 115).
+- `gallery-expand` standalone: **15/15, three times.**
+- Full suite: **88 passed** on 2 of 4 runs. The other two failed on
+  `bubbles-exclusion › Contact form @ 1440px` (1950px² overlap against an expected 0) — the
+  pre-existing flake, on a page this diff does not touch. **It is not caused by this change, and that
+  was measured rather than assumed:** with the new spec excluded entirely, the same failure still
+  reproduced once in three runs. See the TODO item below — the honest headline is that Entry 115's
+  opacity fix did **not** close it.
+- **All 40 visual baselines unchanged.** The collapsed card is pixel-identical by design — the
+  caption became an `<h3>` carrying the same classes and the overlay button is transparent. A moved
+  baseline here would have been a signal, not a chore.
+- `node scripts/measure-content-widths.js` exit 0; one section edge at 768/1024/1440/2560/3440.
+- `npx tsc --noEmit` clean. Three consecutive `css:build` runs byte-identical.
+- Captures reviewed at 360/768/1440/1440×720/2560, both themes, collapsed and expanded.
+
+### The bubble flake is still open, and now there is evidence
+
+Entry 115 closed the `_relocating` measurement hole with the `opacity <= 0.05` skip, stated honestly
+that a few green runs were not proof, and named the relocation path as the next suspect if it
+recurred. **It recurred.** Measured this session, on the same machine, same day:
+
+| Configuration | Full runs | Failures |
+|---|---|---|
+| With `gallery-expand.spec.js` | 4 | 2 |
+| With that spec excluded (`--grep-invert`) | 3 | 1 |
+| `bubbles-exclusion` standalone | 1 | 0 (10/10) |
+
+The failure is always `Contact form @ 1440px`, always a large overlap (~1950px²) rather than a
+graze — a whole bubble sitting on the form, not one clipping an edge. It reproduces without the new
+spec, so the added parallel load is not the cause; the two rates are also not far enough apart, at
+these sample sizes, to claim the new spec worsens it, and this entry does not claim that.
+
+A whole visible bubble is the shape that fits the relocation path Entry 115 pointed at. The rescue
+teleports a trapped bubble to "free space" and holds `_relocating` for ~560ms while it fades back in;
+`resolveZoneCollisions` skips it for that whole window. If the chosen destination is inside a zone, the
+bubble fades up to full opacity *inside the form*, is past the `opacity <= 0.05` skip, and is
+deliberately not being pushed out. That is a hypothesis, not a diagnosis — recorded in `TODO.md` so the
+next session starts from measurements instead of re-deriving them. Not fixed here: it is the physics
+engine, in two duplicated files, on a page this task does not touch, and Entry 115 shows this specific
+bug punishes theorising with two wrong fixes in a row.
+
+---
+
 ## Entry 117 — 2026-08-03
 
 **Agent:** Opus 5 (sable, main)
