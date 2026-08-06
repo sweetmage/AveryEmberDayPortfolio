@@ -1,3 +1,52 @@
+## Entry 119 — 2026-08-05
+
+**Agent:** Opus 5 (wren, main)
+**Cycle:** shxdowflow — copy pass Track A (About)
+**Branch:** `develop` (deploy pause until Aug 7 — committed, **not pushed**)
+**Task:** user supplied new About Me copy verbatim
+
+The About box is the user's new draft, **published as written**. Four paragraphs where there were
+three. The only change made to the text was normalising one curly apostrophe to a straight one so it
+matches every other contraction in the file; no rewriting, no tightening, no reordering. It is copy
+that publishes under the user's name, so the bar is transcription, not editing.
+
+What the new copy retires, since these were load-bearing claims sitting in a public bio: the Starbucks
+shift-supervisor framing and the team of 20, "six years, seven clients", "making the move to design
+full-time", the AI-tools sentence, and "print campaigns for a San Antonio print company" (now
+"prepress design through print vendors"). Nothing else on the site repeated those numbers, so there
+was no second copy to chase — checked by grep before editing, not assumed.
+
+Applied to **both** copies of the bio: `app/page.tsx` (deployed) and `index.html` (the retained legacy
+root site, not deployed). The legacy file is not in the copy plan's scope table, but leaving a
+contradictory bio in a tracked file is the kind of thing that gets found later and believed.
+
+### "email below" is literally true, which was worth checking
+
+The new closing line points readers at "my contact page or email below". The footer prints
+`averyemberday@gmail.com` as text under the icon row, so on the Home page that phrase resolves to
+something real rather than to an icon the reader has to guess at. Verified in the regenerated 1440
+baseline rather than assumed from the component source.
+
+**The contact page it points at does not capture submissions yet.** `docs/deploys.md` → "Known open
+item": form detection is on, but registration only happens when Netlify's build-time parser reads a
+deployed page containing the form, and the published deploy predates the toggle. Until one real
+build lands, a message sent from `/contact/` goes nowhere. This copy makes that a user-visible
+promise rather than an internal to-do, so it is now called out in `TODO.md` at the Aug 7 item — the
+lift-the-pause checklist already had "register and test the contact form" as step 4, and this raises
+its stakes rather than adding work.
+
+### Verification
+
+- 8 Home baselines regenerated (`-g "index @"`), **reviewed as images before committing** at 1440
+  dark and 360 light: four paragraphs render, no overflow, clean wrapping at 360, both themes intact.
+  The other 32 baselines were untouched — the change is Home-only.
+- Full suite **88 passed, twice consecutively**, and `npx tsc --noEmit` clean. The Entry 118 bubble
+  flake did not fire in either run, which is consistent with ~1 in 3 and is not evidence it is fixed.
+- No em dashes, per the standing rule for copy published as the user. The supplied draft already had
+  none.
+
+---
+
 ## Entry 118 — 2026-08-05
 
 **Agent:** Opus 5 (wren, main)

@@ -78,11 +78,13 @@ of 20/month, so anything merged before the pause lifts ships in the same deploy.
 
 ### Waiting on the user's draft
 
-- [ ] **Copy pass — Tracks A and C.** 11 gallery descriptions, plus rewrites of the About box,
-      Contact intro, and both project summaries. **The user writes the first draft; the agent
-      proofreads only.** `GalleryItem.description` already exists and is `''` on all 11 items, so the
-      copy side is data plus a render change, not a schema change. `alt` becomes a real image
-      description and the current captions become `<h3>` titles. Plan:
+- [ ] **Copy pass — remainder of Tracks A and C.** **The About box is done** (2026-08-05, Entry 119 —
+      user's draft published verbatim, 8 Home baselines reviewed and regenerated). Still waiting on
+      the user's draft for: **11 gallery descriptions**, the **Contact intro**, and **both project
+      summaries**. **The user writes the first draft; the agent proofreads only.**
+      `GalleryItem.description` is `''` on all 11 items and the render path now exists (Entry 118), so
+      the gallery side is pure data. Still outstanding from the plan: `alt` becomes a real image
+      description (the captions already became `<h3>` titles in Entry 118). Plan:
       [`docs/plans/2026-08-01-copy-pass-and-gallery-descriptions.md`](docs/plans/2026-08-01-copy-pass-and-gallery-descriptions.md).
       Track D (re-baseline) is strictly last — re-baselining before the copy is final wastes the
       review pass.
@@ -114,6 +116,11 @@ of 20/month, so anything merged before the pause lifts ships in the same deploy.
     is skipped identically. Both established 2026-08-03 (Entry 115).
   - Until a test submission passes, `/contact/thanks/` promises "Your message has been sent" without
     that being true.
+  - **The About copy now points at it, which raises the stakes** (2026-08-05, Entry 119): the closing
+    line invites readers to "reach out through my contact page or email below". The email half works
+    — the footer prints the address. The contact-page half silently drops messages until this is
+    registered, so step 4 of the lift-the-pause checklist is now the difference between a working
+    invitation and a lost enquiry, not merely an untested feature.
 
 ---
 
