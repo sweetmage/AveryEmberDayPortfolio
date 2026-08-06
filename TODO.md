@@ -74,18 +74,6 @@ of 20/month, so anything merged before the pause lifts ships in the same deploy.
       from `images/` and write derived webps to both. Left alone in Entry 106 to avoid scope creep.
 - [ ] **Watermark artwork.** User's own task.
 
-### Waiting validation
-
-- [~] **Fresh-context review of the set-strip seam dedupe (Entry 114).** The only genuine open
-      checkbox anywhere in `docs/plans/`. Its own merge-readiness checklist flagged that a
-      fresh-context review was still recommended, and the work has since been **merged without one**
-      (`ada0210`). Both the original run and the merge were main-agent-only, so no context other than
-      the author's has ever read that diff — and the change is image-forensics work whose conclusion
-      turned on distinctions like `d=0.00` vs `d≈4` and 99.7% vs byte-exact.
-      **What to review:** `scripts/generate-mistrust-assets.js` (the offset-derivation and the
-      width/height guards) and `tests/mistrust-sets.spec.js`. `[~]` is "waiting validation", not
-      done — it flips to `[x]` on a passing review and reopens on a failing one.
-      Not doable in the session that merged it; needs a genuinely separate context.
 
 ### Blocked on a prerequisite
 
@@ -169,6 +157,12 @@ consolidated in [`docs/archives/plans.md`](docs/archives/plans.md).
 
 ### 2026-08
 
+- **Aug 6** — **Seam-dedupe validation PASSED**, clearing the last `[~]` before release. A fresh
+  context (which is the entire point — the merge was main-agent-only) reviewed the offset derivation
+  and the set-strip tests: no off-by-one, guards throw rather than no-op, the ±96px search window is
+  generic rather than special-casing slides 1–2, and the tests compare the composed webp against the
+  independent Figma export rather than against themselves. Key claim spot-checked directly at
+  `tests/mistrust-sets.spec.js:43-65`. Entry 125.
 - **Aug 6** — Expanded gallery cards no longer reserve empty space: `h-full` removed (it was silently
   outranking `align-self: start`), then row sizing switched to content-sized tracks with
   `align-items: start` while a card is open, at the user's choice. Card 1284px → 923px, no reserved

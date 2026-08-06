@@ -1,3 +1,74 @@
+## Entry 125 — 2026-08-06
+
+**Agent:** Opus 5 (wren, main)
+**Cycle:** shxdowflow — pre-launch release gate
+**Branch:** `develop` (deploy pause until Aug 7 — committed, **not pushed**)
+**Task:** "anything else before launch to address?"
+
+### The one item that was actually a release gate
+
+`TODO.md` carried a `[~]` waiting-validation entry for the set-strip seam dedupe (Entry 114), merged
+as `ada0210` **without** the fresh-context review its own merge-readiness checklist asked for. The
+repo's rule for that state is explicit: `[~]` work must be reviewed before it is treated as shippable,
+*before* any push or release. Tomorrow is the release, so it was due now rather than "sometime".
+
+Dispatched to a pro nano-agent because the requirement is a genuinely separate context — the point is
+that no reader other than the author has ever seen that diff, and this session could not satisfy that
+by reading it itself.
+
+**Verdict: PASS**, with specifics rather than a rubber stamp:
+
+- The offset search window is `[cursor - 96, cursor + 96]` and **generic** — it does not special-case
+  the slides 1/2 pair that motivated the fix, so any pair with an overlap inside that range is
+  handled and anything beyond it throws rather than silently mis-composing.
+- Integer pixel operations throughout; no off-by-one or rounding path found.
+- Every guard throws with an actionable message. None can silently no-op.
+- The tests are **not tautological**: `set-N.webp reproduces its Figma export` compares the composed
+  webp against the independent Figma PNG, and a second test byte-compares the `images/` and `public/`
+  trees to catch partial regeneration.
+
+That last claim is the load-bearing one, so I checked it directly rather than accepting it:
+`tests/mistrust-sets.spec.js:43-65` reads `composedPath(...)` and `exportPath(...)` — two genuinely
+different artifacts. Confirmed. `[~]` → done.
+
+### Everything else, triaged against "does this block the deploy"
+
+Nothing else does. Recorded here so the answer is not re-derived tomorrow:
+
+- **The ~6 MB of unreferenced `public/` PNGs** is the only remaining item where *timing* matters —
+  one deploy costs 15 of 20 monthly credits, so anything not in tomorrow's push waits for the next
+  one. It is not a pure delete (`generate-mistrust-assets.js` works out of both trees), which is why
+  it is not being rushed in on the eve of a release.
+- **The bubble flake** is test-only. The pre-launch runtime probe (Entry 123) was clean across 40
+  page loads; nothing about it reaches a visitor.
+- **The three non-accent focus rings** are not a WCAG failure — a visible ring exists — and the
+  finding is unverified headless work that needs a headed retest.
+- **The two prose measure caps** were measured this session rather than argued about, and the
+  measurement changed the recommendation. See below.
+
+### The measure-cap flag was half wrong, and measuring is what showed it
+
+Entry 123 flagged both the Contact intro (`max-w-[560px]`) and the thanks paragraph (`max-w-[480px]`)
+as survivors of the 2026-07-31 "no measure caps" direction. Measured at 1440 and 2560:
+
+| | With cap | Without |
+|---|---|---|
+| Contact intro | 560px, 2 lines, ~61 chars/line, 816px gap right | 1352px, 1 line, **~122 chars/line** |
+| Thanks paragraph | 480px, 2 lines, 460px gap | **485px**, 1 line, 457px gap |
+
+**The thanks page is not a violation at all.** Its `<main>` is `flex flex-col items-center`, so the
+content is centred and cannot hug an edge — the rule's stated purpose is already met, and removing the
+cap moves the paragraph from 480px to 485px because a centred flex child shrinks to its content
+anyway. The cap is close to a no-op.
+
+The Contact intro *is* the shape the rule targeted, but removing it trades an ideal ~61-character
+measure for ~122, roughly double the comfortable upper bound, and `mx-auto` is not available as a
+middle path because it would break the intro's shared left edge with the `Contact` heading.
+Recommendation recorded: leave both. The rule was written about a bordered box that read as a layout
+bug, not about a two-line intro above a wide form.
+
+---
+
 ## Entry 124 — 2026-08-06
 
 **Agent:** Opus 5 (wren, main)
