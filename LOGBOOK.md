@@ -1,3 +1,42 @@
+## Entry 124 — 2026-08-06
+
+**Agent:** Opus 5 (wren, main)
+**Cycle:** shxdowflow — metadata consistency
+**Branch:** `develop` (deploy pause until Aug 7 — committed, **not pushed**)
+**Task:** "fix all titles to be 'Brand & Visual Designer', leave em dashes in meta descriptions and titles"
+
+Two of the three open decisions from Entry 123, closed by the user.
+
+**One role descriptor site-wide.** Three were live and disagreed with each other: page titles said
+"Brand & Visual Designer", the home meta description said "illustrator, graphic designer, and motion
+artist", and the `app/layout.tsx` fallback said "designer, artist, and creative technologist" — a
+phrase that appeared nowhere else on the site. A search result, an unfurl and the hero could each
+describe the same person differently. Now all "Brand & Visual Designer", matching the hero subtitle
+that was already correct.
+
+**Scope read, since the instruction said "titles".** Only two strings actually stated a *role*, and
+both were descriptions rather than titles; changing titles alone would have left the contradiction
+that prompted the decision. The per-page titles (`Gallery — Avery Ember Day` and so on) are page
+names, not roles, and were left alone — making every page's title identical would be worse for search
+than the problem being fixed.
+
+The home description keeps a discipline list rather than shrinking to four words, and that list is
+lifted from the user's own About copy ("brand identity, print production, motion graphics, and 3D")
+rather than invented.
+
+**Em dashes stay** in titles and meta descriptions. The site-wide no-em-dash rule targets prose
+published as the user, and `Contact — Avery Ember Day` is a separator. Recorded in `AGENTS.md` under a
+new **Copy Conventions** heading, explicitly as settled rather than an oversight, because an audit
+already flagged it once and would flag it again.
+
+### Verification
+
+- `npx tsc --noEmit` clean; full suite **90 passed, twice consecutively**.
+- **No baselines regenerated, correctly** — every change is inside `<head>`, so nothing the visual
+  gate captures moved.
+
+---
+
 ## Entry 123 — 2026-08-06
 
 **Agent:** Opus 5 (wren, main)

@@ -9,8 +9,14 @@ import BubblePhysics from './components/BubblePhysics';
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://averyemberday.com'),
-  title: 'Avery Ember Day — Portfolio',
-  description: 'Portfolio of Avery Ember Day — designer, artist, and creative technologist.',
+  /* One role descriptor site-wide: "Brand & Visual Designer" (user call
+     2026-08-06). Three were live before that — this fallback said "designer,
+     artist, and creative technologist", the home description said "illustrator,
+     graphic designer, and motion artist", and the titles said "Brand & Visual
+     Designer" — so search results and unfurls disagreed with each other and with
+     the hero. Every page overrides this title, so it is a fallback only. */
+  title: 'Avery Ember Day — Brand & Visual Designer',
+  description: 'Portfolio of Avery Ember Day — Brand & Visual Designer.',
   icons: {
     icon: '/images/icons/BubbleLogo/bubbleLogo-white-notxt.svg',
   },

@@ -4,10 +4,10 @@ import { ogImage } from './og';
 
 export const metadata: Metadata = {
   title: 'Avery Ember Day — Brand & Visual Designer',
-  description: 'Avery Ember Day — illustrator, graphic designer, and motion artist.',
+  description: 'Avery Ember Day — Brand & Visual Designer. Brand identity, print production, motion graphics, and 3D.',
   openGraph: {
     title: 'Avery Ember Day — Brand & Visual Designer',
-    description: 'Avery Ember Day — illustrator, graphic designer, and motion artist.',
+    description: 'Avery Ember Day — Brand & Visual Designer. Brand identity, print production, motion graphics, and 3D.',
     images: [ogImage],
     type: 'website',
   },

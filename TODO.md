@@ -36,14 +36,6 @@ of 20/month, so anything merged before the pause lifts ships in the same deploy.
       convention is that focus and GUI behaviour are only trustworthy in a headed browser. Reproduce
       with real Tab presses, not `el.focus()` — programmatic focus does not reliably engage
       `:focus-visible`.
-- [ ] **Pick one role description.** Three are live: "Brand & Visual Designer" (page titles),
-      "illustrator, graphic designer, and motion artist" (home meta description), and "designer,
-      artist, and creative technologist" (`app/layout.tsx` fallback meta, the only place that phrase
-      appears). Search results and unfurls currently disagree with each other. Needs the user's choice.
-- [ ] **Decide on em dashes in page titles and meta descriptions.** 15 occurrences, all of the form
-      `Contact — Avery Ember Day` plus the OG/meta descriptions. The no-em-dash rule covers copy
-      published as the user and these qualify, but they read as title separators rather than prose, and
-      changing them rewrites every search result and unfurl. Left alone pending a decision (Entry 123).
 - [ ] **Two prose measure caps survived the 2026-07-31 "no measure caps" direction.**
       `max-w-[560px]` on the Contact intro and `max-w-[480px]` on the thanks-page paragraph. The About
       box, Contact form and `.project-desc` caps were all removed then; these two were missed. Removing

@@ -237,6 +237,20 @@ In Node.js scripts, load with `import 'dotenv/config'` (or `require('dotenv').co
 - **A docs-only push does not deploy.** `netlify.toml`'s `[build] ignore` cancels the build when a push touched only `docs/` or the root process docs. This is expected, not a broken deploy. Two invariants when editing it: never glob `*.md` (`public/**/*.md` **is** copied into the export), and any failure to compare must exit 1 (build) — a bare `git diff --quiet` with unset refs exits 0 and would silently skip every build forever (Entry 103)
 - `PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD = "1"` is set for the Netlify build — the CI never runs Playwright. If a test step is ever added to the build command, drop this or it fails with "browser not found"
 
+## Copy Conventions
+
+**The role descriptor is "Brand & Visual Designer", everywhere.** User call 2026-08-06. Three were
+live before that and disagreed with each other across search results, unfurls and the hero: the page
+titles said "Brand & Visual Designer", the home meta description said "illustrator, graphic designer,
+and motion artist", and the `app/layout.tsx` fallback said "designer, artist, and creative
+technologist". If a new surface needs to say what Avery does, use the one phrase.
+
+**Em dashes stay in page titles and meta descriptions.** Also a user call, 2026-08-06, and deliberate:
+the site-wide rule against em dashes in copy published as the user targets *prose*, and `Contact —
+Avery Ember Day` is a title separator. This has been raised by an audit once already — it is settled,
+not an oversight. The rule still applies normally to body copy, headings, and anything a reader reads
+as a sentence.
+
 ## Design Conventions
 
 ### Hover contract: one purple for actions, grey for selection
