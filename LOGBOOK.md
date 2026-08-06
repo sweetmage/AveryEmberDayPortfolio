@@ -1,3 +1,47 @@
+## Entry 120 — 2026-08-05
+
+**Agent:** Opus 5 (wren, main)
+**Cycle:** shxdowflow — copy pass Track A (Contact intro)
+**Branch:** `develop` (deploy pause until Aug 7 — committed, **not pushed**)
+**Task:** "help me rewrite the contact intro"
+
+### The old intro was a duplicate, which is the actual reason to change it
+
+Contact opened with *"If something here caught your eye, I'm always looking for new opportunities to
+collaborate."* Entry 119's About box closes with *"I'm always looking for new opportunities to
+collaborate. If my work catches your eye…"* — the same two clauses, reordered. Anyone who read About
+and clicked through got the invitation twice in a row, which is the tell of templated copy.
+
+The About makes the invitation. This page's job is what happens next, so the new intro does only that:
+
+> Tell me what you're working on and I'll get back to you as soon as I can. If email is easier, my
+> address is in the footer.
+
+Chosen by the user from three options (what-to-send / what-I'm-open-to / short-and-warm). A comment
+above the paragraph records *why* it must not re-invite, because the natural instinct when editing a
+contact page in isolation is to add a warm invitation back in — which is exactly how the duplication
+would return.
+
+**"My address is in the footer" is verified, not assumed.** `Footer.tsx:24` renders
+`averyemberday@gmail.com` as text under the icon row, and the regenerated 1440 dark baseline shows the
+footer inside the same viewport as the intro, so a reader can act on that sentence without scrolling.
+
+Grepped for the retired sentence across the repo before editing: no other surface carried it, and
+there is no legacy contact page in the root site to keep in sync.
+
+### Verification
+
+- 8 Contact baselines regenerated (`-g "contact @"`), reviewed at 1440 dark: two clean lines, no
+  orphan, form and footer unaffected. The other 32 untouched.
+- Full suite **88 passed, twice consecutively**. `npx tsc --noEmit` clean.
+- No em dashes; contractions kept, matching the About voice.
+
+**Process note:** the dev server was stopped before running the suite. `distDir` is `out`, so the
+`next build` inside `tests/global-setup.js` deletes the directory a running `next dev` serves from and
+every route starts 500ing (the trap recorded in `AGENTS.md`).
+
+---
+
 ## Entry 119 — 2026-08-05
 
 **Agent:** Opus 5 (wren, main)

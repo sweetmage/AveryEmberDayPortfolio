@@ -78,9 +78,10 @@ of 20/month, so anything merged before the pause lifts ships in the same deploy.
 
 ### Waiting on the user's draft
 
-- [ ] **Copy pass — remainder of Tracks A and C.** **The About box is done** (2026-08-05, Entry 119 —
-      user's draft published verbatim, 8 Home baselines reviewed and regenerated). Still waiting on
-      the user's draft for: **11 gallery descriptions**, the **Contact intro**, and **both project
+- [ ] **Copy pass — remainder of Tracks A and C.** **The About box** (Entry 119, user's draft
+      published verbatim) **and the Contact intro** (Entry 120, rewritten to stop duplicating the
+      About's closing invitation) **are done**; 16 baselines regenerated and reviewed between them.
+      Still waiting on the user's draft for: **11 gallery descriptions** and **both project
       summaries**. **The user writes the first draft; the agent proofreads only.**
       `GalleryItem.description` is `''` on all 11 items and the render path now exists (Entry 118), so
       the gallery side is pure data. Still outstanding from the plan: `alt` becomes a real image

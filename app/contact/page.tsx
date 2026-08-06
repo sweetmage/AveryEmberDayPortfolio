@@ -24,9 +24,15 @@ export default function ContactPage() {
       <h1 className="mb-4 font-display text-[clamp(2rem,5vw,3rem)] leading-[1.1] text-text">
         Contact
       </h1>
+      {/* Deliberately does NOT repeat the invitation. The About box closes with
+          "I'm always looking for new opportunities to collaborate. If my work
+          catches your eye...", and this page used to open with almost the same
+          sentence — anyone reading About and then clicking through got it twice,
+          which reads like filler. The invitation is made once, there; this page
+          just says what happens next. */}
       <p className="m-0 max-w-[560px] font-body text-base leading-[1.7] text-text-soft">
-        If something here caught your eye, I&apos;m always looking for new opportunities
-        to collaborate. Reach me through the form below, or at the links in the footer.
+        Tell me what you&apos;re working on and I&apos;ll get back to you as soon as I
+        can. If email is easier, my address is in the footer.
       </p>
 
       {/* `bubble-exclude` is the semantic marker in DEFAULT_EXCLUSIONS (scripts/bubbles.js).
