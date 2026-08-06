@@ -275,7 +275,15 @@ export default function GalleryGrid({ items }: GalleryGridProps) {
                   }}
                   data-expanded={isExpanded}
                   style={{ viewTransitionName: `vt-gal-${indexBySrc.get(item.src)}` }}
-                  className="gallery-item brand-frame m-0 flex h-full flex-col p-4 shadow-card"
+                  /* No `h-full`. A grid item already stretches to fill its area by
+                     default, so it was redundant for collapsed cards — but as a
+                     utility it beat `align-self: start` from the components layer,
+                     pinning an expanded card to the full height of its two row
+                     tracks. With the art capped at one screen and no description
+                     to fill the rest, that left ~380px of empty card under the
+                     artwork. Removing it lets an expanded card hug its content;
+                     collapsed cards are unchanged because stretch is the default. */
+                  className="gallery-item brand-frame m-0 flex flex-col p-4 shadow-card"
                 >
                   {/* One transparent button over the whole card. A real button
                       gives keyboard operation and the announced state for free;

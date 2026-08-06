@@ -1,3 +1,57 @@
+## Entry 121 — 2026-08-06
+
+**Agent:** Opus 5 (wren, main)
+**Cycle:** shxdowflow — pre-launch gallery fix
+**Branch:** `develop` (deploy pause until Aug 7 — committed, **not pushed**)
+**Task:** "temporarily remove the open area for the description before launch"
+
+An expanded gallery card was reserving a visible empty band where the description will eventually go.
+Measured at 1440: the card was **1284px** tall against an art cap of 830px and a 65px caption, so
+roughly **380px of blank card** sat between the artwork and the title. With all 11 descriptions still
+`''`, that space had nothing to hold.
+
+### Entry 118 claimed this was already fixed. It was not
+
+That entry recorded `align-self: start` as the fix for exactly this dead space. **The rule was there
+and inert for a day.** The card also carried Tailwind's `h-full`, and a height utility resolves
+against the full two-track grid area and wins over `align-self` coming from the `components` layer —
+so the card was pinned to both tracks regardless. The correction is recorded here rather than by
+editing Entry 118, and the `brand.css` comment now says the rule depends on no height utility being
+present, with "check for a height utility first" as the instruction if the band ever returns.
+
+Worth naming the general shape: a CSS rule that is present, correct in isolation, and silently
+outranked is indistinguishable from a rule that works, right up until someone measures. Nothing in
+the suite covered card *height*, only that it grows in both axes.
+
+The fix is removing `h-full`, not adding another override. A grid item stretches to fill its area by
+default, so the utility was redundant for collapsed cards from the start — which the suite then
+confirmed: **88 passed with zero baseline movement**, including all 8 gallery snapshots. Card height
+at 1440 went **1284px → 923px**, which is art + caption + padding exactly.
+
+### What is still there, honestly
+
+The card no longer holds an empty band, but the grid still **reserves two row tracks** for it while the
+content needs about one and a half, so there is whitespace *below* the expanded card before the next
+row. That is layout spacing outside the card border rather than an empty bordered box, and it reads
+very differently, but it is not zero.
+
+Closing it entirely means picking one of three things this task did not have a mandate to choose:
+raise the art cap so the piece fills both tracks (breaks the "never exceeds one screen" decision from
+the concept doc), drop to a single row span (`auto-rows: 1fr` then equalises every row in the gallery
+up to the expanded height — the original hazard Entry 118 exists to avoid), or switch the grid to
+`auto-rows: auto` with `align-items: start` while a card is open (rows size to their own content, so
+the whole grid goes ragged the moment anything is expanded). Flagged for the user rather than decided
+here; the reserved space also stops being empty the moment the copy pass lands.
+
+### Verification
+
+- Full suite **88 passed, twice consecutively**. **Zero baselines regenerated** — the point of the
+  change is that collapsed cards are untouched.
+- `npx tsc --noEmit` clean; `npm run css:build` rerun and committed.
+- Re-measured live at 1440 through the dev server before and after: 1284 → 923.
+
+---
+
 ## Entry 120 — 2026-08-05
 
 **Agent:** Opus 5 (wren, main)

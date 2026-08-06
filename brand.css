@@ -1513,10 +1513,18 @@ button.brand-chip:hover {
         /* Reserve two tracks, but only occupy what the content needs. Without
            this the card stretches to the full height of both tracks while the
            art stops at its cap, leaving a few hundred pixels of empty card under
-           the piece. It cannot overflow the reservation: doubling the card's
-           width doubles the art's height at most, and two tracks are two arts
-           plus two captions, so the expanded card is always the shorter of the
-           two. */
+           the piece.
+
+           This only works because the card carries no `h-full`. A height utility
+           resolves against the full two-track grid area and beats this line from
+           the components layer, which is exactly what happened on 2026-08-05 —
+           the rule was here and inert, and the dead space was visible until the
+           utility came off (Entry 121). If an expanded card ever grows a blank
+           band under the artwork again, check for a height utility first.
+
+           It cannot overflow the reservation: doubling the card's width doubles
+           the art's height at most, and two tracks are two arts plus two
+           captions, so the expanded card is always the shorter of the two. */
         align-self: start;
     }
 }
