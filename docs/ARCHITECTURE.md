@@ -238,14 +238,14 @@ The anti-grep shortcut - open these first, by task:
 
 ## Testing Model
 
-One Playwright suite, five kinds of test, **88 total**:
+One Playwright suite, five kinds of test, **90 total**:
 
 | Kind | File | What it proves |
 |---|---|---|
 | Smoke | `smoke-next.spec.js`, `smoke-interaction.spec.js` | Each route loads without console errors; tab switch and lightbox work. |
 | Visual gate | `visual-baseline.spec.js` | 40 snapshots = 5 pages x 4 breakpoints (360/768/1024/1440) x 2 themes. A real compare gate, not capture-only. |
 | Bubble engine | `bubbles-exclusion.spec.js` | 10 specs. Motion-enabled - the visual gate runs under `prefers-reduced-motion`, where the engine creates nothing. **Contains the suite's one known flake:** Contact form @ 1440px, ~1 run in 3 (Entry 118). |
-| Gallery expand | `gallery-expand.spec.js` | 15 specs. The other motion-enabled file. Covers the expand interaction, which the visual gate cannot see at all: it only ever captures the collapsed grid, under reduced motion. |
+| Gallery expand | `gallery-expand.spec.js` | 17 specs. The other motion-enabled file. Covers the expand interaction, which the visual gate cannot see at all: it only ever captures the collapsed grid, under reduced motion. |
 | Set strips | `mistrust-sets.spec.js` | Holds the committed `set-N.webp` to its Figma export. Covers a blind spot: the app renders its own CSS mosaic from individual slides, so a broken strip is invisible to every other test. |
 
 Smallest useful commands: `npx playwright test -g "<name>"` for one case,

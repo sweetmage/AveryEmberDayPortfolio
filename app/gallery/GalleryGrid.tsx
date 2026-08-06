@@ -252,7 +252,16 @@ export default function GalleryGrid({ items }: GalleryGridProps) {
         </div>
 
         <div className="lg:min-w-0 lg:flex-1">
-          <div className="gallery-grid mx-auto grid max-w-[900px] grid-cols-1 gap-6 px-6 md:auto-rows-[1fr] md:grid-cols-2 lg:mx-0 lg:max-w-none xl:grid-cols-3">
+          {/* Row sizing is NOT a utility here. It has two states — uniform `1fr`
+              tracks normally, content-sized `auto` tracks while a card is open —
+              and `md:auto-rows-[1fr]` would silently outrank the open-state rule
+              from the components layer, which is the same trap that left an
+              `align-self` rule inert for a day (Entry 121). Both states live
+              together in brand.css, keyed off this attribute. */}
+          <div
+            className="gallery-grid mx-auto grid max-w-[900px] grid-cols-1 gap-6 px-6 md:grid-cols-2 lg:mx-0 lg:max-w-none xl:grid-cols-3"
+            data-has-expanded={expandedSrc !== null}
+          >
             {/* Grid items */}
             {filteredItems.map((item) => {
               const isExpanded = expandedSrc === item.src;

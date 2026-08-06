@@ -111,7 +111,15 @@ Do NOT use these in `bash` tool calls (they are PowerShell-specific and often fa
 
 `npm run serve` — serves the repo root on :8080 (**legacy static site only** — not the Next.js app)
 
-`npm test` / `npx playwright test` — smoke tests + a **compare-based** visual regression gate, plus bubble-engine coverage, gallery expand coverage and Mistrust set-strip checks (**88 tests**: 40 visual = 5 pages × 4 breakpoints × 2 themes, plus smoke, 10 bubble-exclusion specs, 15 gallery-expand specs, and the strip-vs-export assertions).
+`npm test` / `npx playwright test` — smoke tests + a **compare-based** visual regression gate, plus bubble-engine coverage, gallery expand coverage and Mistrust set-strip checks (**90 tests**: 40 visual = 5 pages × 4 breakpoints × 2 themes, plus smoke, 10 bubble-exclusion specs, 17 gallery-expand specs, and the strip-vs-export assertions).
+
+> **When a CSS property needs two states, it stops being a Tailwind utility.** Utilities outrank
+> `brand.css`, which is imported into the `components` layer, so a state-dependent rule written there
+> is silently inert next to a utility for the same property — no error, nothing red. This has now cost
+> two rounds on the gallery: `h-full` outranked `align-self: start` and left an expanded card holding
+> ~380px of empty space (Entry 121), and `md:auto-rows-[1fr]` would have done the same to the
+> open-state row sizing (Entry 122). The gallery's art cap, row sizing and expanded span all live in
+> `brand.css` for this reason. If a rule looks correct and does nothing, check for a utility first.
 
 > **The suite is not reliably green, and that is a known open defect, not your change.**
 > `bubbles-exclusion › Contact form @ 1440px` fails roughly 1 run in 3 with a ~1950px² overlap. Measured

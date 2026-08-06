@@ -1495,37 +1495,45 @@ button.brand-chip:hover {
     outline-offset: -3px;
 }
 
-/* Two columns AND two row tracks. The second row track is the part that is easy
-   to miss: the grid carries `auto-rows: 1fr`, and in an auto-height grid those
-   tracks all resolve to the tallest row's content — so a card that merely got
-   taller would drag EVERY row in the gallery up to its new height, and the
-   expand would read as "everything got huge". Taking a second track instead
-   leaves the tracks uniform and lets the companion tile keep its natural size.
+/* ── Row sizing, and why it has two states ───────────────────────────
+   At rest the grid runs uniform `1fr` tracks, which is what makes every card in
+   the gallery the same height and gives the grid its scannable rhythm.
+
+   That uniformity is also a trap during an expand. In an auto-height grid, `1fr`
+   tracks all resolve to the TALLEST row's content — so a card that merely got
+   taller drags EVERY row in the gallery up to its new height, and the expand
+   reads as "everything got huge".
+
+   The first fix for that was a two-row span, which kept the tracks uniform but
+   reserved more height than the card needed, leaving whitespace below it
+   (Entries 118, 121). The reservation is gone: while a card is open the grid
+   switches to content-sized tracks and stops stretching its items, so the open
+   row is exactly as tall as the open card and every other row is exactly as tall
+   as its own content. Nothing is reserved, so nothing is empty.
+
+   The cost, chosen deliberately by the user on 2026-08-06: with `align-items:
+   start` the cards in a row no longer share a height, so the grid goes ragged
+   while something is open. It snaps back to uniform on collapse.
 
    md+ ONLY. Below md the grid is a single column, where `grid-column: span 2`
    would generate an implicit second column and break the layout outright. There
    the expand is height-only, which is what the concept's breakpoint table asks
    for anyway. */
 @media (min-width: 768px) {
+    .gallery-grid {
+        grid-auto-rows: 1fr;
+    }
+
+    .gallery-grid[data-has-expanded="true"] {
+        grid-auto-rows: auto;
+        /* Without this the companion tile beside an expanded card stretches to
+           match it, which is the "everything got huge" failure wearing a
+           different hat. */
+        align-items: start;
+    }
+
     .gallery-item[data-expanded="true"] {
         grid-column: span 2;
-        grid-row: span 2;
-        /* Reserve two tracks, but only occupy what the content needs. Without
-           this the card stretches to the full height of both tracks while the
-           art stops at its cap, leaving a few hundred pixels of empty card under
-           the piece.
-
-           This only works because the card carries no `h-full`. A height utility
-           resolves against the full two-track grid area and beats this line from
-           the components layer, which is exactly what happened on 2026-08-05 —
-           the rule was here and inert, and the dead space was visible until the
-           utility came off (Entry 121). If an expanded card ever grows a blank
-           band under the artwork again, check for a height utility first.
-
-           It cannot overflow the reservation: doubling the card's width doubles
-           the art's height at most, and two tracks are two arts plus two
-           captions, so the expanded card is always the shorter of the two. */
-        align-self: start;
     }
 }
 

@@ -274,6 +274,50 @@ test.describe('gallery expand-on-click', () => {
     expect(cardTop).toBeLessThanOrEqual(viewportHeight * 0.5);
   });
 
+  test('the companion tile does not stretch to match an expanded card', async ({ page }) => {
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await page.goto(`${BASE_URL}/gallery/`, { waitUntil: 'networkidle' });
+
+    const companion = card(page, 'Chill');
+    const before = (await companion.boundingBox()).height;
+
+    await toggle(page, 'In Danger').click();
+    await expect(toggle(page, 'In Danger')).toHaveAttribute('aria-expanded', 'true');
+    await page.waitForTimeout(600);
+
+    const expanded = (await card(page, 'In Danger').boundingBox()).height;
+    const after = (await companion.boundingBox()).height;
+
+    /* The whole reason the grid switches to content-sized tracks and
+       `align-items: start` while a card is open. If the neighbour stretched to
+       the open card's height, the expand would read as "everything got huge" —
+       the exact failure the row-span design existed to prevent, and which a
+       naive `auto-rows: auto` alone would reintroduce. */
+    expect(expanded).toBeGreaterThan(after + 100);
+    expect(after).toBeLessThanOrEqual(before + 1);
+  });
+
+  test('the grid reserves no empty track under an expanded card', async ({ page }) => {
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await page.goto(`${BASE_URL}/gallery/`, { waitUntil: 'networkidle' });
+
+    await toggle(page, 'In Danger').click();
+    await expect(toggle(page, 'In Danger')).toHaveAttribute('aria-expanded', 'true');
+    await page.waitForTimeout(600);
+
+    /* The open card must be exactly as tall as its own row, not shorter than a
+       multi-track reservation. Before 2026-08-06 the card spanned two `1fr`
+       tracks and needed about one and a half, leaving whitespace below it. */
+    const { cardHeight, rowHeight } = await page.evaluate(() => {
+      const el = document.querySelector('.gallery-item[data-expanded="true"]');
+      const grid = document.querySelector('.gallery-grid');
+      const rows = getComputedStyle(grid).gridTemplateRows.split(' ').map(parseFloat);
+      return { cardHeight: el.getBoundingClientRect().height, rowHeight: rows[0] };
+    });
+
+    expect(Math.abs(cardHeight - rowHeight)).toBeLessThanOrEqual(2);
+  });
+
   test('every card carries a unique view-transition-name', async ({ page }) => {
     await page.goto(`${BASE_URL}/gallery/`, { waitUntil: 'networkidle' });
 

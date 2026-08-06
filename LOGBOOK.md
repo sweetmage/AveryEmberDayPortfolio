@@ -1,3 +1,53 @@
+## Entry 122 — 2026-08-06
+
+**Agent:** Opus 5 (wren, main)
+**Cycle:** shxdowflow — gallery row sizing
+**Branch:** `develop` (deploy pause until Aug 7 — committed, **not pushed**)
+**Task:** user chose option 3 from the three tradeoffs left open in Entry 121
+
+Entry 121 removed the empty band *inside* an expanded card but left the grid reserving two row tracks
+for a card that needed about one and a half, so whitespace remained *below* it. Three ways to close
+that were written up with their costs; the user picked **content-sized rows**.
+
+**While a card is open the grid switches to `grid-auto-rows: auto` and `align-items: start`, and the
+expanded card no longer spans a second row.** Nothing is reserved, so nothing is empty: the open row
+is exactly as tall as the open card, and every other row is exactly as tall as its own content.
+Measured at 1440 — expanded card `923px`, row 1 `923.28px`, companion tile `615px` and unstretched,
+rows below `517 / 630 / 510`. The page also came out ~600px shorter.
+
+The accepted cost is that cards stop sharing a height while something is open, so the grid goes ragged
+and snaps back to uniform on collapse. In the captures it reads editorial rather than broken, which is
+better than the write-up predicted, but it is a real change and it was the user's call to make.
+
+### The same layer trap, caught this time before it bit
+
+`grid-auto-rows` now has two states, so it could not stay as the `md:auto-rows-[1fr]` utility — a
+utility outranks `brand.css` from the `components` layer and the open-state rule would have been
+silently inert. That is precisely what happened to `align-self: start` for a day (Entry 121). Both
+states moved into `brand.css` keyed off a new `data-has-expanded` attribute on the grid, with the
+reasoning recorded at both the class name and the rule.
+
+Rule of thumb this repo has now earned twice: **the moment a property needs two states, it stops being
+a utility.** Same reasoning as the art cap in Entry 118.
+
+### Two new spec cases, because both invariants are invisible
+
+- **The companion tile must not stretch** to match an expanded card. This is the "everything got huge"
+  failure wearing a different hat, and a naive `auto-rows: auto` *without* `align-items: start` would
+  reintroduce it. Asserted against the neighbour's measured height, not against the CSS.
+- **The grid reserves no empty track**: the open card's height must equal its row's height within 2px.
+  This is the defect being fixed, so it gets an assertion that fails if the reservation returns.
+
+### Verification
+
+- Full suite **90 passed, twice consecutively** (88 + the two new cases).
+- **Zero baselines regenerated.** The collapsed grid is untouched by design — the new rules only apply
+  while `data-has-expanded` is true, and the visual gate only ever captures the collapsed state.
+- `npx tsc --noEmit` clean; `npm run css:build` rerun.
+- Captured and reviewed expanded at 1440 dark, 2560 light, 768 dark through the dev server.
+
+---
+
 ## Entry 121 — 2026-08-06
 
 **Agent:** Opus 5 (wren, main)

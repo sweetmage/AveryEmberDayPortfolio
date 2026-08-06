@@ -36,16 +36,6 @@ of 20/month, so anything merged before the pause lifts ships in the same deploy.
       **Do not raise a tolerance** — twice now the cause was elsewhere (Entries 090, 115), and Entry
       115 produced two wrong fixes by theorising instead of reading `bubbles.js`. Remember the engine
       is duplicated: `scripts/bubbles.js` and `public/scripts/bubbles.js`.
-- [ ] **Expanded gallery card reserves two row tracks but needs about one and a half.** The empty band
-      *inside* the card is gone (Entry 121, `h-full` removed), but the grid still leaves whitespace
-      **below** an expanded card before the next row. It is layout spacing, not an empty bordered box.
-      **It stops being empty on its own once the gallery descriptions land**, so this may need nothing.
-      If it still reads wrong after the copy pass, the three options are: raise the art cap so the
-      piece fills both tracks (breaks "never exceeds one screen" from the concept doc), drop to a
-      single row span (`auto-rows: 1fr` then equalises *every* row up to the expanded height — the
-      hazard the row span exists to avoid), or switch the grid to `auto-rows: auto` +
-      `align-items: start` while a card is open (rows size to their own content, so the whole grid
-      goes ragged whenever anything is expanded). Needs a user call, not an agent one.
 - [ ] **Gallery filter entrance stagger (Track B leftover, deliberate).** The concept's §4 asks for
       entering cards to fade up from `0.96` staggered ~25ms by grid position. The *movement* tween
       shipped in Entry 118 and is the part that section calls the one that makes filtering feel
@@ -159,6 +149,10 @@ consolidated in [`docs/archives/plans.md`](docs/archives/plans.md).
 
 ### 2026-08
 
+- **Aug 6** — Expanded gallery cards no longer reserve empty space: `h-full` removed (it was silently
+  outranking `align-self: start`), then row sizing switched to content-sized tracks with
+  `align-items: start` while a card is open, at the user's choice. Card 1284px → 923px, no reserved
+  track, companion tile unstretched. 90 green twice, zero baselines moved. Entries 121–122.
 - **Aug 5** — Gallery cards expand in place (Track B): two columns *and two row tracks* at `md+`, art
   capped at one screen under the sticky nav, grid reflowed through the View Transitions API. The row
   span is what stops `auto-rows: 1fr` dragging every row in the gallery to the expanded height. New
