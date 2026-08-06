@@ -203,6 +203,25 @@ All updates to Netlify and the live URL are paused at the user's direction (LOGB
 
 `averyemberday.com` stays live on `da4b4be` throughout.
 
+### Pre-flight, verified 2026-08-06 01:54 -07:00
+
+Read live from the Netlify API and from git, so tomorrow's session does not re-derive it:
+
+| | |
+|---|---|
+| Live published deploy | `da4b4be`, published **2026-07-26** |
+| `origin/portfoliowebsite` | `41005ed` — **3 commits ahead of what is live**, pushed but never built |
+| `develop` | `63cfb27` |
+| Live → `develop` | **42 commits**, 197 files |
+| Merge type | **Fast-forward** — `portfoliowebsite` is an ancestor of `develop`, so the merge cannot conflict |
+| `GET /forms` | `[]` |
+| `GET /submissions` | `0` |
+| Rollback point | `da4b4be` (Deploys → *Publish deploy*, no git needed) |
+
+**Those 3 unbuilt commits are the credit-exhaustion behaviour in the wild** — they were pushed and
+Netlify returned `skipped: true` with no build log, which is exactly why the live site is 11 days
+behind the branch. They ship in the same deploy.
+
 ### Lifting the pause on 2026-08-07
 
 Do this **on Aug 7 or later, not Aug 6** — credits reset at `2026-08-07T00:00:00-07:00`. Confirm
