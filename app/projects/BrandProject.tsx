@@ -78,7 +78,7 @@ export default function BrandProject() {
           Description
         </h4>
         <p className="project-desc">
-          Complete personal brand identity system logos, color, type, and
+          A complete personal brand identity system: logos, color, type, and
           applications. Built to work across dark and light contexts with a
           consistent voice.
         </p>

@@ -22,6 +22,34 @@ of 20/month, so anything merged before the pause lifts ships in the same deploy.
 
 ### Ready to build now
 
+- [ ] **Three controls still paint the browser's focus ring, not the house accent.** `.icon-link`
+      (footer icons), `#return-to-top`, and `.skip-link`. **Not a WCAG 2.4.7 failure** — a visible ring
+      exists — but it is not the 2px `--brand-accent` the contract promises, and
+      `.brand-footer-links a` in the *same declaration block* does paint correctly.
+      **Do not re-derive what has already been ruled out** (all by measurement, 2026-08-06, Entry 123):
+      the rule is present in the built CSS; an injected `!important` rule with the identical selector
+      also fails, so it is *not* being outranked; moving the ring into the utilities layer on the
+      element changes nothing, so it is not the Entries 121–122 layer trap; and longhands behave the
+      same as the `outline:` shorthand. The only pattern is that the working one carries no Tailwind
+      classes and the three failures all do.
+      **Retest headed first.** All of the above was measured in headless Chrome, and this project's
+      convention is that focus and GUI behaviour are only trustworthy in a headed browser. Reproduce
+      with real Tab presses, not `el.focus()` — programmatic focus does not reliably engage
+      `:focus-visible`.
+- [ ] **Pick one role description.** Three are live: "Brand & Visual Designer" (page titles),
+      "illustrator, graphic designer, and motion artist" (home meta description), and "designer,
+      artist, and creative technologist" (`app/layout.tsx` fallback meta, the only place that phrase
+      appears). Search results and unfurls currently disagree with each other. Needs the user's choice.
+- [ ] **Decide on em dashes in page titles and meta descriptions.** 15 occurrences, all of the form
+      `Contact — Avery Ember Day` plus the OG/meta descriptions. The no-em-dash rule covers copy
+      published as the user and these qualify, but they read as title separators rather than prose, and
+      changing them rewrites every search result and unfurl. Left alone pending a decision (Entry 123).
+- [ ] **Two prose measure caps survived the 2026-07-31 "no measure caps" direction.**
+      `max-w-[560px]` on the Contact intro and `max-w-[480px]` on the thanks-page paragraph. The About
+      box, Contact form and `.project-desc` caps were all removed then; these two were missed. Removing
+      them makes both lines span the full 1400px container, which on a two-sentence paragraph is a real
+      visual change — hence a user call rather than a silent fix.
+
 - [ ] **The bubble flake survived Entry 115's fix, and it is now the only thing keeping the suite
       from being reliably green.** `bubbles-exclusion › Contact form @ 1440px`, ~1950px² overlap
       against an expected 0. Measured 2026-08-05 (Entry 118): **2 failures in 4 full runs** with the

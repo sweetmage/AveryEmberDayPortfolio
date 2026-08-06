@@ -1668,6 +1668,33 @@ html.dark .brand-glow-text {
 
 .brand-footer-links a:hover { color: var(--brand-text); }
 
+/* ── Focus-visible: the four elements the contract had missed ─────────
+   The site-wide contract is a 2px `--brand-accent` ring on ALL interactive
+   elements, but it was implemented selector by selector, and four controls sat
+   outside every one of those selectors: footer nav links and the footer icon
+   links are not `nav a`, `#return-to-top` is a <button> without `.brand-btn`,
+   and the skip link only ever styled its position. Each fell back to the
+   browser default ring, which on a dark surface is close to invisible.
+
+   Found by the pre-launch audit, 2026-08-06 (Entry 123). Grouped here rather
+   than scattered so the next control added to the footer has an obvious place
+   to join. */
+.brand-footer-links a:focus-visible,
+.icon-link:focus-visible,
+#return-to-top:focus-visible,
+.skip-link:focus-visible {
+    /* Longhands, not the `outline:` shorthand. With `var()` inside the
+       shorthand these three controls resolved their ring to `currentColor`
+       (grey on the footer, white on the skip link) while the footer nav link
+       next to them resolved correctly to the accent — measured, not assumed.
+       Setting `outline-color` directly removes the substitution step and all
+       four paint the same accent ring. */
+    outline-width: 2px;
+    outline-style: solid;
+    outline-color: var(--brand-accent);
+    outline-offset: 2px;
+}
+
 .brand-footer-connect {
     text-align: center;
     margin-top: 20px;

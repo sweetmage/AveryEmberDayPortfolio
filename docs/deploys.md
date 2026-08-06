@@ -67,9 +67,12 @@ what makes the site a pile of static files with nothing to crash.
 
 > **The CSP is strict.** `script-src` is `'self' 'unsafe-inline'`; styles and fonts allow Google
 > Fonts only. Adding an embedded video, analytics, or any third-party script will be **silently
-> blocked** until its domain is added to the CSP in `netlify.toml`. The CSP also pins sha256 hashes
-> of the inline theme script — if that inline `<script>` changes, recompute the hashes or theme
-> init breaks in production.
+> blocked** until its domain is added to the CSP in `netlify.toml`.
+>
+> **It does *not* pin sha256 hashes.** This paragraph claimed it did until 2026-08-06, which would
+> have sent someone hunting for hashes to recompute that do not exist. `'unsafe-inline'` is what
+> allows the theme script; theme init also loads from the external `/scripts/theme-init.js` rather
+> than an inline block. `AGENTS.md` corrected the same claim on 2026-07-28 and this copy was missed.
 
 `CNAME` (containing `averyemberday.com`) is a GitHub Pages convention. **Netlify ignores it.** The
 real domain wiring is in the Netlify dashboard and at the registrar.
@@ -185,7 +188,7 @@ Putting `[skip ci]` in a commit message skips that build entirely — the manual
 All updates to Netlify and the live URL are paused at the user's direction (LOGBOOK Entry 105).
 
 - **Commit and push to `develop`**, which was fast-forwarded to `portfoliowebsite` @ `41005ed`.
-- **Do not push `portfoliowebsite`.** `.git/hooks/pre-push` blocks it and **expires by itself on
+- **Do not push `portfoliowebsite`.** `.githooks/pre-push` blocks it and **expires by itself on
   2026-08-07** — nothing to uninstall. Deliberate override, on explicit user instruction only:
   `git push --no-verify`.
 - **Preview locally**, with no Netlify involvement:

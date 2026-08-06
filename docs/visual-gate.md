@@ -31,7 +31,7 @@ capturing so the panel is actually open.
 ## Running it
 
 ```bash
-npm test                                  # whole suite (73 tests)
+npm test                                  # whole suite (90 tests)
 npx playwright test visual-baseline       # just the gate
 npx playwright test -g "gallery @ 1440"   # one case
 ```

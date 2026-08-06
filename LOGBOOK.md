@@ -1,3 +1,88 @@
+## Entry 123 — 2026-08-06
+
+**Agent:** Opus 5 (wren, main)
+**Cycle:** shxdowflow — pre-launch audit
+**Branch:** `develop` (deploy pause until Aug 7 — committed, **not pushed**)
+**Task:** "use nano agents to double check website functionality and fluidity before launch"
+
+Four read-only pro nano-agents across independent scopes, queued two at a time on two runtimes
+(opencode + kilo) rather than fanned out four ways, per the standing preference for review batches.
+Plan: [`docs/plans/2026-08-06-prelaunch-audit-nanoagent-plan.md`](docs/plans/2026-08-06-prelaunch-audit-nanoagent-plan.md).
+Nano-agents read code; **runtime behaviour was the main agent's job**, run against the production
+export rather than the dev server, because the export is what ships.
+
+### The runtime probe came back clean
+
+40 page loads (5 routes × 4 viewports × 2 themes) plus an internal-link crawl and an interaction
+smoke: **zero** console errors, page errors, failed requests, 4xx responses, horizontal overflow,
+broken images, missing alt, theme mismatches, heading-level jumps, or dead internal links. Theme
+toggle, gallery expand/Escape, all four filters, project tabs and the Netlify form markup all behave.
+
+The one hit was a **false positive in my own probe**: it flagged an unlabelled form field, which is the
+Netlify honeypot using a *wrapping* `<label>` rather than `for`/`id`. Verified before believing it.
+
+### Fixed
+
+- **Four controls had no focus-visible rule** (WCAG 2.4.7): footer nav links, the footer icon links,
+  `#return-to-top`, and the skip link. All four sat outside every existing selector — `nav a` does not
+  reach the footer, and `#return-to-top` is a `<button>` without `.brand-btn`. Rule added; see the
+  honest caveat below.
+- **82 external links opened with `target="_blank"` and no `rel`** in `MistrustProject.tsx`. Now
+  `rel="noopener noreferrer"`.
+- **Three copy defects**: `long form` → `long-form`, `community led` → `community-led`, and a Brand
+  description that read "brand identity system logos, color, type" with no punctuation after "system"
+  — now "A complete personal brand identity system: logos, color, type, and applications."
+- **Five stale doc claims** that would have misled the next reader: two `73 tests` counts (now 90) in
+  `ARCHITECTURE.md` and `visual-gate.md`, `22 plan docs` (now 24), a `deploys.md` claim that the CSP
+  pins sha256 hashes (it does not, and `AGENTS.md` corrected the same claim on 07-28 while this copy
+  was missed), and `deploys.md` still pointing at `.git/hooks/pre-push` after the move to `.githooks/`.
+
+### The focus-ring fix is only verified for one of the four
+
+`.brand-footer-links a` now paints the 2px accent ring, confirmed under real keyboard Tab focus. The
+other three still render the browser's default ring instead. **I could not explain why and I am not
+claiming otherwise.** What was ruled out, each by measurement rather than argument:
+
+- Not a missing rule — all four selectors are present in the built CSS, in one declaration block.
+- Not specificity or layer order — an injected `!important` rule with the *identical* selector also
+  failed to change the computed colour, which rules out being outranked. Moving the ring into the
+  utilities layer on the element changed nothing either, so the layer trap from Entries 121–122 is not
+  the cause here. That utility change was reverted rather than left in unverified.
+- Not the `var()` inside the `outline` shorthand — longhands behave identically. The longhands were
+  kept anyway; they are equivalent and marginally more robust.
+
+The distinguishing feature is that the one that works carries **no Tailwind classes** and the three
+that fail all do, but no mechanism was found to connect that. The most likely explanation for the
+*measurement* is that this ran **headless**, and this project's convention is that focus and GUI
+behaviour are only trustworthy headed. Recorded in `TODO.md` with the exact reproduction so the next
+session starts from the evidence. **These three are not a 2.4.7 failure** — they do show a visible
+ring, it is the browser's rather than the house accent.
+
+### Raised, not decided
+
+- **15 em dashes** in page titles, meta descriptions and OG tags (`Contact — Avery Ember Day`). The
+  no-em-dash rule covers copy published as the user, and these qualify, but they are title separators
+  rather than prose and changing them rewrites every search result and unfurl. User's call.
+- **Two prose measure caps survive** the 2026-07-31 "no measure caps" direction: `max-w-[560px]` on the
+  Contact intro and `max-w-[480px]` on the thanks page. Removing them makes those lines span the full
+  1400px container, which is a real visual change on a two-sentence paragraph.
+- **Three different role descriptions** across surfaces: "Brand & Visual Designer" (title), "illustrator,
+  graphic designer, and motion artist" (home meta), "designer, artist, and creative technologist"
+  (`layout.tsx` fallback). Worth settling on one before launch.
+- `main` carries `px-6` on Contact and Thanks rather than the children carrying it. Flagged by the
+  audit as a contract violation; **it is not a defect** — `measure-content-widths.js` exits 0 and those
+  pages share the same 44px edge as every other. Left alone deliberately; changing it risks the
+  verified geometry for no visible gain.
+
+### Verification
+
+- Full suite **90 passed, twice consecutively**. 16 Projects baselines regenerated for the copy fixes
+  and reviewed at 1440 dark; no other page moved.
+- Runtime probe re-run against a rebuilt export after the fixes.
+- `npx tsc --noEmit` clean; `npm run css:build` rerun.
+
+---
+
 ## Entry 122 — 2026-08-06
 
 **Agent:** Opus 5 (wren, main)

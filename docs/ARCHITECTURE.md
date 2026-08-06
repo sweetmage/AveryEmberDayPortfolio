@@ -106,7 +106,7 @@ Roles, for the directories that carry real weight:
 | [`scripts/`](../scripts/) | Node maintenance tooling: asset generation, measurement gates, TickTick/Google sync. Not shipped. |
 | [`tests/`](../tests/) | Playwright suite: smoke, visual-baseline gate, bubble-engine coverage, Mistrust set-strip checks. |
 | [`images/`](../images/) vs [`public/images/`](../public/images/) | **Two mirrored trees.** `images/` serves the legacy root site; `public/images/` is what Next copies into the export. Generators write to both. |
-| [`docs/`](../docs/) | `NOTES.md`, `deploys.md`, `accessibility.md`, `plans/` (22 plan docs), `archives/`, `checkpoints/`. |
+| [`docs/`](../docs/) | `NOTES.md`, `deploys.md`, `accessibility.md`, `plans/` (24 plan docs plus a `README.md` index), `archives/`, `checkpoints/`. |
 
 **Where does X live?**
 
@@ -126,7 +126,7 @@ There is no server. Everything is a build step or browser runtime.
 | `npm run dev` | `next dev` on :3000. The real app, hot reload. **The dev/preview surface during the deploy pause.** |
 | `npm run build:next` | `next build` -> static export into `out/`. |
 | `npm run css:build` | Tailwind CLI, `app.css` -> `style.css` (minified). Legacy site only. Commit the rebuilt file. |
-| `npm test` | Playwright: 73 tests (smoke + 40 visual baselines + 10 bubble specs + set-strip checks). |
+| `npm test` | Playwright: 90 tests (smoke + 40 visual baselines + 10 bubble specs + 17 gallery-expand specs + set-strip checks). |
 | `npm run serve` | `serve . -l 8080` - **legacy root site only**, not the Next app. |
 
 **Build ordering trap:** `distDir` is `out`, so `build:next` deletes and recreates
