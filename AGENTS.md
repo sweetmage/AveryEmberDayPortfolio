@@ -283,6 +283,33 @@ where the image *is* the surface, edge to edge with no frame showing (Mistrust s
 thumbs, mosaic grid, lightbox): those set `border-radius: 0` in `slideshow.css`, because there is no
 frame there to round and a radius would clip the artwork. Entries 110–111.
 
+### An expanded gallery card stays on its own row
+
+**User rule, 2026-08-07.** Clicking a card must never move that card to a different row. It grows in
+place and pushes a *sibling* off the row instead, which slides down to lead the next row.
+
+- **Not last in its row** — grows rightwards into the next column. Natural auto-placement already
+  does this; the last card in the row wraps down on its own. Left alone deliberately.
+- **Last in its row** — auto-placement gets this backwards. A `span 2` cannot fit in the single free
+  column to the right, so the whole card wraps down and leaves a hole where the user clicked. The
+  row is rotated instead: its first card moves to just after the expanded one. Rows of 3 `[A,B,C]`
+  expanding C become `[B, C C, A]`; rows of 2 `[A,B]` expanding B become `[B B, A]`.
+
+**The array is reordered — not `order`, not explicit column lines.** Both of those leave the DOM
+sequence saying one thing and the page showing another, which is a WCAG 1.3.2 / 2.4.3 defect: tab
+order would visibly jump backwards through the row. Moving the items keeps DOM order and visual
+order identical. The transition still tweens because `view-transition-name` is keyed to `src` via
+the **full** list, so a card that changes position is still recognised as itself.
+
+**The column count is read from the grid's resolved `grid-template-columns`, never from a JS copy of
+the `md:`/`xl:` breakpoints.** Two sources of truth for that number drift the moment someone retunes
+the grid classes, and the failure is silent — the row maths is simply wrong at one width.
+
+Four specs in `tests/gallery-expand.spec.js` cover this, and they assert **geometry, not DOM
+indices**: an index-based assertion would describe the reorder back to itself instead of checking
+what the user sees. Proven by injected regression on 2026-08-07 — disabling the rotation fails
+*expanding the LAST card in a row keeps it on that row*.
+
 ### Wide-screen-first layout verification
 
 **Always verify layouts at 2560px and 3440px (ultrawide), not just 1440px.**

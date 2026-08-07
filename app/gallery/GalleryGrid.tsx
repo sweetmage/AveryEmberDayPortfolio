@@ -143,6 +143,32 @@ export default function GalleryGrid({ items }: GalleryGridProps) {
   const [activeFilter, setActiveFilter] = useState<FilterKey>('all');
   const [expandedSrc, setExpandedSrc] = useState<string | null>(null);
   const cardRefs = useRef(new Map<string, HTMLElement>());
+  const gridRef = useRef<HTMLDivElement | null>(null);
+  const [columnCount, setColumnCount] = useState(1);
+
+  /* Read the column count off the grid's resolved template rather than mirroring
+     the `md:`/`xl:` breakpoints in JS. Two sources of truth for the same number
+     drift the moment someone retunes the grid classes, and the failure would be
+     silent — the row maths would simply be wrong at one width. Counting resolved
+     tracks cannot disagree with the CSS because it IS the CSS.
+
+     A span does not alter the template, so this reads the same number whether or
+     not a card is open. Starts at 1 so the pre-measurement render is the
+     single-column case, which is the one layout that needs no row maths. */
+  useEffect(() => {
+    const grid = gridRef.current;
+    if (!grid || typeof ResizeObserver === 'undefined') return;
+
+    const readColumns = () => {
+      const tracks = getComputedStyle(grid).gridTemplateColumns.split(' ').filter(Boolean).length;
+      setColumnCount(tracks || 1);
+    };
+
+    readColumns();
+    const observer = new ResizeObserver(readColumns);
+    observer.observe(grid);
+    return () => observer.disconnect();
+  }, []);
 
   // Read hash on mount
   useEffect(() => {
@@ -161,6 +187,47 @@ export default function GalleryGrid({ items }: GalleryGridProps) {
     () => new Map(items.map((item, i) => [item.src, i])),
     [items],
   );
+
+  /* An expanded card stays on its own row.
+   *
+   * Left to auto-placement it does the opposite: a card that is LAST in its row
+   * has only one free column to its right, a `span 2` cannot fit there, and the
+   * whole card wraps to the next row — leaving a hole where it used to be and
+   * reading as "the card I clicked jumped away from where I clicked it".
+   *
+   * A card that is not last needs nothing. It grows rightwards into the column
+   * beside it, the neighbour it displaces shuffles along, and the last card in
+   * the row wraps down on its own. That is already the desired behaviour, so it
+   * is left alone rather than re-derived.
+   *
+   * A card that IS last is rotated into place: its row's first card moves to
+   * just after it, which puts the expanded card one column further left with
+   * room for its span, slides the middle card into the vacated edge, and pushes
+   * the first card down to lead the next row. Rows of 3 [A,B,C] expanding C
+   * become [B, C C, A]; rows of 2 [A,B] expanding B become [B B, A].
+   *
+   * The array is reordered rather than the layout being overridden with `order`
+   * or explicit column lines. Both of those leave the DOM sequence saying one
+   * thing and the page showing another, which is a WCAG 1.3.2 / 2.4.3 defect
+   * (tab order would visibly jump backwards through the row). Moving the items
+   * keeps DOM order and visual order identical, so focus order stays honest and
+   * the transition still tweens — the names are keyed to `src` via the FULL
+   * list, so a card that changes position is still recognised as itself.
+   */
+  const displayItems = useMemo(() => {
+    if (!expandedSrc || columnCount < 2) return filteredItems;
+
+    const expandedIndex = filteredItems.findIndex((item) => item.src === expandedSrc);
+    if (expandedIndex === -1) return filteredItems;
+
+    const positionInRow = expandedIndex % columnCount;
+    if (positionInRow !== columnCount - 1) return filteredItems;
+
+    const reordered = filteredItems.slice();
+    const [displaced] = reordered.splice(expandedIndex - positionInRow, 1);
+    reordered.splice(expandedIndex, 0, displaced);
+    return reordered;
+  }, [filteredItems, expandedSrc, columnCount]);
 
   const resultCountText = `Showing ${filteredItems.length} of ${items.length} works`;
 
@@ -302,11 +369,14 @@ export default function GalleryGrid({ items }: GalleryGridProps) {
               `align-self` rule inert for a day (Entry 121). Both states live
               together in brand.css, keyed off this attribute. */}
           <div
+            ref={gridRef}
             className="gallery-grid mx-auto grid max-w-[900px] grid-cols-1 gap-6 px-6 md:grid-cols-2 lg:mx-0 lg:max-w-none xl:grid-cols-3"
             data-has-expanded={expandedSrc !== null}
           >
-            {/* Grid items */}
-            {filteredItems.map((item) => {
+            {/* Grid items — `displayItems`, not `filteredItems`: an expanded
+                card that would otherwise wrap off its own row has its row
+                rotated so it stays put. See the note on that memo. */}
+            {displayItems.map((item) => {
               const isExpanded = expandedSrc === item.src;
               const hasDescription = item.description.trim().length > 0;
               const panelId = `gallery-desc-${indexBySrc.get(item.src)}`;

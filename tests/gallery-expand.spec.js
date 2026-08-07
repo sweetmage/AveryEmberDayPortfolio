@@ -330,6 +330,106 @@ test.describe('gallery expand-on-click', () => {
     expect(new Set(names).size).toBe(names.length);
   });
 
+  /*
+   * The row rule: an expanded card stays on the row it was clicked on, and the
+   * card it displaces slides down to lead the next row.
+   *
+   * These read geometry rather than DOM indices on purpose — the implementation
+   * reorders the array, so an index-based assertion would pass by describing the
+   * reorder back to itself instead of checking what the user sees.
+   */
+  async function rowTops(page) {
+    return page.$$eval('.gallery-item', (cards) =>
+      cards.map((el) => {
+        const rect = el.getBoundingClientRect();
+        return { top: Math.round(rect.top + window.scrollY), expanded: el.dataset.expanded === 'true' };
+      }));
+  }
+
+  test('expanding the LAST card in a row keeps it on that row', async ({ page }) => {
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await page.goto(`${BASE_URL}/gallery/`, { waitUntil: 'networkidle' });
+
+    // 1440px is the 3-column layout; the third card is last in row one.
+    const before = await rowTops(page);
+    const firstRowTop = before[0].top;
+    expect(before[1].top).toBe(firstRowTop);
+    expect(before[2].top).toBe(firstRowTop);
+
+    await page.locator('.gallery-item-toggle').nth(2).click();
+    await page.waitForTimeout(600);
+
+    const after = await rowTops(page);
+    const expanded = after.find((c) => c.expanded);
+
+    // The card that was clicked is still on the top row, not wrapped below it.
+    expect(expanded.top).toBe(firstRowTop);
+
+    // Exactly two cards remain on that row: the expanded one (spanning two
+    // columns) and one neighbour. The third has been pushed off.
+    const onFirstRow = after.filter((c) => c.top === firstRowTop);
+    expect(onFirstRow.length).toBe(2);
+  });
+
+  test('the displaced card slides down rather than vanishing', async ({ page }) => {
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await page.goto(`${BASE_URL}/gallery/`, { waitUntil: 'networkidle' });
+
+    const count = await page.locator('.gallery-item').count();
+
+    await page.locator('.gallery-item-toggle').nth(2).click();
+    await page.waitForTimeout(600);
+
+    // Nothing is removed or hidden by the reflow — the pushed card is still
+    // rendered, just on a later row.
+    expect(await page.locator('.gallery-item').count()).toBe(count);
+    expect(await page.locator('.gallery-item:visible').count()).toBe(count);
+
+    const after = await rowTops(page);
+    const firstRowTop = Math.min(...after.map((c) => c.top));
+    const displaced = after.filter((c) => c.top > firstRowTop);
+    expect(displaced.length).toBe(count - 2);
+  });
+
+  test('expanding a NON-last card leaves its row start alone', async ({ page }) => {
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await page.goto(`${BASE_URL}/gallery/`, { waitUntil: 'networkidle' });
+
+    const before = await rowTops(page);
+    const firstRowTop = before[0].top;
+
+    // The first card in a row grows rightwards; no rotation is needed and the
+    // row must not be reshuffled behind the user's back.
+    await page.locator('.gallery-item-toggle').nth(0).click();
+    await page.waitForTimeout(600);
+
+    const after = await rowTops(page);
+    const expanded = after.find((c) => c.expanded);
+    expect(expanded.top).toBe(firstRowTop);
+
+    const onFirstRow = after.filter((c) => c.top === firstRowTop);
+    expect(onFirstRow.length).toBe(2);
+  });
+
+  test('the row rule holds at the 2-column breakpoint', async ({ page }) => {
+    await page.setViewportSize({ width: 900, height: 900 });
+    await page.goto(`${BASE_URL}/gallery/`, { waitUntil: 'networkidle' });
+
+    const before = await rowTops(page);
+    const firstRowTop = before[0].top;
+    expect(before[1].top).toBe(firstRowTop);
+
+    // Second card is last in a 2-column row: it takes the full row and the
+    // first card is pushed down.
+    await page.locator('.gallery-item-toggle').nth(1).click();
+    await page.waitForTimeout(600);
+
+    const after = await rowTops(page);
+    const expanded = after.find((c) => c.expanded);
+    expect(expanded.top).toBe(firstRowTop);
+    expect(after.filter((c) => c.top === firstRowTop).length).toBe(1);
+  });
+
   test('every artwork carries its own name, distinct from the cards', async ({ page }) => {
     await page.goto(`${BASE_URL}/gallery/`, { waitUntil: 'networkidle' });
 
