@@ -330,6 +330,40 @@ test.describe('gallery expand-on-click', () => {
     expect(new Set(names).size).toBe(names.length);
   });
 
+  test('every artwork carries its own name, distinct from the cards', async ({ page }) => {
+    await page.goto(`${BASE_URL}/gallery/`, { waitUntil: 'networkidle' });
+
+    // The art is captured separately from its card so it tweens as its own
+    // element instead of being flattened into the card snapshot. That only
+    // holds while every name in the document is unique — a card and its own
+    // artwork colliding would drop both out of the transition with no error.
+    const { cards, art } = await page.evaluate(() => ({
+      cards: [...document.querySelectorAll('.gallery-item')].map((el) => el.style.viewTransitionName),
+      art: [...document.querySelectorAll('.gallery-item-art')].map((el) => el.style.viewTransitionName),
+    }));
+
+    expect(art.length).toBe(cards.length);
+    expect(art.every(Boolean)).toBe(true);
+
+    const all = [...cards, ...art];
+    expect(new Set(all).size).toBe(all.length);
+  });
+
+  test('the artwork does not cross-fade during the transition', async ({ page }) => {
+    await page.goto(`${BASE_URL}/gallery/`, { waitUntil: 'networkidle' });
+
+    // Cross-fading two copies of the same picture at different scales is the
+    // soft double-image that capturing it separately exists to remove. The
+    // styling hook is a class because ::view-transition-* takes no partial
+    // wildcard; if it stops being applied, the fade silently comes back.
+    const hasClass = await page.$eval(
+      '.gallery-item-art',
+      (el) => getComputedStyle(el).viewTransitionClass,
+    );
+
+    expect(hasClass).toContain('gallery-art');
+  });
+
   test('each card contains exactly one interactive element', async ({ page }) => {
     await page.goto(`${BASE_URL}/gallery/`, { waitUntil: 'networkidle' });
 

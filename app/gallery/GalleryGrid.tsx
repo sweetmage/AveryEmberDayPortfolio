@@ -360,6 +360,15 @@ export default function GalleryGrid({ items }: GalleryGridProps) {
                     alt={item.alt}
                     loading="lazy"
                     decoding="async"
+                    /* Its own transition name, so the artwork is captured and
+                       tweened as its own element instead of riding along inside
+                       the card's snapshot. Without this the card cross-fades as
+                       one flat image and the art is resampled with it; with it,
+                       the browser tweens the art's own box and the picture
+                       genuinely grows. Must not collide with the card's
+                       `vt-gal-${i}` — the shared index keeps the pair readable
+                       and the `-art` segment keeps them distinct. */
+                    style={{ viewTransitionName: `vt-gal-art-${indexBySrc.get(item.src)}` }}
                     className="gallery-item-art mx-auto block min-h-0 w-full flex-1 object-contain object-center"
                   />
                   <figcaption className="mt-auto pt-3 text-center">

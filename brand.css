@@ -1541,6 +1541,13 @@ button.brand-chip:hover {
    states and utilities would win the cascade over this layer. */
 .gallery-item-art {
     max-height: 70vh;
+    /* Groups this element's transition so the rules under "Gallery view
+       transitions" can target it by class. The per-card NAME is inline in
+       GalleryGrid.tsx (it has to be unique per element); the styling hook is a
+       class, because `::view-transition-*` takes no partial wildcard — there is
+       no way to write `vt-gal-art-*`, and one selector per artwork would have
+       to be regenerated every time the gallery gains a piece. */
+    view-transition-class: gallery-art;
 }
 
 /* One screen, and no more. `dvh` not `vh`: on mobile `100vh` counts the browser
@@ -1593,6 +1600,39 @@ button.brand-chip:hover {
 ::view-transition-group(*) {
     animation-duration: var(--brand-duration-layout);
     animation-timing-function: var(--brand-ease-layout);
+}
+
+/* ── The artwork tweens as its own element ───────────────────────────
+   The <img> carries its own `view-transition-name` (inline, per card), so it is
+   captured separately from the card rather than being flattened into the card's
+   snapshot and resampled along with the frame and caption.
+
+   Naming it is only half the job. By default the old and new snapshots
+   CROSS-FADE, and cross-fading two copies of the same picture at different
+   scales produces exactly the soft double-image that capturing it separately
+   was meant to remove. So the fade comes off both and the group's box tween
+   does all the work: the new art paints at full opacity from the first frame
+   and its box grows under it.
+
+   `object-fit: contain` keeps the picture undistorted while that box changes
+   aspect — the collapsed and expanded boxes have different proportions even
+   though the artwork does not. `block-size: 100%` overrides the UA's
+   `block-size: auto`, which would otherwise hold the snapshot at its own
+   natural height while the group resized around it.
+
+   Depends on `view-transition-class` (Chrome 125+, Safari 18.2+, Firefox 144+).
+   Where it is unsupported the property is ignored, the name still applies, and
+   the art falls back to the default cross-fade — i.e. the behaviour that
+   shipped before this rule, never something broken. */
+::view-transition-old(.gallery-art) {
+    animation: none;
+    opacity: 0;
+}
+
+::view-transition-new(.gallery-art) {
+    animation: none;
+    block-size: 100%;
+    object-fit: contain;
 }
 
 /* Second line of defence only. The real reduced-motion contract is in
