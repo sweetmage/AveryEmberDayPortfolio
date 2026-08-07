@@ -203,3 +203,42 @@ test.describe('Mistrust slideshow', () => {
     );
   });
 });
+
+/* The stage follows the same one-screen rule as the gallery art (user call,
+   2026-08-07). It is a 1:1 `flex: 1` box, so its height IS the row width minus
+   the nav bars — which is why the cap is expressed on the row's max-width. A
+   `max-height` on the stage would fight its own aspect-ratio and strand the
+   bars beside a narrower frame. */
+test.describe('mistrust stage height budget', () => {
+  for (const vp of [
+    { width: 2560, height: 1080 },
+    { width: 1440, height: 900 },
+    { width: 1440, height: 620 },
+    { width: 900, height: 700 },
+    { width: 390, height: 844 },
+    { width: 360, height: 640 },
+  ]) {
+    test(`stage fits the screen under the nav @ ${vp.width}x${vp.height}`, async ({ page }) => {
+      await page.setViewportSize(vp);
+      await gotoMistrust(page);
+
+      const navHeight = await page.locator('.brand-nav').first()
+        .evaluate((el) => el.getBoundingClientRect().height);
+      const stageHeight = await page.locator('.mistrust-stage')
+        .evaluate((el) => el.getBoundingClientRect().height);
+
+      expect(stageHeight).toBeGreaterThan(0);
+      expect(stageHeight).toBeLessThanOrEqual(vp.height - navHeight + 1);
+    });
+  }
+
+  test('the cap does not shrink the stage on a tall screen', async ({ page }) => {
+    // Below the cap nothing may change: 964px - 104px of bars = an 860px stage.
+    await page.setViewportSize({ width: 1440, height: 1200 });
+    await gotoMistrust(page);
+
+    const stageWidth = await page.locator('.mistrust-stage')
+      .evaluate((el) => el.getBoundingClientRect().width);
+    expect(Math.round(stageWidth)).toBe(860);
+  });
+});

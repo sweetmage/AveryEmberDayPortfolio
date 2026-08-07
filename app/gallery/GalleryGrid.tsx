@@ -139,6 +139,12 @@ interface GalleryGridProps {
   items: GalleryItem[];
 }
 
+/** A card and, rarely, the grid column it must start in. See `placedItems`. */
+interface PlacedItem {
+  item: GalleryItem;
+  columnStart?: number;
+}
+
 export default function GalleryGrid({ items }: GalleryGridProps) {
   const [activeFilter, setActiveFilter] = useState<FilterKey>('all');
   const [expandedSrc, setExpandedSrc] = useState<string | null>(null);
@@ -195,16 +201,25 @@ export default function GalleryGrid({ items }: GalleryGridProps) {
    * whole card wraps to the next row — leaving a hole where it used to be and
    * reading as "the card I clicked jumped away from where I clicked it".
    *
-   * A card that is not last needs nothing. It grows rightwards into the column
-   * beside it, the neighbour it displaces shuffles along, and the last card in
-   * the row wraps down on its own. That is already the desired behaviour, so it
-   * is left alone rather than re-derived.
+   * EVERY CARD MOVES ORTHOGONALLY, ONE SPACE. No diagonals — user rule,
+   * 2026-08-07. Plain auto-placement cannot honour that: it reflows the whole
+   * list, so the card at the end of each row wraps to the START of the next and
+   * sweeps diagonally across the entire grid. Only the row containing the
+   * expanded card and ONE column may move.
    *
-   * A card that IS last is rotated into place: its row's first card moves to
-   * just after it, which puts the expanded card one column further left with
-   * room for its span, slides the middle card into the vacated edge, and pushes
-   * the first card down to lead the next row. Rows of 3 [A,B,C] expanding C
-   * become [B, C C, A]; rows of 2 [A,B] expanding B become [B B, A].
+   *   Within the row: the expanded card grows into the column beside it —
+   *   rightwards normally, leftwards when it is last in the row (there is no
+   *   column to its right, and wrapping it down would take it off the row it
+   *   was clicked on). Cards between it and the far edge shift one column
+   *   sideways. Purely horizontal.
+   *
+   *   Down one column: the card pushed off the row falls straight down into
+   *   its OWN column in the next row, which pushes that column's occupant down
+   *   one, and so on to the bottom. Purely vertical, and every other column is
+   *   untouched.
+   *
+   * Rows of 3 [A,B,C]: expanding A gives [A A, B] with C dropping into column 3
+   * of the next row; expanding C gives [B, C C] with A dropping into column 1.
    *
    * The array is reordered rather than the layout being overridden with `order`
    * or explicit column lines. Both of those leave the DOM sequence saying one
@@ -213,20 +228,61 @@ export default function GalleryGrid({ items }: GalleryGridProps) {
    * keeps DOM order and visual order identical, so focus order stays honest and
    * the transition still tweens — the names are keyed to `src` via the FULL
    * list, so a card that changes position is still recognised as itself.
+   *
+   * `columnStart` is the one exception, and it is unavoidable: when the falling
+   * card runs off the bottom it needs a new row in ITS column, and appending to
+   * the array would place it in column 1 — the diagonal, back again. It applies
+   * to the LAST item only, so DOM order and visual order still agree.
    */
-  const displayItems = useMemo(() => {
-    if (!expandedSrc || columnCount < 2) return filteredItems;
+  const placedItems = useMemo<PlacedItem[]>(() => {
+    const plain: PlacedItem[] = filteredItems.map((item) => ({ item }));
+    if (!expandedSrc || columnCount < 2) return plain;
 
     const expandedIndex = filteredItems.findIndex((item) => item.src === expandedSrc);
-    if (expandedIndex === -1) return filteredItems;
+    if (expandedIndex === -1) return plain;
 
-    const positionInRow = expandedIndex % columnCount;
-    if (positionInRow !== columnCount - 1) return filteredItems;
+    const cols = columnCount;
+    const rowIndex = Math.floor(expandedIndex / cols);
+    const positionInRow = expandedIndex % cols;
 
-    const reordered = filteredItems.slice();
-    const [displaced] = reordered.splice(expandedIndex - positionInRow, 1);
-    reordered.splice(expandedIndex, 0, displaced);
-    return reordered;
+    const rows: GalleryItem[][] = [];
+    for (let i = 0; i < filteredItems.length; i += cols) rows.push(filteredItems.slice(i, i + cols));
+
+    const row = rows[rowIndex];
+    let falling: GalleryItem | null;
+    let column: number;
+
+    if (positionInRow < cols - 1) {
+      // Grows rightwards; the row's last card is pushed out of its far end.
+      column = cols - 1;
+      falling = row.length === cols ? row[cols - 1] : null;
+      rows[rowIndex] = [...row.slice(0, positionInRow), row[positionInRow], ...row.slice(positionInRow + 1, cols - 1)];
+    } else {
+      // Last in the row: grows leftwards, so the row's FIRST card is pushed out.
+      column = 0;
+      falling = row[0];
+      rows[rowIndex] = [...row.slice(1, cols - 1), row[positionInRow]];
+    }
+
+    // Straight down one column, one row at a time.
+    let carried = falling;
+    for (let j = rowIndex + 1; j < rows.length && carried; j += 1) {
+      if (rows[j].length > column) {
+        const bumped = rows[j][column];
+        rows[j][column] = carried;
+        carried = bumped;
+      } else if (rows[j].length === column) {
+        // Partial row that stops exactly at this column: it simply lands there.
+        rows[j].push(carried);
+        carried = null;
+      } else {
+        break; // Lands in a gap further along a short row — handled below.
+      }
+    }
+
+    const placed: PlacedItem[] = rows.flat().map((item) => ({ item }));
+    if (carried) placed.push({ item: carried, columnStart: column + 1 });
+    return placed;
   }, [filteredItems, expandedSrc, columnCount]);
 
   const resultCountText = `Showing ${filteredItems.length} of ${items.length} works`;
@@ -373,10 +429,10 @@ export default function GalleryGrid({ items }: GalleryGridProps) {
             className="gallery-grid mx-auto grid max-w-[900px] grid-cols-1 gap-6 px-6 md:grid-cols-2 lg:mx-0 lg:max-w-none xl:grid-cols-3"
             data-has-expanded={expandedSrc !== null}
           >
-            {/* Grid items — `displayItems`, not `filteredItems`: an expanded
-                card that would otherwise wrap off its own row has its row
-                rotated so it stays put. See the note on that memo. */}
-            {displayItems.map((item) => {
+            {/* Grid items — `placedItems`, not `filteredItems`: the expanded
+                card's row and one column are rearranged so every card moves
+                orthogonally by one space. See the note on that memo. */}
+            {placedItems.map(({ item, columnStart }) => {
               const isExpanded = expandedSrc === item.src;
               const hasDescription = item.description.trim().length > 0;
               const panelId = `gallery-desc-${indexBySrc.get(item.src)}`;
@@ -396,7 +452,12 @@ export default function GalleryGrid({ items }: GalleryGridProps) {
                     else cardRefs.current.delete(item.src);
                   }}
                   data-expanded={isExpanded}
-                  style={{ viewTransitionName: `vt-gal-${indexBySrc.get(item.src)}` }}
+                  style={{
+                    viewTransitionName: `vt-gal-${indexBySrc.get(item.src)}`,
+                    /* Only ever set on the last item, and only when the falling
+                       card needs a new row in its own column — see the memo. */
+                    gridColumnStart: columnStart,
+                  }}
                   /* No `h-full`. A grid item already stretches to fill its area by
                      default, so it was redundant for collapsed cards — but as a
                      utility it beat `align-self: start` from the components layer,

@@ -499,6 +499,55 @@ test.describe('gallery expand-on-click', () => {
     expect(after.filter((c) => c.top === firstRowTop).length).toBe(1);
   });
 
+  /* No diagonals: every card that moves does so along ONE axis, by one space.
+     The failure this guards is auto-placement's wrap — a card at the end of a
+     row jumping to the START of the next one, which sweeps it diagonally across
+     the whole grid. */
+  /* Top-LEFT, not centre. While a card is open the grid stops stretching cards
+     to a uniform height (`align-items: start`), so a card can change height
+     without moving — which shifts its centre and would read as a phantom
+     diagonal. The corner is the card's actual grid position. */
+  async function corners(page) {
+    return page.$$eval('.gallery-item', (cards) =>
+      Object.fromEntries(cards.map((el) => {
+        const r = el.getBoundingClientRect();
+        const src = el.querySelector('.gallery-item-art').getAttribute('src');
+        return [src, { x: r.left, y: r.top + window.scrollY, expanded: el.dataset.expanded === 'true' }];
+      })));
+  }
+
+  for (const index of [0, 1, 2]) {
+    test(`cards move on one axis only, expanding card ${index} of a row of 3`, async ({ page }) => {
+      await page.setViewportSize({ width: 1440, height: 900 });
+      await page.goto(`${BASE_URL}/gallery/`, { waitUntil: 'networkidle' });
+
+      const before = await corners(page);
+      const keys = Object.keys(before);
+      // Column pitch, measured rather than assumed.
+      const pitch = before[keys[1]].x - before[keys[0]].x;
+
+      await page.locator('.gallery-item-toggle').nth(index).click();
+      await page.waitForTimeout(700);
+
+      const after = await corners(page);
+
+      for (const src of keys) {
+        // The expanded card GROWS; it is not travelling, so it is not judged here.
+        if (after[src].expanded) continue;
+
+        const dx = after[src].x - before[src].x;
+        const dy = after[src].y - before[src].y;
+
+        if (Math.abs(dx) > 2) {
+          // Horizontal movers must be purely horizontal, and exactly one column.
+          expect(Math.abs(dy), `${src} moved diagonally (dx=${dx.toFixed(0)}, dy=${dy.toFixed(0)})`).toBeLessThan(3);
+          expect(Math.abs(Math.abs(dx) - Math.abs(pitch)),
+            `${src} moved ${Math.abs(dx).toFixed(0)}px, not one column (${Math.abs(pitch).toFixed(0)}px)`).toBeLessThan(3);
+        }
+      }
+    });
+  }
+
   test('every artwork carries its own name, distinct from the cards', async ({ page }) => {
     await page.goto(`${BASE_URL}/gallery/`, { waitUntil: 'networkidle' });
 

@@ -55,11 +55,27 @@
    float over the artwork; user call 2026-07-31: controls must not cover the
    slides. 964px = the 860px stage + two 44px bars + two 8px gaps. */
 .mistrust-stage-row {
+  /* The two nav bars plus their gaps, which sit OUTSIDE the stage and so are
+     not part of the artwork's height budget. `flex: 0 0 44px` at every width —
+     if that ever becomes responsive, this has to follow it. */
+  --stage-side-allowance: 104px;
+
+  /* One screen, under the nav — the same rule the gallery art follows.
+     `dvh` not `vh`: on mobile `100vh` counts browser chrome that hides on
+     scroll. The nav is sticky and overlays the page, so it comes off too. */
+  --stage-cap: calc(100dvh - var(--brand-nav-height));
+
   display: flex;
   align-items: stretch;
   gap: 8px;
   width: 100%;
-  max-width: 964px;
+
+  /* The stage is 1:1 and `flex: 1`, so its height IS the row width minus the
+     bars. Capping the ROW is therefore how a height cap gets expressed here —
+     a `max-height` on the square stage would fight its own aspect-ratio and
+     leave the bars stranded beside a narrower frame. Below the cap nothing
+     changes: 964px still wins, exactly as before. */
+  max-width: min(964px, calc(var(--stage-cap) + var(--stage-side-allowance)));
 }
 
 /* `touch-action: pan-y` is what lets a vertical flick scroll the page while a

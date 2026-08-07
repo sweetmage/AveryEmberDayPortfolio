@@ -288,12 +288,23 @@ frame there to round and a radius would clip the artwork. Entries 110–111.
 **User rule, 2026-08-07.** Clicking a card must never move that card to a different row. It grows in
 place and pushes a *sibling* off the row instead, which slides down to lead the next row.
 
-- **Not last in its row** — grows rightwards into the next column. Natural auto-placement already
-  does this; the last card in the row wraps down on its own. Left alone deliberately.
-- **Last in its row** — auto-placement gets this backwards. A `span 2` cannot fit in the single free
-  column to the right, so the whole card wraps down and leaves a hole where the user clicked. The
-  row is rotated instead: its first card moves to just after the expanded one. Rows of 3 `[A,B,C]`
-  expanding C become `[B, C C, A]`; rows of 2 `[A,B]` expanding B become `[B B, A]`.
+**And every card moves orthogonally, one space. No diagonals** (user rule, same day). Plain
+auto-placement cannot honour that: it reflows the whole list, so the card at the end of *each* row
+wraps to the START of the next and sweeps diagonally across the grid. Only the expanded card's row
+and **one column** may move.
+
+- **Within the row** — the expanded card grows into the column beside it: rightwards normally,
+  leftwards when it is last (there is no column to its right, and wrapping it down would take it off
+  the row it was clicked on). Cards between it and the far edge shift one column sideways. Purely
+  horizontal.
+- **Down one column** — the card pushed off the row falls straight down into **its own column** in
+  the next row, pushing that column's occupant down one, and so on to the bottom. Purely vertical;
+  every other column is untouched.
+- Rows of 3 `[A,B,C]`: expanding A gives `[A A, B]` with C dropping into column 3 of the next row;
+  expanding C gives `[B, C C]` with A dropping into column 1.
+- `columnStart` is the single exception and is unavoidable: when the falling card runs off the
+  bottom it needs a new row **in its column**, and appending to the array would place it in column 1
+  — the diagonal again. It is set on the last item only, so DOM order still matches visual order.
 
 **The array is reordered — not `order`, not explicit column lines.** Both of those leave the DOM
 sequence saying one thing and the page showing another, which is a WCAG 1.3.2 / 2.4.3 defect: tab
@@ -305,10 +316,28 @@ the **full** list, so a card that changes position is still recognised as itself
 the `md:`/`xl:` breakpoints.** Two sources of truth for that number drift the moment someone retunes
 the grid classes, and the failure is silent — the row maths is simply wrong at one width.
 
-Four specs in `tests/gallery-expand.spec.js` cover this, and they assert **geometry, not DOM
+Seven specs in `tests/gallery-expand.spec.js` cover this, and they assert **geometry, not DOM
 indices**: an index-based assertion would describe the reorder back to itself instead of checking
 what the user sees. Proven by injected regression on 2026-08-07 — disabling the rotation fails
 *expanding the LAST card in a row keeps it on that row*.
+
+> **Measure card movement from the TOP-LEFT corner, never the centre.** While a card is open the
+> grid stops stretching cards to a uniform height (`align-items: start`), so a card can change
+> height without moving. That shifts its centre and reads as a phantom diagonal — it produced a
+> `dx=372, dy=-8` failure against a perfectly orthogonal layout while these specs were being written.
+
+### The Mistrust stage follows the same one-screen rule
+
+**User call, 2026-08-07.** `.mistrust-stage` must not exceed the viewport minus the nav, exactly as
+the gallery art does.
+
+The cap is expressed as a **`max-width` on `.mistrust-stage-row`**, not a `max-height` on the stage.
+The stage is `aspect-ratio: 1 / 1` and `flex: 1`, so its height *is* the row width minus the nav
+bars — a `max-height` would fight its own aspect-ratio and strand the bars beside a narrower frame.
+`--stage-side-allowance` (104px = two 44px bars + two 8px gaps) is what converts one into the other;
+if those bars ever become responsive, it has to follow them. Below the cap nothing changes — 964px
+still wins, and the stage is still 860px, which *the cap does not shrink the stage on a tall screen*
+asserts directly. Six viewport specs in `tests/mistrust-slideshow.spec.js` cover the binding case.
 
 ### The gallery art box IS the picture
 
