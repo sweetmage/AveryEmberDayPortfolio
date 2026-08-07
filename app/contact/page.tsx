@@ -58,6 +58,18 @@ export default function ContactPage() {
           </label>
         </div>
 
+        {/* `pointer-coarse:text-base` on every control below is load-bearing, not
+            styling. iOS Safari ZOOMS THE PAGE whenever a control with a computed
+            font-size under 16px takes focus, and it does not zoom back out. The
+            nav is sticky, so after that zoom the layout is wider than the visible
+            screen and the theme toggle at its right edge sits off screen — which
+            is exactly how this was reported (2026-08-07): "on mobile, the light
+            and dark menu is off screen", found while testing this form on a
+            phone. 14px is under the threshold; 16px is not.
+
+            Touch-only rather than a width breakpoint, because the trigger is the
+            input method, not the viewport — and so pointer devices keep the 14px
+            the design uses. */}
         <div className="mb-4 flex flex-col gap-1">
           <label htmlFor="name" className="font-body text-sm font-medium text-text">
             Name
@@ -67,7 +79,7 @@ export default function ContactPage() {
             name="name"
             type="text"
             required
-            className="rounded-md border border-line bg-surface-2 px-3 py-2 font-body text-sm text-text outline-none transition-colors focus:border-accent"
+            className="rounded-md border border-line bg-surface-2 px-3 py-2 font-body text-sm text-text outline-none transition-colors pointer-coarse:text-base focus:border-accent"
           />
         </div>
 
@@ -80,7 +92,7 @@ export default function ContactPage() {
             name="email"
             type="email"
             required
-            className="rounded-md border border-line bg-surface-2 px-3 py-2 font-body text-sm text-text outline-none transition-colors focus:border-accent"
+            className="rounded-md border border-line bg-surface-2 px-3 py-2 font-body text-sm text-text outline-none transition-colors pointer-coarse:text-base focus:border-accent"
           />
         </div>
 
@@ -93,7 +105,7 @@ export default function ContactPage() {
             name="message"
             rows={5}
             required
-            className="rounded-md border border-line bg-surface-2 px-3 py-2 font-body text-sm text-text outline-none transition-colors focus:border-accent"
+            className="rounded-md border border-line bg-surface-2 px-3 py-2 font-body text-sm text-text outline-none transition-colors pointer-coarse:text-base focus:border-accent"
           />
         </div>
 

@@ -56,6 +56,14 @@ of 20/month, so anything merged before the pause lifts ships in the same deploy.
       **Do not raise a tolerance** — twice now the cause was elsewhere (Entries 090, 115), and Entry
       115 produced two wrong fixes by theorising instead of reading `bubbles.js`. Remember the engine
       is duplicated: `scripts/bubbles.js` and `public/scripts/bubbles.js`.
+
+      **A SECOND case exists, and it is not the recorded one: `bubbles-exclusion › Projects tabs @
+      768px`.** Seen twice in ~10 full runs on 2026-08-07, ~838px² overlap against an expected 0,
+      while working on the gallery — a page it does not touch. Both times it passed on re-run, and
+      the bubble spec passed 2/2 standalone immediately after. So the flake is not specific to the
+      Contact form or to 1440px, which weakens "something about that one form/width" and strengthens
+      the relocation hypothesis above: any zone, any width, whenever a rescued bubble happens to fade
+      in inside one. Worth checking both cases against the same fix rather than chasing them apart.
 - [ ] **Gallery filter entrance stagger (Track B leftover, deliberate).** The concept's §4 asks for
       entering cards to fade up from `0.96` staggered ~25ms by grid position. The *movement* tween
       shipped in Entry 118 and is the part that section calls the one that makes filtering feel
