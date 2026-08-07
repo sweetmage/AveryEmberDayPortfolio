@@ -310,6 +310,41 @@ indices**: an index-based assertion would describe the reorder back to itself in
 what the user sees. Proven by injected regression on 2026-08-07 — disabling the rotation fails
 *expanding the LAST card in a row keeps it on that row*.
 
+### The gallery art box IS the picture
+
+**Never put `w-full` / `flex-1` / `max-h-*` back on `.gallery-item-art`.** Its sizing has two states
+and lives in `brand.css`, where the utilities cannot outrank it.
+
+The image used to be stretched to the whole art area with the picture letterboxed inside it by
+`object-contain`. Invisible at rest, wrong in motion: **a view transition snapshots the box, not the
+picture**, and the two states letterboxed by different amounts — collapsed a 314x530 box held a
+314x418 picture, expanded a 686x824 box held 618x824. So the first frame of an expand drew the
+picture at **~90% of the size it had just been**, which then grew out of it. That is the
+shrink-then-grow the user reported on 2026-08-07.
+
+Giving the box the artwork's own ratio (`--art-aspect`, set inline per card from the item's real
+dimensions) removes the letterbox, so both states share one ratio and the tween is a uniform scale.
+It cannot shrink first **by construction**, not by tuning a duration or an easing curve.
+
+- The art wrapper `div` carries the `flex-1` the image used to. Removing it makes the caption climb.
+- **The screen cap is applied to the WIDTH, converted through the ratio** —
+  `width: min(100%, calc(var(--art-cap) * var(--art-aspect)))`. Height here is derived, and a
+  `max-height: min(cap, 100%)` silently does nothing because the percentage cannot resolve against a
+  flex wrapper with no definite height. That is measured, not theoretical: it rendered **915px tall
+  inside a 900px viewport**. A lone `max-height: 100%` *does* resolve, and is the second ceiling for
+  a tall artwork in a short card.
+- **`--art-cap` is the one screen budget** — `min(70vh, calc(100dvh - var(--brand-nav-height)))` at
+  rest, the full `calc(100dvh - …)` expanded. `dvh` not `vh`, and the sticky nav is subtracted.
+
+Guarded by *the art box matches the artwork ratio, collapsed and expanded* plus five viewport cap
+specs (2560x1080 → 360x640) in `tests/gallery-expand.spec.js`.
+
+> **Re-baselining note.** Changing the box from letterboxed to picture-sized moves nothing visually —
+> the pictures land at identical positions and sizes, verified by measuring card, image and caption
+> rects against the previous build. But the artwork is resampled into a box 1px different in height,
+> which repaints every pixel and fails all 8 gallery snapshots. Those were regenerated and reviewed
+> on 2026-08-07. If you see a whole-artwork diff with no geometry change, this is why.
+
 ### Wide-screen-first layout verification
 
 **Always verify layouts at 2560px and 3440px (ultrawide), not just 1440px.**

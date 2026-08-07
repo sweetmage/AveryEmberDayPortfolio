@@ -421,6 +421,14 @@ export default function GalleryGrid({ items }: GalleryGridProps) {
                     aria-label={`${isExpanded ? 'Collapse' : 'Expand'} ${item.caption}`}
                     onClick={() => handleToggle(item.src)}
                   />
+                  {/* The wrapper takes the `flex-1` the <img> used to carry, so
+                      the art area still absorbs the card's free space and the
+                      caption still sits at the bottom. The image inside is now
+                      sized to the artwork itself and centred here, which is what
+                      makes its transition box equal the picture. Collapsed
+                      rendering is unchanged — same picture, same place; only the
+                      element boundary moved. */}
+                  <div className="flex min-h-0 flex-1 items-center justify-center">
                   <img
                     src={item.src}
                     srcSet={buildSrcSet(item.src, item.width, SRCSET_VARIANTS)}
@@ -438,9 +446,22 @@ export default function GalleryGrid({ items }: GalleryGridProps) {
                        genuinely grows. Must not collide with the card's
                        `vt-gal-${i}` — the shared index keeps the pair readable
                        and the `-art` segment keeps them distinct. */
-                    style={{ viewTransitionName: `vt-gal-art-${indexBySrc.get(item.src)}` }}
-                    className="gallery-item-art mx-auto block min-h-0 w-full flex-1 object-contain object-center"
+                    style={
+                      {
+                        viewTransitionName: `vt-gal-art-${indexBySrc.get(item.src)}`,
+                        /* The artwork's real ratio, so its box can BE the
+                           picture instead of a larger box with the picture
+                           letterboxed inside it. brand.css explains why that
+                           distinction is the whole fix for the shrink-then-grow.
+                           Sourced from the item's own dimensions — the same
+                           numbers already feeding the width/height attributes,
+                           so they cannot disagree. */
+                        '--art-aspect': `${item.width} / ${item.height}`,
+                      } as React.CSSProperties
+                    }
+                    className="gallery-item-art block object-contain object-center"
                   />
+                  </div>
                   <figcaption className="mt-auto pt-3 text-center">
                     <h3 className="font-heading text-[1.05em] font-semibold tracking-normal text-text">
                       {item.caption}

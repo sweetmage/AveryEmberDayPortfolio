@@ -217,6 +217,75 @@ test.describe('gallery expand-on-click', () => {
     expect(artHeight).toBeLessThanOrEqual(720 - navHeight + 1);
   });
 
+  /* One screen, at every screen. The single 1440x720 case above proves the
+     `dvh`/nav arithmetic; this proves the cap actually binds across the range,
+     including the phone widths where `dvh` differs from `vh` and the short
+     desktop where the cap does the most work. */
+  for (const vp of [
+    { width: 2560, height: 1080 },
+    { width: 1440, height: 620 },
+    { width: 900, height: 700 },
+    { width: 390, height: 844 },
+    { width: 360, height: 640 },
+  ]) {
+    test(`expanded art fits the screen under the nav @ ${vp.width}x${vp.height}`, async ({ page }) => {
+      await page.setViewportSize(vp);
+      await page.goto(`${BASE_URL}/gallery/`, { waitUntil: 'networkidle' });
+
+      await page.locator('.gallery-item-toggle').first().click();
+      await page.waitForTimeout(500);
+
+      const navHeight = await page.locator('.brand-nav').first()
+        .evaluate((el) => el.getBoundingClientRect().height);
+      const artHeight = await page.locator('.gallery-item[data-expanded="true"] .gallery-item-art')
+        .evaluate((el) => el.getBoundingClientRect().height);
+
+      expect(artHeight).toBeGreaterThan(0);
+      expect(artHeight).toBeLessThanOrEqual(vp.height - navHeight + 1);
+    });
+  }
+
+  test('the art box matches the artwork ratio, collapsed and expanded', async ({ page }) => {
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await page.goto(`${BASE_URL}/gallery/`, { waitUntil: 'networkidle' });
+
+    /* This is the structural guarantee against the shrink-then-grow, and it is
+       worth more than measuring the animation itself.
+
+       A view transition snapshots the element BOX. While the box was the whole
+       art area with the picture letterboxed inside it by `object-contain`, the
+       two states letterboxed by different amounts — so at the first frame the
+       picture appeared at ~90% of the size it had just been and grew out of it
+       (measured 2026-08-07). When the box equals the picture in both states,
+       the tween is a uniform scale and cannot shrink first.
+
+       So: assert the box carries the artwork's own ratio. If someone reinstates
+       `w-full`/`flex-1` on the image, this fails. */
+    const ratios = async () => page.$$eval('.gallery-item-art', (imgs) =>
+      imgs.map((el) => {
+        const r = el.getBoundingClientRect();
+        // width/height attributes are the artwork's true dimensions.
+        const declared = Number(el.getAttribute('width')) / Number(el.getAttribute('height'));
+        return { box: r.width / r.height, declared };
+      }));
+
+    for (const { box, declared } of await ratios()) {
+      expect(Math.abs(box - declared)).toBeLessThan(0.01);
+    }
+
+    await page.locator('.gallery-item-toggle').first().click();
+    await page.waitForTimeout(600);
+
+    const expanded = await page.$eval('.gallery-item[data-expanded="true"] .gallery-item-art', (el) => {
+      const r = el.getBoundingClientRect();
+      return {
+        box: r.width / r.height,
+        declared: Number(el.getAttribute('width')) / Number(el.getAttribute('height')),
+      };
+    });
+    expect(Math.abs(expanded.box - expanded.declared)).toBeLessThan(0.01);
+  });
+
   test('expanding a card already in view does not scroll the page', async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 900 });
     await page.goto(`${BASE_URL}/gallery/`, { waitUntil: 'networkidle' });
