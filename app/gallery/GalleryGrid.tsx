@@ -6,6 +6,8 @@ import type { GalleryItem } from './gallery-data';
 
 /* srcset URLs must not contain raw spaces (the parser splits on them), so
    every rung is encodeURI'd — the SelfPortraitSeries filename has spaces. */
+const SRCSET_VARIANTS = [480, 900];
+
 function buildSrcSet(src: string, width: number, variants: number[]): string {
   const dot = src.lastIndexOf('.');
   const rungs = variants.map(
@@ -23,6 +25,38 @@ const gallerySizes =
    be drawn at, and the art would render soft. Over-requesting slightly at `xl`
    is the safe direction of that error. */
 const expandedSizes = '92vw';
+
+/* Expanding flips `sizes` from ~46vw to 92vw, so the browser re-runs srcset
+   selection and begins fetching a LARGER rung at the exact moment the view
+   transition takes its "after" snapshot. The <img> then paints stale-or-blank
+   for the first frames of the animation, which reads as a flicker in the middle
+   of the expand — the artwork changing resolution, not the layout tweening.
+
+   Warming it first puts the decoded bitmap in cache before the transition
+   starts. The probe carries the SAME srcset and the SAME expanded `sizes` as
+   the real image, so the browser resolves the identical rung and this code
+   never has to predict which one that is (it varies by viewport and DPR).
+
+   Budgeted, not awaited outright: on a slow connection a click has to stay
+   responsive, and an image that arrives a beat late is a smaller problem than a
+   button that appears dead. Past the budget the transition runs anyway and the
+   old behaviour is what you get — this can only make the swap earlier. */
+const DECODE_BUDGET_MS = 200;
+
+function warmExpandedArt(item: GalleryItem): Promise<unknown> {
+  if (typeof window === 'undefined') return Promise.resolve();
+
+  const probe = new window.Image();
+  // `sizes` before `srcset`/`src`: selection runs when the source is set.
+  probe.sizes = expandedSizes;
+  probe.srcset = buildSrcSet(item.src, item.width, SRCSET_VARIANTS);
+  probe.src = encodeURI(item.src);
+
+  return Promise.race([
+    probe.decode().catch(() => undefined),
+    new Promise((resolve) => window.setTimeout(resolve, DECODE_BUDGET_MS)),
+  ]);
+}
 
 type FilterKey = 'all' | 'digital' | 'traditional' | 'both';
 
@@ -151,10 +185,19 @@ export default function GalleryGrid({ items }: GalleryGridProps) {
 
   const handleToggle = useCallback(
     (src: string) => {
-      const next = expandedSrc === src ? null : src;
-      applyWithViewTransition(() => setExpandedSrc(next));
+      /* Collapsing needs no warm-up: it selects a SMALLER rung, and the larger
+         one is already decoded and stays on screen while that resolves. Under
+         reduced motion there is no transition for a swap to interrupt, so that
+         path keeps its immediacy rather than paying the decode budget. */
+      const item = expandedSrc === src ? undefined : items.find((i) => i.src === src);
+      if (!item || prefersReducedMotion()) {
+        applyWithViewTransition(() => setExpandedSrc(expandedSrc === src ? null : src));
+        return;
+      }
+
+      void warmExpandedArt(item).then(() => applyWithViewTransition(() => setExpandedSrc(src)));
     },
-    [expandedSrc],
+    [expandedSrc, items],
   );
 
   /* Document-level, not a handler on the button: after clicking a card the user
@@ -310,7 +353,7 @@ export default function GalleryGrid({ items }: GalleryGridProps) {
                   />
                   <img
                     src={item.src}
-                    srcSet={buildSrcSet(item.src, item.width, [480, 900])}
+                    srcSet={buildSrcSet(item.src, item.width, SRCSET_VARIANTS)}
                     sizes={isExpanded ? expandedSizes : gallerySizes}
                     width={item.width}
                     height={item.height}
