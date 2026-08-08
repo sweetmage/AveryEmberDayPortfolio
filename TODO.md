@@ -138,6 +138,9 @@ consolidated in [`docs/archives/plans.md`](docs/archives/plans.md).
 
 ### 2026-08
 
+- **Aug 8** — **Checkpoint saved:** `docs/checkpoints/2026-08-08-post-interview-release.md`
+  (`bc3e278`). Notification email for the test submission confirmed received, closing the last
+  unverified link in the contact chain: submit → thanks page → recorded submission → email.
 - **Aug 8** — **RELEASED.** `develop` → `portfoliowebsite` merged fast-forward and pushed once:
   48 commits, deploy `bc3e278`, `state: ready` and NOT skipped, 15 credits. Live checks on
   averyemberday.com: all 5 pages 200, no page errors, Mistrust leads Projects, the slideshow block

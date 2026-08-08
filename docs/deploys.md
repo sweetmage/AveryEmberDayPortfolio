@@ -237,7 +237,9 @@ build-time parser reads deployed HTML containing the form — which is why the f
 while the published deploy predated the toggle.
 
 Notification email: site-wide `submission_created` → `averyemberday@gmail.com`, id
-`6a6e6f4bbb69572bfbd54227`. Delivery is the one part the API cannot confirm.
+`6a6e6f4bbb69572bfbd54227`. **Delivery confirmed by the user on 2026-08-08** — the API cannot show
+this, so it is recorded here instead. The whole chain is proven: submit → `/contact/thanks/` →
+recorded submission → email received.
 
 Check state from the CLI:
 
