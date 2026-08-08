@@ -326,29 +326,39 @@ what the user sees. Proven by injected regression on 2026-08-07 — disabling th
 > height without moving. That shifts its centre and reads as a phantom diagonal — it produced a
 > `dx=372, dy=-8` failure against a perfectly orthogonal layout while these specs were being written.
 
-### Bubble zones: one set of surfaces, two treatments, split at 768px
+### The picture is the wall — bubbles bounce off the image, at every width
 
-**User calls, 2026-08-07.** `FRAME_ZONE_SELECTOR` in `scripts/bubbles.js` is `.gallery-item,
-.mistrust-stage, img`. Those surfaces no longer take the standard 24px-padded zone:
+**User call, 2026-08-08.** `FRAME_ZONE_SELECTOR` in `scripts/bubbles.js` is `img, .mistrust-stage`.
+Those get the element's **exact rect with no padding**, so the wall is the visible edge of the
+artwork rather than an invisible boundary 24px outside it. There is no breakpoint in the physics.
 
-| | |
-|---|---|
-| **Below 768px** | A centred box at **60%** of the element **+ 12px buffer**. The outer band opens up so bubbles can drift across the card and behind the picture; only the core is untouchable. Paired with `z-index: -1` on `.brand-bubbles-global` in the same media query, so they pass *behind* content. |
-| **768px and up** | The element's **exact rect, no padding** — the rebound happens against the frame the user can see, not an invisible boundary 24px outside it. |
+**`.gallery-item` is deliberately NOT an exclusion selector.** It was one for a year; its removal is
+the point of the rule, not an oversight. A card zone is a wall *around* the picture, so bubbles
+rebounded off the card's outer edge and never reached the artwork. The card's frame, padding and
+caption band are now open ground. The caption's own `h3`/`p` keep normal padded zones — that is
+legibility, not layout.
+
+This replaced a 60%-of-the-card core that stood for one day: the picture *is* the smaller centred
+shape that earlier request was reaching for (308×411 inside a 342×502 card at 390px), so one rule
+now serves both.
 
 Everything else — nav, footer, headings, body copy, the Projects rail, the Contact form — keeps its
 full padded zone at every width.
 
-- **The buffer on the mobile core is load-bearing.** The resolver reacts to overlap, so a zone with
-  no padding gets grazed for a frame or two before the bubble is pushed back: measured **41 contacts
-  over 40 samples** at zero buffer. Padding is exactly how the full-size zones achieve a true zero.
-- **Zones are deduped BY ELEMENT.** A gallery image matches both `img` and `.gallery-item-art`, and
-  the per-selector loop used to push a rect for each. Harmless while every zone was the full rect;
-  fatal once one element can yield two *different* rects, because the un-shrunk pass silently undoes
-  the feature.
+- **Z-order differs by width on purpose.** `z-index: -1` below 768px so bubbles pass *behind* content
+  (on a phone the open card interior would otherwise read as clutter over the caption); in front at
+  desktop, where there is room for the bounce to be the thing you see.
+- **Zones are deduped BY ELEMENT.** An image matches both `img` and its own class, and the
+  per-selector loop used to push a rect for each. Harmless while every zone was the full padded rect;
+  fatal once one element can yield two *different* rects, because the later pass silently restores
+  the padded one.
 - **Frame zones eject in one step** rather than the 8px/frame glide. The glide is right for a padded
   zone (it plays out inside the buffer, where nothing is drawn); on a frame zone it plays out on top
   of the artwork.
+- **At 390px a bubble centre CAN enter the picture, and that is geometry.** The card is 342px holding
+  a 308px picture, so the open band is ~17px a side — narrower than a 28px bubble, which cannot pass
+  without overlapping. Same impossibility as the Contact form at 768px. The centre-never-crosses spec
+  therefore runs at 768px and 1440px only, where bubbles paint in front and a breach would be visible.
 
 > **Testing bubbles: two traps, both hit on 2026-08-07.**
 > **Bubble coordinates are DOCUMENT-space** — `render(scrollY)` subtracts the scroll on the way out.
@@ -448,5 +458,6 @@ The failure mode this replaces: the header carried a `clamp(16px,4vw,40px)` gutt
 - Generated `style.css` is tracked and deployed directly (see Deploy)
 - `.gitignore`: `/node_modules/` (lockfile committed), `/tmp/`, `*.log`, `/test-results/`, `docs/sync/google-docs.json`
 - All pages use `.brand-nav` + `.brand-footer` from the brand system
-- Class names referenced by JS must stay in markup even when styled by utilities: `.project-card`, `.about-box`, `.bubble-exclude`, `.hero-logo`, `.hero-name`, `.hero-sub`, `.project-tab`, `.gallery-item`, `.wip-notice`, `.brand-nav*`, `.brand-footer*`
+- Class names referenced by JS must stay in markup even when styled by utilities: `.project-card`, `.about-box`, `.bubble-exclude`, `.hero-logo`, `.hero-name`, `.hero-sub`, `.project-tab`, `.gallery-item`, `.gallery-item-art`, `.wip-notice`, `.brand-nav*`, `.brand-footer*`
+  - `.gallery-item` is still load-bearing for the expand interaction and its specs, but it is **no longer a bubble exclusion selector** (2026-08-08 — see *The picture is the wall*). `.gallery-item-art` is the one the physics reads.
 - **Renaming or retagging an element silently drops it out of the bubble exclusion zones.** `DEFAULT_EXCLUSIONS` is matched by selector, so an element stops being avoided the moment it stops matching — no error, and nothing red in the suite unless `tests/bubbles-exclusion.spec.js` covers it (the visual gate runs under reduced motion, where the engine creates no bubbles at all). **This has now happened twice in one day:** the hero logo when it was inlined from `<img>` to `<svg>` for `currentColor` theming (Entry 090), and the Projects rail when the tabs were restyled from `.brand-btn` to `.project-tab` (Entry 085, found and fixed in Entry 093 — bubbles had been crossing the rail in 30 of 30 sampled frames). When you rename or retag a UI element, check this list in the same change, and add a case to the bubble spec.

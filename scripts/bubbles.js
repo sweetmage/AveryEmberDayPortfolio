@@ -28,35 +28,34 @@
   const DRIFT_KICK      = 0.12;
   const ZONE_PADDING    = 24;   // px buffer around exclusion zones
 
-  /* ── Roomier bubbles on narrow screens ──────────────────────────
-     On a phone the gallery is one column: the card is 342px of a 390px
-     viewport, so the only space left is a 24px channel — narrower than most of
-     the 10-28px bubbles, which is why they looked stuck. Below this width the
-     artwork surfaces stop being no-go rectangles and keep only a centred core,
-     so bubbles can drift through the outer band and behind the picture.
+  /* ── The picture is the wall ────────────────────────────────────
+     User call, 2026-08-08: bubbles bounce off THE IMAGE, at every screen size.
 
-     Paired with a `z-index: -1` on `.brand-bubbles-global` in the same media
-     query: the card fill is `rgba(128,128,128,0.12)`, so a bubble behind it
-     reads as a soft shape through the frame and is hidden entirely behind the
-     opaque artwork. Without the z-index change they would pass in FRONT of the
-     photos, which is not the ask.
+     Two consequences, both load-bearing:
 
-     User call, 2026-08-07: gallery cards plus other images only.
+     1. `.gallery-item` is deliberately NOT an exclusion selector any more. A
+        card zone is a wall around the picture, so bubbles would rebound off the
+        card's outer edge and never reach the artwork — the frame would be doing
+        the bouncing, which is the thing this replaces. Bubbles now cross the
+        card's border, padding and caption band freely and stop at the picture.
+        (The caption's own `h3`/`p` keep their normal padded zones, so text is
+        still protected. That is legibility, not layout.)
 
-     On desktop the same surfaces get a DIFFERENT treatment: their zone is the
-     element's exact rect, with no padding at all, so a bubble rebounds off the
-     visible frame edge instead of an invisible boundary 24px outside it. User
-     call, 2026-08-07: "the bubbles should bounce off the image frame itself."
-     Contact means a graze of a pixel or two before the resolver pushes back —
-     that IS the bounce, and it is why these surfaces cannot be asserted at a
-     hard zero overlap the way the padded zones are.
+     2. These zones carry NO padding, so the wall is the visible edge of the
+        artwork rather than an invisible boundary 24px outside it. Contact
+        therefore shows up as a graze — the resolver stops the circle tangent to
+        the rect — which is why these surfaces can never be asserted at a hard
+        zero overlap the way the padded zones are. The invariant that means
+        "bounced" is that the bubble's CENTRE never crosses the edge.
+
+     This also replaces the 60%-of-the-card core that stood here for a day: the
+     picture IS the smaller centred shape that request was reaching for
+     (308x411 inside a 342x502 card at 390px), so one rule now serves both and
+     there is no breakpoint in the physics at all.
 
      Everything else — nav, footer, headings, body copy, the Projects rail, the
      Contact form — keeps its full ZONE_PADDING zone at every width. */
-  const FRAME_ZONE_SELECTOR   = '.gallery-item, .mistrust-stage, img';
-  const MOBILE_ZONE_MAX_WIDTH = 768; // matches the `md` breakpoint and the grid's own column change
-  const MOBILE_ZONE_SCALE     = 0.6; // centred box, 60% of the element's width and height
-  const MOBILE_ZONE_PADDING   = 12;  // buffer around that core, so it is never grazed
+  const FRAME_ZONE_SELECTOR = 'img, .mistrust-stage';
   const BLOB_ZONE_PUSH  = 0.06; // hero-blob steering force away from hero content
   const ZONE_THROTTLE   = 250;  // ms between rect queries
   const SCROLL_STIR     = 0.02; // velocity imparted per px of scroll delta
@@ -109,7 +108,14 @@
     // it with no error and nothing red in the suite.
     '.project-tab',
     '.wip-notice',
-    '.gallery-item',
+    /* `.gallery-item` is deliberately absent (2026-08-08). It was here for a
+       year; removing it is the point of the "bubbles bounce off the image"
+       rule, not an oversight. A card zone is a wall AROUND the picture, so
+       bubbles rebounded off the card's outer edge and never reached the
+       artwork. The picture is now the wall — see FRAME_ZONE_SELECTOR — and the
+       card's frame, padding and caption band are open ground.
+       `tests/gallery-expand.spec.js` asserts the ART is registered instead, so
+       the retagging trap that rule guarded against is still covered. */
     '.about-box',
     '.hero-name',
     '.hero-sub',
@@ -230,15 +236,12 @@
 
       // Narrow screens only. Read per rebuild rather than cached, so a rotation
       // or a resize past the breakpoint takes effect on the next refresh.
-      const shrink = window.innerWidth < MOBILE_ZONE_MAX_WIDTH;
-
       /* Deduped BY ELEMENT, which the per-selector loop below used not to be.
          It was harmless while every zone was the element's full rect — the
          duplicates were identical. It stops being harmless the moment one
-         element can produce two DIFFERENT rects: a gallery image matches both
-         `img` and `.gallery-item-art`, and without this the full-size `img`
-         pass would put the un-shrunk rect straight back and silently undo the
-         whole feature. */
+         element can produce two DIFFERENT rects: an image matches both `img`
+         and its own class, and without this a later full-padding pass would put
+         the padded rect straight back and silently undo the frame zone. */
       const seen = new Set();
 
       for (const sel of this.selectors) {
@@ -249,33 +252,10 @@
 
           const r = el.getBoundingClientRect();
 
-          if (!shrink && el.matches(FRAME_ZONE_SELECTOR)) {
-            // Desktop: the visible edge IS the wall. No padding, so the rebound
-            // happens against the frame the user can see.
+          if (el.matches(FRAME_ZONE_SELECTOR)) {
+            // The visible edge of the picture IS the wall, at every width. No
+            // padding, so the rebound happens against the artwork itself.
             this.rects.push({ left: r.left, top: r.top, right: r.right, bottom: r.bottom, frame: true });
-            continue;
-          }
-
-          if (shrink && el.matches(FRAME_ZONE_SELECTOR)) {
-            /* A centred box at MOBILE_ZONE_SCALE of the element, plus a small
-               buffer. The buffer is not decoration: the resolver reacts to
-               overlap, so a zone with no padding gets GRAZED for a frame or two
-               before the bubble is pushed back out — measured at 41 contacts
-               over 40 samples with the buffer at zero. Padding is exactly how
-               the full-size zones achieve a true zero against the element they
-               protect, and the core needs the same treatment to be genuinely
-               untouchable. Half the standard padding, since the whole point
-               here is to give ground back. */
-            const cx = (r.left + r.right) / 2;
-            const cy = (r.top + r.bottom) / 2;
-            const halfW = (r.width * MOBILE_ZONE_SCALE) / 2 + MOBILE_ZONE_PADDING;
-            const halfH = (r.height * MOBILE_ZONE_SCALE) / 2 + MOBILE_ZONE_PADDING;
-            this.rects.push({
-              left:   cx - halfW,
-              top:    cy - halfH,
-              right:  cx + halfW,
-              bottom: cy + halfH
-            });
             continue;
           }
 

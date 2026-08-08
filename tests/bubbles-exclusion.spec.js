@@ -311,139 +311,134 @@ test.describe('bubble exclusion zones', () => {
   });
 });
 
-/* Roomier bubbles on phones, and a real bounce off the frame on desktop.
-   User calls, 2026-08-07. Two different treatments of the SAME surfaces
-   (`.gallery-item, .mistrust-stage, img`), split at 768px:
-
-     below  — a centred box at 60% of the element plus a 12px buffer, so the
-              outer band opens up and only the core stays untouchable
-     at/above — the element's exact rect with NO padding, so the rebound happens
-              against the frame the user can see rather than 24px outside it
-
-   Everything else keeps its full padded zone at every width; the specs above
-   are what hold that line. */
+/* The picture is the wall — user call, 2026-08-08, at every screen size.
+   `.gallery-item` is deliberately NOT a zone: a card zone is a wall AROUND the
+   picture, so bubbles rebounded off the card's outer edge and never reached the
+   artwork. The card's frame, padding and caption band are now open ground and
+   the artwork is what bounces them. */
 test.describe('gallery frame zones', () => {
-  test('mobile: bubbles get inside the card, and never touch its core', async ({ page }) => {
-    await page.setViewportSize({ width: 390, height: 844 });
-    await page.goto(`${BASE_URL}/gallery/`, { waitUntil: 'networkidle' });
-    await waitForEngine(page);
+  for (const width of [390, 768, 1440]) {
+    test(`the picture is the registered wall, and the card is not @ ${width}px`, async ({ page }) => {
+      await page.setViewportSize({ width, height: 900 });
+      await page.goto(`${BASE_URL}/gallery/`, { waitUntil: 'networkidle' });
+      await waitForEngine(page);
 
-    const res = await page.evaluate(async () => {
-      let intoBand = 0, intoCore = 0;
-      for (let s = 0; s < 40; s++) {
-        for (const card of document.querySelectorAll('.gallery-item')) {
-          const cr = card.getBoundingClientRect();
-          const cx = (cr.left + cr.right) / 2, cy = (cr.top + cr.bottom) / 2;
-          // The protected core, as the engine defines it: 60% of the element.
-          const core = {
-            left: cx - cr.width * 0.3, right: cx + cr.width * 0.3,
-            top: cy - cr.height * 0.3, bottom: cy + cr.height * 0.3,
-          };
-          for (const el of document.querySelectorAll('.brand-bubble')) {
-            if (parseFloat(getComputedStyle(el).opacity) <= 0.05) continue;
-            const b = el.getBoundingClientRect();
-            const overlaps = (T) => Math.max(0, Math.min(T.right, b.right) - Math.max(T.left, b.left)) > 0
-                                 && Math.max(0, Math.min(T.bottom, b.bottom) - Math.max(T.top, b.top)) > 0;
-            if (overlaps(cr)) intoBand++;
-            if (overlaps(core)) intoCore++;
-          }
-        }
-        for (let i = 0; i < 5; i++) await new Promise((r) => requestAnimationFrame(r));
-      }
-      return { intoBand, intoCore };
+      const state = await page.evaluate(() => {
+        const zones = window.__bubbleEngine.zones.rects;
+        const near = (r, z, t = 1.5) => Math.abs(z.left - r.left) < t && Math.abs(z.top - r.top) < t
+          && Math.abs(z.right - r.right) < t && Math.abs(z.bottom - r.bottom) < t;
+
+        const art = document.querySelector('.gallery-item-art').getBoundingClientRect();
+        const card = document.querySelector('.gallery-item').getBoundingClientRect();
+
+        return {
+          // Exact rect AND flagged as a frame zone: no padding, so the wall is
+          // the visible edge of the artwork rather than a boundary outside it.
+          artIsFrameZone: zones.some((z) => near(art, z) && z.frame === true),
+          // Any zone still tracing the card would put the wall back on the frame.
+          cardIsAZone: zones.some((z) => near(card, z, 2)),
+        };
+      });
+
+      expect(state.artIsFrameZone, 'the artwork is not a padding-free frame zone').toBe(true);
+      expect(state.cardIsAZone, 'the card is still a wall, so bubbles cannot reach the picture').toBe(false);
     });
 
-    // The whole point of the change: they used to be locked out of the card
-    // entirely. Zero here means the loosening silently stopped applying.
-    expect(res.intoBand, 'bubbles never entered the card band').toBeGreaterThan(0);
-    // And the point of the core: it is a no-go box, not a soft preference.
-    expect(res.intoCore, 'a bubble reached the protected core').toBe(0);
-  });
+    test(`bubbles reach the card interior @ ${width}px`, async ({ page }) => {
+      await page.setViewportSize({ width, height: 900 });
+      await page.goto(`${BASE_URL}/gallery/`, { waitUntil: 'networkidle' });
+      await waitForEngine(page);
+
+      // The whole point: they used to be locked out of the card entirely.
+      const contacts = await page.evaluate(async () => {
+        const engine = window.__bubbleEngine;
+        let hits = 0;
+        for (let s = 0; s < 40; s++) {
+          const scrollY = window.scrollY;
+          const cards = [...document.querySelectorAll('.gallery-item')].map((el) => {
+            const r = el.getBoundingClientRect();
+            return { left: r.left, right: r.right, top: r.top + scrollY, bottom: r.bottom + scrollY };
+          });
+          for (const b of engine.globalLayer.bubbles) {
+            if (b._relocating) continue;
+            for (const z of cards) {
+              if (b.x > z.left && b.x < z.right && b.y > z.top && b.y < z.bottom) hits++;
+            }
+          }
+          for (let i = 0; i < 5; i++) await new Promise((r) => requestAnimationFrame(r));
+        }
+        return hits;
+      });
+
+      expect(contacts, 'bubbles never got inside a card').toBeGreaterThan(0);
+    });
+  }
+
+  /* Asserted at the widths where bubbles paint IN FRONT of the content, because
+     that is where a breach is visible.
+
+     Not asserted at 390px, and that is geometry rather than laxity: the card is
+     342px holding a 308px picture, so the open band is ~17px a side — narrower
+     than a 28px bubble, which therefore cannot pass without overlapping the
+     artwork. Same impossibility as the Contact form at 768px above. On a phone
+     the layer is behind the content anyway, and the picture is opaque, so an
+     intruding bubble is not visible. */
+  for (const width of [768, 1440]) {
+    test(`a bubble centre never crosses into the picture @ ${width}px`, async ({ page }) => {
+      await page.setViewportSize({ width, height: 900 });
+      await page.goto(`${BASE_URL}/gallery/`, { waitUntil: 'networkidle' });
+      await waitForEngine(page);
+
+      const breaches = await page.evaluate(async () => {
+        const engine = window.__bubbleEngine;
+        let crossed = 0;
+        for (let s = 0; s < 40; s++) {
+          // Bubble coordinates are DOCUMENT-space (`render(scrollY)` subtracts
+          // the scroll), so the rects have to be lifted into the same space.
+          const scrollY = window.scrollY;
+          const arts = [...document.querySelectorAll('.gallery-item-art')].map((el) => {
+            const r = el.getBoundingClientRect();
+            return { left: r.left, right: r.right, top: r.top + scrollY, bottom: r.bottom + scrollY };
+          });
+          for (const b of engine.globalLayer.bubbles) {
+            if (b._relocating) continue; // deliberately unresolved while fading
+            for (const z of arts) {
+              if (b.x > z.left && b.x < z.right && b.y > z.top && b.y < z.bottom) crossed++;
+            }
+          }
+          for (let i = 0; i < 5; i++) await new Promise((r) => requestAnimationFrame(r));
+        }
+        return crossed;
+      });
+
+      /* The CENTRE, not the overlap area. A bounce necessarily overlaps — the
+         resolver stops the circle tangent to the rect, so up to a full radius
+         sits inside the picture's bounding box at contact. What must never
+         happen is the centre crossing, which is a bubble travelling over the
+         artwork rather than rebounding off it. */
+      expect(breaches, 'a bubble centre crossed into the artwork').toBe(0);
+    });
+  }
 
   test('mobile: the bubble layer sits behind the content', async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 });
     await page.goto(`${BASE_URL}/gallery/`, { waitUntil: 'networkidle' });
 
-    // Behind the cards, but still in front of the page glow at -2. In front of
-    // the content the roomier zones would drag bubbles across the photos.
+    // Behind the cards, in front of the page glow at -2. The card interior is
+    // open ground now, and on a screen this small bubbles drawn over the
+    // caption read as clutter.
     const z = await page.locator('.brand-bubbles-global')
       .evaluate((el) => parseInt(getComputedStyle(el).zIndex, 10));
     expect(z).toBeLessThan(0);
     expect(z).toBeGreaterThan(-2);
   });
 
-  test('desktop: the card zone is the frame itself, with no padding', async ({ page }) => {
+  test('desktop keeps the bubbles in front, where the bounce is visible', async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 900 });
     await page.goto(`${BASE_URL}/gallery/`, { waitUntil: 'networkidle' });
-    await waitForEngine(page);
 
-    const fits = await page.evaluate(() => {
-      const zones = window.__bubbleEngine.zones.rects;
-      return [...document.querySelectorAll('.gallery-item')].every((card) => {
-        const r = card.getBoundingClientRect();
-        // A zone matching the frame to the pixel. A padded zone would be 48px
-        // wider and this fails, which is the regression worth catching: it
-        // would put the bounce back on an invisible boundary.
-        return zones.some((z) =>
-          Math.abs(z.left - r.left) < 1 && Math.abs(z.top - r.top) < 1 &&
-          Math.abs(z.right - r.right) < 1 && Math.abs(z.bottom - r.bottom) < 1);
-      });
-    });
-    expect(fits).toBe(true);
-  });
-
-  test('desktop: bubbles graze the frame rather than passing through it', async ({ page }) => {
-    await page.setViewportSize({ width: 1440, height: 900 });
-    await page.goto(`${BASE_URL}/gallery/`, { waitUntil: 'networkidle' });
-    await waitForEngine(page);
-
-    /* Asserted against the ENGINE's own state, not DOM rectangles.
-       `getBoundingClientRect` on a bubble includes the `brand-micro-float`
-       transform, which drifts the painted element a few px off its physics
-       position, and it cannot see `_relocating` — the flag the resolver skips
-       while a rescued bubble fades back in (the cause recorded in TODO.md for
-       the long-standing overlap flake). Measuring the DOM therefore reports
-       that known defect as a frame violation: it read 22.1px here.
-
-       The invariant that actually expresses "bounces off the frame" is
-       geometric: a resolved bubble's centre is at least its own radius from
-       the nearest point of the zone, i.e. the circle is tangent to the frame
-       and never inside it. */
-    const breaches = await page.evaluate(async () => {
-      const engine = window.__bubbleEngine;
-      let centreBreaches = 0;
-
-      for (let s = 0; s < 40; s++) {
-        // Bubble coordinates are DOCUMENT-space — `render(scrollY)` subtracts
-        // the scroll on the way out — so the frames have to be lifted into the
-        // same space. Comparing them to raw viewport rects reports nonsense the
-        // moment the page is scrolled.
-        const scrollY = window.scrollY;
-        const frames = [...document.querySelectorAll('.gallery-item')].map((el) => {
-          const r = el.getBoundingClientRect();
-          return { left: r.left, right: r.right, top: r.top + scrollY, bottom: r.bottom + scrollY };
-        });
-
-        for (const bubble of engine.globalLayer.bubbles) {
-          if (bubble._relocating) continue; // deliberately unresolved while fading
-          for (const z of frames) {
-            if (bubble.x > z.left && bubble.x < z.right && bubble.y > z.top && bubble.y < z.bottom) {
-              centreBreaches++;
-            }
-          }
-        }
-        for (let i = 0; i < 5; i++) await new Promise((r) => requestAnimationFrame(r));
-      }
-      return centreBreaches;
-    });
-
-    /* The CENTRE is the right invariant, not the overlap area.
-       A bounce necessarily overlaps: the resolver stops the bubble when its
-       circle is tangent to the frame, so up to a full radius of it is inside
-       the frame's bounding box at the moment of contact — measured up to ~24px
-       against radii of ~27px, which is contact, not passage. What must never
-       happen is the centre crossing the edge, because that is a bubble
-       travelling over the artwork rather than rebounding off it. */
-    expect(breaches, 'a bubble centre crossed into the frame').toBe(0);
+    const z = await page.locator('.brand-bubbles-global')
+      .evaluate((el) => parseInt(getComputedStyle(el).zIndex, 10));
+    expect(z).toBeGreaterThanOrEqual(0);
   });
 });

@@ -631,22 +631,29 @@ test.describe('gallery expand-on-click', () => {
     expect(parseFloat(offset)).toBeLessThan(0);
   });
 
-  test('the gallery card is still a registered bubble exclusion zone', async ({ page }) => {
+  test('the gallery ARTWORK is still a registered bubble zone', async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 900 });
     await page.goto(`${BASE_URL}/gallery/`, { waitUntil: 'networkidle' });
     await waitForEngine(page);
 
-    // `.gallery-item` is matched by selector in DEFAULT_EXCLUSIONS, so retagging
-    // or renaming the card drops it out of the physics zones with no error and
-    // nothing red anywhere else. Restructuring the card for expansion is exactly
-    // the shape of change that has caused this three times in this repo.
+    /* This used to assert `.gallery-item`. The card stopped being a zone on
+       2026-08-08 — deliberately, so bubbles can cross the frame and bounce off
+       the picture instead — so the same guard now points at the artwork.
+       The trap it exists for is unchanged and has fired three times in this
+       repo: the exclusion list is matched by SELECTOR, so retagging or
+       restructuring an element drops it out of the physics with no error and
+       nothing red anywhere else. Restructuring the card for expansion is
+       exactly that shape of change. */
     const registered = await page.evaluate(() => {
-      const targets = [...document.querySelectorAll('.gallery-item')];
+      const targets = [...document.querySelectorAll('.gallery-item-art')];
       if (!targets.length) return false;
       const zones = window.__bubbleEngine.zones.rects;
+      // A frame zone is the element's exact rect, so this is an equality check
+      // within a pixel rather than the containment used for padded zones.
       return targets.every((t) => {
         const r = t.getBoundingClientRect();
-        return zones.some((z) => z.left <= r.left && z.top <= r.top && z.right >= r.right && z.bottom >= r.bottom);
+        return zones.some((z) => Math.abs(z.left - r.left) < 1.5 && Math.abs(z.top - r.top) < 1.5
+          && Math.abs(z.right - r.right) < 1.5 && Math.abs(z.bottom - r.bottom) < 1.5);
       });
     });
 
