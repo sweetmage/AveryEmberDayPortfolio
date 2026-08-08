@@ -1,3 +1,72 @@
+## Entry 126 — 2026-08-08
+
+**Agent:** Opus 5 (main)
+**Cycle:** pre-launch iteration → RELEASE
+**Branch:** `portfoliowebsite` — **pushed, live**
+**Task:** "release my latest update but in a way that is testable before launch", then a run of
+gallery/motion/mobile fixes, then "make it live"
+
+### Released
+
+`develop` → `portfoliowebsite`, fast-forward, one push. **48 commits, deploy `bc3e278`,
+`state: ready`, `skipped: null`, 15 credits.** Live checks on averyemberday.com: 5/5 pages 200, no
+page errors, Mistrust leads Projects, slideshow block 823px against an 824px budget, artwork is a
+padding-free bubble frame zone and the card is not a zone, gallery expand works.
+
+### The pre-launch preview, and a documented "impossible" that wasn't
+
+The ask was a testable release. `gh` could not open a PR (token lacks the scope), so `develop` was
+added to `allowed_branches` and pushed — a **free** branch deploy at
+`develop--averyemberdayportfolio.netlify.app`, with production untouched on `da4b4be` throughout.
+Reverted to `["portfoliowebsite"]` after release.
+
+**`docs/deploys.md` said not to try this.** That advice was right when written and expired without
+anyone noticing: `develop` was not in `allowed_branches`, *and* the credit block is account-level so
+every deploy was skipped regardless of branch. Once credits reset, neither held. The branch deploy
+registered the Netlify form and captured a real submission — **the contact form was proven end to
+end before production changed at all**, which is the thing the entire deploy pause had been blocking.
+
+### Fixes, each measured before and after
+
+- **Gallery expand flicker** — `sizes` flipped 46vw→92vw on click, so the browser fetched a larger
+  srcset rung exactly as the view transition snapshotted. Decode the target rung first, 200ms budget.
+- **Shrink-then-grow** — measured: the artwork appeared at **90%** of its previous size at frame one.
+  A view transition snapshots the BOX, and the box was letterboxed differently in each state. Giving
+  the box the artwork's own ratio made the tween a uniform scale: **99.9%**.
+- **Row rule, then orthogonality** — an expanded card stays on its row; every other card moves one
+  space on ONE axis. Auto-placement wrapped row-end cards to the next row's start, which is the
+  diagonal. Array reordering, not `order`/explicit columns, so DOM and visual order still agree
+  (WCAG 1.3.2 / 2.4.3).
+- **One-screen caps** — gallery art and the Mistrust viewer. The stage cap had to be a `max-width`
+  on the row (a 1:1 flex box derives height from width) and had to subtract `--stage-chrome` (192px
+  of tabs/filmstrip/hint), because capping the stage alone still left the block at 1015px vs 824px.
+- **"On mobile the light/dark menu is off screen"** — the nav was fine at every width from 300–900px.
+  The cause was the contact form: iOS Safari zooms on focusing a control under 16px and does not
+  zoom back, and the sticky nav's right edge then sits outside the visible area. Fixed with
+  `pointer-coarse:text-base`; desktop keeps 14px.
+- **Bubbles** — ended at one rule: **the picture is the wall, every width**. `.gallery-item` was
+  removed from `DEFAULT_EXCLUSIONS`; that deletion *is* the feature, since a card zone is a wall
+  around the picture. Bubbles behind content on phones, in front on desktop.
+
+### Things that cost time, recorded so they do not again
+
+- **A syntax error in `bubbles.js` does not fail the build.** `public/` is copied verbatim, so a
+  broken comment block killed the engine silently; only a page-error check caught it.
+- **Bubble coordinates are DOCUMENT-space** (`render(scrollY)` subtracts scroll). Comparing them to
+  raw viewport rects produced two wrong diagnoses in a row.
+- **A bounce necessarily overlaps.** The resolver stops the circle tangent to the rect, so up to a
+  full radius is inside at contact. The invariant is that the CENTRE never crosses.
+- **Measure card movement from the top-left, not the centre** — cards stop stretching to a uniform
+  height while one is open, so a height change reads as a phantom diagonal (`dx=372, dy=-8`).
+- **Visual-gate failures were 1px resampling, not layout.** Verified by measuring card/image/caption
+  rects against a rebuild of the previous commit before re-baselining 24 snapshots.
+- A second bubble flake exists (`Projects tabs @ 768px`, ~838px², twice in ~10 runs) and is recorded
+  in `TODO.md` — it weakens the "something about the Contact form at 1440px" framing.
+
+Suite: **131/131, twice**, before release. Test count went 90 → 131.
+
+---
+
 ## Entry 125 — 2026-08-06
 
 **Agent:** Opus 5 (wren, main)

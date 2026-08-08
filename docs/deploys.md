@@ -3,12 +3,6 @@
 How this site gets from a git push to `averyemberday.com`, what it costs, and the workflow
 currently in force.
 
-> ## ⏸ Deploy pause until 2026-08-07
->
-> **Work on `develop`. Do not push `portfoliowebsite`.** Netlify credits are exhausted and the user
-> has paused all updates to the live URL. Preview locally with `npm run dev`. Full details in
-> [Current workflow](#current-workflow-until-2026-08-07).
-
 ---
 
 ## The deploy loop
@@ -183,72 +177,44 @@ deploy only on a finished merge.
 
 Putting `[skip ci]` in a commit message skips that build entirely — the manual escape hatch.
 
-## Current workflow (until 2026-08-07)
+## Current workflow
 
-All updates to Netlify and the live URL are paused at the user's direction (LOGBOOK Entry 105).
+Normal service, as of 2026-08-08. Commit to `portfoliowebsite`; pushing it publishes to production.
+Every push is therefore production-affecting — **get the user's explicit go-ahead in the moment**.
 
-- **Commit and push to `develop`**, which was fast-forwarded to `portfoliowebsite` @ `41005ed`.
-- **Do not push `portfoliowebsite`.** `.githooks/pre-push` blocks it and **expires by itself on
-  2026-08-07** — nothing to uninstall. Deliberate override, on explicit user instruction only:
-  `git push --no-verify`.
-- **Preview locally**, with no Netlify involvement:
+Batch commits into one push: Netlify builds per *push*, not per commit, so 19 commits pushed
+together cost 15 credits and pushed separately cost 285.
 
-  ```bash
-  npm run dev     # → http://localhost:3000, hot reload
-  ```
-
-  The `launchtest` skill does the same and opens Chrome. For a production-accurate check,
-  `npm run build:next` then serve `out/` — note that headers and redirects come from `netlify.toml`
-  and are **not** applied to a local static export.
-
-`averyemberday.com` stays live on `da4b4be` throughout.
-
-### Pre-flight, verified 2026-08-06 01:54 -07:00
-
-Read live from the Netlify API and from git, so tomorrow's session does not re-derive it:
-
-| | |
-|---|---|
-| Live published deploy | `da4b4be`, published **2026-07-26** |
-| `origin/portfoliowebsite` | `41005ed` — **3 commits ahead of what is live**, pushed but never built |
-| `develop` | `63cfb27` |
-| Live → `develop` | **42 commits**, 197 files |
-| Merge type | **Fast-forward** — `portfoliowebsite` is an ancestor of `develop`, so the merge cannot conflict |
-| `GET /forms` | `[]` |
-| `GET /submissions` | `0` |
-| Rollback point | `da4b4be` (Deploys → *Publish deploy*, no git needed) |
-
-**Those 3 unbuilt commits are the credit-exhaustion behaviour in the wild** — they were pushed and
-Netlify returned `skipped: true` with no build log, which is exactly why the live site is 11 days
-behind the branch. They ship in the same deploy.
-
-### Lifting the pause on 2026-08-07
-
-Do this **on Aug 7 or later, not Aug 6** — credits reset at `2026-08-07T00:00:00-07:00`. Confirm
-first, rather than trusting the calendar:
+Preview before publishing, free, either way:
 
 ```bash
-curl -s -H "Authorization: Bearer $NETLIFY_AUTH_TOKEN" \
-  https://api.netlify.com/api/v1/aday6471/builds/status
+npm run dev     # → http://localhost:3000, hot reload
 ```
 
-1. `git checkout portfoliowebsite && git merge develop`
-2. `git push origin portfoliowebsite` — **once**. One production deploy, 15 credits, regardless of
-   how many commits accumulated.
-3. **Confirm the deploy actually built.** `state: "ready"`, not `skipped: true`. If it skipped, the
-   credits have not reset and nothing else in this list will work.
-4. **Register and test the contact form** — the whole reason the pause has been blocking anything.
-   The build parses `/contact/` and registers the form; then:
-   ```bash
-   curl -s -H "Authorization: Bearer $NETLIFY_AUTH_TOKEN" \
-     https://api.netlify.com/api/v1/sites/dd16abce-b0e7-433f-b694-19b427949485/forms
-   ```
-   should no longer be `[]`. Submit a real test message from `averyemberday.com/contact/`, confirm
-   it redirects to `/contact/thanks/`, confirm it appears under `/submissions`, and confirm the
-   notification email arrives. Only then is the "Your message has been sent" copy honest.
-5. Remove the pause banners from `AGENTS.md` and `docs/NOTES.md` Branch Policy, and the `[Aug 7]`
-   item from `TODO.md`.
-6. The `pre-push` guard needs no action — it is date-bounded and now expires on the correct day.
+For a shareable preview on real Netlify infrastructure, add the branch to `allowed_branches` (Site
+configuration → Build & deploy → Branches, or the API) and push it. Branch deploys and Deploy
+Previews cost **no credits**. That is how the Aug 7 release was staged and tested — including the
+contact form — before production changed. Remove the branch again afterwards so it stops rebuilding.
+
+## The 2026-07-26 → 08-07 deploy pause (closed)
+
+Netlify credits ran out on 2026-07-26 and all production deploys were paused until the cycle reset.
+Work happened on `develop`; a self-expiring `.githooks/pre-push` guard blocked `portfoliowebsite`.
+
+**Released 2026-08-08:** `develop` merged fast-forward into `portfoliowebsite` and pushed once —
+48 commits, deploy `bc3e278`, `state: ready` and not skipped, 15 credits. Live checks passed on
+averyemberday.com. `allowed_branches` was returned to `["portfoliowebsite"]`.
+
+Two things this episode established, both worth keeping:
+
+- **The billing period ends on the 7th, not the 6th.** Read from the API: `period_end_date` is
+  `2026-08-07T00:00:00.000-07:00`. Docs and the push guard said the 6th until 2026-08-03, which
+  would have unblocked pushes a full day before credits reset (Entry 115).
+- **A branch deploy CAN register a Netlify form.** This document previously said not to try, and
+  that was right at the time but for a reason that expired: `develop` was not in `allowed_branches`,
+  and the credit block is account-level so every deploy was skipped regardless of branch. Once
+  credits reset, a free branch deploy registered the form and captured a real test submission —
+  no production deploy required. See the section below.
 
 ## Operating the dashboard
 
@@ -259,34 +225,25 @@ curl -s -H "Authorization: Bearer $NETLIFY_AUTH_TOKEN" \
 - **Deploy Previews** post a preview URL on each PR automatically.
 - **Usage & billing** → credit balance, usage breakdown, and billing period.
 
-## Known open item — the contact form is not registered yet
+## The contact form is registered and proven
 
-**Detection is ON (enabled 2026-08-01); the form is still unregistered.** These are two different
-things, and conflating them cost a cycle. The dashboard toggle only tells Netlify to *look*.
-**Registration happens when Netlify's build-time parser reads deployed HTML containing the form** —
-and the published deploy (`da4b4be`) predates the toggle, so the live page has never been parsed
-with detection on.
+Confirmed 2026-08-08. `GET /sites/:id/forms` lists form `contact` (`6a76439ee6fac40008881b68`) with
+fields `bot-field` / `name` / `email` / `message` and a real submission recorded 2026-08-07 22:25Z.
+`/contact/thanks/` therefore tells the truth when it says "Your message has been sent."
 
-Current state, read from the API 2026-08-03:
+**Detection and registration are two different things**, and conflating them cost a cycle. The
+dashboard toggle (enabled 2026-08-01) only tells Netlify to *look*. Registration happens when the
+build-time parser reads deployed HTML containing the form — which is why the form stayed unregistered
+while the published deploy predated the toggle.
 
-| | |
-|---|---|
-| Form detection | **on** |
-| Email notification | configured — site-wide `submission_created` → `averyemberday@gmail.com`, id `6a6e6f4bbb69572bfbd54227` |
-| `GET /sites/:id/forms` | `[]` |
-| `GET /sites/:id/submissions` | `[]` |
-| Markup in `out/contact/index.html` | **correct and complete** |
+Notification email: site-wide `submission_created` → `averyemberday@gmail.com`, id
+`6a6e6f4bbb69572bfbd54227`. Delivery is the one part the API cannot confirm.
 
-The markup was verified in the built export, not the source:
-`name="contact"`, `data-netlify="true"`, `netlify-honeypot="bot-field"`, hidden `form-name` input,
-`method="POST"`, `action="/contact/thanks/"`, fields `name` / `email` / `message`. There is nothing
-to fix in code. It needs one deploy that actually builds.
+Check state from the CLI:
 
-**Until a test submission passes, `/contact/thanks/` tells visitors "Your message has been sent"
-without that being true.** That is the reason this matters more than its size suggests.
-
-**Do not try to shortcut it with a branch deploy** — see the two blockers under *Cost model*:
-`develop` is not in `allowed_branches`, and the credit block is account-wide. LOGBOOK Entry 115.
+```bash
+curl -s -H "Authorization: Bearer $NETLIFY_AUTH_TOKEN"   https://api.netlify.com/api/v1/sites/dd16abce-b0e7-433f-b694-19b427949485/forms
+```
 
 ## Nothing tests the site before it deploys
 

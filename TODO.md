@@ -110,34 +110,7 @@ of 20/month, so anything merged before the pause lifts ships in the same deploy.
 
 ## Awaiting a user step
 
-- **[Aug 7] Lift the deploy pause.** Merge `develop` → `portfoliowebsite` and push **once** (one
-  production deploy = 15 credits, not one per commit). Then test the contact form immediately, and
-  revert the pause banners in `AGENTS.md` / `docs/NOTES.md`. Full checklist:
-  [`docs/deploys.md`](docs/deploys.md#lifting-the-pause-on-2026-08-07); LOGBOOK Entry 105.
-  - **Aug 7, not Aug 6.** The credit cycle ends `2026-08-07T00:00:00-07:00`, confirmed against the
-    Netlify API. Every doc and the `pre-push` guard said Aug 6 until 2026-08-03 — the guard would
-    have expired a full day before credits reset (Entry 115).
-  - **The guard was also found inert and is now permanently fixed** (Entries 115–116).
-    `core.hooksPath` pointed at `.githooks`, which existed only on the architecture-map branch, so
-    `develop` ran with no hooks at all — no deploy guard, no Git LFS. That branch is merged and the
-    config points back at the tracked directory. A fresh clone still needs
-    `git config core.hooksPath .githooks` once.
-- **Contact form: detection ON, form still unregistered — needs a deploy that builds.** Registration
-  happens when Netlify's build-time parser reads deployed HTML; the published deploy (`da4b4be`)
-  predates the 2026-08-01 toggle. API confirms `forms: []` and `submissions: []`.
-  - **The markup is confirmed correct** in the built export — `name="contact"`,
-    `data-netlify="true"`, hidden `form-name`, `bot-field` honeypot, POST to `/contact/thanks/`.
-    Nothing to fix in code.
-  - **Do not try to shortcut it with a branch deploy.** `allowed_branches` is `["portfoliowebsite"]`
-    so `develop` produces no deploy at all, and the credit block is account-level so a branch deploy
-    is skipped identically. Both established 2026-08-03 (Entry 115).
-  - Until a test submission passes, `/contact/thanks/` promises "Your message has been sent" without
-    that being true.
-  - **The About copy now points at it, which raises the stakes** (2026-08-05, Entry 119): the closing
-    line invites readers to "reach out through my contact page or email below". The email half works
-    — the footer prints the address. The contact-page half silently drops messages until this is
-    registered, so step 4 of the lift-the-pause checklist is now the difference between a working
-    invitation and a lost enquiry, not merely an untested feature.
+_Nothing awaiting a user step. The deploy pause was lifted and the contact form verified on 2026-08-08 — see Done, below._
 
 ---
 
@@ -165,6 +138,22 @@ consolidated in [`docs/archives/plans.md`](docs/archives/plans.md).
 
 ### 2026-08
 
+- **Aug 8** — **RELEASED.** `develop` → `portfoliowebsite` merged fast-forward and pushed once:
+  48 commits, deploy `bc3e278`, `state: ready` and NOT skipped, 15 credits. Live checks on
+  averyemberday.com: all 5 pages 200, no page errors, Mistrust leads Projects, the slideshow block
+  is 823px against an 824px budget, the artwork is a padding-free bubble frame zone and the card is
+  not a zone, expand works.
+- **Aug 8** — **Contact form is REGISTERED and PROVEN.** Netlify lists form `contact`
+  (`6a76439ee6fac40008881b68`) with 1 real submission (2026-08-07 22:25Z). It registered from a
+  free BRANCH deploy, not a production one — `docs/deploys.md` had said that was impossible, which
+  was true only while credits were exhausted (an account-level block). `/contact/thanks/` is now
+  telling the truth. Notification email delivery is the user's to confirm.
+- **Aug 8** — Pre-launch work: gallery expand keeps its row and moves orthogonally, artwork tweens
+  as its own element with no shrink-then-grow, one-screen caps on gallery art and the Mistrust
+  viewer, iOS zoom fix on the contact form (the real cause of the off-screen theme toggle), bubbles
+  bounce off the picture at every width, Mistrust first on Projects. Suite 131/131, twice.
+- **Aug 8** — Branch deploys for `develop` were enabled to get a testable pre-launch URL, then
+  reverted after release: `allowed_branches` is `["portfoliowebsite"]` again.
 - **Aug 6** — **Seam-dedupe validation PASSED**, clearing the last `[~]` before release. A fresh
   context (which is the entire point — the merge was main-agent-only) reviewed the offset derivation
   and the set-strip tests: no off-by-one, guards throw rather than no-op, the ±96px search window is

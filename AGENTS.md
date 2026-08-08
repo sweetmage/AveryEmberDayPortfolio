@@ -18,29 +18,7 @@ This is the canonical agent-facing source of truth for the `portfoliowebsite` re
 
 ## Branch Policy
 
-> ### ⏸ DEPLOY PAUSE IN EFFECT UNTIL 2026-08-07
->
-> **Work on `develop`, not `portfoliowebsite`.** At the user's direction (2026-07-26), all updates
-> to Netlify and the live URL are paused until the credit cycle resets on **Aug 7, 2026** (LOGBOOK
-> Entry 104 — the team is out of credits and production deploys are already refused server-side).
-> The date was **Aug 6 everywhere until 2026-08-03**, when the Netlify API was read directly:
-> `period_end_date` is `2026-08-07T00:00:00.000-07:00`. A push on Aug 6 would have cleared the
-> expiring guard and still been credit-skipped. Corrected in the hook and every doc (Entry 115).
->
-> - Commit and push to **`develop`**. It was fast-forwarded to `portfoliowebsite` @ `41005ed`.
-> - **Do not push `portfoliowebsite`.** A `.githooks/pre-push` guard blocks it and **expires by
->   itself on 2026-08-07** — no cleanup needed. Override only on explicit user instruction with
->   `git push --no-verify`. (This guard moved from `.git/hooks/` to the tracked `.githooks/` on
->   2026-07-31 — see **Git hooks** below. Verified still blocking after the move.)
-> - Preview locally: `npm run dev` → <http://localhost:3000> (hot reload), or the `launchtest`
->   skill. No Netlify involvement.
-> - On/after Aug 7: merge `develop` → `portfoliowebsite` and push **once**. One production deploy,
->   15 credits, rather than one per commit.
->
-> Full details and the lift-the-pause checklist: [`docs/deploys.md`](docs/deploys.md).
-
-**All changes must be committed to the `portfoliowebsite` branch** *(suspended during the deploy
-pause above — use `develop`)*. Do not commit to `main` or `master` without explicit user direction.
+**All changes must be committed to the `portfoliowebsite` branch.** Do not commit to `main` or `master` without explicit user direction.
 
 **`portfoliowebsite` is the branch Netlify deploys from** (repointed 2026-07-12 via the Netlify API at the user's direction — production branch and allowed-branches both changed from `master` to `portfoliowebsite`, verified with a production deploy from the new branch; see `LOGBOOK.md` Entry 069). Pushing `portfoliowebsite` publishes to production. That makes every push to this branch a production-affecting action: get the user's explicit go-ahead in the moment before pushing, every time — this note is informational, not standing authorization. `master` is retained as a historical branch; do not merge into it without explicit user direction.
 
@@ -53,7 +31,7 @@ disabled them:
 
 | Hook | Contents |
 |---|---|
-| `pre-push` | **Deploy-pause guard** (blocks `portfoliowebsite` until 2026-08-07) + Git LFS |
+| `pre-push` | Git LFS (the deploy-pause guard was date-bounded and expired 2026-08-07) |
 | `post-commit` | shxdowmap architecture-doc staleness gate + Git LFS |
 | `post-checkout` | Git LFS |
 | `post-merge` | Git LFS |
@@ -228,7 +206,7 @@ In Node.js scripts, load with `import 'dotenv/config'` (or `require('dotenv').co
 ## Deploy
 
 > **Full reference: [`docs/deploys.md`](docs/deploys.md)** — deploy loop, site facts, credit model,
-> cost control, the current deploy pause, and dashboard operation. Read it before changing anything
+> cost control, staging a release on a free branch deploy, and dashboard operation. Read it before changing anything
 > deploy-related. The bullets below are the load-bearing gotchas only.
 
 - Netlify runs `next build` and publishes the static export (`publish = "out"`); the committed `style.css` only serves the undeployed legacy root site

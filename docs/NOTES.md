@@ -2,13 +2,6 @@
 
 ## Branch Policy
 
-> **⏸ Deploy pause until 2026-08-07 — work on `develop`.** Netlify credits are exhausted and the
-> user has paused all updates to the live URL. Push `develop`, never `portfoliowebsite` (a
-> self-expiring `pre-push` hook enforces it). Preview with `npm run dev` at
-> <http://localhost:3000>. Merge `develop` → `portfoliowebsite` in one push on/after Aug 7.
-> Full reference: [`docs/deploys.md`](deploys.md). See also `AGENTS.md` Branch Policy and
-> `LOGBOOK.md` Entries 104/105.
-
 All changes for this portfolio website must be committed to the **`portfoliowebsite`** branch. Do not commit to `main`/`master` or any other branch without explicit user direction.
 
 **Live deploy branch is `portfoliowebsite`** (repointed from `master` 2026-07-12 via the Netlify API — see `AGENTS.md` Branch Policy and `LOGBOOK.md` Entry 069). Pushing `portfoliowebsite` publishes to production, so every push needs the user's explicit go-ahead in the moment.
