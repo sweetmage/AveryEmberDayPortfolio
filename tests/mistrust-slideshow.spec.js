@@ -242,3 +242,50 @@ test.describe('mistrust stage height budget', () => {
     expect(Math.round(stageWidth)).toBe(860);
   });
 });
+
+/* Mistrust leads the Projects page, and the whole viewer fits one screen.
+   User calls, 2026-08-07. */
+test.describe('mistrust leads the projects page', () => {
+  test('it is the first tab and the default panel', async ({ page }) => {
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await page.goto(`${BASE_URL}/projects/`, { waitUntil: 'networkidle' });
+
+    const firstTab = await page.locator('.project-tab').first().textContent();
+    expect(firstTab.trim()).toBe('A History of Mistrust');
+
+    // Landing on /projects/ with no hash must open it, not merely list it first.
+    await expect(page.locator('#panel-history-of-mistrust')).toBeVisible();
+    await expect(page.locator('.mistrust-stage')).toBeVisible();
+
+    /* DOM order has to follow the tab order too. A tabpanel that precedes its
+       own tab in the document reverses the reading and tab-through order for
+       anyone not using a mouse, while looking perfectly correct on screen. */
+    const panelsInOrder = await page.$$eval('[role="tabpanel"]', (els) => els.map((e) => e.id));
+    expect(panelsInOrder[0]).toBe('panel-history-of-mistrust');
+  });
+
+  /* The STAGE is not the whole viewer. Capping only the stage still left the
+     block at 1015px against an 824px budget, because the set tabs, filmstrip
+     and swipe hint add ~191px on top — hence `--stage-chrome`. */
+  for (const vp of [
+    { width: 2560, height: 1440 },
+    { width: 1920, height: 1080 },
+    { width: 1440, height: 900 },
+    { width: 1440, height: 620 },
+    { width: 390, height: 844 },
+  ]) {
+    test(`the whole slideshow fits one screen @ ${vp.width}x${vp.height}`, async ({ page }) => {
+      await page.setViewportSize(vp);
+      await gotoMistrust(page);
+
+      const { nav, block } = await page.evaluate(() => ({
+        nav: document.querySelector('.brand-nav').getBoundingClientRect().height,
+        block: document.querySelector('.mistrust-slideshow').getBoundingClientRect().height,
+      }));
+
+      expect(block).toBeGreaterThan(0);
+      expect(block, `slideshow ${Math.round(block)}px vs ${Math.round(vp.height - nav)}px budget`)
+        .toBeLessThanOrEqual(vp.height - nav + 1);
+    });
+  }
+});

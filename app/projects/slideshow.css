@@ -60,10 +60,17 @@
      if that ever becomes responsive, this has to follow it. */
   --stage-side-allowance: 104px;
 
+  /* The set tabs, the filmstrip and the swipe hint, with their margins. The
+     stage is not the whole viewer, and capping only the stage left the BLOCK
+     at 1015px against an 824px budget — the thing that has to fit on one
+     screen is what the user sees, not the frame alone. Measured 2026-08-07:
+     54 + 72 + 26 plus margins = 191px. */
+  --stage-chrome: 192px;
+
   /* One screen, under the nav — the same rule the gallery art follows.
      `dvh` not `vh`: on mobile `100vh` counts browser chrome that hides on
      scroll. The nav is sticky and overlays the page, so it comes off too. */
-  --stage-cap: calc(100dvh - var(--brand-nav-height));
+  --stage-cap: calc(100dvh - var(--brand-nav-height) - var(--stage-chrome));
 
   display: flex;
   align-items: stretch;

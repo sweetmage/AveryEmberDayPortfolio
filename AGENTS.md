@@ -326,10 +326,56 @@ what the user sees. Proven by injected regression on 2026-08-07 — disabling th
 > height without moving. That shifts its centre and reads as a phantom diagonal — it produced a
 > `dx=372, dy=-8` failure against a perfectly orthogonal layout while these specs were being written.
 
+### Bubble zones: one set of surfaces, two treatments, split at 768px
+
+**User calls, 2026-08-07.** `FRAME_ZONE_SELECTOR` in `scripts/bubbles.js` is `.gallery-item,
+.mistrust-stage, img`. Those surfaces no longer take the standard 24px-padded zone:
+
+| | |
+|---|---|
+| **Below 768px** | A centred box at **60%** of the element **+ 12px buffer**. The outer band opens up so bubbles can drift across the card and behind the picture; only the core is untouchable. Paired with `z-index: -1` on `.brand-bubbles-global` in the same media query, so they pass *behind* content. |
+| **768px and up** | The element's **exact rect, no padding** — the rebound happens against the frame the user can see, not an invisible boundary 24px outside it. |
+
+Everything else — nav, footer, headings, body copy, the Projects rail, the Contact form — keeps its
+full padded zone at every width.
+
+- **The buffer on the mobile core is load-bearing.** The resolver reacts to overlap, so a zone with
+  no padding gets grazed for a frame or two before the bubble is pushed back: measured **41 contacts
+  over 40 samples** at zero buffer. Padding is exactly how the full-size zones achieve a true zero.
+- **Zones are deduped BY ELEMENT.** A gallery image matches both `img` and `.gallery-item-art`, and
+  the per-selector loop used to push a rect for each. Harmless while every zone was the full rect;
+  fatal once one element can yield two *different* rects, because the un-shrunk pass silently undoes
+  the feature.
+- **Frame zones eject in one step** rather than the 8px/frame glide. The glide is right for a padded
+  zone (it plays out inside the buffer, where nothing is drawn); on a frame zone it plays out on top
+  of the artwork.
+
+> **Testing bubbles: two traps, both hit on 2026-08-07.**
+> **Bubble coordinates are DOCUMENT-space** — `render(scrollY)` subtracts the scroll on the way out.
+> Comparing `bubble.x/y` against raw `getBoundingClientRect()` values is nonsense the moment the page
+> is scrolled; lift the rects by `window.scrollY` first. A bubble reported at `y: 1836` in a 900px
+> viewport is the tell.
+> **Assert the CENTRE, not the overlap area.** A bounce necessarily overlaps: the resolver stops the
+> circle tangent to the rect, so up to a full radius sits inside the frame's bounding box at contact
+> — ~24px against radii of ~27px. The invariant that means "bounced" is that the centre never crosses
+> the edge. Measuring DOM rects also drags in the `brand-micro-float` transform and `_relocating`
+> bubbles the resolver deliberately skips.
+
+### Mistrust leads the Projects page
+
+**User call, 2026-08-07.** `TABS` order, the `useState` default, **and the DOM order of the panels**
+must all agree in `ProjectTabs.tsx`. A tabpanel that precedes its own tab in the document reverses
+the reading and tab-through order for anyone not using a mouse while looking perfectly correct on
+screen. `tests/smoke-next.spec.js` asserts the default, so changing it again means changing that too.
+
 ### The Mistrust stage follows the same one-screen rule
 
 **User call, 2026-08-07.** `.mistrust-stage` must not exceed the viewport minus the nav, exactly as
 the gallery art does.
+
+**The whole viewer fits, not just the stage.** Capping the stage alone still left the block at
+1015px against an 824px budget, because the set tabs, filmstrip and swipe hint add ~191px on top —
+that is what `--stage-chrome` (192px) subtracts. If those controls change height, it has to follow.
 
 The cap is expressed as a **`max-width` on `.mistrust-stage-row`**, not a `max-height` on the stage.
 The stage is `aspect-ratio: 1 / 1` and `flex: 1`, so its height *is* the row width minus the nav

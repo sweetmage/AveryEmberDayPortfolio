@@ -32,9 +32,18 @@ test.describe('Next.js app smoke', () => {
     // Scope to the page-level tablist: the Mistrust panel now contains a second
     // tablist (the Set 1/2/3 switcher), so a bare aria-selected query matches two.
     const projectTabs = page.getByRole('tablist', { name: 'Projects' });
+    // Mistrust leads as of 2026-08-07 (user call). Ordering and default are
+    // asserted properly in tests/mistrust-slideshow.spec.js; this is the smoke
+    // path, which only needs the switch to work in both directions.
+    await expect(projectTabs.locator('button[aria-selected="true"]')).toContainText(
+      'History of Mistrust'
+    );
+
+    // Switch to the brand tab
+    await page.click('button[aria-controls="panel-brand"]');
     await expect(projectTabs.locator('button[aria-selected="true"]')).toContainText('Brand');
 
-    // Switch to mistrust tab
+    // Back to mistrust
     await page.click('button[aria-controls="panel-history-of-mistrust"]');
     await expect(projectTabs.locator('button[aria-selected="true"]')).toContainText(
       'History of Mistrust'
@@ -46,9 +55,6 @@ test.describe('Next.js app smoke', () => {
     await expect(page.locator('.lightbox-overlay')).toHaveCount(0);
     await expect(page.locator('.mistrust-stage')).toBeVisible();
 
-    // Switch back to brand tab
-    await page.click('button[aria-controls="panel-brand"]');
-    await expect(projectTabs.locator('button[aria-selected="true"]')).toContainText('Brand');
   });
 
   test('gallery page loads without errors', async ({ page }) => {

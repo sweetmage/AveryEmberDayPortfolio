@@ -1829,6 +1829,23 @@ html.dark .brand-glow-text {
   pointer-events: none;
   z-index: 0;
 }
+
+/* On a phone the bubbles move BEHIND the content instead of in front of it.
+   That is what makes the roomier zones in `bubbles.js` look right rather than
+   messy: below 768px the artwork surfaces keep only a centred core as a no-go
+   box, so bubbles now travel across ground they used to be kept off. In front,
+   that would drag them over the photos; behind, a bubble reads as a soft shape
+   through the card's `rgba(128,128,128,0.12)` fill and disappears under the
+   opaque artwork.
+
+   -1, not -2: `.brand-page-bg` holds -2, and the bubbles belong above the page
+   glow and below the content. Negative layers are known to paint on this page
+   because that background already does. User call, 2026-08-07. */
+@media (max-width: 767.98px) {
+  .brand-bubbles-global {
+    z-index: -1;
+  }
+}
 .brand-bubbles-hero {
   position: absolute;
   inset: 0;

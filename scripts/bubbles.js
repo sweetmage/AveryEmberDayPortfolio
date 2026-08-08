@@ -27,6 +27,36 @@
   const MAX_SPEED       = 3.0;  // slower top speed for floatier feel
   const DRIFT_KICK      = 0.12;
   const ZONE_PADDING    = 24;   // px buffer around exclusion zones
+
+  /* ── Roomier bubbles on narrow screens ──────────────────────────
+     On a phone the gallery is one column: the card is 342px of a 390px
+     viewport, so the only space left is a 24px channel — narrower than most of
+     the 10-28px bubbles, which is why they looked stuck. Below this width the
+     artwork surfaces stop being no-go rectangles and keep only a centred core,
+     so bubbles can drift through the outer band and behind the picture.
+
+     Paired with a `z-index: -1` on `.brand-bubbles-global` in the same media
+     query: the card fill is `rgba(128,128,128,0.12)`, so a bubble behind it
+     reads as a soft shape through the frame and is hidden entirely behind the
+     opaque artwork. Without the z-index change they would pass in FRONT of the
+     photos, which is not the ask.
+
+     User call, 2026-08-07: gallery cards plus other images only.
+
+     On desktop the same surfaces get a DIFFERENT treatment: their zone is the
+     element's exact rect, with no padding at all, so a bubble rebounds off the
+     visible frame edge instead of an invisible boundary 24px outside it. User
+     call, 2026-08-07: "the bubbles should bounce off the image frame itself."
+     Contact means a graze of a pixel or two before the resolver pushes back —
+     that IS the bounce, and it is why these surfaces cannot be asserted at a
+     hard zero overlap the way the padded zones are.
+
+     Everything else — nav, footer, headings, body copy, the Projects rail, the
+     Contact form — keeps its full ZONE_PADDING zone at every width. */
+  const FRAME_ZONE_SELECTOR   = '.gallery-item, .mistrust-stage, img';
+  const MOBILE_ZONE_MAX_WIDTH = 768; // matches the `md` breakpoint and the grid's own column change
+  const MOBILE_ZONE_SCALE     = 0.6; // centred box, 60% of the element's width and height
+  const MOBILE_ZONE_PADDING   = 12;  // buffer around that core, so it is never grazed
   const BLOB_ZONE_PUSH  = 0.06; // hero-blob steering force away from hero content
   const ZONE_THROTTLE   = 250;  // ms between rect queries
   const SCROLL_STIR     = 0.02; // velocity imparted per px of scroll delta
@@ -197,10 +227,58 @@
       this._schedule(); // keep the periodic refresh alive (layout shifts, lazy images, font reflow)
       this.version++;
       this.rects = [];
+
+      // Narrow screens only. Read per rebuild rather than cached, so a rotation
+      // or a resize past the breakpoint takes effect on the next refresh.
+      const shrink = window.innerWidth < MOBILE_ZONE_MAX_WIDTH;
+
+      /* Deduped BY ELEMENT, which the per-selector loop below used not to be.
+         It was harmless while every zone was the element's full rect — the
+         duplicates were identical. It stops being harmless the moment one
+         element can produce two DIFFERENT rects: a gallery image matches both
+         `img` and `.gallery-item-art`, and without this the full-size `img`
+         pass would put the un-shrunk rect straight back and silently undo the
+         whole feature. */
+      const seen = new Set();
+
       for (const sel of this.selectors) {
         const els = document.querySelectorAll(sel);
         for (const el of els) {
+          if (seen.has(el)) continue;
+          seen.add(el);
+
           const r = el.getBoundingClientRect();
+
+          if (!shrink && el.matches(FRAME_ZONE_SELECTOR)) {
+            // Desktop: the visible edge IS the wall. No padding, so the rebound
+            // happens against the frame the user can see.
+            this.rects.push({ left: r.left, top: r.top, right: r.right, bottom: r.bottom, frame: true });
+            continue;
+          }
+
+          if (shrink && el.matches(FRAME_ZONE_SELECTOR)) {
+            /* A centred box at MOBILE_ZONE_SCALE of the element, plus a small
+               buffer. The buffer is not decoration: the resolver reacts to
+               overlap, so a zone with no padding gets GRAZED for a frame or two
+               before the bubble is pushed back out — measured at 41 contacts
+               over 40 samples with the buffer at zero. Padding is exactly how
+               the full-size zones achieve a true zero against the element they
+               protect, and the core needs the same treatment to be genuinely
+               untouchable. Half the standard padding, since the whole point
+               here is to give ground back. */
+            const cx = (r.left + r.right) / 2;
+            const cy = (r.top + r.bottom) / 2;
+            const halfW = (r.width * MOBILE_ZONE_SCALE) / 2 + MOBILE_ZONE_PADDING;
+            const halfH = (r.height * MOBILE_ZONE_SCALE) / 2 + MOBILE_ZONE_PADDING;
+            this.rects.push({
+              left:   cx - halfW,
+              top:    cy - halfH,
+              right:  cx + halfW,
+              bottom: cy + halfH
+            });
+            continue;
+          }
+
           this.rects.push({
             left:   r.left   - ZONE_PADDING,
             top:    r.top    - ZONE_PADDING,
@@ -461,7 +539,16 @@
             const dt = b.y - z.top;
             const db = z.bottom - b.y;
             const m = Math.min(dl, dr, dt, db);
-            const ESCAPE_STEP = 8; // px/frame toward freedom
+            /* Frame zones eject in ONE step instead of gliding.
+               The 8px/frame glide exists so a bubble that a scrolling card
+               closes over escapes as motion rather than a pop, and that is
+               right for a padded zone: the whole glide happens inside the 24px
+               buffer, where nothing is drawn. A frame zone has no buffer — its
+               wall IS the visible edge — so the same glide plays out ON TOP OF
+               the artwork, and the bubble sits up to 16px inside the card while
+               it crawls out (measured 2026-08-07). Ejecting to the near edge
+               immediately is what makes contact read as a bounce. */
+            const ESCAPE_STEP = z.frame ? m + b.radius : 8; // px/frame toward freedom
             if (m === dl)      { b.x -= ESCAPE_STEP; b.vx = -Math.max(Math.abs(b.vx), MIN_SPEED); }
             else if (m === dr) { b.x += ESCAPE_STEP; b.vx =  Math.max(Math.abs(b.vx), MIN_SPEED); }
             else if (m === dt) { b.y -= ESCAPE_STEP; b.vy = -Math.max(Math.abs(b.vy), MIN_SPEED); }

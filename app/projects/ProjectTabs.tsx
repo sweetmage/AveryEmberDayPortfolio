@@ -8,9 +8,14 @@ import PageHeader from '../PageHeader';
 /* `id` is the URL hash and the aria-controls target — deliberately unchanged
    while the labels grew to the full project titles, so existing deep links
    like /projects/#history-of-mistrust keep working. */
+/* Mistrust leads (user call, 2026-08-07). Three things have to agree or the
+   page contradicts itself: this array (tab order), the `useState` default
+   below, and the DOM order of the panels — a tabpanel that precedes its own
+   tab in the DOM reverses the reading and tab-through order for anyone not
+   using a mouse. */
 const TABS = [
-  { id: 'brand', label: 'Avery Ember Day Brand' },
   { id: 'history-of-mistrust', label: 'A History of Mistrust' },
+  { id: 'brand', label: 'Avery Ember Day Brand' },
 ] as const;
 
 type TabId = (typeof TABS)[number]['id'];
@@ -30,7 +35,7 @@ function isValidHash(hash: string): hash is TabId {
    conditionally as well as setting `hidden` — that is what actually unmounts the
    lightbox and runs its scroll-lock and focus-restore cleanup. */
 export default function ProjectTabs() {
-  const [activeTab, setActiveTab] = useState<TabId>('brand');
+  const [activeTab, setActiveTab] = useState<TabId>('history-of-mistrust');
   const [isRail, setIsRail] = useState(false);
   const tablistRef = useRef<HTMLDivElement>(null);
   const initialized = useRef(false);
@@ -147,15 +152,7 @@ export default function ProjectTabs() {
       </div>
 
       <div className="lg:min-w-0 lg:flex-1 lg:pt-8">
-        <div
-          id="panel-brand"
-          role="tabpanel"
-          aria-labelledby="tab-brand"
-          hidden={activeTab !== 'brand'}
-        >
-          {activeTab === 'brand' && <BrandProject />}
-        </div>
-
+        {/* Panel order follows TABS, so DOM order matches the visible order. */}
         <div
           id="panel-history-of-mistrust"
           role="tabpanel"
@@ -163,6 +160,15 @@ export default function ProjectTabs() {
           hidden={activeTab !== 'history-of-mistrust'}
         >
           {activeTab === 'history-of-mistrust' && <MistrustProject />}
+        </div>
+
+        <div
+          id="panel-brand"
+          role="tabpanel"
+          aria-labelledby="tab-brand"
+          hidden={activeTab !== 'brand'}
+        >
+          {activeTab === 'brand' && <BrandProject />}
         </div>
       </div>
       </div>
