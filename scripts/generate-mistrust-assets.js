@@ -6,6 +6,15 @@
  * and the `public/` mirror, because `public/` is what the Next export serves and `images/` is
  * what the legacy root site links.
  *
+ * **The two trees are not symmetric, on purpose.** `images/` holds sources AND outputs;
+ * `public/` holds outputs ONLY. Everything under `public/` is copied verbatim into the export
+ * and published, so a source PNG left there is 6 MB nobody ever requests — which is exactly what
+ * happened until 2026-08-09 (Entry 129), when 30 slide PNGs, the 3 MB cover, an unused moodboard
+ * and `slides.md` were removed from the mirror. This script already reads every source from
+ * `ROOT/REL` (the `images/` tree) and never from `public/`, so that deletion cannot break
+ * generation. **Do not add source files to `public/`, and do not "restore symmetry" between the
+ * trees.**
+ *
  * The three wide `sets/set-N.webp` strips take their PIXELS from the individual slide PNGs and
  * their GEOMETRY from the `sets/A History of Mistrust Set N.png` Figma exports. That split is
  * deliberate, and both halves of it were learned the hard way:
