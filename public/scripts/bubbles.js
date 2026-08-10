@@ -27,6 +27,12 @@
   const MAX_SPEED       = 3.0;  // slower top speed for floatier feel
   const DRIFT_KICK      = 0.12;
   const ZONE_PADDING    = 24;   // px buffer around exclusion zones
+  /* Frames a bubble may sit inside a zone WITHOUT getting any closer to the
+     edge before it is treated as wedged and respawned. Not an elapsed-time
+     budget: the deliberate escape glide makes progress every single frame, so
+     it never reaches 1 here however long it runs. Only a genuine deadlock —
+     two overlapping zones with no legal position between them — stalls. */
+  const NO_PROGRESS_FRAMES = 20;
 
   /* ── The picture is the wall ────────────────────────────────────
      User call, 2026-08-08: bubbles bounce off THE IMAGE, at every screen size.
@@ -535,19 +541,55 @@
             else               { b.y += ESCAPE_STEP; b.vy =  Math.max(Math.abs(b.vy), MIN_SPEED); }
           }
         }
-        // Deadlock rescue: overlapping zones can squeeze a bubble so each
-        // zone's escape push cancels the other's. If a bubble stays trapped
-        // for ~1.5s, fade it out and respawn it in genuinely free space.
-        const trapped = zones.some(z =>
-          b.x > z.left && b.x < z.right && b.y > z.top && b.y < z.bottom);
-        if (trapped) {
-          b.stuckFrames = (b.stuckFrames || 0) + 1;
-          if (b.stuckFrames > 90) {
+        /* Deadlock rescue, measured by PROGRESS rather than by elapsed time.
+           Overlapping zones can squeeze a bubble so each zone's escape push
+           cancels the other's, and the zones on this site really do overlap:
+           at 1440px the Contact intro paragraph occupies y 201..303 and the
+           form's padded zone starts at y 295, so a bubble in that 8px band
+           has NO legal position. The form pushes it up, the paragraph pushes
+           it back down, and it oscillates about a pixel on the form's top
+           edge — at full opacity, with the resolver dutifully "fixing" it
+           every frame.
+
+           The old test was `centre inside a zone` for 90 frames. Both halves
+           were wrong. Ninety frames is 1.5 SECONDS of a bubble parked on the
+           furniture these zones exist to protect, which is exactly the
+           `bubbles-exclusion` flake (measured 2026-08-09: 68 consecutive
+           frames of overlap, opacity 1, `_relocating` false — so it was never
+           the relocation path TODO.md suspected). And a duration threshold
+           cannot tell a wedge from the deliberate 8px/frame glide, which is
+           healthy and can legitimately run 15+ frames when a scrolling card
+           closes over a bubble.
+
+           Progress separates them cleanly. A glide reduces its penetration
+           depth by ESCAPE_STEP every frame and keeps setting a new best; a
+           wedge oscillates and never beats its own record. So rescue on
+           "hasn't got any closer to freedom in NO_PROGRESS_FRAMES", which a
+           real glide can never trigger no matter how long it takes. */
+        let penetration = 0;
+        for (const z of zones) {
+          const cx = Math.max(z.left, Math.min(b.x, z.right));
+          const cy = Math.max(z.top,  Math.min(b.y, z.bottom));
+          penetration = Math.max(penetration, b.radius - Math.hypot(b.x - cx, b.y - cy));
+        }
+        if (penetration > 0) {
+          // Compare against the best (smallest) depth of THIS episode, not the
+          // previous frame's: a bubble bouncing +1/-1 px would otherwise reset
+          // the counter on every other frame and never be rescued.
+          if (b._bestPenetration === undefined || penetration < b._bestPenetration - 0.5) {
+            b._bestPenetration = penetration;
+            b.stuckFrames = 0;
+          } else {
+            b.stuckFrames = (b.stuckFrames || 0) + 1;
+          }
+          if (b.stuckFrames > NO_PROGRESS_FRAMES) {
             this._relocate(b, zones);
             b.stuckFrames = 0;
+            b._bestPenetration = undefined;
           }
         } else {
           b.stuckFrames = 0;
+          b._bestPenetration = undefined;
         }
       }
     }
@@ -562,21 +604,33 @@
           x > z.left - b.radius && x < z.right + b.radius &&
           y > z.top - b.radius && y < z.bottom + b.radius);
         if (clear) {
-          b._relocating = true;
+          /* Move FIRST, then fade in at the destination.
+             The original order faded out over 250ms and teleported afterwards,
+             which meant a quarter second of a bubble sitting at the position we
+             had already judged illegal, at descending but fully visible opacity,
+             with `_relocating` telling the resolver to leave it alone. Fading in
+             somewhere legal costs the same 250ms and covers nothing. The bubble
+             still never appears to jump, because it is invisible while it moves. */
           const el = b.el;
-          el.style.transition = 'opacity 250ms ease';
+          b._relocating = true;
+          el.style.transition = 'none';
           el.style.opacity = '0';
-          setTimeout(() => {
-            b.x = x;
-            b.y = y;
-            b.vx = (Math.random() - 0.5) * 1.5;
-            b.vy = (Math.random() - 0.5) * 1.5;
+          b.x = x;
+          b.y = y;
+          b.vx = (Math.random() - 0.5) * 1.5;
+          b.vy = (Math.random() - 0.5) * 1.5;
+          // No explicit render here — `step()` renders every bubble a few lines
+          // later in this same frame, and it is the only thing that knows this
+          // layer's scroll convention. It is opacity 0 until then regardless.
+          void el.offsetWidth; // flush, or re-enabling the transition backdates the fade
+          requestAnimationFrame(() => {
+            // Legal position again, so hand it straight back to the resolver —
+            // it must not be skipped for the length of the fade-in.
+            b._relocating = false;
+            el.style.transition = 'opacity 250ms ease';
             el.style.opacity = '';
-            setTimeout(() => {
-              el.style.transition = '';
-              b._relocating = false;
-            }, 300);
-          }, 260);
+            setTimeout(() => { el.style.transition = ''; }, 300);
+          });
           return;
         }
       }

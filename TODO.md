@@ -16,9 +16,10 @@
 
 ## Open work
 
-Everything genuinely pending. Nothing here except the contact-form test is blocked by the deploy
-pause — and there is a reason to land work *before* Aug 7: one production deploy costs 15 credits out
-of 20/month, so anything merged before the pause lifts ships in the same deploy.
+Everything genuinely pending. **The deploy pause is over** (lifted 2026-08-07; this paragraph still
+described it as upcoming until 2026-08-09), so nothing below is blocked on it. The standing reason to
+batch work still holds: one production deploy costs 15 credits out of 20/month, so everything merged
+before a push ships in the same deploy.
 
 ### Ready to build now
 
@@ -42,28 +43,6 @@ of 20/month, so anything merged before the pause lifts ships in the same deploy.
       them makes both lines span the full 1400px container, which on a two-sentence paragraph is a real
       visual change — hence a user call rather than a silent fix.
 
-- [ ] **The bubble flake survived Entry 115's fix, and it is now the only thing keeping the suite
-      from being reliably green.** `bubbles-exclusion › Contact form @ 1440px`, ~1950px² overlap
-      against an expected 0. Measured 2026-08-05 (Entry 118): **2 failures in 4 full runs** with the
-      new gallery spec present, **1 in 3** with it excluded, **0 in 1** standalone (10/10). So it is
-      not caused by the gallery work, and the sample is too small to say that work worsens it.
-      **Start from the recorded hypothesis, not from scratch:** the overlap is a *whole* bubble, not a
-      graze, which fits the relocation path Entry 115 named as the next suspect — the deadlock rescue
-      teleports a trapped bubble and holds `_relocating` for ~560ms while it fades back in, and
-      `resolveZoneCollisions` skips it that whole time. If the destination is inside a zone, the bubble
-      fades to full opacity *inside the form*, past the `opacity <= 0.05` skip and deliberately not
-      being pushed out.
-      **Do not raise a tolerance** — twice now the cause was elsewhere (Entries 090, 115), and Entry
-      115 produced two wrong fixes by theorising instead of reading `bubbles.js`. Remember the engine
-      is duplicated: `scripts/bubbles.js` and `public/scripts/bubbles.js`.
-
-      **A SECOND case exists, and it is not the recorded one: `bubbles-exclusion › Projects tabs @
-      768px`.** Seen twice in ~10 full runs on 2026-08-07, ~838px² overlap against an expected 0,
-      while working on the gallery — a page it does not touch. Both times it passed on re-run, and
-      the bubble spec passed 2/2 standalone immediately after. So the flake is not specific to the
-      Contact form or to 1440px, which weakens "something about that one form/width" and strengthens
-      the relocation hypothesis above: any zone, any width, whenever a rescued bubble happens to fade
-      in inside one. Worth checking both cases against the same fix rather than chasing them apart.
 - [ ] **Gallery filter entrance stagger (Track B leftover, deliberate).** The concept's §4 asks for
       entering cards to fade up from `0.96` staggered ~25ms by grid position. The *movement* tween
       shipped in Entry 118 and is the part that section calls the one that makes filtering feel
@@ -155,6 +134,15 @@ consolidated in [`docs/archives/plans.md`](docs/archives/plans.md).
 
 ### 2026-08
 
+- **Aug 9** — **The `bubbles-exclusion` flake is fixed — the suite is genuinely reliable now.** Cause
+  was never the relocation path this file had recorded as the hypothesis: frame-by-frame
+  instrumentation caught 68 consecutive overlap frames with `_relocating` **false** at opacity **1**.
+  Exclusion zones overlap each other (the Contact intro's zone ends at `y 303`, the form's padded zone
+  starts at `y 295`), and a bubble in that band has no legal position, so it oscillates on the form's
+  edge until the deadlock rescue's **90-frame** timer fires — 1.5s of visible coverage. The rescue now
+  keys on lack of progress (20 frames) instead of elapsed time, which a real escape glide can never
+  trigger, and `_relocate` teleports before fading in rather than fading out at the illegal position.
+  Probe: 68 overlap frames → **0 in 3600**, on the exact failing case. Entry 131.
 - **Aug 9** — **The Aug 9 work is committed** (`a2e4300`, `0522f32`, plus the docs commit) — Entries
   127–129 had all been left in the working tree with HEAD still on Aug 8. Reviewed against the tree
   rather than the entries; suite green twice at 151/151; the WebKit gate proven by injected

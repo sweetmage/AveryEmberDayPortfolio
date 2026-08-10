@@ -114,11 +114,30 @@ Do NOT use these in `bash` tool calls (they are PowerShell-specific and often fa
 > open-state row sizing (Entry 122). The gallery's art cap, row sizing and expanded span all live in
 > `brand.css` for this reason. If a rule looks correct and does nothing, check for a utility first.
 
-> **The suite is not reliably green, and that is a known open defect, not your change.**
-> `bubbles-exclusion › Contact form @ 1440px` fails roughly 1 run in 3 with a ~1950px² overlap. Measured
-> across 7 full runs on 2026-08-05 (Entry 118) and reproducible with unrelated specs excluded. If you
-> hit it, check `TODO.md` for the recorded hypothesis before investigating — and **do not raise a
-> tolerance to make it pass.** Twice the cause was somewhere else entirely (Entries 090, 115).
+> **The `bubbles-exclusion` flake is FIXED (2026-08-09, Entry 131) — exclusion zones on this site
+> overlap each other, and a bubble caught in the overlap has no legal position.** At 1440px the
+> Contact intro paragraph's zone is `y 201..303` and the form's padded zone starts at `y 295`. A
+> bubble in that 8px band is pushed up by the form and back down by the paragraph, so it oscillates
+> about a pixel on the form's top edge, at full opacity, until the deadlock rescue fires. The rescue
+> was keyed to *90 frames* — **1.5 seconds of a bubble parked on the furniture the zones exist to
+> protect**, which is precisely what the spec was catching.
+>
+> Two things changed in `scripts/bubbles.js`. The rescue now triggers on **lack of progress**
+> (`NO_PROGRESS_FRAMES`, 20) rather than elapsed time, because a duration threshold cannot tell a
+> wedge from the deliberate 8px/frame escape glide — the glide reduces its penetration depth every
+> frame and can legitimately run 15+ frames, a wedge never improves on its own record. And
+> `_relocate` now **teleports first and fades in at the destination**; it used to fade out over 250ms
+> at the position it had already judged illegal.
+>
+> **The recorded hypothesis in `TODO.md` was wrong, and it is worth knowing why.** It blamed the
+> relocation path — a rescued bubble fading back in inside a zone. Frame-by-frame instrumentation
+> found 68 consecutive overlap frames with `_relocating` **false** and opacity **1**: the bubble was
+> never relocating, it was stuck *waiting* to be. Two sessions theorised at this defect and produced
+> three wrong fixes between them (Entries 090, 115). The thing that actually solved it was
+> instrumenting the engine and reading which zones contained the bubble.
+>
+> **If a bubble assertion ever goes red again: measure before theorising, and do not raise a
+> tolerance.** Three times now the cause has been somewhere other than the obvious suspect. Twice the cause was somewhere else entirely (Entries 090, 115).
 
 > **The two motion-enabled specs are the only coverage for anything that moves.** `bubbles-exclusion.spec.js`
 > and `gallery-expand.spec.js` both run `test.describe.configure({ mode: 'serial' })`, and both must keep
@@ -352,6 +371,12 @@ full padded zone at every width.
   a 308px picture, so the open band is ~17px a side — narrower than a 28px bubble, which cannot pass
   without overlapping. Same impossibility as the Contact form at 768px. The centre-never-crosses spec
   therefore runs at 768px and 1440px only, where bubbles paint in front and a breach would be visible.
+
+> **Zones on this site OVERLAP each other, and the physics has to survive it.** The Contact intro
+> paragraph and the Contact form overlap by 8px at 1440px; the Projects page registers 81 zones at
+> 768px. Any change to zone geometry, `ZONE_PADDING`, or the escape logic has to hold up where two
+> zones intersect, because there the "push the bubble to the nearest free edge" instinct has no free
+> edge to push to. That is what `NO_PROGRESS_FRAMES` is for (Entry 131).
 
 > **Testing bubbles: two traps, both hit on 2026-08-07.**
 > **Bubble coordinates are DOCUMENT-space** — `render(scrollY)` subtracts the scroll on the way out.

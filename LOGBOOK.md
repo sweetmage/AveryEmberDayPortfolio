@@ -1,3 +1,100 @@
+## Entry 131 — 2026-08-09
+
+**Agent:** Opus 5 (kestrel, main)
+**Cycle:** post-release cleanup
+**Branch:** `portfoliowebsite`
+**Task:** `/shxdowflow` — the `bubbles-exclusion` flake
+
+### The recorded hypothesis was wrong, and the measurement said so in the first run
+
+`TODO.md` had a detailed suspect: the deadlock rescue teleports a trapped bubble, holds
+`_relocating` for ~560ms while it fades back in, and `resolveZoneCollisions` skips it the whole
+time — so a bubble fades to full opacity *inside* the form. Two previous sessions had theorised at
+this defect and produced three wrong fixes between them (Entries 090, 115).
+
+So this time nothing was changed until the engine had been instrumented. A throwaway spec walked
+3600 animation frames on `/contact/` at 1440px, recording every visible bubble overlapping the form
+along with the engine's own state for that bubble.
+
+It caught the failure on the first run, and the state was the opposite of the hypothesis:
+
+```
+frame 0..67, 68 CONSECUTIVE frames of overlap
+area 263px²   opacity 1   _relocating FALSE   stuckFrames 35 → 90+
+bubble (517, 316) r=12     form zone top y=319
+```
+
+**`_relocating` was false and opacity was 1.** The bubble was not fading in after a rescue; it was
+sitting there fully painted, *waiting* to be rescued. Every frame the resolver dutifully pushed it
+out, and every frame something pushed it back — `bx` moved 517 → 514 in 24 frames.
+
+### The zones overlap each other, so the bubble had no legal position
+
+Dumping the 11 registered zones on `/contact/` found the pair immediately:
+
+| Zone | Element | Rect |
+|---|---|---|
+| 5 | Contact intro `<p>` | `y 201..303` |
+| 3 | the form, padded | `y 295..753` |
+
+**They overlap by 8px.** A bubble in that band is pushed *up* by the form (nearest edge, 21px away)
+and pushed *back down* by the paragraph the moment it gets there. There is no y where it clears
+both, because clearing the paragraph upward needs `y ≤ 189` and the escape only looks one zone at a
+time. So it oscillated about a pixel on the form's top edge, penetrating 9px, at full opacity.
+
+The deadlock rescue does exist for exactly this. It fired — after **90 frames**. That is 1.5 seconds
+of a bubble parked on the furniture the whole zone system exists to keep clear, and it is what the
+spec was catching all along. The flake was never a measurement artefact; the test was right.
+
+### Two changes, both in `scripts/bubbles.js` (and its `public/` copy)
+
+**1. Rescue on lack of progress, not elapsed time.** A duration threshold cannot tell a wedge from
+the deliberate 8px/frame escape glide, and that is why the old one was set so high: the glide is
+healthy behaviour and can legitimately run 15+ frames when a scrolling card closes over a bubble.
+Lowering 90 would have started teleporting bubbles mid-glide.
+
+Progress separates them with no ambiguity. A glide reduces its penetration depth every single frame
+and keeps setting a new record; a wedge oscillates and never beats its own best. `NO_PROGRESS_FRAMES`
+(20) counts frames that fail to improve on the episode's *minimum* depth — compared against the
+minimum rather than the previous frame, or a bubble bouncing +1/−1px would reset the counter every
+other frame and never be rescued at all.
+
+**2. `_relocate` teleports first and fades in at the destination.** It used to fade out over 250ms
+*at the position it had already judged illegal*, with `_relocating` telling the resolver to leave it
+alone — a quarter second of guaranteed coverage baked into the rescue itself. Fading in somewhere
+legal costs the same 250ms and covers nothing, and the bubble still never appears to jump because it
+is invisible while it moves. `_relocating` is now cleared as soon as the position is valid, so the
+bubble is resolved normally throughout the fade-in instead of being skipped for 560ms.
+
+### Verification
+
+Same probe, same two cases, before and after:
+
+| | contact @1440 | projects @768 |
+|---|---|---|
+| **Before** | 68 overlap frames, maxStuck 90, 3 relocations | 0 overlap frames, maxStuck 90, 3 relocations |
+| **After, pass 1** | **0 / 3600**, maxStuck 2, 0 relocations | **0 / 3600**, maxStuck 20, 4 relocations |
+| **After, pass 2** | **0 / 3600**, maxStuck 2, 0 relocations | **0 / 3600**, maxStuck 20, 6 relocations |
+
+The Projects column is the fix working rather than the wedge disappearing: `maxStuck` sits exactly at
+the new 20-frame threshold and relocations went *up*, so wedges are still occurring — they are now
+detected in 333ms instead of 1.5s and moved invisibly. Zero overlap either way.
+
+**`npx playwright test` — 151 passed, twice in a row** (3.3m each) with the probe specs deleted.
+
+Both engine copies verified identical after editing (`scripts/bubbles.js` → `public/scripts/bubbles.js`);
+that duplication has bitten before. No CSS touched, so no rebuild and no baseline movement — and the
+visual gate captures under reduced motion, where the engine creates no bubbles at all.
+
+### What to take from this
+
+The two-line version for the next person, now in `AGENTS.md`: **zones on this site overlap each
+other**, so "push the bubble to the nearest free edge" has cases with no free edge; and **measure
+before theorising** — three wrong fixes came out of reasoning about this engine, and one afternoon of
+instrumenting it found the cause in a single run.
+
+---
+
 ## Entry 130 — 2026-08-09
 
 **Agent:** Opus 5 (kestrel, main)
