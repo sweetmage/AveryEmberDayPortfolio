@@ -1,3 +1,269 @@
+## Entry 130 — 2026-08-09
+
+**Agent:** Opus 5 (kestrel, main)
+**Cycle:** post-release cleanup
+**Branch:** `portfoliowebsite` — committed, **not pushed**
+**Task:** `/shxdowflow` — review and land the uncommitted Aug 9 work
+
+### Three sessions' worth of work had been sitting in the working tree
+
+Entries 127, 128 and 129 were all finished and all uncommitted. HEAD was still
+`38c183b` from Aug 8. Each of the three entries says "not pushed (working tree only)" in its
+own header, so this was known rather than lost — but it meant a WebKit fix, a red-suite fix and a
+39% payload cut were one `git checkout` away from gone, with no restore point between them.
+
+Landed as three commits, reviewed against the tree rather than against the entries:
+
+| Commit | What |
+|---|---|
+| `a2e4300` | Entries 127–128 — theme-toggle width, `webkit-mobile` project, dead `Script.js` tags |
+| `0522f32` | Entry 129 — 33 files out of `public/` |
+| (this one) | LOGBOOK, TODO, AGENTS, ARCHITECTURE |
+
+### 131 source files were staged for removal from git, by nothing
+
+`git rm -r --cached images/` had been run against the whole tree — every file still on disk,
+every one staged as deleted, nothing on disk changed. No entry in this LOGBOOK mentions it, and
+Entry 129 immediately below states the opposite: the slide sources "stay in `images/`, still
+tracked". Committing the tree as found would have dropped every Figma source, every gallery
+original and every icon out of version control, in a commit whose message was about something
+else entirely.
+
+Unstaged at the user's call (`git restore --staged images/`). Nothing on disk was touched.
+
+**If you find a staged change you cannot trace to an entry, do not commit it.** The index survives
+across sessions and an interrupted agent leaves no note.
+
+### The WebKit gate was verified, not taken on faith
+
+Entry 127 justifies a whole second Playwright project with "20 fail on the old CSS". That is the
+kind of claim the repo's own convention says to prove by injected regression, so it was:
+`brand.css` reverted to `aspect-ratio: 1` on both toggle blocks, CSS rebuilt,
+`--project=webkit-mobile` run.
+
+**20 failed, 1 passed** — exactly as claimed. The one that passes is *theme toggle still toggles
+the theme*, which is correct: the button still works, it is just off screen. `brand.css` and
+`style.css` were restored from backup and diffed byte-identical before committing.
+
+### Verification
+
+- **`npx playwright test` — 151 passed, twice in a row** (3.4m each). Two runs because
+  `bubbles-exclusion › Contact form @ 1440px` flakes ~1 in 3 and one green run proves nothing
+  against it. It passed both times; the open flake item stands unchanged.
+- `npm run css:build` re-run before review — no further change, so the committed `style.css` was
+  already current rather than the 8-day-stale case AGENTS.md warns about.
+- `grep` for `Script.js` across HTML/JS/TS: no live `<script>` tag anywhere, only the replacement
+  comments and history.
+- `grep` for the deleted `public/` sources across `app/`: no reference except the doc comment in
+  `mistrustSlides.ts` that names `slides.md` as *not* the source of truth.
+- `shxdowmap status` → `fresh`, before and after.
+
+### Not done
+
+Not pushed. Pushing this branch is a production deploy at 15 credits, and the branch policy wants
+the user's go-ahead in the moment, every time.
+
+---
+
+## Entry 129 — 2026-08-09
+
+**Agent:** Opus 5 (vellum, main)
+**Cycle:** post-release cleanup
+**Branch:** `portfoliowebsite` — **not pushed** (working tree only)
+**Task:** `/shxdowflow` — the `public/` unreferenced-source-PNG item from `TODO.md`
+
+### The published payload dropped 39%: 15.80 MB → 9.65 MB, 33 files removed
+
+Every byte under `public/` is copied verbatim into `out/` and published. Thirty Figma slide PNGs,
+the 3 MB cover, an unused moodboard export and a documentation `.md` were sitting there, requested
+by nothing, shipping on every deploy.
+
+### The TODO's premise was wrong, which made this smaller than it looked
+
+`TODO.md` said this was "not a pure delete" because
+`scripts/generate-mistrust-assets.js:42` works out of both trees and "the generator must first be
+changed to read sources from `images/`". **It already does.** `TREES` is an *output* list only;
+`sourceSlide()` and `setExport()` both resolve against `ROOT/REL`, which is the `images/` tree, and
+neither ever touches `public/`. No rewiring was needed — the prerequisite that kept this item
+parked twice did not exist.
+
+Proven rather than asserted: the generator ran after the deletion and reported `Changed sources per
+git: 0` / `0 generated, 126 up to date`, with **no `MISSING SOURCE` lines**. That check enumerates
+every source path before doing any work, so a clean run is direct evidence all 30 sources resolved
+out of `images/`.
+
+### Removed from `public/` (all still present in `images/`, all still tracked in git)
+
+| What | Size |
+|---|---|
+| 30 × `Instagram post - N.png` (Figma slide sources) | 2.43 MB |
+| `A History of Mistrust.png` (cover export) | 3.00 MB |
+| `supporting material/HistoryofMistrustMoodboard.png` (uncropped; the app renders `-cropped`) | 0.75 MB |
+| `supporting material/slides.md` (documentation — `mistrustSlides.ts:15` records that the artwork, not this file, is the source of truth) | 21 KB |
+
+The two trees are **deliberately asymmetric now**: `images/` holds sources and outputs, `public/`
+holds outputs only. That rule is written into the generator's header so the next person does not
+"restore symmetry" and re-add 6 MB.
+
+### How the delete list was derived, and the trap in deriving it
+
+A script walked `public/`, collected every `/images/…` string literal in `app/`, `src/`,
+`public/scripts/` and `scripts/`, added the paths `mistrustSlides.ts` composes at runtime
+(`${BASE}slide-${pad(n)}@2x.webp` never appears as a literal anywhere), added the srcset variant
+manifest, and diffed.
+
+**The first pass was wrong and would have deleted live assets.** The path regex used
+`[^"'`()\s]*`, which excludes spaces — and half this repo's asset paths contain them
+("A History of Mistrust", "Self Portrait Series"). It falsely flagged the moodboard, the storyboard
+and a gallery piece that are all rendered on real pages. Any future audit of this repo must allow
+spaces in path literals and rely on the closing quote to terminate.
+
+### Verification
+
+- `npx playwright test` — **151 passed, 0 failed** (visual baselines included, so a missing image
+  would have shown as a diff).
+- Fresh export served on :4323 and driven through all five routes with every tab clicked and the
+  full page scrolled to force lazy requests: **no 404s, no failed requests, no page errors.**
+- `out/images/myart/A History of Mistrust/*.png`: **0 files** (was 31).
+
+### Still unreferenced, left alone pending a decision
+
+Ten files, 0.04 MB: six BubbleLogo variants that are the wrong-format twins of the ones actually
+used (`-black.png`/`-white.png` where `.svg` is referenced; `-black-notxt.svg`/`-blue-notxt.svg`
+where `.png` is referenced), plus `bubbleLogo.svg`, `bubbleLogo_transparent.svg`, and three social
+icons (`githubicon`, `linkedinicon`, `emailicon`) that no longer have a consumer because the footer
+switched to inline SVG. Kept for now: the payload argument is negligible at 40 KB, and unlike the
+Mistrust sources these live in the same directory as assets the site does use.
+
+---
+
+## Entry 128 — 2026-08-09
+
+**Agent:** Opus 5 (vellum, main)
+**Cycle:** post-release bug fix
+**Branch:** `portfoliowebsite` — **not pushed** (working tree only)
+**Task:** "what do you recommend for 1?" → retire the legacy static site's test harness
+
+### The suite is green. 151 passed, 0 failed.
+
+Entry 127 left one red test and handed the decision up: `smoke-interaction › index interactions
+smoke test` had been failing since 2026-08-03 on `GET /Script.js` 404. Three options were written
+out; the user took the recommended one.
+
+**Why deleting beat restoring.** The spec was the **only** consumer of the repo-root `webServer` on
+:4321, so that whole `serve` process existed for one test. And the test asserted almost nothing: the
+toggle click was `if (await toggle.isVisible())`, the submenu click was `if present`, and the
+submenu IIFEs were removed from `Script.js` long ago. Strip the conditionals and what remains is
+"the legacy `index.html` loads with no console errors" — for a page Netlify has not published since
+the Next.js migration. Restoring `Script.js` would have meant re-tracking dead code to satisfy a
+guard over a dead page.
+
+### Changed
+
+- **Deleted** `tests/smoke-interaction.spec.js`.
+- **Deleted the `webServer` block** in `playwright.config.js`, replaced by a comment explaining why
+  there is none and why a new one must not be added: Playwright starts `webServer` entries *before*
+  `globalSetup`, and `globalSetup` builds the export, which deletes and recreates `out/` under
+  anything already serving it. That race is why the real server lives on :4322 inside setup.
+- **Removed the four dead `<script src="Script.js">` tags** — `index.html:179`,
+  `gallery/gallery.html:148`, `projects/brand-avery-ember-day.html:230`,
+  `projects/history-of-mistrust.html:502` — each replaced with a comment saying what the file was,
+  why it is gone, and that these pages are not deployed. They 404ed on every load until now.
+- **Corrected `docs/ARCHITECTURE.md`.** It claimed the 2026-08-03 untracking batch "still exist on
+  the author's disk" and that "nothing imported them". Both were wrong about `Script.js`
+  specifically, and that sentence is why nobody chased the red test for six days. The correction
+  names itself as one.
+
+### The lesson worth keeping
+
+A test that fails for six days is not noise, it is an unread diagnosis. The failure message said
+`404 Script.js` the whole time. It survived a release, a checkpoint, and two sessions that ran the
+full suite and reported the count.
+
+---
+
+## Entry 127 — 2026-08-09
+
+**Agent:** Opus 5 (vellum, main)
+**Cycle:** post-release bug fix
+**Branch:** `portfoliowebsite` — **not pushed** (working tree only)
+**Task:** "fix the toggle dark/light mode that is off screen on a smaller screen size", clarified
+mid-run to "its only on mobile/ipad"
+
+### Entry 126 fixed the wrong thing, and this is the actual cause
+
+Entry 126 logged the same complaint — *"On mobile the light/dark menu is off screen"* — concluded
+**"the nav was fine at every width from 300–900px"**, and pinned it on iOS zooming the contact
+form. That measurement was real and the `pointer-coarse:text-base` fix was worth keeping, but the
+conclusion was wrong for one reason: **it was measured in Chromium.** The bug does not exist in
+Chromium at any width. It exists in WebKit at every width.
+
+Reproduced in Playwright WebKit 26.5 on 9/9 emulated devices, portrait and landscape, all four
+pages. iPhone 13 portrait, before:
+
+```
+vw=390  documentScrollWidth=430  toggle=[386,430]  .brand-nav-actions width=0px
+```
+
+The toggle started at x=386 on a 390px viewport — 44px of button, essentially all of it past the
+right edge, plus 40px of horizontal page overflow to go with it.
+
+**Cause.** `#theme-toggle` derived its width from `aspect-ratio: 1` against `height: 100%`. WebKit
+does not fold an aspect-ratio-derived width into a flex item's **intrinsic contribution**, so the
+parent `.brand-nav-actions` measured `0px` wide. Its `margin-left: auto` then had a full row of
+free space to absorb and shoved that zero-width box flush against the right edge, and the button
+painted outward from there. Chromium resolves the ratio into the contribution and lays it out
+correctly, which is exactly why a green Chromium run hid this through an entire release.
+
+**Fix** (`brand.css`): replace `aspect-ratio: 1` with an explicit `width: var(--brand-nav-height)`
+on both `#theme-toggle` and the `.brand-theme-toggle` class mirror, keeping the `max-width: 44px`
+cap under 480px. Reading the width off the token is safe *now* — the comment in that block warned
+`width: var(--brand-nav-height)` once rendered 1px because the bar had a 1px bottom border, but
+`.brand-nav` has had `border-bottom: none` since the spectrum bar became the bottom edge, so the
+token equals the rendered height exactly. The block says so, in case the border ever returns.
+
+After, same device: `vw=390 documentScrollWidth=390 toggle=[342,386]`. Toggle's right gutter (4px)
+now mirrors the logo's left gutter, which is what the container padding intended all along.
+
+### The suite could not have caught this, so the suite changed
+
+`playwright.config.js` ran a single `chromium` project. Added a **`webkit-mobile`** project scoped
+by `testMatch` to one new spec, `tests/nav-safari.spec.js`; the chromium project `testIgnore`s the
+same file, because running a WebKit-bug guard under Chromium passes unconditionally and is worse
+than no test. 21 assertions across 5 viewports × 4 pages, plus a click that confirms the toggle
+still flips `data-theme`.
+
+Verified both directions, not just green: **20 of 21 fail on the pre-fix CSS** and all 21 pass
+after. The one that survives is the click test, which never depended on layout.
+
+Needs `npx playwright install webkit` once per machine (~59MB). Netlify never runs the suite, so
+nothing changes for deploys.
+
+### Suite state
+
+`npx playwright test`: **150 passed, 2 failed**, both pre-existing and both confirmed by stashing
+this change and re-running:
+
+- `smoke-interaction › index interactions smoke test` — a 404 on the **legacy static** root site.
+  Fails identically without this change. Cause traced while here: **`GET /Script.js`**, untracked
+  and gitignored on 2026-08-03, still `<script src>`-ed by four legacy pages and now absent from
+  disk entirely. `docs/ARCHITECTURE.md` claims "nothing imported them" — it is wrong about that one.
+  Left for the user, because the fix is a decision about what the undeployed legacy site is for;
+  three options are written out in `TODO.md`.
+- `visual-baseline › projects @ 768px — dark` — height drift, 10710 vs 10811. Passes in isolation
+  both with and without this change; it is the full-parallel flake, not a regression.
+
+### Flagged, not fixed
+
+WebKit paints a stray **white rectangle** (~79 × 17 CSS px) at the left edge directly under the nav
+on the home page. Chromium does not. `elementsFromPoint` finds nothing there, and it survives
+disabling the spectrum bar's `filter`, `.brand-page-bg`, `.brand-page-noise`, the skip link and the
+hero blob — so it reads as a WebKit compositing/tiling artifact around the sticky nav, not a stray
+element. Pre-existing and unrelated to the toggle; captures are in `tmp/shots/` (gitignored). Not
+confirmed on real hardware, only in headless Playwright WebKit on Windows.
+
+---
+
 ## Entry 126 — 2026-08-08
 
 **Agent:** Opus 5 (main)

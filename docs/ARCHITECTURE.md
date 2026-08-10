@@ -1,4 +1,4 @@
-<!-- shxdowmap: built=2026-08-05T21:46:31Z fingerprint=d92c67dd3dbb172f78f380dc0486ad39bc476214 handle=vesper -->
+<!-- shxdowmap: built=2026-08-09T22:33:56Z fingerprint=c13ed5f4a359b830e256b8cc79e0b80e6288fed1 handle=vesper -->
 # Avery Ember Day Portfolio - Architecture
 
 > Source-of-truth map for agents. Prefer this over re-reading the tree.
@@ -89,8 +89,15 @@ The `tmp/` and `output/playwright/` rows that used to appear in that table are
 gone: 18 tracked scratch files (one-off Python screenshot/inspection scripts, a
 spawn test, stale submenu PNGs from a nav that no longer exists, plus root-level
 `Script.js` and `run_git_commands.py`) were untracked on 2026-08-03 at the user's
-instruction and are now gitignored. They still exist on the author's disk; they
-are simply no longer part of the repo. Nothing imported them.
+instruction and are now gitignored.
+
+**One correction, 2026-08-09 (Entry 128).** This paragraph used to end "They still
+exist on the author's disk; they are simply no longer part of the repo. Nothing
+imported them." Both halves were wrong about `Script.js`: it is gone from disk
+too, and four legacy pages still had `<script src="Script.js">` tags, so every
+load of those pages 404ed. That failure sat red in the suite for six days behind
+`smoke-interaction.spec.js`, whose diagnosis nobody read. The tags are gone now
+and the spec is deleted. Everything else in the batch really was unimported.
 
 Roles, for the directories that carry real weight:
 
@@ -104,8 +111,8 @@ Roles, for the directories that carry real weight:
 | [`src/css/`](../src/css/) | `site.css` (reset, base type, logo theme-swap, `#return-to-top`) and `tailwind-preset.css` (bridges `--brand-*` tokens to Tailwind theme names). |
 | [`public/scripts/`](../public/scripts/) | The runtime JS the export actually serves: `bubbles.js`, `theme-init.js`. (`history-of-mistrust-slideshow.js` lived here until Entry 109 replaced it with React components.) |
 | [`scripts/`](../scripts/) | Node maintenance tooling: asset generation, measurement gates, TickTick/Google sync. Not shipped. |
-| [`tests/`](../tests/) | Playwright suite: smoke, visual-baseline gate, bubble-engine coverage, Mistrust set-strip checks. |
-| [`images/`](../images/) vs [`public/images/`](../public/images/) | **Two mirrored trees.** `images/` serves the legacy root site; `public/images/` is what Next copies into the export. Generators write to both. |
+| [`tests/`](../tests/) | Playwright suite: smoke, visual-baseline gate, bubble-engine coverage, Mistrust set-strip checks, and `nav-safari.spec.js` under a separate **`webkit-mobile`** project (the chromium project ignores that file — it guards a WebKit-only layout bug Chromium cannot reproduce). Everything here tests the Next.js export on :4322; the legacy root site is no longer tested. |
+| [`images/`](../images/) vs [`public/images/`](../public/images/) | **Two trees, deliberately NOT mirrors.** `images/` serves the legacy root site and holds the **sources** (Figma PNG exports, moodboards, working notes). `public/images/` is what Next copies into the export and holds **derived outputs only** — everything there is published, so a source file left in it is dead weight on every deploy (6 MB of it was, until Entry 129). Generators read from `images/` and write outputs to both. Do not "restore symmetry" between them. |
 | [`docs/`](../docs/) | `NOTES.md`, `deploys.md`, `accessibility.md`, `plans/` (24 plan docs plus a `README.md` index), `archives/`, `checkpoints/`. |
 
 **Where does X live?**

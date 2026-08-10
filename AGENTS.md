@@ -89,7 +89,22 @@ Do NOT use these in `bash` tool calls (they are PowerShell-specific and often fa
 
 `npm run serve` — serves the repo root on :8080 (**legacy static site only** — not the Next.js app)
 
-`npm test` / `npx playwright test` — smoke tests + a **compare-based** visual regression gate, plus bubble-engine coverage, gallery expand coverage and Mistrust set-strip checks (**90 tests**: 40 visual = 5 pages × 4 breakpoints × 2 themes, plus smoke, 10 bubble-exclusion specs, 17 gallery-expand specs, and the strip-vs-export assertions).
+`npm test` / `npx playwright test` — smoke tests + a **compare-based** visual regression gate, plus bubble-engine coverage, gallery expand coverage, Mistrust set-strip checks and the WebKit nav guard (**151 tests**, green as of 2026-08-09: 40 visual = 5 pages × 4 breakpoints × 2 themes, plus smoke, bubble-exclusion, gallery-expand, strip-vs-export, and 21 `webkit-mobile` nav assertions).
+
+> **The suite tests the Next.js app and nothing else.** `tests/smoke-interaction.spec.js` and the
+> repo-root `webServer` on :4321 that existed only to feed it were both deleted 2026-08-09 (Entry
+> 128). They guarded the **legacy static** pages (`index.html`, `gallery/gallery.html`,
+> `projects/*.html`), which Netlify has not published since the Next.js migration. Those pages are
+> unmaintained history: they are not built, not deployed, and not tested. Do not add coverage for
+> them without deciding first that they should exist.
+
+> **The suite is not single-engine any more.** Two projects: `chromium` (everything) and
+> **`webkit-mobile`**, scoped by `testMatch` to `tests/nav-safari.spec.js` alone. It exists because
+> the theme toggle rendered off screen on every iPhone and iPad for a full release while Chromium
+> stayed green — WebKit does not fold an `aspect-ratio`-derived width into a flex item's intrinsic
+> contribution (Entry 127). **A layout bug a user reports on iOS will not reproduce in the chromium
+> project; reach for `--project=webkit-mobile` before concluding "the nav is fine at every width".**
+> Requires `npx playwright install webkit` once per machine. Netlify never runs the suite.
 
 > **When a CSS property needs two states, it stops being a Tailwind utility.** Utilities outrank
 > `brand.css`, which is imported into the `components` layer, so a state-dependent rule written there

@@ -74,12 +74,29 @@ of 20/month, so anything merged before the pause lifts ships in the same deploy.
       `view-transition-name` values through refs before the snapshot is taken. Scoped, not blocked.
 - [ ] **Standalone "A History of Mistrust" viewer page** with all canonical slide content and a
       numbered bibliography. Slides and a Sources section currently live inside the Projects tab.
-- [ ] **`public/` ships ~6 MB of unreferenced source PNGs.** The 30 `Instagram post - N.png` files
-      plus the 3.1 MB cover are copied into the export but never requested; only the derived webps
-      are. **Worth doing before the deploy** — it shrinks what gets published.
-      **Not a pure delete:** `scripts/generate-mistrust-assets.js:42` works out of *both* trees
-      (`TREES = [images/…, public/images/…]`), so the generator must first be changed to read sources
-      from `images/` and write derived webps to both. Left alone in Entry 106 to avoid scope creep.
+- [ ] **Ten orphaned icon files still ship, 40 KB total.** Found by the same audit that cleared the
+      6 MB of Mistrust sources (Entry 129), left alone because the payload argument is weak at this
+      size and they sit beside assets the site does use. Six are wrong-format twins of live files:
+      `bubbleLogo-black.png` / `bubbleLogo-white.png` (the `.svg` versions are what
+      `BrandProject.tsx` renders) and `bubbleLogo-black-notxt.svg` / `bubbleLogo-blue-notxt.svg`
+      (the `.png` versions are the referenced ones). The rest are `bubbleLogo.svg`,
+      `bubbleLogo_transparent.svg`, and `githubicon.svg` / `linkedinicon.svg` / `emailicon.svg`,
+      which lost their consumer when the footer moved to inline SVG.
+      **Decide the intent, not just the delete:** if the twins are meant to be a downloadable brand
+      kit, they should be linked from the Brand project page rather than sitting unreferenced; if
+      not, they go. Verify with `grep -rn` across `app/`, `index.html` and `projects/*.html` before
+      removing — the audit's first pass had a regex bug that hid every path containing a space.
+- [ ] **A stray white rectangle paints under the nav in WebKit only** (~79 × 17 CSS px, left edge,
+      directly below the spectrum bar, home page). Found 2026-08-09 while fixing the theme toggle
+      (Entry 127); pre-existing and unrelated to it, so it was flagged rather than folded in.
+      **Do not re-derive what is already ruled out:** `elementsFromPoint` reports nothing painting
+      there, and it survives disabling the spectrum bar's `filter`, the bar entirely,
+      `.brand-page-bg`, `.brand-page-noise`, `.skip-link`, `.brand-hero-blob`, and
+      `position: sticky` on the nav (that last one does change it). Reads as a WebKit
+      compositing/tiling artifact around the sticky nav.
+      **First step is confirmation on real hardware** — the only evidence is headless Playwright
+      WebKit on Windows, which may not represent iOS Safari at all. If it does not reproduce on the
+      user's iPhone or iPad, close this.
 - [ ] **Watermark artwork.** User's own task.
 
 
@@ -138,6 +155,32 @@ consolidated in [`docs/archives/plans.md`](docs/archives/plans.md).
 
 ### 2026-08
 
+- **Aug 9** — **The Aug 9 work is committed** (`a2e4300`, `0522f32`, plus the docs commit) — Entries
+  127–129 had all been left in the working tree with HEAD still on Aug 8. Reviewed against the tree
+  rather than the entries; suite green twice at 151/151; the WebKit gate proven by injected
+  regression (20 of 21 fail on the old CSS). **Also caught: 131 files under `images/` were staged
+  for removal from git by an untraceable `git rm -r --cached`**, which would have dropped every
+  Figma source and gallery original out of version control. Unstaged, nothing on disk touched.
+  **Not pushed** — that is a 15-credit production deploy. Entry 130.
+- **Aug 9** — **Published payload cut 39%: 15.80 MB → 9.65 MB**, 33 files. The 30 Figma slide PNGs,
+  the 3 MB cover, an unused moodboard export and `slides.md` were deleted from `public/` (they stay
+  in `images/`, still tracked). The blocker `TODO.md` recorded — "the generator must first be
+  changed to read sources from `images/`" — did not exist: it already reads only from `images/`,
+  and `TREES` is an output list. Verified by a clean generator run, 151/151 tests, and a 404 sweep
+  over all five routes. Entry 129.
+- **Aug 9** — **Suite is green again: 151 passed, 0 failed.** `smoke-interaction.spec.js` and the
+  repo-root `webServer` on :4321 that existed only to feed it were deleted, and the four dead
+  `<script src="Script.js">` tags were stripped from the legacy static pages. Those pages have not
+  been published since the Next.js migration, so the test was guarding a page that does not ship
+  while the file it loaded had been gone since Aug 3. `docs/ARCHITECTURE.md`'s "nothing imported
+  them" line corrected, since that is what kept the red test unexamined for six days. Entry 128.
+- **Aug 9** — **Theme toggle off screen on iPhone/iPad — actually fixed.** Cause was never the
+  contact-form zoom Entry 126 blamed: `#theme-toggle` sized itself via `aspect-ratio: 1` against a
+  percentage height, and WebKit leaves that out of a flex item's intrinsic contribution, so
+  `.brand-nav-actions` measured 0px and `margin-left: auto` pushed the button past the right edge.
+  Explicit `width: var(--brand-nav-height)` instead. Chromium never reproduced it, so the suite
+  gained a `webkit-mobile` project and `tests/nav-safari.spec.js` (21 assertions; 20 fail on the
+  old CSS). Entry 127.
 - **Aug 8** — **Checkpoint saved:** `docs/checkpoints/2026-08-08-post-interview-release.md`
   (`bc3e278`). Notification email for the test submission confirmed received, closing the last
   unverified link in the contact chain: submit → thanks page → recorded submission → email.
@@ -153,8 +196,9 @@ consolidated in [`docs/archives/plans.md`](docs/archives/plans.md).
   telling the truth. Notification email delivery is the user's to confirm.
 - **Aug 8** — Pre-launch work: gallery expand keeps its row and moves orthogonally, artwork tweens
   as its own element with no shrink-then-grow, one-screen caps on gallery art and the Mistrust
-  viewer, iOS zoom fix on the contact form (the real cause of the off-screen theme toggle), bubbles
-  bounce off the picture at every width, Mistrust first on Projects. Suite 131/131, twice.
+  viewer, iOS zoom fix on the contact form (logged then as the cause of the off-screen theme toggle
+  — **it was not**, see Aug 9), bubbles bounce off the picture at every width, Mistrust first on
+  Projects. Suite 131/131, twice.
 - **Aug 8** — Branch deploys for `develop` were enabled to get a testable pre-launch URL, then
   reverted after release: `allowed_branches` is `["portfoliowebsite"]` again.
 - **Aug 6** — **Seam-dedupe validation PASSED**, clearing the last `[~]` before release. A fresh
