@@ -1,3 +1,41 @@
+## Entry 132 — 2026-08-09
+
+**Agent:** Opus 5 (kestrel, main)
+**Cycle:** post-release cleanup
+**Branch:** `portfoliowebsite` — **RELEASED**
+**Task:** push the Aug 9 work, at the user's explicit instruction ("push once suite is green")
+
+### Released `17c5bf6`, five commits, one deploy
+
+`38c183b..17c5bf6` pushed to `portfoliowebsite` after the suite went green twice. One production
+build, 15 credits. `bc3e278` (2026-08-08) was the previous production SHA.
+
+Verified against the live site rather than the local build:
+
+| Check | Result |
+|---|---|
+| Netlify deploy | `state: ready`, `skipped: null` — a real build, not a credit-exhausted skip |
+| `/`, `/projects/`, `/gallery/`, `/contact/`, `/contact/thanks/` | all 200 |
+| `/scripts/bubbles.js` in production | contains `NO_PROGRESS_FRAMES` — the fix is actually live |
+| `Instagram post - 1.png` in production | **404** — the payload cut really shipped |
+| `slides/slide-01.webp` in production | 200 — and nothing was over-deleted |
+
+The `skipped` check matters here specifically: `docs/deploys.md` records that an out-of-credits push
+returns `skipped: true` with no build log, which looks like a successful push and publishes nothing.
+Worth noting the two commits immediately before this release both show `state: error` /
+"Canceled build due to no content change" — that is the `[build] ignore` rule working on docs-only
+pushes, not a failure.
+
+Checkpoint: [`docs/checkpoints/2026-08-09-bubble-wedge-fix-release.md`](docs/checkpoints/2026-08-09-bubble-wedge-fix-release.md).
+
+### Honest caveat
+
+The bubble flake was stochastic — ~1 run in 3, and it passed 10/10 standalone while genuinely
+broken. Two green full runs plus 7200 clean probe frames across two passes is strong evidence, not
+proof. The checkpoint says so too, so nobody later reads "fixed" as "cannot recur".
+
+---
+
 ## Entry 131 — 2026-08-09
 
 **Agent:** Opus 5 (kestrel, main)

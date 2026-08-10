@@ -134,6 +134,12 @@ consolidated in [`docs/archives/plans.md`](docs/archives/plans.md).
 
 ### 2026-08
 
+- **Aug 9** — **RELEASED `17c5bf6`.** Five commits pushed in one production deploy (15 credits),
+  `state: ready` and not skipped. Live checks on averyemberday.com: all 5 pages 200, the deployed
+  `/scripts/bubbles.js` carries the fix, a deleted source PNG 404s while `slide-01.webp` still
+  serves. Checkpoint:
+  [`docs/checkpoints/2026-08-09-bubble-wedge-fix-release.md`](docs/checkpoints/2026-08-09-bubble-wedge-fix-release.md).
+  Entry 132.
 - **Aug 9** — **The `bubbles-exclusion` flake is fixed — the suite is genuinely reliable now.** Cause
   was never the relocation path this file had recorded as the hypothesis: frame-by-frame
   instrumentation caught 68 consecutive overlap frames with `_relocating` **false** at opacity **1**.
