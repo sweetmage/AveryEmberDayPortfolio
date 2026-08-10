@@ -267,12 +267,21 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    /* Full bar height like the nav segments, with the width derived from the rendered
-       height via aspect-ratio so the highlight is exactly square. (Setting
-       width: var(--brand-nav-height) left it 1px wide, since the height is the bar
-       minus its 1px bottom border.) Flat at rest, no border. */
+    /* Full bar height like the nav segments, and an EXPLICIT width equal to that height
+       so the highlight is square.
+
+       Do NOT go back to `aspect-ratio: 1` + `height: 100%` for this. Safari/WebKit does
+       not fold an aspect-ratio-derived width into a flex item's intrinsic contribution,
+       so `.brand-nav-actions` measured 0px wide there, `margin-left: auto` shoved that
+       zero-width box flush against the right edge, and the 44px button rendered entirely
+       past the viewport — the toggle was off screen on every iPhone and iPad while
+       Chromium looked perfect. Measured in WebKit 26.5 on 2026-08-09.
+
+       Reading the width off the token is safe now: the bar's `border-bottom` is `none`
+       (see .brand-nav), so rendered height == --brand-nav-height. If a bottom border ever
+       comes back, subtract it here too or the square goes off by that much. */
     height: 100%;
-    aspect-ratio: 1;
+    width: var(--brand-nav-height);
     /* A square toggle is as wide as the bar is tall (62px at 360px), which is a lot of the
        inner width once a fourth nav label exists. Cap the width below the point where the
        nav gets tight; 44px still meets WCAG 2.5.5 (AAA, 44px), so nothing is lost. The
@@ -287,7 +296,8 @@
 }
 
 @media (min-width: 480px) {
-    #theme-toggle {
+    #theme-toggle,
+    .brand-theme-toggle {
         max-width: none;
     }
 }
@@ -753,7 +763,10 @@
     align-items: center;
     justify-content: center;
     height: 100%;
-    aspect-ratio: 1;
+    /* Explicit width, not aspect-ratio — same WebKit flex-contribution bug documented
+       on #theme-toggle above. Kept in sync with that block. */
+    width: var(--brand-nav-height);
+    max-width: 44px;
     border-radius: 0;
     transition: background var(--brand-transition-fast);
     color: var(--brand-text);
