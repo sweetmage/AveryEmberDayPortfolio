@@ -4,6 +4,7 @@ import { Fragment, useCallback, useEffect, useRef, useState } from 'react';
 import BrandProject from './BrandProject';
 import MistrustProject from './MistrustProject';
 import PageHeader from '../PageHeader';
+import useStickyRailOverlay from '../components/useStickyRailOverlay';
 
 /* `id` is the URL hash and the aria-controls target — deliberately unchanged
    while the labels grew to the full project titles, so existing deep links
@@ -38,7 +39,11 @@ export default function ProjectTabs() {
   const [activeTab, setActiveTab] = useState<TabId>('history-of-mistrust');
   const [isRail, setIsRail] = useState(false);
   const tablistRef = useRef<HTMLDivElement>(null);
+  const railRef = useRef<HTMLDivElement>(null);
+  const panelsRef = useRef<HTMLDivElement>(null);
   const initialized = useRef(false);
+
+  useStickyRailOverlay(railRef, panelsRef);
 
   useEffect(() => {
     if (initialized.current) return;
@@ -96,7 +101,35 @@ export default function ProjectTabs() {
       <PageHeader title="Projects" />
 
       <div className="mx-auto max-w-(--brand-content-max) lg:flex lg:items-start">
-      <div className="lg:w-[260px] lg:shrink-0">
+      {/* The sticky element is THIS column, not the tablist inside it. The
+          tablist's containing block is this div, whose height is the tablist's
+          own height — a sticky child of a box exactly its own size has zero
+          travel and behaves as static. That is why `lg:sticky` on the tablist
+          did nothing from Entry 079 until 2026-08-10: measured travel 0px, rail
+          top -570px after a 1000px scroll at 1024. The visual gate could not
+          see it, because it captures at scroll 0 where both look identical.
+          Sticky from `md` (768px) up, because that is where the gallery stops
+          being one column — the same threshold that pins the nav.
+
+          `lg:items-start` on the flex parent above is LOAD-BEARING for this,
+          in the opposite direction to the intuition: a sticky flex item's
+          containing block is the flex container's content box, which the tall
+          panel makes tall, while `items-start` keeps this column short. Travel
+          is the difference. Change that to `stretch` and the column becomes
+          exactly as tall as the container, travel returns to 0, and the rail
+          silently stops sticking again with nothing to see at scroll 0. */}
+      <div
+        ref={railRef}
+        /* Background AND z-index are scoped to the strip band ONLY. At 768–1023
+           the strip spans the content width and things scroll underneath it, so
+           it has to be solid and it has to outrank them. At lg+ nothing passes
+           under a rail that sits beside the panel: the background painted a
+           visible lighter rectangle against the page gradient (caught in the
+           1024 capture, 2026-08-10), and the z-index put the rail in front of
+           the global bubble layer, which AGENTS.md requires to stay in FRONT on
+           desktop. `z-40` stays under the nav's `z-50`. */
+        className="md:sticky md:top-(--brand-nav-height) md:max-lg:z-40 md:max-lg:bg-bg lg:w-[260px] lg:shrink-0"
+      >
         <div
           ref={tablistRef}
           role="tablist"
@@ -116,7 +149,12 @@ export default function ProjectTabs() {
              of the fixed 260px column, so the tabs get narrower rather than the
              panel moving. The Gallery filter rail is identical, which is what
              keeps the tab shape the same across the two pages. */
-          className="flex flex-wrap gap-0 px-6 pt-6 pb-4 max-[400px]:flex-col lg:sticky lg:top-16 lg:flex-col lg:flex-nowrap lg:pt-8 lg:pb-0"
+          /* No `sticky` here — it lives on the column above, which is the only
+             element with room to travel. `top-16` went with it: 64px was a
+             hardcoded guess at `--brand-nav-height`, which is
+             `clamp(62px, 6vw, 76px)` and measures 76px from 1267px up, so the
+             pinned rail's first 12px sat behind the nav at 1440 and wider. */
+          className="flex flex-wrap gap-0 px-6 pt-6 pb-4 max-[400px]:flex-col lg:flex-col lg:flex-nowrap lg:pt-8 lg:pb-0"
         >
         {TABS.map((tab, i) => {
           const isActive = activeTab === tab.id;
@@ -151,7 +189,7 @@ export default function ProjectTabs() {
       </div>
       </div>
 
-      <div className="lg:min-w-0 lg:flex-1 lg:pt-8">
+      <div ref={panelsRef} className="lg:min-w-0 lg:flex-1 lg:pt-8">
         {/* Panel order follows TABS, so DOM order matches the visible order. */}
         <div
           id="panel-history-of-mistrust"

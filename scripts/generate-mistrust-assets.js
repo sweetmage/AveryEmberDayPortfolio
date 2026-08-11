@@ -37,8 +37,9 @@
  * Anything else throws rather than quietly shipping a bad mosaic.
  *
  * Usage: node scripts/generate-mistrust-assets.js [--all]
- * Plans: docs/plans/2026-07-27-contact-unhide-mistrust-assets.md
- *        docs/plans/2026-08-01-mistrust-set-seam-dedupe-shxdowloop.md
+ * Plans: 2026-07-27-contact-unhide-mistrust-assets,
+ *        2026-08-01-mistrust-set-seam-dedupe-shxdowloop
+ *        (both archived 2026-08-09 — see docs/archives/plans.md)
  */
 
 const { execFileSync } = require('child_process');

@@ -311,6 +311,146 @@ test.describe('bubble exclusion zones', () => {
   });
 });
 
+/*
+ * The parking test — the one that would have caught the wedge flake.
+ *
+ * Every other test in this file settles 300 frames before it samples, and that
+ * settle is precisely what hid the defect. By frame 300 the wedged bubble had
+ * been rescued and the suite saw nothing; whether one of the 6 sample frames
+ * landed in an unlucky window was luck, which is exactly why a deterministic
+ * bug read as a flake.
+ *
+ * So this test samples EVERY FRAME FROM LOAD with no settle, and asserts on a
+ * DURATION rather than an area: how many consecutive frames a visible bubble's
+ * centre stays on the furniture. An area tolerance would only invite someone to
+ * raise it later; a frame count is the defect itself.
+ *
+ * Two independent investigations produced this file and the engine it guards,
+ * and it is worth knowing they agreed. Entry 131 instrumented the engine and
+ * measured **68** consecutive overlap frames at opacity 1 with `_relocating`
+ * FALSE on Contact @1440; a separate session on a stale branch measured **67**
+ * under the same conditions and reached the same conclusion — the bubble was
+ * *waiting for* a rescue, not fading in after one. Both therefore falsified the
+ * relocation hypothesis `TODO.md` had recorded for weeks.
+ *
+ * The fix that shipped is Entry 131's: rescue on lack of progress
+ * (`NO_PROGRESS_FRAMES`) instead of on elapsed frames. The seeding change in
+ * `seedPosition` came from the other session and is complementary — it stops
+ * 2–3 of 7 bubbles being *born* inside a zone, so there are fewer wedges for
+ * the rescue to catch, and none of them during the first frames when the page
+ * is most likely to be looked at.
+ *
+ * A few frames inside is legitimate — a card scrolling over a bubble, a bounce
+ * resolving, or the deliberate escape glide — so the bar is a run length, not
+ * zero.
+ */
+test.describe('no bubble parks inside a zone, from the first frame', () => {
+  /**
+   * Longest run of consecutive frames in which a visible global-layer bubble's
+   * CENTRE sits inside one of the elements matching `selector`.
+   *
+   * On the FURNITURE, not on any registered zone, and that distinction is
+   * load-bearing rather than a softening. Measured 2026-08-10 at 768px: the
+   * three `.project-section` zones are full-layer-width (-24 to 792 on a 768px
+   * layer) and tile ~94% of the 10,399px document, so all 7 global bubbles are
+   * seeded inside one, no horizontal exit exists, and `_relocate` can find no
+   * free space in 40 attempts. That is the shape of the page, not a defect —
+   * a section is a big transparent container, and the things a visitor can
+   * actually see a bubble sitting on (the tabs, the form, the headings) are
+   * separate, escapable zones. Asserting against every registered rect would
+   * therefore fail permanently on Projects while saying nothing about the bug.
+   *
+   * Global layer only: it is the fixed, document-space layer the defect lives
+   * on, so viewport rects need the scroll added to compare (`render(scrollY)`
+   * subtracts it on the way out). The hero layer is container-local and would
+   * need a different conversion for no extra coverage.
+   */
+  async function longestParkedRun(page, selector, frames) {
+    return page.evaluate(async ({ sel, n }) => {
+      const engine = window.__bubbleEngine;
+      const nextFrame = () => new Promise((r) => requestAnimationFrame(() => r()));
+      const runs = new Map();
+      let worst = 0;
+      for (let f = 0; f < n; f++) {
+        const scrollY = window.scrollY;
+        const targets = [...document.querySelectorAll(sel)].map((el) => {
+          const r = el.getBoundingClientRect();
+          return { left: r.left, right: r.right, top: r.top + scrollY, bottom: r.bottom + scrollY };
+        });
+        if (!targets.length) throw new Error(`no elements matched ${sel}`);
+        for (const b of engine.globalLayer.bubbles) {
+          // Opacity, not `_relocating`: a bubble mid-rescue is still visible for
+          // the first ~250ms of its fade and still covers the furniture. That
+          // hole is what Entry 115 papered over in the spec instead of the
+          // engine, and this test must not repeat it.
+          const visible = parseFloat(getComputedStyle(b.el).opacity) > 0.05;
+          const inside = visible && targets.some(
+            (t) => b.x > t.left && b.x < t.right && b.y > t.top && b.y < t.bottom
+          );
+          const run = inside ? (runs.get(b) || 0) + 1 : 0;
+          runs.set(b, run);
+          if (run > worst) worst = run;
+        }
+        await nextFrame();
+      }
+      return worst;
+    }, { sel: selector, n: frames });
+  }
+
+  /* The two recorded failure cases, asserted on the same furniture the
+     settled tests above assert on — this is the from-frame-0 version of them.
+     Contact @1440 is the one the suite kept reporting (~1950px², a whole
+     bubble); Projects @768 is the second case found on 2026-08-07, which proved
+     the defect was never specific to that one form or that one width. */
+  const CASES = [
+    { name: 'Contact form @ 1440px', path: '/contact/', width: 1440, sel: 'form[name="contact"]' },
+    { name: 'Projects tabs @ 768px', path: '/projects/', width: 768, sel: '.project-tab' },
+  ];
+
+  for (const c of CASES) {
+    test(`no bubble is parked inside a zone — ${c.name}`, async ({ page }) => {
+      // Frame-based sampling, so wall-clock cost tracks whatever frame rate this
+      // worker gets. Same reasoning as the blob test above.
+      test.setTimeout(120000);
+
+      await page.setViewportSize({ width: c.width, height: 900 });
+      await page.goto(`${BASE_URL}${c.path}`, { waitUntil: 'networkidle' });
+      // NO settle. `waitForEngine(page, 0)` waits only for the engine and its
+      // first bubbles to exist, which is the window under test.
+      await waitForEngine(page, 0);
+
+      const worst = await longestParkedRun(page, c.sel, 240);
+
+      /* Where 30 comes from, measured 2026-08-10 on this engine:
+
+           natural load, both cases ............ 0, 0, 0 (three loads each)
+           pre-fix engine, Contact @1440 ....... 67  (the bug's signature)
+           adversarial: all 7 bubbles planted
+             dead-centre on the target ......... 44–66 Contact, 4–12 Projects
+
+         So the normal answer is a flat zero and there is a wide empty band
+         above it. 30 sits above `NO_PROGRESS_FRAMES` (20) with enough slack
+         that the rescue's own detection window plus a frame or two of exit
+         cannot trip it, and well under the 67 that means the wedge is back.
+
+         The adversarial row is deliberately ABOVE the bar and that is not a
+         hole: planting every bubble on the same point inside the form is not a
+         state the engine can reach on its own — it is there to show the rescue
+         still clears a saturated form, and to mark the ceiling this threshold
+         is chosen against.
+
+         Honest limit on the Projects case: it PASSES the pre-fix engine too.
+         That failure was always the rare one (2 in ~10 full runs on
+         2026-08-07) because it needs an unlucky seed to land on a small
+         target, so it is not an injected-regression proof the way Contact
+         @1440 is. It earns its place as the from-frame-0 version of the
+         settled test above, not as the thing that would have caught the bug. */
+      expect(worst, `a visible bubble sat on the furniture for ${worst} consecutive frames`)
+        .toBeLessThanOrEqual(30);
+    });
+  }
+});
+
 /* The picture is the wall — user call, 2026-08-08, at every screen size.
    `.gallery-item` is deliberately NOT a zone: a card zone is a wall AROUND the
    picture, so bubbles rebounded off the card's outer edge and never reached the

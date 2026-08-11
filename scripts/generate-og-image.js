@@ -8,7 +8,7 @@
  *
  * Requires the dev server: `npm run dev` (default http://localhost:3000).
  * Usage: node scripts/generate-og-image.js [--url http://localhost:3000] [--theme dark|light]
- * Plan: docs/plans/2026-07-27-contact-unhide-mistrust-assets.md
+ * Plan: 2026-07-27-contact-unhide-mistrust-assets (archived — docs/archives/plans.md)
  */
 
 const fs = require('fs');

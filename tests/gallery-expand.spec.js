@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test';
+import { pinnedChromeHeight } from './pinned-chrome.js';
 
 // Must match the `serve out` webServer port started in global-setup.js.
 const BASE_URL = 'http://localhost:4322';
@@ -13,8 +14,9 @@ const BASE_URL = 'http://localhost:4322';
  * bubble regression survive a week (LOGBOOK Entry 090), and it is why this file
  * exists.
  *
- * Concept: docs/plans/2026-08-01-gallery-expand-motion-concept.md
- * Implementation plan: docs/plans/2026-08-05-gallery-expand-implementation.md
+ * Concept: 2026-08-01-gallery-expand-motion-concept
+ * Implementation plan: 2026-08-05-gallery-expand-implementation
+ * (both archived — docs/archives/plans.md; the current rules live in AGENTS.md)
  */
 
 /*
@@ -209,12 +211,14 @@ test.describe('gallery expand-on-click', () => {
     const art = card(page, 'In Danger').locator('.gallery-item-art');
     await expect.poll(async () => Math.round((await art.boundingBox()).height)).toBeGreaterThan(0);
 
-    const navHeight = await page.locator('.brand-nav').first().evaluate((el) => el.getBoundingClientRect().height);
+    const overlay = await pinnedChromeHeight(page);
     const artHeight = (await art.boundingBox()).height;
 
-    // The nav is sticky and overlays the page, so "one screen" has to mean the
-    // viewport minus the nav or the top of every tall piece sits underneath it.
-    expect(artHeight).toBeLessThanOrEqual(720 - navHeight + 1);
+    // Pinned chrome overlays the page, so "one screen" has to mean the viewport
+    // minus whatever is actually pinned, or the top of every tall piece sits
+    // underneath it. Measured rather than assumed: below 768px nothing is
+    // pinned and the art may legitimately use the full height.
+    expect(artHeight).toBeLessThanOrEqual(720 - overlay + 1);
   });
 
   /* One screen, at every screen. The single 1440x720 case above proves the
@@ -235,13 +239,12 @@ test.describe('gallery expand-on-click', () => {
       await page.locator('.gallery-item-toggle').first().click();
       await page.waitForTimeout(500);
 
-      const navHeight = await page.locator('.brand-nav').first()
-        .evaluate((el) => el.getBoundingClientRect().height);
+      const overlay = await pinnedChromeHeight(page);
       const artHeight = await page.locator('.gallery-item[data-expanded="true"] .gallery-item-art')
         .evaluate((el) => el.getBoundingClientRect().height);
 
       expect(artHeight).toBeGreaterThan(0);
-      expect(artHeight).toBeLessThanOrEqual(vp.height - navHeight + 1);
+      expect(artHeight).toBeLessThanOrEqual(vp.height - overlay + 1);
     });
   }
 
@@ -323,12 +326,12 @@ test.describe('gallery expand-on-click', () => {
     await expect(button).toHaveAttribute('aria-expanded', 'true');
     await page.waitForTimeout(900);
 
-    const { cardTop, navHeight, viewportHeight } = await page.evaluate(() => {
+    const navHeight = await pinnedChromeHeight(page);
+    const { cardTop, viewportHeight } = await page.evaluate(() => {
       const card = [...document.querySelectorAll('.gallery-item')]
         .find((el) => el.getAttribute('data-expanded') === 'true');
       return {
         cardTop: card.getBoundingClientRect().top,
-        navHeight: document.querySelector('.brand-nav').getBoundingClientRect().height,
         viewportHeight: window.innerHeight,
       };
     });

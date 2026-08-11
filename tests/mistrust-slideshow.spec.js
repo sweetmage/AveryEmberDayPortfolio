@@ -1,8 +1,9 @@
 import { test, expect } from '@playwright/test';
+import { pinnedChromeHeight } from './pinned-chrome.js';
 
 /**
  * Coverage for the "A History of Mistrust" slide stage, lightbox, and grid
- * (rebuilt 2026-07-31; see docs/plans/2026-07-31-mistrust-slideshow-redesign.md).
+ * (rebuilt 2026-07-31; plan archived into docs/archives/plans.md).
  *
  * Drags are driven with `page.mouse`, which emits real Pointer Events —
  * `useSwipeDeck` is pointer-based, so the same code path runs for a finger. The
@@ -222,8 +223,8 @@ test.describe('mistrust stage height budget', () => {
       await page.setViewportSize(vp);
       await gotoMistrust(page);
 
-      const navHeight = await page.locator('.brand-nav').first()
-        .evaluate((el) => el.getBoundingClientRect().height);
+      // Measured pinned chrome, not the nav's height — see tests/pinned-chrome.js.
+      const navHeight = await pinnedChromeHeight(page);
       const stageHeight = await page.locator('.mistrust-stage')
         .evaluate((el) => el.getBoundingClientRect().height);
 
@@ -278,10 +279,10 @@ test.describe('mistrust leads the projects page', () => {
       await page.setViewportSize(vp);
       await gotoMistrust(page);
 
-      const { nav, block } = await page.evaluate(() => ({
-        nav: document.querySelector('.brand-nav').getBoundingClientRect().height,
-        block: document.querySelector('.mistrust-slideshow').getBoundingClientRect().height,
-      }));
+      const nav = await pinnedChromeHeight(page);
+      const block = await page.evaluate(
+        () => document.querySelector('.mistrust-slideshow').getBoundingClientRect().height
+      );
 
       expect(block).toBeGreaterThan(0);
       expect(block, `slideshow ${Math.round(block)}px vs ${Math.round(vp.height - nav)}px budget`)

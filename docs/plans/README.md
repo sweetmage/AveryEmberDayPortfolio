@@ -10,9 +10,7 @@ an unticked box, it belongs in `TODO.md` too. Verify with:
 grep -rn "^\s*- \[ \]" docs/plans/
 ```
 
-That returns nothing as of 2026-08-05.
-
-Older plans are consolidated into [`../archives/plans.md`](../archives/plans.md).
+That returns nothing as of 2026-08-10.
 
 ---
 
@@ -22,35 +20,37 @@ Older plans are consolidated into [`../archives/plans.md`](../archives/plans.md)
 |---|---|
 | [`2026-08-01-copy-pass-and-gallery-descriptions.md`](2026-08-01-copy-pass-and-gallery-descriptions.md) | **Tracks A and C wait on the user's first draft.** Track B is done (Entry 118); the render path for `description` now exists, so the copy is data only. |
 
-## Complete
+## Shipped, awaiting archive
 
-Newest first. "Entry" refers to `LOGBOOK.md`.
+Both are **complete**; nothing in them is open. They sit here for one mechanical reason: both were
+written on 2026-08-10 and are only now entering git history, and the archive's recovery instructions
+are `git show <sha>:<path>` — archiving a file with no history would destroy it rather than preserve
+it. Archive them into
+[`../archives/plans.md`](../archives/plans.md#consolidation-stubs-2026-08-09) in the commit *after*
+the one that first tracks them, and the "a file here means unfinished" invariant holds again.
 
 | Plan | Outcome |
 |---|---|
-| [`2026-08-05-gallery-expand-implementation.md`](2026-08-05-gallery-expand-implementation.md) / [`2026-08-01-gallery-expand-motion-concept.md`](2026-08-01-gallery-expand-motion-concept.md) | Gallery cards expand in place — 2 columns × 2 row tracks at `md+`, art capped at one screen, View Transitions for the reflow. Entry 118. The concept's §4 entrance stagger was deliberately not built; reason in `TODO.md`. |
-| [`2026-08-01-mistrust-set-seam-dedupe-shxdowloop.md`](2026-08-01-mistrust-set-seam-dedupe-shxdowloop.md) | Set strips now take pixels from slides and geometry from the Figma export, closing a duplicated 19px seam. Entry 114, merged `ada0210`. |
-| [`2026-08-01-mistrust-asset-reexport.md`](2026-08-01-mistrust-asset-reexport.md) | Figma re-export swapped into both asset trees. Entry 113, commit `06bd820`. |
-| [`2026-07-31-mistrust-slideshow-redesign.md`](2026-07-31-mistrust-slideshow-redesign.md) / [`-shxdowloop.md`](2026-07-31-mistrust-slideshow-shxdowloop.md) | Swipeable stage, React lightbox, set mosaics. Entry 109, merged `152cf2f`. |
-| [`2026-07-28-contact-polish-width-unification.md`](2026-07-28-contact-polish-width-unification.md) | Contact polish + one content width site-wide. Entry 107. |
-| [`2026-07-27-contact-unhide-mistrust-assets.md`](2026-07-27-contact-unhide-mistrust-assets.md) | Contact unhidden, Mistrust assets resynced, og card regenerated. Entry 106. |
-| [`2026-07-24-gallery-tag-system.md`](2026-07-24-gallery-tag-system.md) | `All / Digital / Traditional / Both` filter, tag data wired, vertical rail. Entries 099–101, commit `235f254`. **Decision 3 (visible tag pills) was superseded** in Entry 101 by sr-only tags + a visible tool list. |
-| [`2026-07-24-bubble-visual-cleanup-shxdowloop-nanoagent-plan.md`](2026-07-24-bubble-visual-cleanup-shxdowloop-nanoagent-plan.md) | Bubble-test flake fixed by frame-based sampling; visual-gate defects closed (`maxDiffPixels: 500` floor, server into `globalSetup`); gallery filter rail. Entries 099–101, commit `15fe32d`. |
-| [`2026-07-24-bubble-hero-exclusions-shxdowloop.md`](2026-07-24-bubble-hero-exclusions-shxdowloop.md) | Hero logo/blob exclusions + the repo's first motion-enabled tests. Entry 090. |
-| [`2026-07-24-projects-heading-padding-shxdowloop.md`](2026-07-24-projects-heading-padding-shxdowloop.md) | Heading padding, with all 40 baselines adjudicated numerically. Entry 089. |
-| [`2026-07-24-docs-sync-todo-consolidation.md`](2026-07-24-docs-sync-todo-consolidation.md) | Plan-doc status reconciliation. Entry 088; re-run 2026-08-01 (Entry 112) and again 2026-08-03 (Entry 115). |
-| [`2026-07-24-cross-page-css-consistency.md`](2026-07-24-cross-page-css-consistency.md) | Home/Gallery unified on `.brand-page-title` / `.brand-title-bar`; gallery cards onto brand tokens. Entry 097; follow-on Entry 098. |
-| [`2026-07-24-gallery-widening.md`](2026-07-24-gallery-widening.md) | 1400px centered container, 3 columns at `xl`. Entry 095. |
-| [`2026-07-23-nav-button-restyle.md`](2026-07-23-nav-button-restyle.md) | Square, no-chrome-at-rest nav group; scope grew to the logo-as-home-button and the project-tab restyle. Entries 082–087, merged `098f0b1`. |
-| [`2026-07-22-visual-baseline-gate-shxdowloop.md`](2026-07-22-visual-baseline-gate-shxdowloop.md) | Baselines converted into a real compare-based gate. Entry 081, `833d46a` → `6ddccd2`. **Its one carried-over item — running the gate in CI — now lives in [`../visual-gate.md`](../visual-gate.md).** |
-| [`2026-07-15-projects-vertical-tabs.md`](2026-07-15-projects-vertical-tabs.md) | Sticky vertical Projects rail at `lg+`. Entries 079–080. |
-| [`2026-07-14-nav-restructure.md`](2026-07-14-nav-restructure.md) / [`-wrapup-shxdowloop.md`](2026-07-14-nav-restructure-wrapup-shxdowloop.md) | Home/Projects/Gallery/Contact restructure. Entries 075–078. |
-| [`2026-07-13-srcset-variants.md`](2026-07-13-srcset-variants.md) | srcset/@2x variants. Entry 073, commit `f63671d`. |
-| [`2026-07-12-motion-load-perf.md`](2026-07-12-motion-load-perf.md) | Time-to-motion / TTI reductions. Entry 072. |
+| [`2026-08-10-sticky-rail-one-column-rule.md`](2026-08-10-sticky-rail-one-column-rule.md) | Shipped. Nav unpinned below 768px, tab/filter groups pinned from 768px up, overlay tokens so "one screen" means the chrome actually pinned. The pre-existing `lg:sticky` rail was measured to have zero travel and had never worked since Entry 079. Entry 133; 18 new `sticky-chrome.spec.js` cases. |
+| [`2026-08-09-bubble-exclusion-flake.md`](2026-08-09-bubble-exclusion-flake.md) | **Partly superseded — read with Entry 131.** Written on a branch that was 8 commits stale; production had already fixed the wedge on 2026-08-09 by rescuing on lack of progress rather than elapsed frames, and that is the mechanism that shipped. This plan's Fix B was dropped. What survived is **Fix A, the seed-clear** (2–3 of 7 bubbles were born inside a zone every load) and the from-frame-0 regression spec. Its measurements stand and independently corroborate Entry 131's: 67 consecutive overlap frames vs their 68, same conditions. Entry 133. |
+
+## Complete
+
+Nothing yet, beyond the two above. **On 2026-08-09 all 23 finished plans were archived** into
+[`../archives/plans.md`](../archives/plans.md#consolidation-stubs-2026-08-09), which carries the
+outcome and LOGBOOK entry for each one plus the git commands to restore any full text. This
+directory now holds only plans with work still open, which is the point of the split: a plan sitting
+here means something is unfinished.
+
+**Do not look for design rationale in the archive first.** The load-bearing rules those plans
+established were promoted into [`../../AGENTS.md`](../../AGENTS.md) as they landed — the hover
+contract, square images in rounded frames, the gallery expand geometry, the picture-is-the-wall
+bubble rule, the Mistrust one-screen cap, and the shared content geometry. `AGENTS.md` is current;
+an archived plan is a record of one moment.
 
 ## A note on stale branch/date lines
 
-Several completed plans open with a "Branch:" or status line written *during* the run — some say
-"not pushed", some cite a deploy-pause date of Aug 6 that was later corrected to Aug 7. Those lines
-are accurate as records of the moment they were written and are deliberately not rewritten. This
-table is the current status; the plan bodies are history.
+Archived plans open with a "Branch:" or status line written *during* the run — some say "not
+pushed", some cite a deploy-pause date of Aug 6 that was later corrected to Aug 7. Those lines are
+accurate as records of the moment they were written and were deliberately not rewritten before
+archiving. The stub table is the current status; the plan bodies are history.

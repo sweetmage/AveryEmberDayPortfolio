@@ -89,7 +89,7 @@ Do NOT use these in `bash` tool calls (they are PowerShell-specific and often fa
 
 `npm run serve` — serves the repo root on :8080 (**legacy static site only** — not the Next.js app)
 
-`npm test` / `npx playwright test` — smoke tests + a **compare-based** visual regression gate, plus bubble-engine coverage, gallery expand coverage, Mistrust set-strip checks and the WebKit nav guard (**151 tests**, green as of 2026-08-09: 40 visual = 5 pages × 4 breakpoints × 2 themes, plus smoke, bubble-exclusion, gallery-expand, strip-vs-export, and 21 `webkit-mobile` nav assertions).
+`npm test` / `npx playwright test` — smoke tests + a **compare-based** visual regression gate, plus bubble-engine coverage, gallery expand coverage, Mistrust set-strip checks and the WebKit nav guard (**171 tests**, counted by `npx playwright test --list` on 2026-08-10: 40 visual = 5 pages × 4 breakpoints × 2 themes, 32 gallery-expand, 25 Mistrust slideshow, 22 bubble-exclusion, 21 `webkit-mobile` nav assertions, 18 sticky-chrome, 6 set-strip, 4 smoke-next, 3 mobile-zoom). **Re-run `--list` rather than trusting this number** — it has read 73, 90, 131 and 151, and was stale every time.
 
 > **The suite tests the Next.js app and nothing else.** `tests/smoke-interaction.spec.js` and the
 > repo-root `webServer` on :4321 that existed only to feed it were both deleted 2026-08-09 (Entry
@@ -145,7 +145,7 @@ Do NOT use these in `bash` tool calls (they are PowerShell-specific and often fa
 > day (Entry 115) once contention turned out not to be the root cause.
 
 > **Full reference: [`docs/visual-gate.md`](docs/visual-gate.md)** — coverage matrix, tolerance
-> rationale, the four traps, motion-spec rules, and the CI containerization item. Read it before
+> rationale, the six traps, motion-spec rules, and the CI containerization item. Read it before
 > changing anything about the gate or re-baselining. The essentials:
 >
 > - **To accept an intentional visual change:** `npm test -- --update-snapshots`, then *review the

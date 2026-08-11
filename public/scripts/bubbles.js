@@ -219,7 +219,12 @@
       this.lastUpdate = 0;
       this._scheduledRAF = null;
       this._update = this._update.bind(this);
-      this._schedule();
+      /* Built synchronously, not on the next frame. The layers are constructed
+         immediately after this and now seed their bubbles against these rects,
+         so an empty first pass would put bubbles straight back on the furniture
+         — which is the whole point of the seeding change. `_update` re-arms the
+         periodic refresh itself. */
+      this._update();
       window.addEventListener('resize', this._update);
       window.addEventListener('scroll', this._update, { passive: true });
     }
@@ -306,10 +311,39 @@
       this.svy = 0;
     }
 
-    seedPosition(bounds) {
+    /* Seeded CLEAR of the exclusion zones, in the layer's own coordinate space.
+       Until 2026-08-10 this was a plain uniform random point, so **2–3 of the 7
+       global bubbles started INSIDE a zone on every single load** (measured on
+       /contact/ at 1440px across 6 loads).
+
+       That is the *initiating event* behind the wedge the NO_PROGRESS_FRAMES
+       rescue above recovers from. The rescue is the right safety net and stays
+       exactly as it is — it catches wedges from scrolling cards and resizes,
+       which no amount of seeding can prevent. This just stops the engine
+       manufacturing its own work at t=0: fewer wedges to catch, and none of
+       them on the very first frames when the page is most likely to be looked
+       at.
+
+       Degrades safely. `zones` is empty only if the tracker has no rects, in
+       which case this is the old behaviour exactly; and the attempt cap means a
+       page whose zones tile nearly everything (Projects at 768px is ~94% zone
+       by area) falls back to the last candidate rather than spinning. */
+    seedPosition(bounds, zones = []) {
       const margin = this.radius + 40;
-      this.x = margin + Math.random() * (bounds.width  - margin * 2);
-      this.y = margin + Math.random() * (bounds.height - margin * 2);
+      const pick = () => ({
+        x: margin + Math.random() * (bounds.width  - margin * 2),
+        y: margin + Math.random() * (bounds.height - margin * 2)
+      });
+      let p = pick();
+      for (let i = 0; i < 60 && zones.length; i++) {
+        const clear = !zones.some(z =>
+          p.x > z.left - this.radius && p.x < z.right  + this.radius &&
+          p.y > z.top  - this.radius && p.y < z.bottom + this.radius);
+        if (clear) break;
+        p = pick();
+      }
+      this.x = p.x;
+      this.y = p.y;
       this.render(); // set transform immediately so nothing flashes at (0,0)
     }
 
@@ -399,7 +433,7 @@
 
   // ── Bubble layer ────────────────────────────────────────────────
   class BubbleLayer {
-    constructor(containerSelector, bubbleCount, radiusRange, isFixed) {
+    constructor(containerSelector, bubbleCount, radiusRange, isFixed, zoneProvider) {
       this.container = document.querySelector(containerSelector);
       if (!this.container) {
         this.bubbles = [];
@@ -417,6 +451,10 @@
       window.addEventListener('resize', this._onResize);
       window.addEventListener('scroll', this._onScroll, { passive: true });
 
+      // Resolved once, after the container is known: the provider converts the
+      // tracker's viewport-space rects into THIS layer's space.
+      const seedZones = zoneProvider ? zoneProvider(this.container, isFixed) : [];
+
       const scale = getViewportScale();
       for (let i = 0; i < bubbleCount; i++) {
         const t = Math.random();
@@ -424,7 +462,7 @@
         const radius = base * scale;
         const color = getColorSet(i);
         const b = new Bubble(this.container, radius, color, t);
-        b.seedPosition(this.cachedBounds);
+        b.seedPosition(this.cachedBounds, seedZones);
         this.bubbles.push(b);
       }
     }
@@ -1047,9 +1085,32 @@
       const selectors = [...DEFAULT_EXCLUSIONS, ...(hasHero ? HOME_EXCLUSIONS : []), ...extra];
       this.zones = new ExclusionZoneTracker(selectors);
 
+      /* Seeding zones, converted into each layer's own space. The tracker's
+         rects are VIEWPORT-relative; the fixed global layer works in DOCUMENT
+         space (`render(scrollY)` subtracts the scroll on the way out) and the
+         hero layer works in container-local space. Getting this wrong would
+         seed bubbles clear of the wrong rectangles, which fails silently. */
+      const seedZones = (container, isFixed) => {
+        const rects = this.zones.rects;
+        if (isFixed) {
+          const scrollY = window.scrollY;
+          return rects.map(z => ({
+            left: z.left, right: z.right,
+            top: z.top + scrollY, bottom: z.bottom + scrollY
+          }));
+        }
+        const c = container.getBoundingClientRect();
+        return rects.map(z => ({
+          left:   z.left   - c.left,
+          right:  z.right  - c.left,
+          top:    z.top    - c.top,
+          bottom: z.bottom - c.top
+        }));
+      };
+
       // Create layers
-      this.globalLayer = new BubbleLayer('.brand-bubbles-global', 7, [10, 28], true);
-      this.heroLayer    = new BubbleLayer('.brand-bubbles-hero',   3, [40, 75], false);
+      this.globalLayer = new BubbleLayer('.brand-bubbles-global', 7, [10, 28], true, seedZones);
+      this.heroLayer    = new BubbleLayer('.brand-bubbles-hero',   3, [40, 75], false, seedZones);
       this.heroBlobLayer = new HeroBlobLayer();
 
       // Per-frame layout caches — hero rect and derived local zones only

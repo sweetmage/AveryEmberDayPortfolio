@@ -134,6 +134,32 @@ consolidated in [`docs/archives/plans.md`](docs/archives/plans.md).
 
 ### 2026-08
 
+- **Aug 10** — **The sticky rail, and the one-column rule for the nav.** If the user can see more
+  than one column the nav and the current selection both stay on screen; below 768px nothing is
+  pinned and the page scrolls as one piece. Found on the way in: the `lg:sticky` Projects rail had
+  **zero travel since Entry 079** and had never worked — a sticky child of a wrapper exactly its own
+  height cannot move, and the visual gate captures at scroll 0 where that is invisible. Adds the
+  `--brand-*-overlay` tokens, replaces the hardcoded `top-16`, and introduces the
+  `scroll-padding-top` the site never had. 18 new specs. Entry 133.
+- **Aug 10** — **`develop` was 8 commits stale and is now reconciled.** Its uncommitted tree was
+  replayed onto the released branch: the sticky rail, the plan-doc archive sweep, a visual-gate
+  font-race fix and the bubble seed-clear were carried across; its bubble wedge fix and `Script.js`
+  removal were **dropped as already done better on production** (Entries 131, 128). The two wedge
+  investigations were independent and agreed — 67 consecutive overlap frames vs 68 — so that root
+  cause is settled. Snapshot of the old tree preserved as `ded51f5`. Entry 133.
+- **Aug 10** — **Visual gate: a late layout shift the existing waits could not see (Trap 6).** The
+  sticky rail publishes its height from JS after first paint, and `--stage-cap` / `--art-cap` are
+  computed from it, so the Mistrust stage resized after images and fonts had settled — surfacing as
+  "failed to take two consecutive stable screenshots", 125,968 px, passing on re-run. The gate now
+  waits for the document height to hold steady across three frames. Entry 133.
+- **Aug 10** — **Visual gate flake fixed (Trap 5).** `document.fonts.ready` resolves against an
+  *empty* font set while the remote Google Fonts `@import` is still in flight, so captures could
+  render in the fallback. Three runs failed three different pages, all passing on re-run. The gate
+  now waits for the faces to exist and report loaded. `docs/visual-gate.md`. Entry 133.
+- **Aug 10** — **23 finished plan docs archived** into `docs/archives/plans.md` as stubs; six
+  dangling path references repointed. `docs/plans/` now holds open plans only, so a file sitting
+  there means something is unfinished. Entry 133.
+
 - **Aug 9** — **RELEASED `17c5bf6`.** Five commits pushed in one production deploy (15 credits),
   `state: ready` and not skipped. Live checks on averyemberday.com: all 5 pages 200, the deployed
   `/scripts/bubbles.js` carries the fix, a deleted source PNG 404s while `slide-01.webp` still
@@ -262,7 +288,7 @@ consolidated in [`docs/archives/plans.md`](docs/archives/plans.md).
 
 Durable versions now live where they get read:
 
-- Everything about the visual gate — coverage, tolerance rationale, the four traps, motion-spec
+- Everything about the visual gate — coverage, tolerance rationale, the six traps, motion-spec
   rules, the CI item → **[`docs/visual-gate.md`](docs/visual-gate.md)**.
 - Deploy/credit model, the pause, and contact-form registration → **[`docs/deploys.md`](docs/deploys.md)**.
 - Repo structure, execution model, entry points per task → **[`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md)**.

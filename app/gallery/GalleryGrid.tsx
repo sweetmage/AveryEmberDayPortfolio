@@ -3,6 +3,7 @@
 import { Fragment, useState, useMemo, useEffect, useCallback, useRef } from 'react';
 import { flushSync } from 'react-dom';
 import type { GalleryItem } from './gallery-data';
+import useStickyRailOverlay, { topOverlayPx } from '../components/useStickyRailOverlay';
 
 /* srcset URLs must not contain raw spaces (the parser splits on them), so
    every rung is encodeURI'd — the SelfPortraitSeries filename has spaces. */
@@ -150,6 +151,9 @@ export default function GalleryGrid({ items }: GalleryGridProps) {
   const [expandedSrc, setExpandedSrc] = useState<string | null>(null);
   const cardRefs = useRef(new Map<string, HTMLElement>());
   const gridRef = useRef<HTMLDivElement | null>(null);
+  const railRef = useRef<HTMLDivElement>(null);
+
+  useStickyRailOverlay(railRef, gridRef);
   const [columnCount, setColumnCount] = useState(1);
 
   /* Read the column count off the grid's resolved template rather than mirroring
@@ -354,14 +358,18 @@ export default function GalleryGrid({ items }: GalleryGridProps) {
     const card = cardRefs.current.get(expandedSrc);
     if (!card) return;
 
-    const nav = document.querySelector('.brand-nav');
-    const navHeight = nav ? nav.getBoundingClientRect().height : 0;
+    /* The pinned chrome, not the nav's height. Two ways those differ: below
+       768px the nav is static and covers nothing, so reserving room for it left
+       a 62px gap above the card; and in the 768–1023px band the filter strip is
+       pinned under the nav as well, so clearing only the nav would land the
+       card's head behind the strip. */
+    const overlay = topOverlayPx();
     const top = card.getBoundingClientRect().top;
 
-    if (top >= navHeight && top <= window.innerHeight * 0.5) return;
+    if (top >= overlay && top <= window.innerHeight * 0.5) return;
 
     window.scrollTo({
-      top: window.scrollY + top - navHeight - 12,
+      top: window.scrollY + top - overlay - 12,
       behavior: prefersReducedMotion() ? 'auto' : 'smooth',
     });
   }, [expandedSrc]);
@@ -372,7 +380,15 @@ export default function GalleryGrid({ items }: GalleryGridProps) {
           `max-w-(--brand-content-max)` with the 24px gutter supplied by the children, so
           the rail, the title and the title bar all share one left edge. */}
       <div className="mx-auto max-w-(--brand-content-max) lg:flex lg:items-start">
-        <div className="lg:w-[260px] lg:shrink-0">
+        {/* Sticky on THIS column, not on the filter bar inside it, and
+            `lg:items-start` on the parent is load-bearing for that — see the
+            long note on the same element in ProjectTabs.tsx. The wrapper class
+            list is deliberately identical to that one; the bar inside carries
+            two extra classes of its own. */}
+        <div
+          ref={railRef}
+          className="md:sticky md:top-(--brand-nav-height) md:max-lg:z-40 md:max-lg:bg-bg lg:w-[260px] lg:shrink-0"
+        >
           {/* Filter bar — a filter group, not a tablist, so no role="tab"/
               aria-selected: aria-pressed on each button is the correct
               pattern here. Below lg it's a horizontal row with the same
@@ -382,7 +398,9 @@ export default function GalleryGrid({ items }: GalleryGridProps) {
               `.brand-tab-divider` flips horizontal below 400px, so the group
               has to actually be a column there or the rules dangle as slivers
               inside a row. See the note on that rule in brand.css. */}
-          <div className="gallery-filter-bar bubble-exclude flex flex-wrap gap-0 px-6 pt-6 pb-4 max-[400px]:flex-col lg:sticky lg:top-16 lg:flex-col lg:flex-nowrap lg:pt-8 lg:pb-0">
+          {/* `sticky`/`top-16` removed here and replaced on the column above,
+              for the reasons documented at the same edit in ProjectTabs.tsx. */}
+          <div className="gallery-filter-bar bubble-exclude flex flex-wrap gap-0 px-6 pt-6 pb-4 max-[400px]:flex-col lg:flex-col lg:flex-nowrap lg:pt-8 lg:pb-0">
             <span className="sr-only">Filter by production type</span>
             {FILTER_BUTTONS.map(({ key, label }, i) => (
               <Fragment key={key}>
@@ -411,8 +429,12 @@ export default function GalleryGrid({ items }: GalleryGridProps) {
             </span>
           </div>
 
-          {/* Result count (visible) */}
-          <div className="px-6 pb-6 text-center text-sm text-text-muted lg:pb-0 lg:pt-4">
+          {/* Result count (visible). `bubble-exclude` for the same reason the
+              filter bar above carries it, and it became load-bearing once the
+              rail stopped scrolling away: a bubble parked over this line used
+              to leave with the rail, and now would sit on the text for the
+              whole page. */}
+          <div className="bubble-exclude px-6 pb-6 text-center text-sm text-text-muted lg:pb-0 lg:pt-4">
             {resultCountText}
           </div>
         </div>

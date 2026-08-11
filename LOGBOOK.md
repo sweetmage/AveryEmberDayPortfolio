@@ -1,3 +1,97 @@
+## Entry 133 — 2026-08-10
+
+**Agent:** Opus 5 (sable, main)
+**Cycle:** shxdowflow — reconcile the stale `develop` tree onto the released branch
+**Branch:** `reconcile/2026-08-10`, cut from `portfoliowebsite` @ `6bf9598`
+**Task:** "whats next" → finish the bench work, then, at the user's instruction, replay it onto production
+
+### The finding that reframed the session
+
+`develop` was **8 commits behind `portfoliowebsite`.** The release had already shipped (`17c5bf6`,
+checkpointed in `6bf9598`) and production's LOGBOOK had run on to Entry 132, while `develop` still
+carried a deploy-pause banner and a TODO describing the pause as pending.
+
+The preflight that missed it compared `develop` against `origin/develop` — which was perfectly in
+sync, and told me nothing. **On this repo "am I current?" means comparing against the production
+branch**, because that is where releases land and where work continues afterwards. A stale-branch
+banner now sits at the top of `develop`'s TODO so the next reader hits it immediately, and the
+uncommitted tree there is preserved as `ded51f5` rather than rebased away.
+
+### Two of the four tracks were already done on production, better
+
+- **The bubble wedge flake.** Fixed on 2026-08-09 as Entry 131. Worth recording that the two
+  investigations were independent and *agreed*: production measured **68** consecutive overlap
+  frames at opacity 1 with `_relocating` FALSE on Contact @1440; the `develop` session measured
+  **67** under the same conditions. Both falsified the relocation hypothesis `TODO.md` had carried
+  for weeks. Production's mechanism is the better one and is what survives here — rescue on lack of
+  progress (`NO_PROGRESS_FRAMES`) rather than on elapsed frames, which separates a real wedge from
+  the deliberate 8px/frame escape glide with no threshold guesswork. The `develop` version, which
+  attacked the same deadlock from the escape side, was **dropped**.
+- **The dangling `Script.js` 404.** Also already fixed on production, and more thoroughly: the tag
+  was removed from all four legacy pages *and* `tests/smoke-interaction.spec.js` plus the `:4321`
+  `webServer` block were deleted with it, on the correct reasoning that those pages are unmaintained
+  history and are not deployed. (My earlier "production still has it" reading was wrong — the grep
+  hit production's explanatory comment, not a live tag.)
+
+### What was carried across
+
+- **The sticky-rail one-column rule** (plan doc included). Not on production at all. The
+  `lg:sticky` Projects rail had **zero travel since Entry 079** and had never worked: a sticky child
+  of a wrapper exactly its own height cannot move, and the visual gate is blind to it because it
+  captures `fullPage` at scroll 0 where both look identical. Sticky now lives on the column;
+  `lg:items-start` on the flex parent is load-bearing in the counter-intuitive direction, keeping
+  the column short so travel exists. Adds `--brand-nav-overlay` / `--brand-rail-overlay` /
+  `--brand-top-overlay`, replaces the hardcoded `top-16`, and introduces the `scroll-padding-top`
+  the site never had. 18 new `sticky-chrome.spec.js` cases.
+- **The plan-doc archive sweep** — 23 finished plans into `docs/archives/plans.md` as stubs, six
+  dangling path references repointed. `docs/plans/` now holds open plans only.
+- **The visual-gate font race** (Trap 5). `document.fonts.ready` **resolves against an empty font
+  set**: the faces arrive via a remote `@import`, so before that stylesheet lands there are no
+  `@font-face` rules and "all zero fonts loaded" is trivially true. Three consecutive runs failed
+  three *different* pages, every one passing on re-run — different-page-each-time is the signature.
+- **The seed-clear**, lifted onto production's engine. It is complementary rather than an
+  alternative: 2–3 of the 7 global bubbles were being *born* inside a zone on every load, so the
+  rescue was catching wedges the engine manufactured for itself at t=0. The rescue is untouched and
+  still the safety net for wedges from scrolling and resizing, which no seeding can prevent.
+- **The from-frame-0 parking spec**, rethresholded against this engine (below).
+
+### `brand.css` merged rather than overwritten
+
+Both branches edited it. Production's change was the WebKit fix — an explicit
+`width: var(--brand-nav-height)` replacing `aspect-ratio: 1`, because WebKit does not fold an
+aspect-ratio-derived width into a flex item's intrinsic contribution and the theme toggle rendered
+entirely off screen on every iPhone and iPad. A three-way merge applied cleanly (the regions are
+disjoint) and both sides were verified present afterwards, rather than assumed.
+
+### A second gate defect, found by the reconciled tree rather than reasoned about
+
+The suite went 171/171, then failed one case on the next run: `projects-mistrust @ 768px — light`,
+with **"Failed to take two consecutive stable screenshots"** and 125,968 differing pixels — a
+distinct signature from the font race, and far too large to be glyphs. It passed 3/3 standalone
+immediately after, so it was tempting to file as flake. It is not.
+
+`useStickyRailOverlay` publishes the pinned strip's height from a `useEffect` + ResizeObserver,
+so it lands **after first paint**, and `--stage-cap` / `--art-cap` are computed from it. The stage
+therefore resizes once more *after* images, fonts and two composited frames have all settled — a
+late layout shift that this change introduced and that none of the existing waits could see.
+
+The gate now waits for `document.documentElement.scrollHeight` to hold steady across three
+consecutive frames. Height rather than the token, deliberately: it catches any late reflow, does not
+need to know which pages have a rail, and `scrollHeight` is an integer so equality is exact.
+Recorded as Trap 6.
+
+### Verification
+
+- Suite **171 tests** (`--list`): production's 151 plus 18 sticky-chrome and 2 parking cases.
+- Parking-spec threshold re-derived on *this* engine, not carried over: natural load reads 0 on both
+  cases across three loads; the pre-fix engine read 67; an adversarial probe that plants all seven
+  bubbles dead-centre on the target reads 44–66 on Contact and 4–12 on Projects. Bar set at 30 —
+  above `NO_PROGRESS_FRAMES` (20) plus exit slack, far below the 67 that means the wedge is back.
+- Engine copies byte-identical; `node --check` clean on both.
+- `shxdowmap refresh --auto` → baseline re-recorded.
+
+---
+
 ## Entry 132 — 2026-08-09
 
 **Agent:** Opus 5 (kestrel, main)
