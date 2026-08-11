@@ -3,7 +3,13 @@
 **Agent:** Opus 5 (sable, main)
 **Cycle:** shxdowflow — reconcile the stale `develop` tree onto the released branch
 **Branch:** `reconcile/2026-08-10`, cut from `portfoliowebsite` @ `6bf9598`
-**Task:** "whats next" → finish the bench work, then, at the user's instruction, replay it onto production
+**Task:** "whats next" → finish the bench work, then, at the user's instruction, replay it onto production and release
+
+**Released** as `73b5fa4` at the user's explicit instruction ("merge and publish it looks good"), after
+reviewing the diff and the change headed in Chrome. Checkpoint:
+[`docs/checkpoints/2026-08-10-sticky-rail-release.md`](docs/checkpoints/2026-08-10-sticky-rail-release.md).
+The checkpoint was written *before* the push so this release costs **one** production deploy rather
+than the two the 2026-08-09 release spent on a follow-up docs commit.
 
 ### The finding that reframed the session
 

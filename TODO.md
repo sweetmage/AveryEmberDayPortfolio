@@ -134,6 +134,9 @@ consolidated in [`docs/archives/plans.md`](docs/archives/plans.md).
 
 ### 2026-08
 
+- **Aug 10** — **RELEASED `73b5fa4`.** The one-column rule plus the reconciliation, published in a
+  single production deploy (15 credits). Checkpoint:
+  `docs/checkpoints/2026-08-10-sticky-rail-release.md`. Entry 133.
 - **Aug 10** — **The sticky rail, and the one-column rule for the nav.** If the user can see more
   than one column the nav and the current selection both stay on screen; below 768px nothing is
   pinned and the page scrolls as one piece. Found on the way in: the `lg:sticky` Projects rail had
