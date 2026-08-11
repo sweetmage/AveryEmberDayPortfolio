@@ -17,8 +17,9 @@
 ## Open work
 
 Everything genuinely pending. Nothing here except the contact-form test is blocked by the deploy
-pause — and there is a reason to land work *before* Aug 7: one production deploy costs 15 credits out
-of 20/month, so anything merged before the pause lifts ships in the same deploy.
+pause, **which expired on Aug 7 and is now three days overdue** — the merge below is the single
+gating step for the whole repo. One production deploy costs 15 credits of 20/month, so everything
+that lands before it ships in the same deploy.
 
 ### Ready to build now
 
@@ -42,28 +43,6 @@ of 20/month, so anything merged before the pause lifts ships in the same deploy.
       them makes both lines span the full 1400px container, which on a two-sentence paragraph is a real
       visual change — hence a user call rather than a silent fix.
 
-- [ ] **The bubble flake survived Entry 115's fix, and it is now the only thing keeping the suite
-      from being reliably green.** `bubbles-exclusion › Contact form @ 1440px`, ~1950px² overlap
-      against an expected 0. Measured 2026-08-05 (Entry 118): **2 failures in 4 full runs** with the
-      new gallery spec present, **1 in 3** with it excluded, **0 in 1** standalone (10/10). So it is
-      not caused by the gallery work, and the sample is too small to say that work worsens it.
-      **Start from the recorded hypothesis, not from scratch:** the overlap is a *whole* bubble, not a
-      graze, which fits the relocation path Entry 115 named as the next suspect — the deadlock rescue
-      teleports a trapped bubble and holds `_relocating` for ~560ms while it fades back in, and
-      `resolveZoneCollisions` skips it that whole time. If the destination is inside a zone, the bubble
-      fades to full opacity *inside the form*, past the `opacity <= 0.05` skip and deliberately not
-      being pushed out.
-      **Do not raise a tolerance** — twice now the cause was elsewhere (Entries 090, 115), and Entry
-      115 produced two wrong fixes by theorising instead of reading `bubbles.js`. Remember the engine
-      is duplicated: `scripts/bubbles.js` and `public/scripts/bubbles.js`.
-
-      **A SECOND case exists, and it is not the recorded one: `bubbles-exclusion › Projects tabs @
-      768px`.** Seen twice in ~10 full runs on 2026-08-07, ~838px² overlap against an expected 0,
-      while working on the gallery — a page it does not touch. Both times it passed on re-run, and
-      the bubble spec passed 2/2 standalone immediately after. So the flake is not specific to the
-      Contact form or to 1440px, which weakens "something about that one form/width" and strengthens
-      the relocation hypothesis above: any zone, any width, whenever a rescued bubble happens to fade
-      in inside one. Worth checking both cases against the same fix rather than chasing them apart.
 - [ ] **Gallery filter entrance stagger (Track B leftover, deliberate).** The concept's §4 asks for
       entering cards to fade up from `0.96` staggered ~25ms by grid position. The *movement* tween
       shipped in Entry 118 and is the part that section calls the one that makes filtering feel
@@ -110,18 +89,43 @@ of 20/month, so anything merged before the pause lifts ships in the same deploy.
 
 ## Awaiting a user step
 
-- **[Aug 7] Lift the deploy pause.** Merge `develop` → `portfoliowebsite` and push **once** (one
-  production deploy = 15 credits, not one per commit). Then test the contact form immediately, and
-  revert the pause banners in `AGENTS.md` / `docs/NOTES.md`. Full checklist:
-  [`docs/deploys.md`](docs/deploys.md#lifting-the-pause-on-2026-08-07); LOGBOOK Entry 105.
-  - **Aug 7, not Aug 6.** The credit cycle ends `2026-08-07T00:00:00-07:00`, confirmed against the
-    Netlify API. Every doc and the `pre-push` guard said Aug 6 until 2026-08-03 — the guard would
-    have expired a full day before credits reset (Entry 115).
-  - **The guard was also found inert and is now permanently fixed** (Entries 115–116).
-    `core.hooksPath` pointed at `.githooks`, which existed only on the architecture-map branch, so
-    `develop` ran with no hooks at all — no deploy guard, no Git LFS. That branch is merged and the
-    config points back at the tracked directory. A fresh clone still needs
-    `git config core.hooksPath .githooks` once.
+> ### ⚠ THIS BRANCH IS STALE. Read this before trusting anything above.
+>
+> **`portfoliowebsite` is 8 commits AHEAD of `develop`** (checked 2026-08-10). The deploy pause was
+> lifted, the release shipped as `17c5bf6`, and its checkpoint was recorded in `6bf9598`. Every line
+> in this file describing the pause as pending predates that release and is wrong — this branch
+> never received it.
+>
+> **This file is not the current TODO.** `portfoliowebsite:TODO.md` is. It carries items this copy
+> has never heard of (ten orphaned icon files, a WebKit-only white rectangle under the nav) and has
+> already closed one this copy still lists above: the ~6 MB of unreferenced `public/` PNGs, done in
+> `0522f32`, payload 15.80 → 9.65 MB.
+>
+> **The LOGBOOK diverged too.** Production runs to **Entry 132**; this branch's uncommitted entries
+> were renumbered to **133–135** to stop them colliding. Production's Entries 127–132 do not exist
+> here.
+>
+> Nothing here should be merged, and no new work should start on this branch, until the
+> reconciliation below is decided.
+
+- **Reconcile `develop` with `portfoliowebsite`** — the blocking decision, and it is the user's. The
+  uncommitted tree splits cleanly in two:
+  - **Genuinely new, not on production:** the plan-doc archive sweep (Entry 133), the sticky-rail
+    one-column rule and its 18 specs (Entry 134), the dangling `Script.js` 404 fix, and the
+    visual-gate font-race fix (Entry 135).
+  - **Superseded:** the bubble-flake fix. Production solved the same defect on 2026-08-09 in
+    **Entry 131 / `17c5bf6`**, triggering the rescue on lack of progress (`NO_PROGRESS_FRAMES`, 20)
+    rather than on elapsed frames. Both investigations instrumented the live engine and reached the
+    same root cause independently — 68 consecutive overlap frames there, 67 here, `_relocating`
+    FALSE in both — which is strong mutual confirmation. **Production's mechanism is the better
+    one:** progress distinguishes a wedge from the healthy 8px/frame glide with no threshold
+    guesswork. What is worth salvaging on top of it is the **seed-clear** (`seedPosition` rejecting
+    candidates inside a zone, which removes the initiating event instead of recovering from it) and
+    the **from-frame-0 regression spec**.
+- **Contact form registration.** The old blocker was that the published deploy predated the
+  2026-08-01 detection toggle. The release has since shipped, so re-check the Netlify API rather
+  than assuming: until a test submission passes, `/contact/thanks/` promises "Your message has been
+  sent" without that being true, and the About copy points readers straight at it (Entry 119).
 - **Contact form: detection ON, form still unregistered — needs a deploy that builds.** Registration
   happens when Netlify's build-time parser reads deployed HTML; the published deploy (`da4b4be`)
   predates the 2026-08-01 toggle. API confirms `forms: []` and `submissions: []`.
@@ -160,11 +164,34 @@ Gallery per-piece tool tags are **not** duplicated here — they are the `tools`
 
 ## Done
 
-Full detail in `LOGBOOK.md` (newest-first). Plan docs live in `docs/plans/`; earlier ones are
-consolidated in [`docs/archives/plans.md`](docs/archives/plans.md).
+Full detail in `LOGBOOK.md` (newest-first). **`docs/plans/` now holds open plans only** — as of
+2026-08-09 every finished plan is consolidated in
+[`docs/archives/plans.md`](docs/archives/plans.md#consolidation-stubs-2026-08-09), so a file still
+sitting in `docs/plans/` means something is unfinished.
 
 ### 2026-08
 
+- **Aug 10** — **The bubble flake is fixed, and the fix had never run.** `scripts/bubbles.js` carried
+  the 2026-08-09 fix; `public/scripts/bubbles.js` — the copy the export serves and every spec loads —
+  did not. Mirroring it exposed a worse bug: `resolveZoneCollisions` called a `_escape` method that
+  was never written, so the engine threw on the first trapped bubble and `window.__bubbleEngine` was
+  never assigned. Bubbles were dead on every page. `_escape` written (nearest edge whose exit is not
+  another zone); new from-frame-0 spec measures parked *duration*, 67 frames pre-fix → 0 post-fix on
+  Contact @1440. Entry 135.
+- **Aug 10** — **The sticky rail one-column rule.** Nav unpinned below 768px, tab/filter groups
+  pinned from 768px up, `--brand-*-overlay` tokens so every "one screen" calculation subtracts what
+  is actually pinned. The `lg:sticky` Projects rail had had **zero travel since Entry 079** and never
+  worked; the gate could not see it because it captures at scroll 0. 18 new specs. Entry 134.
+- **Aug 10** — Two defects found on the way past: the legacy pages had requested a **deleted
+  `Script.js` for a month** (removed 2026-07-09, tags left in all four HTML files), and the visual
+  gate's `document.fonts.ready` wait **resolves against an empty font set** while the remote font
+  `@import` is still in flight — three consecutive runs failed three different pages, all passing on
+  re-run. Both fixed; the font race is Trap 5 in `docs/visual-gate.md`. Entry 135.
+- **Aug 9** — **All 23 finished plan docs archived** into `docs/archives/plans.md` as a stub table
+  (outcome + LOGBOOK entry + commit per file; full text in git history). `docs/plans/` now holds open
+  plans only, so a file sitting there means something is unfinished. Six dangling path references in
+  live scripts/specs/docs repointed at the archive; `LOGBOOK.md`'s references left as-is because
+  entries are records of their moment. Entry 133.
 - **Aug 6** — **Seam-dedupe validation PASSED**, clearing the last `[~]` before release. A fresh
   context (which is the entire point — the merge was main-agent-only) reviewed the offset derivation
   and the set-strip tests: no off-by-one, guards throw rather than no-op, the ±96px search window is
@@ -232,7 +259,7 @@ consolidated in [`docs/archives/plans.md`](docs/archives/plans.md).
 
 Durable versions now live where they get read:
 
-- Everything about the visual gate — coverage, tolerance rationale, the four traps, motion-spec
+- Everything about the visual gate — coverage, tolerance rationale, the five traps, motion-spec
   rules, the CI item → **[`docs/visual-gate.md`](docs/visual-gate.md)**.
 - Deploy/credit model, the pause, and contact-form registration → **[`docs/deploys.md`](docs/deploys.md)**.
 - Repo structure, execution model, entry points per task → **[`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md)**.

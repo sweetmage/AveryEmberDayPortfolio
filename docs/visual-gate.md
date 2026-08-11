@@ -31,7 +31,7 @@ capturing so the panel is actually open.
 ## Running it
 
 ```bash
-npm test                                  # whole suite (90 tests)
+npm test                                  # whole suite (151 tests as of 2026-08-10)
 npx playwright test visual-baseline       # just the gate
 npx playwright test -g "gallery @ 1440"   # one case
 ```
@@ -140,6 +140,27 @@ convincing and wrong.
 into the shipped stylesheet and moved baselines (Entry 082). `@source not` rules now exclude
 `**/*.md`, `docs/**`, `out/**`, `test-results/**`. Keep those exclusions in both entry files.
 
+### Trap 5 — `document.fonts.ready` resolves against an empty font set
+
+The webfonts arrive through a remote `@import` of Google Fonts in `app/globals.css`. Until that
+stylesheet lands there are **no `@font-face` rules registered at all**, and `document.fonts.ready`
+resolves immediately, because every one of zero fonts has finished loading. The capture then renders
+in the fallback.
+
+What it looks like is the reason it survived: only `--brand-font-display` text is affected above the
+fold, so the entire diff is a couple of thousand nav-glyph pixels with the rest of the page
+byte-identical. It reads as antialiasing noise, not as "the fonts were missing".
+
+Found 2026-08-10 by running the suite three times in a row: three **different** pages failed on the
+three runs (index @1440 both themes plus projects @768/@1440, then contact @768 dark), and every one
+passed on immediate re-run. Different-page-each-time is the signature — a real regression fails the
+same page every time.
+
+The gate now waits for the faces to exist *and* report loaded, not merely for `fonts.ready`. Check
+against the faces the site actually requests (`400 Sriracha`, `500 Outfit`, `400 Inter`); the import
+URL also declares weights the site never uses, and `document.fonts.check()` returns false for those
+forever, so adding one to the list hangs the wait until its timeout.
+
 ## Motion-enabled specs
 
 `tests/bubbles-exclusion.spec.js` is the counterpart to this gate — the only spec that runs with
@@ -189,4 +210,5 @@ Note that step 2 replaces every baseline, so it should not be interleaved with o
 Land visual changes first, then re-baseline once.
 
 Raised by the Entry 081 shippability review; carried from
-[`plans/2026-07-22-visual-baseline-gate-shxdowloop.md`](plans/2026-07-22-visual-baseline-gate-shxdowloop.md).
+`plans/2026-07-22-visual-baseline-gate-shxdowloop.md`, archived 2026-08-09 into
+[`archives/plans.md`](archives/plans.md#consolidation-stubs-2026-08-09).

@@ -5,7 +5,7 @@
  * Skips variants that already exist and are newer than the source. Never upscales.
  *
  * Usage: node scripts/generate-image-variants.js [--force]
- * Plan: docs/plans/2026-07-13-srcset-variants.md
+ * Plan: 2026-07-13-srcset-variants (archived — docs/archives/plans.md)
  */
 
 const fs = require('fs');

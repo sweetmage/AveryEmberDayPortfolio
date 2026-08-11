@@ -4,6 +4,9 @@ All completed, cancelled, and superseded implementation plans consolidated from 
 
 ## Table of Contents
 
+### Retired stubs (2026-08-09 consolidation)
+Every plan that had shipped as of 2026-08-09 — see [Consolidation Stubs — 2026-08-09](#consolidation-stubs-2026-08-09) for outcome + LOGBOOK entry per file, and the recovery commands.
+
 ### Retired stubs (2026-07-12 consolidation)
 Full text of these plans lives in git history — see [Consolidation Stubs](#consolidation-stubs-2026-07-12) at the bottom of this file for one-line status + recovery commands.
 
@@ -1841,4 +1844,52 @@ git show <sha>:<path> > <path>                      # restore locally
 | `docs/plans/2026-07-12-nextjs-migration.md` | Shipped. Framework decision + Next.js 15 static export live (LOGBOOK Entries 068–070). |
 | `docs/plans/2026-07-12-nextjs-migration-execution.md` | Shipped. Execution complete, deploy verified. |
 | `docs/color-contrast-preview.html` | One-shot palette-comparison artifact from 2026-06-04 contrast work. |
+
+---
+
+<a id="consolidation-stubs-2026-08-09"></a>
+# Consolidation Stubs — 2026-08-09
+
+Every plan in `docs/plans/` that had shipped as of 2026-08-09, removed at the user's direction
+("check over open plan docs, archive all finished plans"). **One plan was left in place:**
+`2026-08-01-copy-pass-and-gallery-descriptions.md`, whose Tracks A and C wait on the user's first
+draft.
+
+Shipped work is captured in `LOGBOOK.md` at the entries named below, and the load-bearing design
+rules these plans established were promoted into [`../../AGENTS.md`](../../AGENTS.md) as they landed
+(the hover contract, square-images-rounded-frames, the gallery expand geometry rules, the
+picture-is-the-wall bubble rule, the Mistrust one-screen cap, and the shared content geometry). Those
+sections, not these plans, are the current source of truth. Full plan text is preserved in git
+history. Recover any file with:
+
+```powershell
+git log --all --diff-filter=A -- <path>            # find the creating commit
+git show <sha>:<path> > <path>                      # restore locally
+```
+
+| Removed file | Outcome |
+|---|---|
+| `docs/plans/2026-08-06-prelaunch-audit-nanoagent-plan.md` | Complete. Four read-only nano-agent tracks plus a main-agent runtime probe against the production export: 40 page loads clean, focus-visible rule added, 82 `target="_blank"` links given `rel`, three copy defects and five stale doc claims fixed. Entry 123. Its three raised-not-decided items went to `TODO.md`; the role descriptor was settled in `AGENTS.md` on 2026-08-06. |
+| `docs/plans/2026-08-05-gallery-expand-implementation.md` | Shipped. Gallery cards expand in place, art capped at one screen, View Transitions for the reflow. Entry 118; row sizing corrected in Entries 121–122, orthogonal reflow and the picture-sized art box in the 2026-08-07/08 work. |
+| `docs/plans/2026-08-01-gallery-expand-motion-concept.md` | Shipped as the concept behind the above. Its §4 entrance stagger was deliberately not built; the reason is recorded in `TODO.md`. |
+| `docs/plans/2026-08-01-mistrust-set-seam-dedupe-shxdowloop.md` | Shipped. Set strips take pixels from slides and geometry from the Figma export, closing a duplicated 19px seam. Entry 114, merged `ada0210`; fresh-context validation passed in Entry 125. |
+| `docs/plans/2026-08-01-mistrust-asset-reexport.md` | Shipped. Figma re-export swapped into both asset trees. Entry 113, commit `06bd820`. |
+| `docs/plans/2026-07-31-mistrust-slideshow-redesign.md` | Shipped. Swipeable stage, React lightbox, set mosaics. Entry 109, merged `152cf2f`. |
+| `docs/plans/2026-07-31-mistrust-slideshow-shxdowloop.md` | Process wrapper for the redesign above. Same outcome, Entry 109. |
+| `docs/plans/2026-07-28-contact-polish-width-unification.md` | Shipped. Contact polish plus one content width site-wide. Entry 107. |
+| `docs/plans/2026-07-27-contact-unhide-mistrust-assets.md` | Shipped. Contact unhidden in nav and footer, Mistrust assets resynced, og card regenerated. Entry 106. |
+| `docs/plans/2026-07-24-gallery-tag-system.md` | Shipped. `All / Digital / Traditional / Both` filter, tag data wired, vertical rail. Entries 099–101, commit `235f254`. **Decision 3 (visible tag pills) was superseded** in Entry 101 by sr-only tags plus a visible tool list. |
+| `docs/plans/2026-07-24-bubble-visual-cleanup-shxdowloop-nanoagent-plan.md` | Shipped. Bubble-test flake addressed by frame-based sampling, visual-gate defects closed (`maxDiffPixels: 500` floor, server into `globalSetup`), gallery filter rail. Entries 099–101, commit `15fe32d`. A residual ~1-in-3 flake outlived this plan and is tracked in `TODO.md`. |
+| `docs/plans/2026-07-24-bubble-hero-exclusions-shxdowloop.md` | Shipped. Hero logo and blob exclusions plus the repo's first motion-enabled tests. Entry 090. |
+| `docs/plans/2026-07-24-projects-heading-padding-shxdowloop.md` | Shipped. Heading padding, with all 40 baselines adjudicated numerically. Entry 089. |
+| `docs/plans/2026-07-24-docs-sync-todo-consolidation.md` | Complete. Plan-doc status reconciliation. Entry 088; re-run 2026-08-01 (Entry 112), 2026-08-03 (Entry 115), and superseded by this consolidation. |
+| `docs/plans/2026-07-24-cross-page-css-consistency.md` | Shipped. Home and Gallery unified on `.brand-page-title` / `.brand-title-bar`; gallery cards moved onto brand tokens. Entry 097; follow-on Entry 098. |
+| `docs/plans/2026-07-24-gallery-widening.md` | Shipped. 1400px centered container, 3 columns at `xl`. Entry 095. |
+| `docs/plans/2026-07-23-nav-button-restyle.md` | Shipped. Square, no-chrome-at-rest nav group; scope grew to the logo-as-home-button and the project-tab restyle. Entries 082–087, merged `098f0b1`. |
+| `docs/plans/2026-07-22-visual-baseline-gate-shxdowloop.md` | Shipped. Baselines converted into a real compare-based gate. Entry 081, `833d46a` → `6ddccd2`. **Its one carried-over item, running the gate in CI, lives in [`../visual-gate.md`](../visual-gate.md#open-item--running-the-gate-in-ci)** and in `TODO.md` under *Blocked on a prerequisite*. |
+| `docs/plans/2026-07-15-projects-vertical-tabs.md` | Shipped. Sticky vertical Projects rail at `lg+`. Entries 079–080. |
+| `docs/plans/2026-07-14-nav-restructure.md` | Shipped. Home / Projects / Gallery / Contact restructure. Entries 075–078. |
+| `docs/plans/2026-07-14-nav-restructure-wrapup-shxdowloop.md` | Process wrapper for the restructure above. Same outcome, Entries 075–078. |
+| `docs/plans/2026-07-13-srcset-variants.md` | Shipped. srcset and @2x variants. Entry 073, commit `f63671d`. |
+| `docs/plans/2026-07-12-motion-load-perf.md` | Shipped. Time-to-motion and TTI reductions. Entry 072. |
 

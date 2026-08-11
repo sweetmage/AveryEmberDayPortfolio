@@ -111,7 +111,7 @@ Do NOT use these in `bash` tool calls (they are PowerShell-specific and often fa
 
 `npm run serve` — serves the repo root on :8080 (**legacy static site only** — not the Next.js app)
 
-`npm test` / `npx playwright test` — smoke tests + a **compare-based** visual regression gate, plus bubble-engine coverage, gallery expand coverage and Mistrust set-strip checks (**90 tests**: 40 visual = 5 pages × 4 breakpoints × 2 themes, plus smoke, 10 bubble-exclusion specs, 17 gallery-expand specs, and the strip-vs-export assertions).
+`npm test` / `npx playwright test` — smoke tests + a **compare-based** visual regression gate, plus bubble-engine coverage, gallery expand coverage and Mistrust set-strip checks (**151 tests**, counted by `npx playwright test --list` on 2026-08-10: 40 visual = 5 pages × 4 breakpoints × 2 themes, 32 gallery-expand, 25 Mistrust slideshow, 22 bubble-exclusion, 18 sticky-chrome, 6 set-strip, 4 smoke-next, 3 mobile-zoom, 1 smoke-interaction). **The count moves every time a spec is added — re-run `--list` rather than trusting this number.** It said 73, then 90, then 131, and was stale every time.
 
 > **When a CSS property needs two states, it stops being a Tailwind utility.** Utilities outrank
 > `brand.css`, which is imported into the `components` layer, so a state-dependent rule written there
@@ -133,7 +133,7 @@ Do NOT use these in `bash` tool calls (they are PowerShell-specific and often fa
 > day (Entry 115) once contention turned out not to be the root cause.
 
 > **Full reference: [`docs/visual-gate.md`](docs/visual-gate.md)** — coverage matrix, tolerance
-> rationale, the four traps, motion-spec rules, and the CI containerization item. Read it before
+> rationale, the five traps, motion-spec rules, and the CI containerization item. Read it before
 > changing anything about the gate or re-baselining. The essentials:
 >
 > - **To accept an intentional visual change:** `npm test -- --update-snapshots`, then *review the

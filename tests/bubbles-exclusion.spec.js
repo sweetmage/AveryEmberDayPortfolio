@@ -311,6 +311,125 @@ test.describe('bubble exclusion zones', () => {
   });
 });
 
+/*
+ * The parking test — the one that would have caught the flake.
+ *
+ * Every other test in this file settles 300 frames before it samples, and that
+ * settle is precisely what hid the defect for four months. Measured 2026-08-09:
+ * 2–3 of the 7 global bubbles were SEEDED inside an exclusion zone on every
+ * load, and a seeded-inside bubble could not get out — the 8px escape step was
+ * cancelled within the same frame by the neighbouring zone's overlap push, for
+ * a net ~0.4px/frame. So a bubble sat fully visible inside the Contact form for
+ * the whole 90-frame deadlock window before the rescue fired. By frame 300 it
+ * had been rescued and the suite saw nothing; whether one of the 6 sample
+ * frames landed in an unlucky window was luck, which is exactly why it read as
+ * a flake rather than as the deterministic bug it is.
+ *
+ * This test therefore samples EVERY FRAME FROM LOAD with no settle, and asserts
+ * on a duration rather than an area: how many consecutive frames a visible
+ * bubble's centre stays inside a registered zone. That is the actual defect.
+ * An area tolerance would only invite someone to raise it later.
+ *
+ * A few frames inside is legitimate — a card scrolling over a bubble, or a
+ * bounce resolving — so the bar is a run length, not zero.
+ */
+test.describe('no bubble parks inside a zone, from the first frame', () => {
+  /**
+   * Longest run of consecutive frames in which a visible global-layer bubble's
+   * CENTRE sits inside one of the elements matching `selector`.
+   *
+   * On the FURNITURE, not on any registered zone, and that distinction is
+   * load-bearing rather than a softening. Measured 2026-08-10 at 768px: the
+   * three `.project-section` zones are full-layer-width (-24 to 792 on a 768px
+   * layer) and tile ~94% of the 10,399px document, so all 7 global bubbles are
+   * seeded inside one, no horizontal exit exists, and `_relocate` can find no
+   * free space in 40 attempts. That is the shape of the page, not a defect —
+   * a section is a big transparent container, and the things a visitor can
+   * actually see a bubble sitting on (the tabs, the form, the headings) are
+   * separate, escapable zones. Asserting against every registered rect would
+   * therefore fail permanently on Projects while saying nothing about the bug.
+   *
+   * Global layer only: it is the fixed, document-space layer the defect lives
+   * on, so viewport rects need the scroll added to compare (`render(scrollY)`
+   * subtracts it on the way out). The hero layer is container-local and would
+   * need a different conversion for no extra coverage.
+   */
+  async function longestParkedRun(page, selector, frames) {
+    return page.evaluate(async ({ sel, n }) => {
+      const engine = window.__bubbleEngine;
+      const nextFrame = () => new Promise((r) => requestAnimationFrame(() => r()));
+      const runs = new Map();
+      let worst = 0;
+      for (let f = 0; f < n; f++) {
+        const scrollY = window.scrollY;
+        const targets = [...document.querySelectorAll(sel)].map((el) => {
+          const r = el.getBoundingClientRect();
+          return { left: r.left, right: r.right, top: r.top + scrollY, bottom: r.bottom + scrollY };
+        });
+        if (!targets.length) throw new Error(`no elements matched ${sel}`);
+        for (const b of engine.globalLayer.bubbles) {
+          // Opacity, not `_relocating`: a bubble mid-rescue is still visible for
+          // the first ~250ms of its fade and still covers the furniture. That
+          // hole is what Entry 115 papered over in the spec instead of the
+          // engine, and this test must not repeat it.
+          const visible = parseFloat(getComputedStyle(b.el).opacity) > 0.05;
+          const inside = visible && targets.some(
+            (t) => b.x > t.left && b.x < t.right && b.y > t.top && b.y < t.bottom
+          );
+          const run = inside ? (runs.get(b) || 0) + 1 : 0;
+          runs.set(b, run);
+          if (run > worst) worst = run;
+        }
+        await nextFrame();
+      }
+      return worst;
+    }, { sel: selector, n: frames });
+  }
+
+  /* The two recorded failure cases, asserted on the same furniture the
+     settled tests above assert on — this is the from-frame-0 version of them.
+     Contact @1440 is the one the suite kept reporting (~1950px², a whole
+     bubble); Projects @768 is the second case found on 2026-08-07, which proved
+     the defect was never specific to that one form or that one width. */
+  const CASES = [
+    { name: 'Contact form @ 1440px', path: '/contact/', width: 1440, sel: 'form[name="contact"]' },
+    { name: 'Projects tabs @ 768px', path: '/projects/', width: 768, sel: '.project-tab' },
+  ];
+
+  for (const c of CASES) {
+    test(`no bubble is parked inside a zone — ${c.name}`, async ({ page }) => {
+      // Frame-based sampling, so wall-clock cost tracks whatever frame rate this
+      // worker gets. Same reasoning as the blob test above.
+      test.setTimeout(120000);
+
+      await page.setViewportSize({ width: c.width, height: 900 });
+      await page.goto(`${BASE_URL}${c.path}`, { waitUntil: 'networkidle' });
+      // NO settle. `waitForEngine(page, 0)` waits only for the engine and its
+      // first bubbles to exist, which is the window under test.
+      await waitForEngine(page, 0);
+
+      const worst = await longestParkedRun(page, c.sel, 240);
+
+      /* Measured 2026-08-10, both engines, same build:
+           pre-fix   Contact @1440 = 67 frames (fails)
+           post-fix  Contact @1440 = 0, 0, 0 over three loads
+           post-fix  Projects @768 = 0, 0, 0 over three loads
+         Pre-fix runs toward the 90-frame deadlock window by construction,
+         because the rescue is what ends it. The bar therefore sits far below
+         90 and far above the handful of frames a legitimate transit takes.
+
+         Honest limit on the Projects case: it PASSES pre-fix too. That failure
+         was always the rare one (2 in ~10 full runs on 2026-08-07) because it
+         depends on an unlucky seed landing on a small target, so it is not an
+         injected-regression proof the way Contact @1440 is. It earns its place
+         as the from-frame-0 version of the settled test above, not as the
+         thing that would have caught the bug. */
+      expect(worst, `a visible bubble sat inside a zone for ${worst} consecutive frames`)
+        .toBeLessThanOrEqual(20);
+    });
+  }
+});
+
 /* The picture is the wall — user call, 2026-08-08, at every screen size.
    `.gallery-item` is deliberately NOT a zone: a card zone is a wall AROUND the
    picture, so bubbles rebounded off the card's outer edge and never reached the

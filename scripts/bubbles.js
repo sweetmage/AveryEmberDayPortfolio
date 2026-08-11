@@ -27,6 +27,7 @@
   const MAX_SPEED       = 3.0;  // slower top speed for floatier feel
   const DRIFT_KICK      = 0.12;
   const ZONE_PADDING    = 24;   // px buffer around exclusion zones
+  const ESCAPE_STEP     = 8;    // px/frame a bubble glides out of a padded zone
 
   /* ── The picture is the wall ────────────────────────────────────
      User call, 2026-08-08: bubbles bounce off THE IMAGE, at every screen size.
@@ -213,7 +214,12 @@
       this.lastUpdate = 0;
       this._scheduledRAF = null;
       this._update = this._update.bind(this);
-      this._schedule();
+      /* Built synchronously, not on the next frame. The layers are constructed
+         immediately after this and seed their bubbles against these rects, so
+         an empty first pass would put bubbles back on the furniture — which is
+         exactly the defect this fix removes (2026-08-09). `_update` re-arms the
+         periodic refresh itself. */
+      this._update();
       window.addEventListener('resize', this._update);
       window.addEventListener('scroll', this._update, { passive: true });
     }
@@ -300,10 +306,34 @@
       this.svy = 0;
     }
 
-    seedPosition(bounds) {
+    /* Seeded CLEAR of the exclusion zones, in the layer's own coordinate space.
+       Until 2026-08-09 this was a plain uniform random point, so 2-3 of the 7
+       global bubbles started INSIDE a zone on every load (measured on /contact/
+       at 1440px). A bubble that starts inside furniture is then at the mercy of
+       the escape path, which the same measurement found could be cancelled dead
+       by a neighbouring zone — so it sat visibly on the Contact form for the
+       full 90-frame deadlock window before the rescue fired. That is the whole
+       flake; this is the initiating event.
+
+       `zones` is empty only if the tracker has no rects, in which case this
+       degrades to the old behaviour. The attempt cap means a dense page falls
+       back to the last candidate rather than hanging. */
+    seedPosition(bounds, zones = []) {
       const margin = this.radius + 40;
-      this.x = margin + Math.random() * (bounds.width  - margin * 2);
-      this.y = margin + Math.random() * (bounds.height - margin * 2);
+      const pick = () => ({
+        x: margin + Math.random() * (bounds.width  - margin * 2),
+        y: margin + Math.random() * (bounds.height - margin * 2)
+      });
+      let p = pick();
+      for (let i = 0; i < 60 && zones.length; i++) {
+        const clear = !zones.some(z =>
+          p.x > z.left - this.radius && p.x < z.right  + this.radius &&
+          p.y > z.top  - this.radius && p.y < z.bottom + this.radius);
+        if (clear) break;
+        p = pick();
+      }
+      this.x = p.x;
+      this.y = p.y;
       this.render(); // set transform immediately so nothing flashes at (0,0)
     }
 
@@ -393,7 +423,7 @@
 
   // ── Bubble layer ────────────────────────────────────────────────
   class BubbleLayer {
-    constructor(containerSelector, bubbleCount, radiusRange, isFixed) {
+    constructor(containerSelector, bubbleCount, radiusRange, isFixed, zoneProvider) {
       this.container = document.querySelector(containerSelector);
       if (!this.container) {
         this.bubbles = [];
@@ -411,6 +441,10 @@
       window.addEventListener('resize', this._onResize);
       window.addEventListener('scroll', this._onScroll, { passive: true });
 
+      // Resolved once, after the container is known: the provider converts the
+      // tracker's viewport-space rects into THIS layer's space.
+      const seedZones = zoneProvider ? zoneProvider(this.container, isFixed) : [];
+
       const scale = getViewportScale();
       for (let i = 0; i < bubbleCount; i++) {
         const t = Math.random();
@@ -418,7 +452,7 @@
         const radius = base * scale;
         const color = getColorSet(i);
         const b = new Bubble(this.container, radius, color, t);
-        b.seedPosition(this.cachedBounds);
+        b.seedPosition(this.cachedBounds, seedZones);
         this.bubbles.push(b);
       }
     }
@@ -489,8 +523,39 @@
 
     resolveZoneCollisions(zones) {
       for (const b of this.bubbles) {
-        if (b._relocating) continue;
-        for (const z of zones) {
+        /* A relocating bubble used to be skipped entirely here, which parked it
+           on the furniture for the ~250ms fade-out — visible, inside the zone,
+           and deliberately unpushed. Entry 115 papered over that in the spec
+           (skip bubbles at opacity <= 0.05) rather than in the engine, which
+           left the visible half of the fade uncovered. It is resolved normally
+           now; only the rescue TRIGGER below is skipped, so an in-flight
+           relocation cannot stack a second one. */
+        /* An escape takes the whole frame, and nothing else may act on the
+           bubble while it does.
+
+           This is the fix for the flake, measured 2026-08-09. The escape below
+           moves a trapped bubble 8px toward the nearest edge — and the
+           neighbouring zone just outside that edge then resolved the resulting
+           overlap LATER IN THIS SAME LOOP, pushing it back up to a full radius.
+           Net motion was ~0.4px/frame, so the bubble never got out: it sat
+           fully visible inside the Contact form for the entire 90-frame
+           deadlock window before the rescue fired, which is the ~1950px2 whole-
+           bubble overlap the suite kept reporting. (Traced per frame: r=28 at
+           (618.0, 331.6) inside the form zone, dy = -0.45 every frame, for 90
+           frames.)
+
+           Deferring the push-back is what makes the documented 8px/frame glide
+           actually deliver 8px/frame. Raising the step instead would have
+           worked on Contact and been wrong everywhere else — `.project-section`
+           zones cover ~81% of the Projects document, where the escape is the
+           dominant force and a bigger step would visibly herd every bubble off
+           the page. The centre being inside a zone is an error state, so
+           suspending the tangential response for that one frame costs nothing
+           real. */
+        const containing = zones.find(z =>
+          b.x > z.left && b.x < z.right && b.y > z.top && b.y < z.bottom);
+
+        for (const z of containing ? [containing] : zones) {
           // Closest point on rect to bubble center
           const cx = Math.max(z.left, Math.min(b.x, z.right));
           const cy = Math.max(z.top,  Math.min(b.y, z.bottom));
@@ -512,32 +577,15 @@
             b.triggerSquish(Math.atan2(ndy, ndx));
           } else if (dist <= 0.1) {
             // Center is inside the zone (e.g. a card scrolled onto a fixed
-            // bubble) — glide out through the nearest edge instead of
-            // teleporting, so the escape reads as motion, not a pop.
-            const dl = b.x - z.left;
-            const dr = z.right - b.x;
-            const dt = b.y - z.top;
-            const db = z.bottom - b.y;
-            const m = Math.min(dl, dr, dt, db);
-            /* Frame zones eject in ONE step instead of gliding.
-               The 8px/frame glide exists so a bubble that a scrolling card
-               closes over escapes as motion rather than a pop, and that is
-               right for a padded zone: the whole glide happens inside the 24px
-               buffer, where nothing is drawn. A frame zone has no buffer — its
-               wall IS the visible edge — so the same glide plays out ON TOP OF
-               the artwork, and the bubble sits up to 16px inside the card while
-               it crawls out (measured 2026-08-07). Ejecting to the near edge
-               immediately is what makes contact read as a bounce. */
-            const ESCAPE_STEP = z.frame ? m + b.radius : 8; // px/frame toward freedom
-            if (m === dl)      { b.x -= ESCAPE_STEP; b.vx = -Math.max(Math.abs(b.vx), MIN_SPEED); }
-            else if (m === dr) { b.x += ESCAPE_STEP; b.vx =  Math.max(Math.abs(b.vx), MIN_SPEED); }
-            else if (m === dt) { b.y -= ESCAPE_STEP; b.vy = -Math.max(Math.abs(b.vy), MIN_SPEED); }
-            else               { b.y += ESCAPE_STEP; b.vy =  Math.max(Math.abs(b.vy), MIN_SPEED); }
+            // bubble) — glide out instead of teleporting, so the escape reads
+            // as motion, not a pop.
+            this._escape(b, z, zones);
           }
         }
         // Deadlock rescue: overlapping zones can squeeze a bubble so each
         // zone's escape push cancels the other's. If a bubble stays trapped
         // for ~1.5s, fade it out and respawn it in genuinely free space.
+        if (b._relocating) continue; // one rescue in flight at a time
         const trapped = zones.some(z =>
           b.x > z.left && b.x < z.right && b.y > z.top && b.y < z.bottom);
         if (trapped) {
@@ -549,6 +597,64 @@
         } else {
           b.stuckFrames = 0;
         }
+      }
+    }
+
+    /* Push a bubble whose CENTRE is inside `z` out through one of that zone's
+       edges. Extracted from `resolveZoneCollisions` on 2026-08-09 so the edge
+       choice could consider the other zones, which is the half of the deadlock
+       the caller's single-zone restriction does not cover.
+
+       Two things decide the step:
+
+       - **Which edge.** The nearest one, unless clearing it would land the
+         centre inside ANOTHER zone — then take the next nearest that is free.
+         The old code always took the nearest, which on the Contact page aimed
+         the escape straight at the intro paragraph's zone directly above the
+         form. The caller now processes only the containing zone in a frame, so
+         the neighbour no longer pushes back within that frame, but aiming at it
+         still costs frames re-entering it on the next one. Nearest-free-edge is
+         what makes the escape monotonic.
+       - **How far.** A padded zone glides at ESCAPE_STEP so the escape reads as
+         motion rather than a pop — the whole glide happens inside the 24px
+         ZONE_PADDING buffer, where nothing is drawn. A frame zone has no
+         buffer: its wall IS the visible edge of the artwork, so the same glide
+         would play out ON TOP OF the picture with the bubble up to 16px inside
+         it while it crawled out (measured 2026-08-07). Frame zones therefore
+         eject clear in one step, which is what makes contact read as a bounce.
+
+       Falls back to the nearest edge when every exit is blocked; that bubble is
+       genuinely boxed in and the deadlock rescue in the caller is what resolves
+       it. */
+    _escape(b, z, zones = []) {
+      const exits = [
+        { dist: b.x - z.left,   axis: 'x', sign: -1 },
+        { dist: z.right - b.x,  axis: 'x', sign:  1 },
+        { dist: b.y - z.top,    axis: 'y', sign: -1 },
+        { dist: z.bottom - b.y, axis: 'y', sign:  1 },
+      ].sort((p, q) => p.dist - q.dist);
+
+      // Where the centre ends up once it has fully cleared this zone's edge.
+      const landsInAnotherZone = (e) => {
+        const x = e.axis === 'x'
+          ? (e.sign < 0 ? z.left - b.radius : z.right + b.radius)
+          : b.x;
+        const y = e.axis === 'y'
+          ? (e.sign < 0 ? z.top - b.radius : z.bottom + b.radius)
+          : b.y;
+        return zones.some((o) => o !== z
+          && x > o.left && x < o.right && y > o.top && y < o.bottom);
+      };
+
+      const exit = exits.find((e) => !landsInAnotherZone(e)) || exits[0];
+      const step = z.frame ? exit.dist + b.radius : ESCAPE_STEP;
+
+      if (exit.axis === 'x') {
+        b.x += exit.sign * step;
+        b.vx = exit.sign * Math.max(Math.abs(b.vx), MIN_SPEED);
+      } else {
+        b.y += exit.sign * step;
+        b.vy = exit.sign * Math.max(Math.abs(b.vy), MIN_SPEED);
       }
     }
 
@@ -993,9 +1099,32 @@
       const selectors = [...DEFAULT_EXCLUSIONS, ...(hasHero ? HOME_EXCLUSIONS : []), ...extra];
       this.zones = new ExclusionZoneTracker(selectors);
 
+      /* Seeding zones, converted into each layer's own space. The tracker's
+         rects are VIEWPORT-relative; the fixed global layer works in DOCUMENT
+         space (`render(scrollY)` subtracts the scroll on the way out) and the
+         hero layer works in container-local space. Getting this wrong would
+         seed bubbles clear of the wrong rectangles, which is silent. */
+      const seedZones = (container, isFixed) => {
+        const rects = this.zones.rects;
+        if (isFixed) {
+          const scrollY = window.scrollY;
+          return rects.map(z => ({
+            left: z.left, right: z.right,
+            top: z.top + scrollY, bottom: z.bottom + scrollY
+          }));
+        }
+        const c = container.getBoundingClientRect();
+        return rects.map(z => ({
+          left:   z.left   - c.left,
+          right:  z.right  - c.left,
+          top:    z.top    - c.top,
+          bottom: z.bottom - c.top
+        }));
+      };
+
       // Create layers
-      this.globalLayer = new BubbleLayer('.brand-bubbles-global', 7, [10, 28], true);
-      this.heroLayer    = new BubbleLayer('.brand-bubbles-hero',   3, [40, 75], false);
+      this.globalLayer = new BubbleLayer('.brand-bubbles-global', 7, [10, 28], true, seedZones);
+      this.heroLayer    = new BubbleLayer('.brand-bubbles-hero',   3, [40, 75], false, seedZones);
       this.heroBlobLayer = new HeroBlobLayer();
 
       // Per-frame layout caches — hero rect and derived local zones only

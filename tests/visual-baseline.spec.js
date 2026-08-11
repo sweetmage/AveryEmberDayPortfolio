@@ -112,9 +112,40 @@ for (const page of PAGES) {
             await new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(() => r())));
           });
 
-          // Webfonts shift metrics on late swap; wait for them explicitly
-          // rather than sleeping and hoping.
-          await p.evaluate(() => document.fonts.ready);
+          /* Webfonts shift metrics on late swap; wait for them explicitly
+             rather than sleeping and hoping.
+
+             `document.fonts.ready` ALONE IS NOT ENOUGH, and this cost four
+             baselines in one run on 2026-08-10. The faces arrive through a
+             remote `@import` of Google Fonts (app/globals.css), so until that
+             stylesheet lands there are no `@font-face` rules registered at all
+             — and `fonts.ready` against an empty set resolves immediately,
+             because every one of zero fonts has loaded. The capture then
+             renders in the fallback, and since only `--brand-font-display`
+             text is affected in the nav the whole diff is a couple of thousand
+             glyph pixels: it reads as noise rather than as "the fonts were
+             missing". It surfaced as three consecutive runs failing three
+             DIFFERENT pages (index @1440 both themes and projects, then
+             contact @768 dark), all of which passed on immediate re-run.
+
+             So wait for the faces to exist AND report loaded. The three below
+             are the ones the site actually requests, confirmed by reading
+             `document.fonts` on a loaded page — do not add `600 Outfit`, which
+             is declared in the import URL but never used, so `check()` returns
+             false for it forever and this would hang until timeout. */
+          await p.waitForFunction(
+            () =>
+              document.fonts.status === 'loaded' &&
+              ['400 1rem Sriracha', '500 1rem Outfit', '400 1rem Inter'].every((f) =>
+                document.fonts.check(f)
+              ),
+            null,
+            { timeout: 15000 }
+          );
+          // One composited frame after the last possible metric change.
+          await p.evaluate(
+            () => new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r)))
+          );
 
           await expect(p).toHaveScreenshot(`${page.name}_${width}_${theme}.png`, {
             fullPage: true,

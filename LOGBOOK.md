@@ -1,3 +1,247 @@
+## Entry 135 — 2026-08-10
+
+**Agent:** Opus 5 (sable, main)
+**Cycle:** shxdowflow — finish the bubble-flake track
+**Branch:** `develop` (deploy pause expired Aug 7; **not pushed** — the merge to `portfoliowebsite` is still the user's step)
+**Task:** "whats next" → finish what was already on the bench before starting anything new
+
+> ### Superseded before it was written, and I did not know it at the time
+>
+> **`portfoliowebsite` had already fixed this flake on 2026-08-09, in Entry 131 / `17c5bf6`.** I
+> found that only at the end of this session, by comparing branches instead of just `develop` against
+> `origin/develop` — which is the mistake worth carrying forward: on this repo, "am I current?" means
+> comparing against the **production branch**, not against your own upstream. `develop` is 8 commits
+> behind `portfoliowebsite`.
+>
+> The two investigations are independent and agree, which is the useful part. Production instrumented
+> the engine and measured **68 consecutive overlap frames at opacity 1 with `_relocating` FALSE** on
+> Contact @1440; I measured **67**, same conditions, same conclusion — the bubble was *waiting for* a
+> rescue, not fading in after one. Both of us therefore falsified the relocation hypothesis `TODO.md`
+> had recorded.
+>
+> **Production's fix is better and should win.** It triggers the rescue on lack of progress
+> (`NO_PROGRESS_FRAMES`, 20) rather than on elapsed frames, which separates a genuine wedge from the
+> deliberate 8px/frame escape glide with no threshold guesswork — the glide improves its penetration
+> depth every frame, a wedge never beats its own record. My version attacks the same deadlock from
+> the escape side instead.
+>
+> Two pieces here are still worth lifting onto production, because it has neither: the **seed-clear**
+> in `seedPosition` (production still seeds uniformly at random, so 2–3 of 7 bubbles still start
+> inside a zone — it recovers well now, but the initiating event is untouched) and the
+> **from-frame-0 regression spec**. Everything else below is superseded; read it as a second opinion
+> that happened to confirm the first.
+
+### The fix was inert, and mirroring it is what exposed the real bug
+
+`scripts/bubbles.js` carried the 2026-08-09 flake fix. `public/scripts/bubbles.js` did not — the two
+were byte-identical at `bc3e278` and had diverged. `public/` is the copy the export serves **and the
+copy every spec loads**, so the fix had never run anywhere: not on the built site, not under test.
+This is the trap `AGENTS.md` → *File Conventions* names, and the flake plan's own Risks section
+listed it. Copying the file across is what made the next defect visible.
+
+**`resolveZoneCollisions` called `this._escape(b, z, zones)` and no such method existed.** The escape
+branch had been refactored out of the loop and the replacement was never written, so the engine threw
+`TypeError: this._escape is not a function` on the first frame any bubble's centre landed in a zone.
+`window.__bubbleEngine` is assigned at the end of construction, so it was never assigned at all: the
+whole bubble system was dead on every page. The suite could not report it either, because every
+bubble spec begins by waiting for that handle and therefore timed out rather than failing on
+geometry.
+
+`_escape` is now written. It keeps the two documented behaviours — an 8px/frame glide for a padded
+zone so the escape reads as motion inside the 24px buffer, and one-step ejection for a frame zone
+whose wall is the visible edge of the artwork — and adds the thing the unused `zones` argument was
+plainly there for: **pick the nearest edge whose exit does not land the centre in another zone.**
+That is the other half of the sandwich deadlock. The caller's containing-zone restriction stops the
+neighbour pushing back within the frame; aiming somewhere else stops it costing frames on the next
+one.
+
+### The regression spec, and one honest limit on it
+
+The plan asked for a spec that samples from the first frame with no settle, asserting on how long a
+bubble stays parked rather than on an area. Both existing failure cases are covered. Measured on the
+same build, pre-fix engine vs post-fix:
+
+| Case | Pre-fix | Post-fix |
+|---|---|---|
+| Contact form @ 1440px | **67 frames** parked, fails | 0, 0, 0 across three loads |
+| Projects tabs @ 768px | 0 — passes | 0, 0, 0 across three loads |
+
+So **only Contact @1440 is an injected-regression proof.** Projects @768 passes against the broken
+engine too, because that failure always depended on an unlucky seed hitting a small target (2 in ~10
+full runs, 2026-08-07). It earns its place as the from-frame-0 version of the settled test beside it,
+not as the test that would have caught this. That is written into the spec rather than left for
+someone to infer from a green tick.
+
+### The measurement corrected my own test before it corrected the engine
+
+The spec first asserted against *every registered zone* and failed permanently on Projects at 240/240
+frames. Instrumenting the live engine rather than arguing with it: at 768px the three
+`.project-section` zones are **full-layer-width** (-24 to 792 on a 768px layer) and tile ~94% of the
+10,399px document. All 7 global bubbles are seeded inside one, there is no horizontal exit at all,
+and `_relocate` fails to find free space in 40 attempts. That is the shape of the page, not a defect
+— a section is a big transparent container, and the things a visitor can actually see a bubble
+sitting on are separate, escapable zones. The spec now asserts on the furniture the recorded failures
+named: the form, and `.project-tab`.
+
+Worth keeping: on `/projects/` the deadlock rescue fires for every bubble every 90 frames and can
+never succeed. Harmless — they sit behind content — but it is why an all-zones assertion on that page
+can never be satisfied.
+
+### The visual gate had a flake of its own, and it was not mine
+
+Three consecutive full runs failed **three different sets of pages** — index @1440 light and dark
+plus projects @768 light and @1440 dark, then contact @768 dark — and every one passed on immediate
+re-run. Different-page-each-time is the signature of nondeterminism; a real regression fails the same
+page every time. Ruled out my own edits by ordering: the run *before* them had all 40 visual green,
+and the only changes since were legacy HTML and `style.css`, neither of which the Next pages load.
+
+Reading the diff image settled it. The entire difference is the nav's link glyphs and the segmented
+dividers; every other pixel matches. That is a webfont race, and the mechanism is worth writing down
+because the spec already had a wait for it: **`document.fonts.ready` resolves against an empty font
+set.** The faces arrive through a remote `@import` of Google Fonts, so before that stylesheet lands
+there are no `@font-face` rules registered at all, and "every one of zero fonts has loaded" is true.
+The gate now waits for the three faces the site actually requests to exist *and* report loaded.
+Recorded as Trap 5 in [`docs/visual-gate.md`](docs/visual-gate.md).
+
+Do not add `600 Outfit` to that list: the import URL declares it, the site never uses it, so
+`document.fonts.check()` returns false for it forever and the wait would hang until its timeout.
+
+### Found on the way past: the legacy site has 404'd for a month
+
+`smoke-interaction.spec.js` failed on a console 404. `Script.js` was deleted on 2026-07-09
+(`7ffe34b`, "dead submenu/hamburger JS removed") and **the `<script src="Script.js">` tag was left in
+all four legacy pages** — `index.html`, `gallery/gallery.html`, and both `projects/` pages. Every one
+of them has been requesting a missing file since. Tags removed; nothing else referenced it.
+
+`style.css` was also stale against the in-flight `brand.css` (the one-column tokens and the nav's
+`position` change). Rebuilt, and confirmed the delta is exactly those token/nav changes — verified by
+reverting the HTML edit and rebuilding, which still differed from `HEAD`, so the staleness pre-dates
+this session's work rather than being caused by it.
+
+### Verification
+
+- New spec fails on the pre-fix engine and passes on the fixed one, same build, both directions run.
+- `tests/bubbles-exclusion.spec.js` 22/22 green.
+- Full suite **151 tests** (`--list`, 9 files): 40 visual, 32 gallery-expand, 25 Mistrust slideshow,
+  22 bubble, 18 sticky-chrome, 6 set-strip, 4 smoke-next, 3 mobile-zoom, 1 smoke-interaction.
+- Zero visual baselines moved by the engine work, as predicted — the gate captures under
+  `prefers-reduced-motion`, where the engine creates nothing.
+
+---
+
+## Entry 134 — 2026-08-10
+
+**Agent:** Opus 5 (sable, main) — **reviewer, not author**
+**Cycle:** shxdowflow — record and verify the sticky-rail work
+**Branch:** `develop` (**not pushed**)
+**Task:** log the one-column rule, which was implemented earlier the same day and left uncommitted and unlogged
+
+### What shipped
+
+The rule in one sentence: **if the user can see more than one column, the nav and the current
+selection both stay on screen; if they cannot, nothing is pinned and the page scrolls as one piece.**
+768px is the threshold because that is where `md:grid-cols-2` stops the gallery being one column.
+Plan: [`docs/plans/2026-08-10-sticky-rail-one-column-rule.md`](docs/plans/2026-08-10-sticky-rail-one-column-rule.md).
+
+**The Projects rail never actually stuck.** `lg:sticky` sat on the tablist, whose containing block is
+a wrapper exactly its own height, so travel was 0px and it behaved as static — from Entry 079 until
+it was measured on 2026-08-10 (rail top -570px after a 1000px scroll at 1024). The visual gate is
+structurally blind to it: captures are `fullPage` at scroll 0, where a rail with travel and a rail
+without paint identically. `sticky` now lives on the column, and `lg:items-start` on the flex parent
+is load-bearing in the counter-intuitive direction — it keeps the column short so there is travel at
+all.
+
+Also landed: `top-16` (a hardcoded 64px guess at `--brand-nav-height`, which clamps to 76px from
+1267px up, so the pinned rail's first 12px sat behind the nav at 1440+) replaced by the token;
+`--brand-nav-overlay` / `--brand-rail-overlay` / `--brand-top-overlay` so every "one screen"
+calculation subtracts what is *actually* pinned; and `scroll-padding-top`, which the site had none of
+— a `/projects/#history-of-mistrust` deep link had always landed behind the nav.
+
+### Two things I checked because they would fail silently
+
+- **`--brand-nav-overlay`'s media-query override repeats the full selector list**
+  (`:root, :root[data-theme="dark"], :root[data-theme="light"]`). Specificity is per selector in a
+  list, so a bare `:root` there loses to `:root[data-theme="dark"]` and the override would do nothing
+  in dark mode while working in light. The comment records it was caught as a 76px height difference
+  between themes at one viewport.
+- **`topOverlayPx()` measures the nav instead of parsing the token.** Custom properties substitute
+  rather than compute, so `--brand-nav-overlay` reads back as the literal `clamp(62px,6vw,76px)` and
+  `parseFloat` returns `NaN` → silently 0. `calc()` resolves it correctly, so the token is still
+  right for the CSS caps. Both halves are correct as written.
+
+18 new `sticky-chrome.spec.js` cases cover the contract, which is the right call given the gate
+cannot see any of it. I reviewed this diff and verified it; I did not write it.
+
+---
+
+## Entry 133 — 2026-08-09
+
+**Agent:** Opus 5 (juniper, main)
+**Cycle:** shxdowflow — plan-doc archive sweep
+**Branch:** `develop` (deploy pause expired Aug 7; **not pushed** — the merge to `portfoliowebsite` is still the user's step)
+**Task:** "check over open plan docs, archive all finished plans"
+
+### 23 of 24 plans were finished
+
+Only [`2026-08-01-copy-pass-and-gallery-descriptions.md`](docs/plans/2026-08-01-copy-pass-and-gallery-descriptions.md)
+still has open work, and it is blocked on the user's first draft for the 11 gallery descriptions and
+both project summaries. Everything else had shipped, including
+`2026-08-06-prelaunch-audit-nanoagent-plan.md`, which still read **"Status: in progress"** in its own
+header — the audit completed in Entry 123 and its three raised-not-decided items were routed to
+`TODO.md` the same day. That header was the only thing left claiming otherwise.
+
+Status was verified against `LOGBOOK.md` and `TODO.md` per plan, not taken from the index table, and
+`grep -rn "^\s*- \[ \]" docs/plans/` returned nothing both before and after.
+
+### Stub table, not full text — the user's call
+
+Two archive patterns already existed in `docs/archives/plans.md`: full-text sections with TOC anchors,
+and the 2026-07-12 stub table. Full text for these 23 would have taken the archive from 1,844 to
+roughly 10,000 lines. The user chose stubs, which is also the safer of the two here for a reason
+worth recording: **the load-bearing rationale from these plans is already in `AGENTS.md` verbatim** —
+the hover contract, square-images-rounded-frames, the gallery expand geometry rules, the
+picture-is-the-wall bubble rule, the Mistrust one-screen cap, the shared content geometry. The plans
+were the second copy, not the only one. Archive is now 1,895 lines and each row carries the outcome,
+the LOGBOOK entry, and where relevant the commit.
+
+`docs/plans/` now holds open plans only. That is the useful invariant this creates: **a file sitting
+in `docs/plans/` means something is unfinished**, so the directory listing is itself a signal.
+
+### Six dangling references, found by grep rather than assumed
+
+Deleting the files would have left live code comments pointing at paths that no longer exist:
+`generate-image-variants.js`, `generate-mistrust-assets.js` (two), `generate-og-image.js`,
+`gallery-expand.spec.js` (two), `mistrust-slideshow.spec.js`, and `docs/visual-gate.md`. All now name
+the plan without a path and point at the archive. `LOGBOOK.md`'s own references were **deliberately
+left alone** — entries are records of the moment they were written, same rule the archive's
+stale-branch-line note already states.
+
+Also corrected: `docs/ARCHITECTURE.md` said "24 plan docs", `TODO.md`'s Done header implied finished
+plans live in `docs/plans/`, and `docs/plans/README.md` was rewritten around the new invariant.
+
+### Verification
+
+- No dangling path references remain (grep across `*.md`/`*.js`/`*.ts`/`*.tsx`, excluding `LOGBOOK.md`
+  and the archive's own stub tables).
+- `node --check` clean on all three edited scripts; `npx playwright test --list` collects all 8 spec
+  files, so neither spec-file comment broke parsing.
+- `npm run css:build` rerun — **`style.css` byte-identical**, which is the check that matters after
+  touching tracked `.js` comments, since Tailwind scans the repo for class candidates.
+- `shxdowmap refresh --auto` → fresh.
+
+No behaviour changed. This is docs and comments only; the test suite was not re-run in full.
+
+### Found on the way past: the test count was stale again
+
+`--list` was run to prove the spec-file comments still parse, and it reported **131 tests, not the 90
+in `AGENTS.md`, `docs/ARCHITECTURE.md` and `docs/visual-gate.md`.** The specs added since Entry 118
+(gallery-expand grew to 32, Mistrust slideshow to 25, bubbles to 20, plus a `mobile-zoom` file) never
+updated the docs. Entry 123 corrected this same number from 73 to 90 five entries ago, so all three
+now carry the per-file breakdown **and an instruction to re-run `--list` instead of trusting the
+figure** — it has been wrong twice and will go stale again on the next spec.
+
+---
+
 ## Entry 125 — 2026-08-06
 
 **Agent:** Opus 5 (wren, main)

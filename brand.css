@@ -115,6 +115,25 @@
        highlight stays square. Change it here only — three rules read this token. */
     --brand-nav-height:    clamp(62px, 6vw, 76px);
 
+    /* How much of the viewport top is covered by pinned chrome. NOT the same as
+       the nav's height: below 768px the nav is static and scrolls away, so it
+       covers nothing and a "one screen" element may use the whole viewport.
+       Every `100dvh - nav` calculation reads this, not `--brand-nav-height` —
+       subtracting a bar that has scrolled off is how an element ends up 62px
+       smaller than it can afford. Set to the nav height in the 768px media
+       query below. */
+    --brand-nav-overlay:   0px;
+
+    /* The pinned tab/filter strip on Projects and Gallery, published from JS by
+       `useStickyRailOverlay` because its height is content-dependent. Non-zero
+       ONLY in the 768–1023px band, where the strip spans the full width above
+       the content and therefore covers it; at lg+ the rail sits beside the
+       content and covers nothing, so this returns to 0. */
+    --brand-rail-overlay:  0px;
+
+    /* Total pinned chrome. This is what "one screen" means on this site. */
+    --brand-top-overlay:   calc(var(--brand-nav-overlay) + var(--brand-rail-overlay));
+
     /* Transitions */
     --brand-transition-fast: 140ms ease;
     --brand-transition:      220ms ease;
@@ -130,6 +149,27 @@
     --brand-duration-layout:   320ms;
     --brand-ease-layout:       cubic-bezier(0.2, 0, 0, 1);
     --brand-transition-layout: var(--brand-duration-layout) var(--brand-ease-layout);
+}
+
+/* The one-column rule, half 2 of 2. Twin: the `@media (min-width: 768px)` block
+   on `.brand-nav`. 768px is where `md:grid-cols-2` in
+   app/gallery/GalleryGrid.tsx stops the gallery being one column — at and above
+   it the nav pins and therefore covers the top of the viewport.
+
+   The selector list is not decoration: it MUST repeat the one the token is
+   declared with above (`:root, :root[data-theme="dark"]`). Specificity is
+   evaluated per selector in a list, so a plain `:root` here loses to
+   `:root[data-theme="dark"]` (0,1,1) and this override silently does nothing in
+   dark mode — while working in light, because only the plain `:root` matches
+   there. Measured 2026-08-10: the Mistrust stage came out 76px taller in dark
+   than in light at the same viewport. Any future override of a base token has
+   the same trap. */
+@media (min-width: 768px) {
+    :root,
+    :root[data-theme="dark"],
+    :root[data-theme="light"] {
+        --brand-nav-overlay: var(--brand-nav-height);
+    }
 }
 
 /* ── Light theme tokens ──────────────────────────────────────────── */
@@ -599,8 +639,18 @@
 }
 
 /* ── Navigation ──────────────────────────────────────────────────── */
+/* Unpinned by default, pinned only from 768px up — see the one-column rule at
+   `--brand-nav-overlay` above. The base case is the unpinned one and the media
+   query is the addition, so there is one place to change if 768 ever moves.
+
+   `relative`, NOT `static`: the iridescent spectrum bar inside is
+   `position: absolute; bottom: 0`, so it needs this element to be its
+   containing block. Under `static` it escaped to the initial containing block
+   and painted a gradient rule across the middle of the page — caught in the
+   360px capture, 2026-08-10. `relative` stays in normal flow (the nav scrolls
+   away, which is the point) while keeping the bar attached. */
 .brand-nav {
-    position: sticky;
+    position: relative;
     top: 0;
     z-index: 50;
     height: var(--brand-nav-height);
@@ -613,6 +663,29 @@
     /* The iridescent spectrum bar (added in Nav.tsx) is the bottom edge now,
        so no gray border here. */
     border-bottom: none;
+}
+
+/* Anchor jumps and focus scrolls land BELOW the pinned chrome instead of
+   behind it. This site had no `scroll-padding-top` at all, so a
+   `/projects/#history-of-mistrust` deep link or a Tab into a card put the
+   target under the nav. That was a 62px defect and pre-dates this change; the
+   pinned strip grew it to 137px on Projects and 181px on Gallery in the
+   768–1023px band, which is what makes it this change's problem to fix.
+   `--brand-top-overlay` is 0 below 768px, where nothing is pinned. */
+html {
+    scroll-padding-top: calc(var(--brand-top-overlay) + 12px);
+}
+
+/* The one-column rule, half 1 of 2. Twin: the `:root` block that sets
+   `--brand-nav-overlay`. Both are keyed to 768px because that is where
+   `md:grid-cols-2` in app/gallery/GalleryGrid.tsx stops the gallery being a
+   single column — see docs/plans/2026-08-10-sticky-rail-one-column-rule.md.
+   Change all three together or the nav will pin while the page still reads as
+   one column. */
+@media (min-width: 768px) {
+    .brand-nav {
+        position: sticky;
+    }
 }
 
 .brand-nav-inner {
@@ -1561,10 +1634,13 @@ button.brand-chip:hover {
     --art-aspect: 1;
     /* One screen, and no more — the ceiling for BOTH states. `dvh` not `vh`:
        on mobile `100vh` counts browser chrome that hides on scroll, so a
-       `100vh` image is cut off at rest. The sticky nav overlays the top of the
-       page, so it comes off too. `min()` is what makes the collapsed cap
-       unable to exceed the same ceiling on a short viewport. */
-    --art-cap: min(70vh, calc(100dvh - var(--brand-nav-height)));
+       `100vh` image is cut off at rest. Pinned chrome overlays the top of the
+       page, so it comes off too — `--brand-top-overlay`, NOT the nav height:
+       below 768px the nav is static and the filter strip is unpinned, so
+       nothing is covered and the art may use the whole screen. `min()` is what
+       makes the collapsed cap unable to exceed the same ceiling on a short
+       viewport. */
+    --art-cap: min(70vh, calc(100dvh - var(--brand-top-overlay)));
 
     aspect-ratio: var(--art-aspect);
     height: auto;
@@ -1595,11 +1671,11 @@ button.brand-chip:hover {
     view-transition-class: gallery-art;
 }
 
-/* Expanded, the art may use the full screen under the nav rather than the 70vh
-   resting cap. Only the cap changes — the ratio and the fitting rules above are
-   what keep the box equal to the picture in both states. */
+/* Expanded, the art may use the full screen under the pinned chrome rather than
+   the 70vh resting cap. Only the cap changes — the ratio and the fitting rules
+   above are what keep the box equal to the picture in both states. */
 .gallery-item[data-expanded="true"] .gallery-item-art {
-    --art-cap: calc(100dvh - var(--brand-nav-height));
+    --art-cap: calc(100dvh - var(--brand-top-overlay));
 }
 
 /* Collapsed, the description is one teasing line. The clamp is VISUAL ONLY —

@@ -67,10 +67,12 @@
      54 + 72 + 26 plus margins = 191px. */
   --stage-chrome: 192px;
 
-  /* One screen, under the nav — the same rule the gallery art follows.
-     `dvh` not `vh`: on mobile `100vh` counts browser chrome that hides on
-     scroll. The nav is sticky and overlays the page, so it comes off too. */
-  --stage-cap: calc(100dvh - var(--brand-nav-height) - var(--stage-chrome));
+  /* One screen, under the pinned chrome — the same rule the gallery art
+     follows. `dvh` not `vh`: on mobile `100vh` counts browser chrome that hides
+     on scroll. `--brand-top-overlay` is the nav plus the pinned tab strip and
+     is 0 below 768px, where neither is pinned and the stage may use the whole
+     screen. */
+  --stage-cap: calc(100dvh - var(--brand-top-overlay) - var(--stage-chrome));
 
   display: flex;
   align-items: stretch;
