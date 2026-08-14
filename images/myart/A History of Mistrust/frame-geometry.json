@@ -1,0 +1,279 @@
+{
+  "_comment": "Canvas geometry for the \"A History of Mistrust\" slide frames. Source of truth for how scripts/generate-mistrust-assets.js lays out the wide sets/set-N.webp strips. See that script's header, and AGENTS.md, before editing by hand.",
+  "coordinateSpace": "set-relative-bootstrap",
+  "_coordinateSpaceNote": "x is measured from the left edge of the slide's own set. Offsets within a set are all the generator consumes, so this is equivalent to figma-canvas coordinates for build purposes. Bootstrapped 2026-08-14 by template-matching every slide into the then-committed raster set exports; all 30 matched at distance <= 0.001. Pending replacement with absolute Figma canvas coordinates read from the file during the next export pass.",
+  "figmaFileKey": "KmVvT8SsdhQIuUPDOFjFXF",
+  "capturedAt": "2026-08-14T20:26:06.594Z",
+  "frames": [
+    {
+      "slide": 1,
+      "nodeId": "1:5",
+      "name": "Instagram post - 1",
+      "set": 1,
+      "x": 0,
+      "width": 1080,
+      "height": 1080
+    },
+    {
+      "slide": 2,
+      "nodeId": "1:19",
+      "name": "Instagram post - 2",
+      "set": 1,
+      "x": 1061,
+      "width": 1080,
+      "height": 1080
+    },
+    {
+      "slide": 3,
+      "nodeId": "1:21",
+      "name": "Instagram post - 3",
+      "set": 1,
+      "x": 2141,
+      "width": 1080,
+      "height": 1080
+    },
+    {
+      "slide": 4,
+      "nodeId": "1:13",
+      "name": "Instagram post - 4",
+      "set": 1,
+      "x": 3221,
+      "width": 1080,
+      "height": 1080
+    },
+    {
+      "slide": 5,
+      "nodeId": "1:17",
+      "name": "Instagram post - 5",
+      "set": 1,
+      "x": 4301,
+      "width": 1080,
+      "height": 1080
+    },
+    {
+      "slide": 6,
+      "nodeId": "1:15",
+      "name": "Instagram post - 6",
+      "set": 1,
+      "x": 5381,
+      "width": 1080,
+      "height": 1080
+    },
+    {
+      "slide": 7,
+      "nodeId": "1:23",
+      "name": "Instagram post - 7",
+      "set": 1,
+      "x": 6461,
+      "width": 1080,
+      "height": 1080
+    },
+    {
+      "slide": 8,
+      "nodeId": "1:25",
+      "name": "Instagram post - 8",
+      "set": 1,
+      "x": 7541,
+      "width": 1080,
+      "height": 1080
+    },
+    {
+      "slide": 9,
+      "nodeId": "1:27",
+      "name": "Instagram post - 9",
+      "set": 1,
+      "x": 8621,
+      "width": 1080,
+      "height": 1080
+    },
+    {
+      "slide": 10,
+      "nodeId": "1:29",
+      "name": "Instagram post - 10",
+      "set": 1,
+      "x": 9701,
+      "width": 1080,
+      "height": 1080
+    },
+    {
+      "slide": 11,
+      "nodeId": "1:31",
+      "name": "Instagram post - 11",
+      "set": 2,
+      "x": 0,
+      "width": 1080,
+      "height": 1080
+    },
+    {
+      "slide": 12,
+      "nodeId": "1:33",
+      "name": "Instagram post - 12",
+      "set": 2,
+      "x": 1080,
+      "width": 1080,
+      "height": 1080
+    },
+    {
+      "slide": 13,
+      "nodeId": "1:35",
+      "name": "Instagram post - 13",
+      "set": 2,
+      "x": 2160,
+      "width": 1080,
+      "height": 1080
+    },
+    {
+      "slide": 14,
+      "nodeId": "1:37",
+      "name": "Instagram post - 14",
+      "set": 2,
+      "x": 3240,
+      "width": 1080,
+      "height": 1080
+    },
+    {
+      "slide": 15,
+      "nodeId": "1:39",
+      "name": "Instagram post - 15",
+      "set": 2,
+      "x": 4320,
+      "width": 1080,
+      "height": 1080
+    },
+    {
+      "slide": 16,
+      "nodeId": "1:41",
+      "name": "Instagram post - 16",
+      "set": 2,
+      "x": 5400,
+      "width": 1080,
+      "height": 1080
+    },
+    {
+      "slide": 17,
+      "nodeId": "1:43",
+      "name": "Instagram post - 17",
+      "set": 2,
+      "x": 6480,
+      "width": 1080,
+      "height": 1080
+    },
+    {
+      "slide": 18,
+      "nodeId": "1:45",
+      "name": "Instagram post - 18",
+      "set": 2,
+      "x": 7560,
+      "width": 1080,
+      "height": 1080
+    },
+    {
+      "slide": 19,
+      "nodeId": "1:47",
+      "name": "Instagram post - 19",
+      "set": 2,
+      "x": 8640,
+      "width": 1080,
+      "height": 1080
+    },
+    {
+      "slide": 20,
+      "nodeId": "1:49",
+      "name": "Instagram post - 20",
+      "set": 2,
+      "x": 9720,
+      "width": 1080,
+      "height": 1080
+    },
+    {
+      "slide": 21,
+      "nodeId": "1:51",
+      "name": "Instagram post - 21",
+      "set": 3,
+      "x": 0,
+      "width": 1056,
+      "height": 1080
+    },
+    {
+      "slide": 22,
+      "nodeId": "1:53",
+      "name": "Instagram post - 22",
+      "set": 3,
+      "x": 1056,
+      "width": 1080,
+      "height": 1080
+    },
+    {
+      "slide": 23,
+      "nodeId": "1:59",
+      "name": "Instagram post - 23",
+      "set": 3,
+      "x": 2136,
+      "width": 1080,
+      "height": 1080
+    },
+    {
+      "slide": 24,
+      "nodeId": "1:55",
+      "name": "Instagram post - 24",
+      "set": 3,
+      "x": 3216,
+      "width": 1080,
+      "height": 1080
+    },
+    {
+      "slide": 25,
+      "nodeId": "1:57",
+      "name": "Instagram post - 25",
+      "set": 3,
+      "x": 4295,
+      "width": 1080,
+      "height": 1080
+    },
+    {
+      "slide": 26,
+      "nodeId": "1:61",
+      "name": "Instagram post - 26",
+      "set": 3,
+      "x": 5375,
+      "width": 1080,
+      "height": 1080
+    },
+    {
+      "slide": 27,
+      "nodeId": "1:65",
+      "name": "Instagram post - 27",
+      "set": 3,
+      "x": 6455,
+      "width": 1080,
+      "height": 1080
+    },
+    {
+      "slide": 28,
+      "nodeId": "1:63",
+      "name": "Instagram post - 28",
+      "set": 3,
+      "x": 7535,
+      "width": 1080,
+      "height": 1080
+    },
+    {
+      "slide": 29,
+      "nodeId": "1:67",
+      "name": "Instagram post - 29",
+      "set": 3,
+      "x": 8615,
+      "width": 1080,
+      "height": 1080
+    },
+    {
+      "slide": 30,
+      "nodeId": "1:69",
+      "name": "Instagram post - 30",
+      "set": 3,
+      "x": 9695,
+      "width": 1080,
+      "height": 1080
+    }
+  ]
+}

@@ -16,30 +16,36 @@
  * trees.**
  *
  * The three wide `sets/set-N.webp` strips take their PIXELS from the individual slide PNGs and
- * their GEOMETRY from the `sets/A History of Mistrust Set N.png` Figma exports. That split is
- * deliberate, and both halves of it were learned the hard way:
+ * their GEOMETRY from `frame-geometry.json`, the committed manifest of where each frame actually
+ * sits on the Figma canvas. That split is deliberate, and both halves were learned the hard way:
  *
- *   - Pixels from slides, because the exports have shipped wrong content before. On 2026-07-27
- *     Set 3 was found to contain Set 2's slides (11-20) instead of its own (21-30). Sourcing
- *     pixels per-slide makes that class of bug structurally impossible.
- *   - Geometry from the exports, because consecutive slides can SHARE artwork. Slides 1 and 2
+ *   - Pixels from slides, because the raster set exports have shipped wrong content before. On
+ *     2026-07-27 Set 3 was found to contain Set 2's slides (11-20) instead of its own (21-30).
+ *     Sourcing pixels per-slide makes that class of bug structurally impossible.
+ *   - Geometry from the manifest, because consecutive slides can SHARE artwork. Slides 1 and 2
  *     overlap by 19px: slide 1's trailing 19 columns and slide 2's leading 19 are 99.7% the same
  *     pixels (the residue is antialiasing on the orange arc). Laying slides out at cumulative
  *     native widths therefore DUPLICATED that band, which is what put the visible notch in the
- *     orange arc of `set-1.webp` between 2026-07-27 and 2026-08-01. The export knows the true
- *     offsets; deriving them by matching each slide into the strip recovers them exactly.
+ *     orange arc of `set-1.webp` between 2026-07-27 and 2026-08-01.
  *
- * The 2026-07-27 note that composition "removes the whole class of bad-export bug" was half
- * right: it removes wrong-content bugs and introduced a seam bug of its own.
+ * Until 2026-08-14 those offsets were recovered by template-matching each slide into the
+ * `sets/A History of Mistrust Set N.png` raster exports. That worked, but it made every build
+ * depend on a picture *of* the layout staying in sync with the artwork — and the user's Figma
+ * export has never included the `sets/` folder (Entry 113), so any repaint of a slide broke the
+ * match and blocked the build. The manifest reads the layout instead of recovering it, which also
+ * means a pure artwork revision can no longer fail geometry at all.
  *
- * Offsets are derived, not trusted: each slide is template-matched into its strip and must land
- * at a near-zero distance, and the resulting layout must reproduce the export's width exactly.
- * Anything else throws rather than quietly shipping a bad mosaic.
+ * The tradeoff, stated plainly: the manifest CAN go stale if frames are moved or resized in Figma,
+ * and no amount of pixel inspection detects a pure translation. A resize is caught — every slide
+ * PNG is asserted against its manifest dimensions below — and so are gaps and non-monotonic
+ * layouts. A frame nudged sideways is not. Re-read the coordinates whenever you re-export; see
+ * AGENTS.md.
  *
  * Usage: node scripts/generate-mistrust-assets.js [--all]
  * Plans: 2026-07-27-contact-unhide-mistrust-assets,
  *        2026-08-01-mistrust-set-seam-dedupe-shxdowloop
- *        (both archived 2026-08-09 — see docs/archives/plans.md)
+ *        (both archived 2026-08-09 — see docs/archives/plans.md),
+ *        2026-08-14-mistrust-reexport-frame-geometry
  */
 
 const { execFileSync } = require('child_process');
@@ -61,7 +67,12 @@ const SET_COUNT = 3;
 // noise from a different libwebp build.
 const all = process.argv.includes('--all');
 
-/** Source paths with uncommitted content changes (modified or untracked), as absolute paths. */
+/**
+ * Source paths with uncommitted content changes (modified or untracked), as absolute paths.
+ *
+ * Slide PNGs and the geometry manifest are both build inputs, so both count. Derived `.webp`
+ * output is deliberately excluded — a rebuilt output is not a reason to rebuild it again.
+ */
 function changedSources() {
   const out = execFileSync('git', ['status', '--porcelain', '--', REL], {
     cwd: ROOT,
@@ -73,7 +84,10 @@ function changedSources() {
     // Porcelain v1: XY then a space then the path, quoted when it contains spaces.
     let p = line.slice(3).trim();
     if (p.startsWith('"') && p.endsWith('"')) p = JSON.parse(p);
-    if (p.toLowerCase().endsWith('.png')) changed.add(path.join(ROOT, p));
+    const lower = p.toLowerCase();
+    if (lower.endsWith('.png') || lower.endsWith('frame-geometry.json')) {
+      changed.add(path.join(ROOT, p));
+    }
   }
   return changed;
 }
@@ -103,109 +117,132 @@ function jobs() {
   return out;
 }
 
-function setExport(n) {
-  return path.join(ROOT, REL, 'sets', `A History of Mistrust Set ${n}.png`);
-}
+const MANIFEST = path.join(ROOT, REL, 'frame-geometry.json');
+
+let manifestCache = null;
 
 /**
- * Collapse an image to one row of per-column average brightness.
+ * Load and validate the frame geometry manifest.
  *
- * `resize(width, 1)` is exactly a column mean, which turns a 10800px strip into a 1D signal that
- * a slide-sized template can be slid along. It matches to 1px while staying cheap enough to run
- * for every slide on every build.
+ * Every field is checked on load rather than at point of use, because a half-valid manifest
+ * produces a plausible-looking strip with a silent defect, which is the failure mode this whole
+ * mechanism exists to prevent.
  */
-async function columnProfile(file) {
-  const meta = await sharp(file).metadata();
-  const data = await sharp(file)
-    .greyscale()
-    .resize(meta.width, 1, { fit: 'fill' })
-    .raw()
-    .toBuffer();
-  return { data, width: meta.width, height: meta.height };
-}
+function frameGeometry() {
+  if (manifestCache) return manifestCache;
 
-/** Mean absolute difference of `tmpl` against `strip` at `off`, or Infinity if it overruns. */
-function matchAt(strip, tmpl, off) {
-  if (off < 0 || off + tmpl.length > strip.length) return Infinity;
-  let sum = 0;
-  for (let i = 0; i < tmpl.length; i++) sum += Math.abs(strip[off + i] - tmpl[i]);
-  return sum / tmpl.length;
-}
-
-// A correct match sits at ~0; the nearest wrong slide in the same set scores >12. Anything above
-// this is a layout we do not understand, and guessing would ship a broken mosaic.
-const MATCH_TOLERANCE = 2.0;
-// Slides may overlap their predecessor, never by more than this. Bounds the search window.
-const MAX_OVERLAP = 96;
-
-/**
- * Recover each slide's true x offset inside set n's Figma export.
- *
- * Slides are placed left to right; each one is searched for in a window that starts up to
- * MAX_OVERLAP before where it would sit if it simply butted against its predecessor. The window
- * extends a little past that point too, so a gap is detected rather than silently mismatched.
- */
-async function deriveOffsets(n, members, metas) {
-  const exportPath = setExport(n);
-  if (!fs.existsSync(exportPath)) {
+  if (!fs.existsSync(MANIFEST)) {
     throw new Error(
-      `Missing set export: ${path.relative(ROOT, exportPath)}\n` +
-        'Set strips take their geometry from these files; see this script\'s header.'
+      `Missing geometry manifest: ${path.relative(ROOT, MANIFEST)}\n` +
+        "Set strips take their layout from this file; see this script's header and AGENTS.md."
     );
   }
 
-  const strip = await columnProfile(exportPath);
-  const offsets = [];
-  let cursor = 0;
+  let parsed;
+  try {
+    parsed = JSON.parse(fs.readFileSync(MANIFEST, 'utf8'));
+  } catch (err) {
+    throw new Error(`${path.relative(ROOT, MANIFEST)} is not valid JSON: ${err.message}`);
+  }
 
-  for (let i = 0; i < members.length; i++) {
-    const tmpl = await columnProfile(sourceSlide(members[i]));
+  const frames = parsed.frames;
+  if (!Array.isArray(frames) || frames.length !== SLIDE_COUNT) {
+    throw new Error(
+      `${path.relative(ROOT, MANIFEST)} must hold exactly ${SLIDE_COUNT} frames, ` +
+        `found ${Array.isArray(frames) ? frames.length : typeof frames}.`
+    );
+  }
 
-    let best = { off: -1, d: Infinity };
-    for (let off = Math.max(0, cursor - MAX_OVERLAP); off <= cursor + MAX_OVERLAP; off++) {
-      const d = matchAt(strip.data, tmpl.data, off);
-      if (d < best.d) best = { off, d };
+  const bySlide = new Map();
+  for (const f of frames) {
+    for (const key of ['slide', 'x', 'width', 'height']) {
+      if (!Number.isInteger(f[key])) {
+        throw new Error(
+          `${path.relative(ROOT, MANIFEST)}: frame ${JSON.stringify(f.name ?? f.slide)} has a ` +
+            `missing or non-integer "${key}".`
+        );
+      }
     }
+    if (f.width <= 0 || f.height <= 0) {
+      throw new Error(`${path.relative(ROOT, MANIFEST)}: slide ${f.slide} has a non-positive size.`);
+    }
+    if (bySlide.has(f.slide)) {
+      throw new Error(`${path.relative(ROOT, MANIFEST)}: slide ${f.slide} appears twice.`);
+    }
+    bySlide.set(f.slide, f);
+  }
 
-    if (best.d > MATCH_TOLERANCE) {
+  for (let n = 1; n <= SLIDE_COUNT; n++) {
+    if (!bySlide.has(n)) {
+      throw new Error(`${path.relative(ROOT, MANIFEST)}: no entry for slide ${n}.`);
+    }
+  }
+
+  manifestCache = { ...parsed, bySlide };
+  return manifestCache;
+}
+
+/**
+ * Lay set n out from the manifest's canvas coordinates.
+ *
+ * Offsets are relative to the leftmost frame in the set, so the manifest can carry absolute Figma
+ * canvas coordinates or set-relative ones interchangeably. Everything else here is a guard:
+ *
+ *   - Each slide PNG must match its manifest dimensions. This is what catches a frame resized in
+ *     Figma without the manifest being re-read, and it is the reason a resize cannot ship.
+ *   - Offsets must not run backwards, and must not leave a gap. A gap would paint background
+ *     between two slides; a backwards offset means the manifest is not in slide order.
+ *
+ * What these guards cannot catch is a frame translated in Figma without being resized. Nothing in
+ * the pixels reveals it. Re-read the coordinates whenever you re-export.
+ */
+function layoutSet(n, members, metas) {
+  const { bySlide } = frameGeometry();
+  const entries = members.map((slide) => bySlide.get(slide));
+
+  members.forEach((slide, i) => {
+    const { width, height } = metas[i];
+    const f = entries[i];
+    if (width !== f.width || height !== f.height) {
       throw new Error(
-        `Set ${n}: slide ${members[i]} does not match its strip ` +
-          `(best distance ${best.d.toFixed(2)} at x=${best.off}, tolerance ${MATCH_TOLERANCE}).\n` +
-          `Either ${path.basename(exportPath)} holds the wrong slides, or the slide PNGs and the ` +
-          'set export are from different Figma revisions. Re-export before regenerating.'
+        `Set ${n}: slide ${slide} is ${width}x${height} but the manifest says ` +
+          `${f.width}x${f.height}.\nThe frame was resized in Figma, or the manifest is stale. ` +
+          `Re-read the coordinates into ${path.relative(ROOT, MANIFEST)} before regenerating.`
       );
     }
+  });
 
-    offsets.push(best.off);
-    cursor = best.off + metas[i].width;
+  const originX = Math.min(...entries.map((f) => f.x));
+  const offsets = entries.map((f) => f.x - originX);
+
+  for (let i = 1; i < offsets.length; i++) {
+    const prevEnd = offsets[i - 1] + metas[i - 1].width;
+    if (offsets[i] < offsets[i - 1]) {
+      throw new Error(
+        `Set ${n}: slide ${members[i]} starts at ${offsets[i]}px, left of slide ` +
+          `${members[i - 1]} at ${offsets[i - 1]}px. The manifest is not in slide order.`
+      );
+    }
+    if (offsets[i] > prevEnd) {
+      throw new Error(
+        `Set ${n}: ${offsets[i] - prevEnd}px gap between slides ${members[i - 1]} and ` +
+          `${members[i]}. Composing would paint background through the seam; refusing.`
+      );
+    }
   }
 
-  const composedWidth = Math.max(...offsets.map((o, i) => o + metas[i].width));
-  if (composedWidth !== strip.width) {
-    throw new Error(
-      `Set ${n}: derived layout is ${composedWidth}px but ${path.basename(exportPath)} is ` +
-        `${strip.width}px. The offsets do not reproduce the export; refusing to ship the mosaic.`
-    );
-  }
+  const width = Math.max(...offsets.map((o, i) => o + metas[i].width));
+  const height = Math.max(...metas.map((m) => m.height));
+  const overlap = metas.reduce((sum, m) => sum + m.width, 0) - width;
 
-  // The canvas takes the export's height, so a taller slide would be silently cropped.
-  const tallest = Math.max(...metas.map((m) => m.height));
-  if (tallest !== strip.height) {
-    throw new Error(
-      `Set ${n}: tallest slide is ${tallest}px but ${path.basename(exportPath)} is ` +
-        `${strip.height}px tall. Composing would crop; refusing.`
-    );
-  }
-
-  const overlap = members.reduce((sum, _, i) => sum + metas[i].width, 0) - composedWidth;
-  return { offsets, width: composedWidth, height: strip.height, overlap };
+  return { offsets, width, height, overlap };
 }
 
 /**
- * Compose set n from its 10 slide PNGs at the offsets its Figma export actually uses.
+ * Compose set n from its 10 slide PNGs at the offsets the frames actually sit at in Figma.
  *
  * Slides keep their NATIVE widths — slide 21 is 1056x1080, not square, so fixed 1080px slots
- * would leave a blank gutter beside it. Offsets come from `deriveOffsets`, which is what closes
+ * would leave a blank gutter beside it. Offsets come from `layoutSet`, which is what closes
  * the shared-bleed seams that cumulative-width packing used to duplicate.
  */
 async function buildSet(n) {
@@ -215,7 +252,7 @@ async function buildSet(n) {
     members.map((slide) => sharp(sourceSlide(slide)).metadata())
   );
 
-  const { offsets, width, height, overlap } = await deriveOffsets(n, members, metas);
+  const { offsets, width, height, overlap } = layoutSet(n, members, metas);
 
   if (overlap > 0) {
     console.log(`set-${n}: deduped ${overlap}px of shared bleed across ${members.length} slides`);
@@ -250,6 +287,11 @@ async function buildSet(n) {
 }
 
 async function main() {
+  // Validate the manifest before anything else, not lazily inside buildSet. A missing or broken
+  // manifest with no stale sets would otherwise skip every set and exit 0, reporting success for
+  // a build whose layout source had been deleted.
+  frameGeometry();
+
   const queue = jobs();
 
   const missing = [...new Set(queue.map((j) => j.src))].filter((s) => !fs.existsSync(s));
@@ -292,13 +334,14 @@ async function main() {
     generated++;
   }
 
-  // A set is stale when any of its 10 slides changed OR when its Figma export changed — the
-  // export supplies the layout, so a re-export moves the seams even when no slide moved. That is
-  // exactly what happened on 2026-08-01.
+  // A set is stale when any of its 10 slides changed OR when the geometry manifest changed — the
+  // manifest supplies the layout, so an edit there moves the seams even when no slide moved. That
+  // is exactly what a re-export used to do on 2026-08-01.
+  const manifestChanged = changed ? changed.has(MANIFEST) : true;
   for (let n = 1; n <= SET_COUNT; n++) {
     const touched =
       !changed ||
-      changed.has(setExport(n)) ||
+      manifestChanged ||
       setMembers(n).some((s) => changed.has(sourceSlide(s)));
     if (!touched && fs.existsSync(path.join(TREES[0], 'sets', `set-${n}.webp`))) {
       skipped += TREES.length;

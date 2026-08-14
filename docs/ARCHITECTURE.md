@@ -133,7 +133,7 @@ There is no server. Everything is a build step or browser runtime.
 | `npm run dev` | `next dev` on :3000. The real app, hot reload. **The dev/preview surface during the deploy pause.** |
 | `npm run build:next` | `next build` -> static export into `out/`. |
 | `npm run css:build` | Tailwind CLI, `app.css` -> `style.css` (minified). Legacy site only. Commit the rebuilt file. |
-| `npm test` | Playwright: 171 tests as of 2026-08-10 (40 visual baselines + 32 gallery-expand + 25 Mistrust slideshow + 22 bubble + 21 webkit-mobile nav + 18 sticky-chrome + 6 set-strip + 4 smoke-next + 3 mobile-zoom). Verify with `--list`; this number goes stale. |
+| `npm test` | Playwright: 173 tests as of 2026-08-14 (40 visual baselines + 32 gallery-expand + 25 Mistrust slideshow + 22 bubble + 21 webkit-mobile nav + 18 sticky-chrome + 8 set-strip + 4 smoke-next + 3 mobile-zoom). Verify with `--list`; this number goes stale. |
 | `npm run serve` | `serve . -l 8080` - **legacy root site only**, not the Next app. |
 
 **Build ordering trap:** `distDir` is `out`, so `build:next` deletes and recreates
@@ -174,7 +174,7 @@ No database, no ORM, no migrations. "Data" is TypeScript literals and image tree
 | Gallery items | [`app/gallery/gallery-data.ts`](../app/gallery/gallery-data.ts) | `GalleryItem[]` = `{ src, alt, caption, width, height, tags, tools, description }`. `tags` (Digital/Traditional) drive the filter and render `sr-only`; `tools` is the visible middot-separated line; `description` is `''` on every item and awaits the user's copy pass. The render path for it **exists** as of Entry 118 - `GalleryGrid` shows it clamped to one line on a collapsed card and in full on an expanded one, but only when the string is non-empty, so filling these in needs no code change. |
 | Project case studies | [`app/projects/BrandProject.tsx`](../app/projects/BrandProject.tsx), [`MistrustProject.tsx`](../app/projects/MistrustProject.tsx) | JSX, not data. No tag system on this page. |
 | Slide captions | `SLIDE_ALT` in [`app/projects/mistrustSlides.ts`](../app/projects/mistrustSlides.ts) | 30-entry array. Feeds both `<img alt>` and lightbox captions. Set title cards must land on indices 1 / 11 / 21 for the `Math.ceil(n / 10)` set math. Twelve entries were found misordered against the artwork in Entry 106 - verify against the images, not the order. |
-| Mistrust set strips | [`scripts/generate-mistrust-assets.js`](../scripts/generate-mistrust-assets.js) | Composes `set-N.webp` taking **pixels from the slide PNGs** and **geometry from the Figma `Set N.png` exports**, because slides 1 and 2 share a 19px band that naive cumulative-width layout draws twice (Entry 114). Guarded by width/height assertions and `tests/mistrust-sets.spec.js`. |
+| Mistrust set strips | [`scripts/generate-mistrust-assets.js`](../scripts/generate-mistrust-assets.js) | Composes `set-N.webp` taking **pixels from the slide PNGs** and **geometry from [`frame-geometry.json`](../images/myart/A%20History%20of%20Mistrust/frame-geometry.json)**, the committed manifest of Figma canvas coordinates, because slides 1 and 2 share a 19px band that naive cumulative-width layout draws twice (Entry 114). Geometry came from the raster `Set N.png` exports until 2026-08-14. Guarded by dimension, gap and ordering assertions plus `tests/mistrust-sets.spec.js`. |
 | Share card | [`app/og.ts`](../app/og.ts) | One `{ url, width, height, alt }` object consumed by all four pages. |
 
 **Config files:** [`next.config.ts`](../next.config.ts) (export mode, dev-only
@@ -253,7 +253,7 @@ One Playwright suite, five kinds of test, **90 total**:
 | Visual gate | `visual-baseline.spec.js` | 40 snapshots = 5 pages x 4 breakpoints (360/768/1024/1440) x 2 themes. A real compare gate, not capture-only. |
 | Bubble engine | `bubbles-exclusion.spec.js` | 10 specs. Motion-enabled - the visual gate runs under `prefers-reduced-motion`, where the engine creates nothing. **Contains the suite's one known flake:** Contact form @ 1440px, ~1 run in 3 (Entry 118). |
 | Gallery expand | `gallery-expand.spec.js` | 17 specs. The other motion-enabled file. Covers the expand interaction, which the visual gate cannot see at all: it only ever captures the collapsed grid, under reduced motion. |
-| Set strips | `mistrust-sets.spec.js` | Holds the committed `set-N.webp` to its Figma export. Covers a blind spot: the app renders its own CSS mosaic from individual slides, so a broken strip is invisible to every other test. |
+| Set strips | `mistrust-sets.spec.js` | 8 specs. Holds the committed `set-N.webp` to `frame-geometry.json`, checking every slide appears at its own manifest offset rather than only that the total width is right. Covers a blind spot: the app renders its own CSS mosaic from individual slides, so a broken strip is invisible to every other test. |
 
 Smallest useful commands: `npx playwright test -g "<name>"` for one case,
 `npx tsc --noEmit` for types, `npm run css:build` for the legacy stylesheet
