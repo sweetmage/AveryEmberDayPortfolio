@@ -23,20 +23,6 @@ before a push ships in the same deploy.
 
 ### Ready to build now
 
-- [ ] **Three controls still paint the browser's focus ring, not the house accent.** `.icon-link`
-      (footer icons), `#return-to-top`, and `.skip-link`. **Not a WCAG 2.4.7 failure** — a visible ring
-      exists — but it is not the 2px `--brand-accent` the contract promises, and
-      `.brand-footer-links a` in the *same declaration block* does paint correctly.
-      **Do not re-derive what has already been ruled out** (all by measurement, 2026-08-06, Entry 123):
-      the rule is present in the built CSS; an injected `!important` rule with the identical selector
-      also fails, so it is *not* being outranked; moving the ring into the utilities layer on the
-      element changes nothing, so it is not the Entries 121–122 layer trap; and longhands behave the
-      same as the `outline:` shorthand. The only pattern is that the working one carries no Tailwind
-      classes and the three failures all do.
-      **Retest headed first.** All of the above was measured in headless Chrome, and this project's
-      convention is that focus and GUI behaviour are only trustworthy in a headed browser. Reproduce
-      with real Tab presses, not `el.focus()` — programmatic focus does not reliably engage
-      `:focus-visible`.
 - [ ] **Two prose measure caps survived the 2026-07-31 "no measure caps" direction.**
       `max-w-[560px]` on the Contact intro and `max-w-[480px]` on the thanks-page paragraph. The About
       box, Contact form and `.project-desc` caps were all removed then; these two were missed. Removing
@@ -134,6 +120,14 @@ consolidated in [`docs/archives/plans.md`](docs/archives/plans.md).
 
 ### 2026-08
 
+- **Aug 25** — **The three "broken" focus rings were never broken.** `.icon-link`, `#return-to-top`
+  and `.skip-link` all paint the 2px `--brand-accent` ring, in both themes, under real Tab presses in
+  a headed browser. Entry 123's finding was a **measurement artifact**: Tailwind v4's
+  `transition-colors` includes `outline-color`, so `getComputedStyle().outlineColor` read at focus
+  time returns the transition's *start* value — the initial `currentColor`, which is the footer's
+  grey and the skip link's white. That is also why every fix attempted against it failed: the
+  declaration was applying the whole time. The three components now enumerate their transition
+  properties, so the ring is correct at the instant focus lands rather than 150ms later. Entry 134.
 - **Aug 10** — **RELEASED `73b5fa4`.** The one-column rule plus the reconciliation, published in a
   single production deploy (15 credits). Checkpoint:
   `docs/checkpoints/2026-08-10-sticky-rail-release.md`. Entry 133.

@@ -1850,17 +1850,27 @@ html.dark .brand-glow-text {
 
    Found by the pre-launch audit, 2026-08-06 (Entry 123). Grouped here rather
    than scattered so the next control added to the footer has an obvious place
-   to join. */
+   to join.
+
+   DO NOT measure this ring with `getComputedStyle().outlineColor` read at
+   focus time. Tailwind v4's `transition-colors` includes `outline-color` in
+   its property list, so on any control carrying it the computed value at the
+   moment focus lands is still the transition's START value — the initial
+   `currentColor`, which is grey in the footer and white on the skip link.
+   That is what made Entry 123 report three of these four as broken, twice.
+   `.brand-footer-links a` looked fine only because its brand.css transition
+   names `color` alone. The three that carried a Tailwind transition utility
+   now enumerate their properties instead of using `transition-colors` /
+   `transition-all`, so the ring appears instantly and reads correctly.
+   Re-measured headed, real Tab presses, both themes, 2026-08-25 (Entry 134). */
 .brand-footer-links a:focus-visible,
 .icon-link:focus-visible,
 #return-to-top:focus-visible,
 .skip-link:focus-visible {
-    /* Longhands, not the `outline:` shorthand. With `var()` inside the
-       shorthand these three controls resolved their ring to `currentColor`
-       (grey on the footer, white on the skip link) while the footer nav link
-       next to them resolved correctly to the accent — measured, not assumed.
-       Setting `outline-color` directly removes the substitution step and all
-       four paint the same accent ring. */
+    /* All four paint the accent. The Entry 123 claim that three of them
+       resolved to `currentColor` was a measurement artifact, not a defect —
+       see the transition note above. Longhands are kept over the `outline:`
+       shorthand because they are equivalent here and marginally more robust. */
     outline-width: 2px;
     outline-style: solid;
     outline-color: var(--brand-accent);

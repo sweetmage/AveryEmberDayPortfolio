@@ -3,7 +3,7 @@ export default function ConnectLinks({ className = '' }: { className?: string })
     <div className={`flex flex-wrap items-center justify-center gap-3 ${className}`}>
       <a
         href="mailto:averyemberday@gmail.com"
-        className="icon-link inline-flex h-[52px] w-[52px] items-center justify-center rounded-full border border-line bg-surface-2 text-text-muted transition-colors hover:border-accent hover:bg-accent-dim hover:text-accent"
+        className="icon-link inline-flex h-[52px] w-[52px] items-center justify-center rounded-full border border-line bg-surface-2 text-text-muted transition-[color,background-color,border-color] hover:border-accent hover:bg-accent-dim hover:text-accent"
         aria-label="Email"
       >
         <svg
@@ -37,7 +37,7 @@ export default function ConnectLinks({ className = '' }: { className?: string })
         href="https://www.linkedin.com/in/averyemberday/"
         target="_blank"
         rel="noopener noreferrer"
-        className="icon-link inline-flex h-[52px] w-[52px] items-center justify-center rounded-full border border-line bg-surface-2 text-text-muted transition-colors hover:border-accent hover:bg-accent-dim hover:text-accent"
+        className="icon-link inline-flex h-[52px] w-[52px] items-center justify-center rounded-full border border-line bg-surface-2 text-text-muted transition-[color,background-color,border-color] hover:border-accent hover:bg-accent-dim hover:text-accent"
         aria-label="LinkedIn"
       >
         <svg
@@ -57,7 +57,7 @@ export default function ConnectLinks({ className = '' }: { className?: string })
         href="https://github.com/sweetmage"
         target="_blank"
         rel="noopener noreferrer"
-        className="icon-link inline-flex h-[52px] w-[52px] items-center justify-center rounded-full border border-line bg-surface-2 text-text-muted transition-colors hover:border-accent hover:bg-accent-dim hover:text-accent"
+        className="icon-link inline-flex h-[52px] w-[52px] items-center justify-center rounded-full border border-line bg-surface-2 text-text-muted transition-[color,background-color,border-color] hover:border-accent hover:bg-accent-dim hover:text-accent"
         aria-label="GitHub"
       >
         <svg

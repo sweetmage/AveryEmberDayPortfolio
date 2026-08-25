@@ -1,3 +1,126 @@
+## Entry 134 — 2026-08-25
+
+**Agent:** Opus 5 (kestrel, main)
+**Cycle:** shxdowflow — the three focus rings that were never broken
+**Branch:** `develop` (committed; nothing pushed)
+**Task:** TODO's top open item — `.icon-link`, `#return-to-top` and `.skip-link` "still paint the browser's focus ring, not the house accent."
+
+### There was no defect
+
+All three paint the 2px `--brand-accent` ring, and always did. Measured headed, with real `Tab`
+presses, in both themes — `rgb(204, 68, 255)` in dark and `rgb(139, 34, 224)` in light, which are
+exactly `--brand-accent` per theme, with `:focus-visible` matching and `outline: 2px solid` on every
+one.
+
+### What Entry 123 actually measured
+
+**Tailwind v4's `transition-colors` includes `outline-color` in its property list.** Read off the
+live computed style, not from docs:
+
+```
+color, background-color, border-color, outline-color, text-decoration-color,
+fill, stroke, --tw-gradient-from, --tw-gradient-via, --tw-gradient-to   (0.15s)
+```
+
+So `getComputedStyle().outlineColor`, sampled at the moment focus lands, returns the transition's
+**start** value — the initial `currentColor`. In the footer that is `--brand-text-muted`
+(`rgb(162, 162, 154)` dark, `rgb(106, 104, 96)` light); on the skip link, which carried
+`transition-all`, it is white. Both read as "the browser's default ring" to an audit that samples
+immediately.
+
+Caught with a `focusin` recorder that logged every control in tab order: the three suspects reported
+`2px solid rgb(162, 162, 154)` at focus time and `rgb(204, 68, 255)` 800ms later. The skip link was
+caught mid-fade twice, at `rgb(226, 149, 255)` and `rgb(251, 239, 255)` — intermediate values on the
+ramp between white and the accent, which is only possible if the accent was the target all along.
+
+`.brand-footer-links a` "worked" for exactly one reason: its brand.css rule names
+`transition: color`, so its outline never transitioned and sampled correctly.
+
+**This explains every ruled-out hypothesis in Entry 123 at once.** The rule was present, the
+`!important` probe changed nothing, the layer move changed nothing, and longhands behaved like the
+shorthand — because the declaration was applying correctly the entire time. Three sessions of
+cascade debugging were spent on a stopwatch problem.
+
+**The lesson is about the instrument, not the cascade.** Any `getComputedStyle` read of a property
+that something transitions is a race with that transition. Sample after it settles, or assert on
+`transition-property` instead.
+
+### The change
+
+Not a fix for the ring, which needed none — a fix for the trap. The three components enumerate their
+transition properties instead of using the blanket utilities, so `outline-color` no longer animates
+and the ring is correct at the instant focus lands rather than 150ms later:
+
+- `SkipLink.tsx` — `transition-all` → `transition-[top]`. `top` is the only property that changes
+  (`-top-10` → `focus:top-0`); the slide still runs.
+- `ConnectLinks.tsx` ×3, `ReturnToTop.tsx` — `transition-colors` →
+  `transition-[color,background-color,border-color]`. Those are exactly the three properties their
+  hover states change; the dropped members of the old list (`outline-color`, `text-decoration-color`,
+  `fill`, `stroke`, gradient stops) are not animated by anything on these elements.
+- `brand.css` — the comment block on the shared `:focus-visible` rule carried Entry 123's wrong
+  diagnosis ("resolved their ring to `currentColor`… setting `outline-color` directly removes the
+  substitution step"). Replaced with the real mechanism and a "do not measure it this way" warning.
+
+### Coverage, proven red first
+
+New `tests/focus-ring.spec.js`, 8 tests. It reads the ring **at focus time with no settle delay**, so
+it fails the way the bug was reported, and asserts separately that no control in the group transitions
+`outline-color` or uses `all`. Tab-walks with real key presses rather than `el.focus()`, which does
+not reliably engage `:focus-visible`.
+
+**Proven to fail**, per the repo's standing rule that a new gate is not trusted until it has been seen
+red: reverting `ConnectLinks.tsx` to `transition-colors` turned it red at 2 failed / 6 passed, with
+`Expected "rgb(139, 34, 224)"` / `Received "rgb(106, 104, 96)"` — the light-theme accent against
+`--brand-text-muted`. That received value *is* the originally reported bug, reproduced on demand.
+
+### Verification
+
+- Full suite **179 passed, exit 0, twice consecutively** on the committed tree.
+- `npx tsc --noEmit` clean.
+- Headed Chrome (not headless — this project's convention for focus and GUI behaviour), both themes,
+  real `Tab` presses. Slide-in and hover fades re-checked after the change: `.skip-link` →
+  `transition-property: top`, `.icon-link` → `color, background-color, border-color`.
+- `npm run css:build` — `style.css` moved by exactly the two new arbitrary transition utilities, and
+  was byte-identical across the later comment-only edit. Diffed, not assumed.
+- `shxdowmap refresh --auto` — `tests` 12 → 13, baseline re-recorded.
+
+### One intermittent failure, traced and cleared
+
+An intermediate run went 178 passed / **1 failed**: `visual-baseline › projects-mistrust @ 768px —
+dark`, a stable 375,579-pixel diff. It did **not** come from this change, and the diff PNG is what
+settles it rather than the re-run: **the red is confined to Mistrust slide artwork in the filmstrip
+and mosaic, and the footer — the only region on that page containing anything this diff touches —
+shows zero difference.** A focus-ring regression cannot repaint slide cells and leave the footer
+untouched.
+
+Supporting, in the order it actually carries weight: the run immediately before it was green with the
+same component code; the test passes in isolation; and two later full runs are green. LOGBOOK line
+487 records the same test family (`projects @ 768px — dark`) as a known full-parallel flake with the
+same isolation behaviour.
+
+**Held the commit until this was settled rather than filing it as flake on the first green re-run** —
+line 76 of this file records a case where exactly that instinct was wrong and the "flake" was a real
+late-layout defect.
+
+### Notes
+
+- **Not chased, deliberately:** the contact inputs (`app/contact/page.tsx:82,95,108`) use
+  `outline-none` with `focus:border-accent`, so their focus indicator is a border recolour rather than
+  the house ring. Pre-existing, visible, and outside this item's scope — but it is the one remaining
+  control group that does not follow the ring contract, and worth a decision rather than a silent
+  exception.
+- `tsconfig.tsbuildinfo` moves in this commit. It is a tracked build cache that churns on every
+  `tsc`; prior commits carry the same noise.
+
+### Route
+
+Main agent throughout for the investigation, the fix, the flake adjudication and the final diff
+review. One pro nano-agent (opencode/qwen3.7-plus) for the shippability review — returned no
+regressions; its one substantive claim, that the contact inputs' `outline-none` needs no fix, was
+verified against the source rather than taken on trust.
+
+---
+
 ## Entry 133 — 2026-08-10
 
 **Agent:** Opus 5 (sable, main)
