@@ -11,8 +11,8 @@ Netlify hosts static files and watches the GitHub repo. There is no server to ma
 step, and no CI configuration — Netlify *is* the CI. There is no `.github/workflows` in this repo.
 
 ```
-edit locally
-  → git push to GitHub (branch: portfoliowebsite)
+edit locally, commit to develop
+  → merge develop into portfoliowebsite, push that branch to GitHub
     → Netlify sees the push
       → rents a temporary Linux box
         → runs `next build`
@@ -170,8 +170,8 @@ batching is not optional.
 
 ### 3. Use free previews
 
-Iterate on a branch, review it on its free Deploy Preview URL (or locally), and spend a production
-deploy only on a finished merge.
+Iterate on `develop`, review it locally with `npm run dev` (or on a free Deploy Preview URL if
+branch deploys get enabled), and spend a production deploy only on a finished merge.
 
 ### 4. `[skip ci]`
 
@@ -179,22 +179,37 @@ Putting `[skip ci]` in a commit message skips that build entirely — the manual
 
 ## Current workflow
 
-Normal service, as of 2026-08-08. Commit to `portfoliowebsite`; pushing it publishes to production.
-Every push is therefore production-affecting — **get the user's explicit go-ahead in the moment**.
+**Two branches.** Restated 2026-08-25 at the user's direction; before that this section said to
+commit straight to `portfoliowebsite`.
 
-Batch commits into one push: Netlify builds per *push*, not per commit, so 19 commits pushed
-together cost 15 credits and pushed separately cost 285.
-
-Preview before publishing, free, either way:
-
-```bash
-npm run dev     # → http://localhost:3000, hot reload
+```
+work on develop  →  commit freely, push freely (no deploy, costs nothing)
+  →  preview locally: npm run dev  →  http://localhost:3000
+    →  when a batch is worth publishing, and only with the user's go-ahead:
+      →  git checkout portfoliowebsite && git merge develop   (fast-forward, free)
+        →  git push                                          ← 15 credits, goes live
 ```
 
-For a shareable preview on real Netlify infrastructure, add the branch to `allowed_branches` (Site
-configuration → Build & deploy → Branches, or the API) and push it. Branch deploys and Deploy
-Previews cost **no credits**. That is how the Aug 7 release was staged and tested — including the
-contact form — before production changed. Remove the branch again afterwards so it stops rebuilding.
+`develop` is permanently open and is where finished-but-unreleased work sits between deploys. That
+accumulation is the point: Netlify builds per **push**, not per commit, so 19 commits merged and
+pushed together cost 15 credits where pushing them one at a time would cost 285. **A release should
+carry a batch.** 20 production deploys a month is roughly one every 36 hours.
+
+Pushing `portfoliowebsite` is the only production-affecting act in the loop — **get the user's
+explicit go-ahead in the moment, every time.**
+
+### `develop` has no hosted preview, on purpose
+
+`allowed_branches` is `["portfoliowebsite"]`, so pushing `develop` produces **no deploy at all** —
+not a free one, none. The user chose to keep it that way on 2026-08-25: preview `develop` on
+localhost, not on the public internet.
+
+If a *shareable* preview is ever needed, add the branch to `allowed_branches` (Site configuration →
+Build & deploy → Branches, or the API) and push it. Branch deploys and Deploy Previews cost **no
+credits** — that is how the Aug 7 release was staged and tested, contact form included, before
+production changed. Two things to know before enabling it: the resulting
+`develop--averyemberdayportfolio.netlify.app` URL is reachable by anyone who has it, and the branch
+keeps rebuilding until it is removed from the list again.
 
 ## The 2026-07-26 → 08-07 deploy pause (closed)
 

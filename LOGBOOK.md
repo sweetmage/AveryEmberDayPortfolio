@@ -18,6 +18,75 @@ When this logbook exceeds ~1000 lines, split it:
 
 ---
 
+## Entry 135 — 2026-08-25
+
+**Agent:** Opus 5 (wren, main)
+**Cycle:** shxdowflow — branch inventory, prune, and the two-branch policy
+**Branch:** `develop` (committed), merged fast-forward into `portfoliowebsite` (**not pushed**)
+**Task:** "What is open to do with existing branches" → prune, then restate the branch rules around
+`develop` and `portfoliowebsite` instead of `master`.
+
+### Eleven branches, one with unmerged work
+
+`git branch -a --no-merged develop` returned exactly one name:
+**`shxdowloop/2026-08-14/mistrust-reexport`** (`287c46b`, 7 files). It was **local-only and had never
+been pushed**, so a disk failure would have taken it, and neither `LOGBOOK.md` nor `TODO.md`
+mentioned it existed. Pushed to origin and recorded in TODO under *Awaiting a user step*.
+
+Its Stage 0 is real, finished work: set-strip layout now comes from a committed
+`images/A History of Mistrust/frame-geometry.json` rather than template-matching the raster
+`sets/*.png` exports, so a pure artwork revision can no longer fail geometry. Stages 1.1–1.4 need a
+Figma export only the user can produce — the manifest currently holds bootstrap-derived offsets, not
+true canvas coordinates.
+
+**Eight merged branches deleted** with `git branch -d` (the merged-only form, which refuses to orphan
+a commit — all eight went through silently, which is the proof nothing was lost):
+`claude/loving-knuth-1651f9`, `feat/history-of-mistrust-case-study`, `resume`, `master`, `slides`,
+`shxdowloop/2026-07-31/architecture-map`, `shxdowloop/2026-08-01/mistrust-set-seam-dedupe`,
+`reconcile/2026-08-10`. Local list is now three: `develop`, `portfoliowebsite`, and the reexport
+branch. Three remote refs left standing at the user's discretion
+(`origin/feat/history-of-mistrust-case-study`, `origin/master`, `origin/shxdowloop/2026-07-31/architecture-map`).
+
+### The branch policy said to commit to the deploy branch
+
+`AGENTS.md` and `docs/NOTES.md` both opened with "**all changes must be committed to the
+`portfoliowebsite` branch**" while simultaneously warning that pushing that branch publishes to
+production. That is a rule pointing at the one branch you cannot work on freely.
+
+**Recent practice was inconsistent rather than uniformly diverged** — checked against the `Branch:`
+line of each entry rather than assumed: Entries 130, 131 and 132 committed directly to
+`portfoliowebsite`, Entry 133 worked on `reconcile/2026-08-10`, Entry 134 on `develop`. Three
+different answers in five entries is the actual argument for writing one down.
+
+Rewritten at the user's direction into the model actually in use: **commit to `develop`; release by
+merging into `portfoliowebsite` and pushing once, with go-ahead in the moment.** `develop` is now
+documented as permanently open, which is what makes a batched release possible at 15 credits per
+push. Landed in `AGENTS.md` → Branch Policy (canonical), `docs/NOTES.md` (summary, now pointing at
+the canonical copy rather than duplicating it), and `docs/deploys.md` → Current workflow + the
+deploy-loop diagram.
+
+**`master` is now documented as dead**, not "retained as historical". Checked rather than assumed:
+GitHub's default branch is `portfoliowebsite`, there are no open PRs against `master`, Netlify was
+repointed off it 2026-07-12, and the only live references to the word were two rules saying not to
+commit to it. It is 93 commits behind `develop`.
+
+### develop stays local-only, deliberately
+
+`allowed_branches` is `["portfoliowebsite"]`, verified against the Netlify API this session — so
+pushing `develop` produces **no deploy at all, not a free one**. Offered the user a standing free
+branch deploy (`develop--averyemberdayportfolio.netlify.app`, 0 credits) and **they chose to keep it
+local-only**, previewing with `npm run dev`, because that URL is publicly reachable by anyone holding
+it. Documented as a deliberate choice with the enable-it recipe attached, so the next agent does not
+read it as an oversight and "fix" it.
+
+### Not pushed
+
+`portfoliowebsite` was fast-forwarded onto `develop` locally and **left unpushed at the user's
+choice**. The pending payload is the Entry 134 focus-ring fix plus this documentation — too thin to
+spend 15 of 20 monthly credits on. It waits for a batch.
+
+---
+
 ## Entry 134 — 2026-08-25
 
 **Agent:** Opus 5 (kestrel, main)

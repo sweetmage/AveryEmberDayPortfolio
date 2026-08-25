@@ -18,9 +18,43 @@ This is the canonical agent-facing source of truth for the `portfoliowebsite` re
 
 ## Branch Policy
 
-**All changes must be committed to the `portfoliowebsite` branch.** Do not commit to `main` or `master` without explicit user direction.
+**Two branches, and only two.** Restated 2026-08-25 at the user's direction, replacing a rule that
+said to commit everything straight to `portfoliowebsite`.
 
-**`portfoliowebsite` is the branch Netlify deploys from** (repointed 2026-07-12 via the Netlify API at the user's direction — production branch and allowed-branches both changed from `master` to `portfoliowebsite`, verified with a production deploy from the new branch; see `LOGBOOK.md` Entry 069). Pushing `portfoliowebsite` publishes to production. That makes every push to this branch a production-affecting action: get the user's explicit go-ahead in the moment before pushing, every time — this note is informational, not standing authorization. `master` is retained as a historical branch; do not merge into it without explicit user direction.
+| Branch | Role | Pushing it |
+|---|---|---|
+| **`develop`** | Where work happens. Every commit lands here first. | Safe — no deploy of any kind. |
+| **`portfoliowebsite`** | What the public sees. Only ever receives merges from `develop`. | **Publishes to production.** |
+
+**Commit to `develop`.** Not to `portfoliowebsite`, not to a feature branch unless the task is big
+enough to warrant one (in which case it merges back to `develop`, not past it). `develop` is the
+integration branch and it stays permanently open — it is where finished-but-unreleased work
+accumulates between deploys, which is the whole reason a release can batch.
+
+**Release = merge `develop` into `portfoliowebsite`, then push once.** The merge is a fast-forward
+and costs nothing; the *push* is the production-affecting act. **Get the user's explicit go-ahead in
+the moment, every time.** This note is informational, not standing authorization. One push is one
+production deploy is **15 credits out of 20/month**, so a release should carry a batch, not a
+one-line fix.
+
+> **`develop` has no hosted preview, deliberately.** Netlify's `allowed_branches` is
+> `["portfoliowebsite"]` and the user chose on 2026-08-25 to keep it that way, so pushing `develop`
+> produces **no deploy at all** — not a free one, none. **Preview `develop` locally with
+> `npm run dev`** (http://localhost:3000). If a *shareable* preview is ever needed, add the branch to
+> `allowed_branches` (Site configuration → Build & deploy → Branches, or the API); branch deploys
+> cost 0 credits, but the resulting URL is publicly reachable, which is why it is off by default. See
+> [`docs/deploys.md`](docs/deploys.md).
+
+**`portfoliowebsite` is the branch Netlify deploys from** (repointed 2026-07-12 via the Netlify API
+at the user's direction — production branch and allowed-branches both changed from `master` to
+`portfoliowebsite`, verified with a production deploy from the new branch; see `LOGBOOK.md` Entry
+069).
+
+> **`master` is dead — do not commit to it, merge into it, or restore it.** It was the deploy branch
+> until 2026-07-12 and is now 93 commits behind `develop`. The local branch was deleted 2026-08-25;
+> `origin/master` may still exist as a historical ref, fully merged, with nothing depending on it —
+> GitHub's default branch is `portfoliowebsite` and there are no open PRs against `master`. If you
+> find yourself on it, you are on the wrong branch.
 
 ## Git hooks
 

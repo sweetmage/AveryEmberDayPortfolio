@@ -2,9 +2,21 @@
 
 ## Branch Policy
 
-All changes for this portfolio website must be committed to the **`portfoliowebsite`** branch. Do not commit to `main`/`master` or any other branch without explicit user direction.
+> Canonical version lives in [`AGENTS.md` → Branch Policy](../AGENTS.md#branch-policy). Summary only
+> here; if the two disagree, `AGENTS.md` wins.
 
-**Live deploy branch is `portfoliowebsite`** (repointed from `master` 2026-07-12 via the Netlify API — see `AGENTS.md` Branch Policy and `LOGBOOK.md` Entry 069). Pushing `portfoliowebsite` publishes to production, so every push needs the user's explicit go-ahead in the moment.
+**Commit to `develop`. Release by merging `develop` into `portfoliowebsite` and pushing once.**
+Restated 2026-08-25 at the user's direction, replacing a rule that said to commit straight to
+`portfoliowebsite`.
+
+- **`develop`** — where work happens, permanently open. Finished-but-unreleased work accumulates here
+  between deploys. Pushing it triggers no deploy of any kind; preview it locally with `npm run dev`.
+- **`portfoliowebsite`** — what the public sees, and the branch Netlify builds (repointed from
+  `master` 2026-07-12 via the Netlify API — see `LOGBOOK.md` Entry 069). It only ever receives merges
+  from `develop`. **Pushing it publishes to production and spends 15 of 20 monthly credits, so every
+  push needs the user's explicit go-ahead in the moment.**
+- **`master`** — dead. Deploy branch until 2026-07-12, now 93 commits behind `develop`; local copy
+  deleted 2026-08-25. Do not commit to it, merge into it, or restore it.
 
 ## TickTick
 

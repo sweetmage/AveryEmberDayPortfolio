@@ -92,7 +92,21 @@ before a push ships in the same deploy.
 
 ## Awaiting a user step
 
-_Nothing awaiting a user step. The deploy pause was lifted and the contact form verified on 2026-08-08 — see Done, below._
+- [ ] **Mistrust re-export, Stages 1–3 — needs a Figma export only you can produce.** Branch
+      `shxdowloop/2026-08-14/mistrust-reexport` (`287c46b`, pushed 2026-08-25). **Stage 0 is done and
+      is real work this file did not record until now:** set-strip layout comes from a committed
+      `images/A History of Mistrust/frame-geometry.json` instead of template-matching the raster
+      `sets/*.png` exports, so a pure artwork revision can no longer fail geometry. Regeneration was
+      byte-identical, suite 173, set-strip specs 6 → 8, tsc clean. Plan and stage list:
+      [`docs/plans/2026-08-14-mistrust-reexport-shxdowloop.md`](docs/plans/2026-08-14-mistrust-reexport-shxdowloop.md).
+      **The user step is 1.1–1.4:** select the 30 frames in Figma, add a PNG 1x export setting,
+      export, then read each frame's canvas x/y/w/h from the Design panel. The manifest currently
+      carries bootstrap-derived offsets rather than true canvas coordinates; nothing in the repo can
+      derive them. Stages 2–3 (swap the export in, regenerate, seam-inspect the Section 81 overlay,
+      LOGBOOK/TODO/`shxdowmap`, reviews) all follow the export and are agent work.
+      **No LOGBOOK entry exists yet** — that is plan item 3.1, deliberately last.
+
+_The deploy pause was lifted and the contact form verified on 2026-08-08 — see Done, below._
 
 ---
 
@@ -120,6 +134,16 @@ consolidated in [`docs/archives/plans.md`](docs/archives/plans.md).
 
 ### 2026-08
 
+- **Aug 25** — **Branches pruned and the branch policy restated around `develop`.** Eleven local
+  branches down to three; the eight that were fully merged into `develop` were deleted with
+  `git branch -d`. `shxdowloop/2026-08-14/mistrust-reexport` was the only one holding unmerged work,
+  was **local-only and unpushed**, and is now on origin and recorded above. `AGENTS.md`,
+  `docs/NOTES.md` and `docs/deploys.md` said to commit straight to `portfoliowebsite` — the branch
+  whose every push is a 15-credit production deploy — while practice had used `develop` since Entry
+  130. Now documented as it is actually worked: commit to `develop`, release by merging and pushing
+  once. `master` is documented dead rather than "historical" (93 behind, not GitHub's default, no open
+  PRs). `develop` stays local-preview-only by user choice; enabling a free Netlify branch deploy is
+  written down as a recipe, not a to-do. Entry 135.
 - **Aug 25** — **The three "broken" focus rings were never broken.** `.icon-link`, `#return-to-top`
   and `.skip-link` all paint the 2px `--brand-accent` ring, in both themes, under real Tab presses in
   a headed browser. Entry 123's finding was a **measurement artifact**: Tailwind v4's
