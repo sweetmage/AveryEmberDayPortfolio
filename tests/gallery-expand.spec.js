@@ -570,6 +570,96 @@ test.describe('gallery expand-on-click', () => {
     expect(new Set(all).size).toBe(all.length);
   });
 
+  test('filter entrants alone receive the entrance stagger and clear it at rest', async ({ page }) => {
+    await page.addInitScript(() => {
+      const original = document.startViewTransition;
+      window.__filterTransitionState = null;
+      if (typeof original !== 'function') return;
+      document.startViewTransition = function (callback) {
+        return original.call(this, () => {
+          callback();
+          window.__filterTransitionState = [...document.querySelectorAll('.gallery-item')].map((card) => ({
+            caption: card.querySelector('h3')?.textContent,
+            viewTransitionClass: getComputedStyle(card).viewTransitionClass,
+            cardName: card.style.viewTransitionName,
+            artName: card.querySelector('.gallery-item-art')?.style.viewTransitionName,
+            top: card.getBoundingClientRect().top,
+            left: card.getBoundingClientRect().left,
+          }));
+        });
+      };
+    });
+    await page.goto(`${BASE_URL}/gallery/#filter=digital`, { waitUntil: 'networkidle' });
+    await expect(page.getByRole('button', { name: 'Digital' })).toHaveAttribute('aria-pressed', 'true');
+
+    await page.getByRole('button', { name: 'All' }).click();
+    await page.waitForFunction(() => window.__filterTransitionState !== null);
+
+    const during = await page.evaluate(() => window.__filterTransitionState);
+    const entering = during.filter((card) => card.viewTransitionClass.includes('gallery-enter'));
+    const staying = during.filter((card) => !card.viewTransitionClass.includes('gallery-enter'));
+    expect(entering.length).toBeGreaterThan(0);
+    expect(staying.length).toBeGreaterThan(0);
+    expect(entering.every((card) => !card.artName)).toBe(true);
+    expect(staying.every((card) => Boolean(card.artName))).toBe(true);
+
+    const expectedPseudos = entering.map((card) => `::view-transition-new(${card.cardName})`);
+    const animations = () => page.evaluate((pseudos) => document.getAnimations()
+      .filter((animation) => pseudos.includes(animation.effect?.pseudoElement))
+      .map((animation) => ({ pseudo: animation.effect.pseudoElement, delay: animation.effect.getTiming().delay })), expectedPseudos);
+    await expect.poll(async () => (await animations()).length).toBe(entering.length);
+    const stagger = await animations();
+    expect(stagger.sort((a, b) => expectedPseudos.indexOf(a.pseudo) - expectedPseudos.indexOf(b.pseudo))
+      .map((animation) => animation.delay)).toEqual(expectedPseudos.map((_, rank) => rank * 25));
+
+    await page.waitForFunction(() => document.querySelectorAll('.gallery-item').length > 0
+      && [...document.querySelectorAll('.gallery-item')].every((card) =>
+        !getComputedStyle(card).viewTransitionClass.includes('gallery-enter')
+        && Boolean(card.querySelector('.gallery-item-art').style.viewTransitionName)));
+  });
+
+  /* A click that lands while a filter transition is still running skips that
+     transition, which REJECTS its `ready`. Uncaught, that is a page error in
+     both engines ("Transition was skipped" / AbortError), measured 2026-10-04.
+     The entering state must also land on the newest filter, not a stale one. */
+  test('rapid filter changes raise no page error and settle with no entering state', async ({ page }) => {
+    const errors = [];
+    page.on('pageerror', (err) => errors.push(err.message));
+    await page.goto(`${BASE_URL}/gallery/`, { waitUntil: 'networkidle' });
+
+    /* One task, three clicks: the first two transitions are skipped by the third.
+       Playwright's own click() cannot do this — it waits for the view-transition
+       overlay to stop intercepting the pointer, so it serialises the clicks. */
+    await page.evaluate(() => {
+      const button = (name) => [...document.querySelectorAll('button')]
+        .find((b) => b.textContent.trim() === name);
+      button('Digital').click();
+      button('Traditional').click();
+      button('All').click();
+    });
+
+    await expect(page.getByRole('button', { name: 'All' })).toHaveAttribute('aria-pressed', 'true');
+    await expect.poll(async () => {
+      const text = await page.locator('[aria-live="polite"]').filter({ hasText: /^Showing / }).textContent();
+      const [, shown, total] = text.match(/Showing (\d+) of (\d+) works/);
+      return shown === total;
+    }).toBe(true);
+    await page.waitForFunction(() => [...document.querySelectorAll('.gallery-item')].every((card) =>
+      !getComputedStyle(card).viewTransitionClass.includes('gallery-enter')
+      && Boolean(card.querySelector('.gallery-item-art').style.viewTransitionName)));
+    // Let any rejected promise from the skipped transitions surface.
+    await page.waitForTimeout(500);
+    expect(errors).toEqual([]);
+  });
+
+  test('reduced motion skips the gallery entrance state', async ({ page }) => {
+    await page.emulateMedia({ reducedMotion: 'reduce' });
+    await page.goto(`${BASE_URL}/gallery/#filter=digital`, { waitUntil: 'networkidle' });
+    await page.getByRole('button', { name: 'All' }).click();
+    await expect.poll(() => page.$$eval('.gallery-item', (cards) => cards.some((card) =>
+      getComputedStyle(card).viewTransitionClass.includes('gallery-enter')))).toBe(false);
+  });
+
   test('the artwork does not cross-fade during the transition', async ({ page }) => {
     await page.goto(`${BASE_URL}/gallery/`, { waitUntil: 'networkidle' });
 

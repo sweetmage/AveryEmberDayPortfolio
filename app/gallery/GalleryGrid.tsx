@@ -1,6 +1,6 @@
 'use client';
 
-import { Fragment, useState, useMemo, useEffect, useCallback, useRef } from 'react';
+import { Fragment, useState, useMemo, useEffect, useLayoutEffect, useCallback, useRef } from 'react';
 import { flushSync } from 'react-dom';
 import type { GalleryItem } from './gallery-data';
 import useStickyRailOverlay, { topOverlayPx } from '../components/useStickyRailOverlay';
@@ -72,8 +72,14 @@ const FILTER_BUTTONS: { key: FilterKey; label: string }[] = [
    is not in every TypeScript lib.dom yet, so it is declared structurally rather
    than asserted away with `any`. */
 type ViewTransitionDocument = Document & {
-  startViewTransition?: (callback: () => void) => unknown;
+  startViewTransition?: (callback: () => void) => ViewTransitionHandle;
 };
+
+interface ViewTransitionHandle {
+  ready: Promise<void>;
+  finished: Promise<void>;
+  updateCallbackDone: Promise<void>;
+}
 
 function prefersReducedMotion(): boolean {
   if (typeof window === 'undefined') return false;
@@ -92,24 +98,35 @@ function prefersReducedMotion(): boolean {
  * the API is missing the change simply applies instantly, which is a working
  * feature without an animation and needs no second code path.
  *
- * `update` must be idempotent — the catch path runs it a second time if the
- * browser refuses the transition (one is already running), so callers compute
- * the next state up front and set it absolutely instead of toggling.
+ * A second call while a transition is running does NOT throw: the browser skips
+ * the running one (its update still runs, its `ready` rejects, its `finished`
+ * resolves first) and starts the new one. Measured in Chromium and WebKit,
+ * 2026-10-04. The catch path is for a synchronous refusal only. Either way
+ * `update` should set state absolutely rather than toggle, so that running it
+ * after a skipped transition's update still lands on the newest state.
+ *
+ * `update` receives `true` only when it runs inside a transition, so a caller can
+ * keep transition-only state (the filter's entering cards) off the paths that
+ * have no `finished` to clear it. Returns the transition, or null when none
+ * started; every promise on it must be caught, because a skipped transition
+ * rejects `ready` and an unhandled rejection is a page error.
  */
-function applyWithViewTransition(update: () => void): void {
+function applyWithViewTransition(update: (transitioning: boolean) => void): ViewTransitionHandle | null {
   const doc = typeof document === 'undefined' ? null : (document as ViewTransitionDocument);
 
   if (!doc || typeof doc.startViewTransition !== 'function' || prefersReducedMotion()) {
-    update();
-    return;
+    update(false);
+    return null;
   }
 
   try {
     // flushSync so React has committed before the post-snapshot is taken.
     // Batched, the transition captures two identical frames: no animation, no error.
-    doc.startViewTransition(() => flushSync(update));
+    // Starting another transition skips the running one rather than throwing.
+    return doc.startViewTransition(() => flushSync(() => update(true)));
   } catch {
-    update();
+    update(false);
+    return null;
   }
 }
 
@@ -149,6 +166,9 @@ interface PlacedItem {
 export default function GalleryGrid({ items }: GalleryGridProps) {
   const [activeFilter, setActiveFilter] = useState<FilterKey>('all');
   const [expandedSrc, setExpandedSrc] = useState<string | null>(null);
+  const [enteringSrcs, setEnteringSrcs] = useState<Set<string>>(() => new Set());
+  const committedFilteredSrcs = useRef<string[]>([]);
+  const filterTransitionToken = useRef(0);
   const cardRefs = useRef(new Map<string, HTMLElement>());
   const gridRef = useRef<HTMLDivElement | null>(null);
   const railRef = useRef<HTMLDivElement>(null);
@@ -188,6 +208,10 @@ export default function GalleryGrid({ items }: GalleryGridProps) {
   const filteredItems = useMemo(() => {
     return items.filter((item) => matchesFilter(item, activeFilter));
   }, [items, activeFilter]);
+
+  useLayoutEffect(() => {
+    committedFilteredSrcs.current = filteredItems.map((item) => item.src);
+  }, [filteredItems]);
 
   /* Keyed to the FULL list, not the filtered one. A position-derived name would
      make a card that moves from slot 5 to slot 2 during a filter read as two
@@ -293,7 +317,15 @@ export default function GalleryGrid({ items }: GalleryGridProps) {
 
   const handleFilterClick = useCallback(
     (key: FilterKey) => {
-      applyWithViewTransition(() => {
+      let enteringItems: GalleryItem[] = [];
+      const transition = applyWithViewTransition((transitioning) => {
+        if (transitioning) {
+          const previous = new Set(committedFilteredSrcs.current);
+          const nextItems = items.filter((item) => matchesFilter(item, key));
+          enteringItems = nextItems.filter((item) => !previous.has(item.src));
+          const animatePseudo = typeof Element !== 'undefined' && typeof Element.prototype.animate === 'function';
+          setEnteringSrcs(animatePseudo ? new Set(enteringItems.map((item) => item.src)) : new Set());
+        }
         setActiveFilter(key);
         /* Collapse inside the SAME transition, not before it, so the browser
            captures one before/after pair and animates the collapse and the
@@ -305,9 +337,50 @@ export default function GalleryGrid({ items }: GalleryGridProps) {
           return openItem && matchesFilter(openItem, key) ? current : null;
         });
       });
+      if (transition) {
+        const token = ++filterTransitionToken.current;
+        if (typeof Element !== 'undefined' && typeof Element.prototype.animate === 'function') {
+          const rootStyle = getComputedStyle(document.documentElement);
+          const durationValue = rootStyle.getPropertyValue('--brand-duration-layout').trim();
+          const duration = durationValue.endsWith('ms')
+            ? parseFloat(durationValue)
+            : parseFloat(durationValue) * 1000;
+          const easing = rootStyle.getPropertyValue('--brand-ease-layout').trim();
+          transition.ready.then(() => {
+            const byGridPosition = [...enteringItems].sort((a, b) => {
+              const aRect = cardRefs.current.get(a.src)?.getBoundingClientRect();
+              const bRect = cardRefs.current.get(b.src)?.getBoundingClientRect();
+              if (!aRect || !bRect) return 0;
+              return aRect.top - bRect.top || aRect.left - bRect.left;
+            });
+            byGridPosition.forEach((item, rank) => {
+              const index = indexBySrc.get(item.src);
+              if (index === undefined) return;
+              try {
+                document.documentElement.animate(
+                  [{ opacity: 0, transform: 'scale(0.96)' }, { opacity: 1, transform: 'none' }],
+                  {
+                    pseudoElement: `::view-transition-new(vt-gal-${index})`,
+                    duration,
+                    easing,
+                    delay: rank * 25,
+                    fill: 'backwards',
+                  },
+                );
+              } catch {
+                // Unsupported pseudo-element animation falls back to the card transition.
+              }
+            });
+          }).catch(() => {});
+        }
+        transition.finished.then(() => {
+          if (filterTransitionToken.current === token) setEnteringSrcs(new Set());
+        }).catch(() => {});
+        transition.updateCallbackDone.catch(() => {});
+      }
       writeHash(key);
     },
-    [items],
+    [items, indexBySrc],
   );
 
   const handleToggle = useCallback(
@@ -476,6 +549,7 @@ export default function GalleryGrid({ items }: GalleryGridProps) {
                   data-expanded={isExpanded}
                   style={{
                     viewTransitionName: `vt-gal-${indexBySrc.get(item.src)}`,
+                    viewTransitionClass: enteringSrcs.has(item.src) ? 'gallery-enter' : undefined,
                     /* Only ever set on the last item, and only when the falling
                        card needs a new row in its own column — see the memo. */
                     gridColumnStart: columnStart,
@@ -531,7 +605,9 @@ export default function GalleryGrid({ items }: GalleryGridProps) {
                        and the `-art` segment keeps them distinct. */
                     style={
                       {
-                        viewTransitionName: `vt-gal-art-${indexBySrc.get(item.src)}`,
+                        viewTransitionName: enteringSrcs.has(item.src)
+                          ? undefined
+                          : `vt-gal-art-${indexBySrc.get(item.src)}`,
                         /* The artwork's real ratio, so its box can BE the
                            picture instead of a larger box with the picture
                            letterboxed inside it. brand.css explains why that

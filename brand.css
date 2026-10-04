@@ -689,7 +689,8 @@ html {
 /* The one-column rule, half 1 of 2. Twin: the `:root` block that sets
    `--brand-nav-overlay`. Both are keyed to 768px because that is where
    `md:grid-cols-2` in app/gallery/GalleryGrid.tsx stops the gallery being a
-   single column — see docs/plans/2026-08-10-sticky-rail-one-column-rule.md.
+   single column — see the archived plan stub 2026-08-10-sticky-rail-one-column-rule
+   in docs/archives/plans.md.
    Change all three together or the nav will pin while the page still reads as
    one column. */
 @media (min-width: 768px) {
@@ -1722,16 +1723,17 @@ button.brand-chip:hover {
    tweens the difference, siblings included, which is why the expand and the
    filter reflow share one mechanism.
 
-   Entering and leaving cards keep the browser's default fade. A custom
-   enter/leave animation is deliberately NOT applied here: inside a view
-   transition CSS cannot tell an entering element from a persisting one, so a
-   blanket `::view-transition-new(*)` rule would make every surviving card pulse
-   on every filter change — contradicting the concept's own "staying: tween to
-   their new grid positions". See TODO.md for the staggered-entrance refinement
-   and what it would cost. */
+   Leaving cards keep the browser's default fade. GalleryGrid marks only newly
+   entering cards with the `gallery-enter` view-transition-class and flattens
+   their artwork into the card snapshot. The class lets the script replace the
+   browser fade on those cards without affecting cards that stay and tween. */
 ::view-transition-group(*) {
     animation-duration: var(--brand-duration-layout);
     animation-timing-function: var(--brand-ease-layout);
+}
+
+::view-transition-new(.gallery-enter) {
+    animation: none;
 }
 
 /* ── The artwork tweens as its own element ───────────────────────────
@@ -1855,12 +1857,14 @@ html.dark .brand-glow-text {
 .icon-link:focus-visible,
 #return-to-top:focus-visible,
 .skip-link:focus-visible {
-    /* Longhands, not the `outline:` shorthand. With `var()` inside the
-       shorthand these three controls resolved their ring to `currentColor`
-       (grey on the footer, white on the skip link) while the footer nav link
-       next to them resolved correctly to the accent — measured, not assumed.
-       Setting `outline-color` directly removes the substitution step and all
-       four paint the same accent ring. */
+    /* This rule was always correct; the "three controls still paint
+       currentColor" reading that followed it (Entry 123) was a sample taken
+       mid-fade. Their Tailwind `transition-colors` / `transition-all` includes
+       `outline-color`, so the ring faded in from `currentColor` over 150ms. A
+       utility's `transition-property` outranks this layer, so the fix is on the
+       components (`transition-[color,background-color,border-color]`), and
+       tests/focus-ring.spec.js fails on any focus stop that animates its
+       outline. Entry 134. Longhands or shorthand make no difference. */
     outline-width: 2px;
     outline-style: solid;
     outline-color: var(--brand-accent);
