@@ -23,34 +23,12 @@ before a push ships in the same deploy.
 
 ### Ready to build now
 
-- [ ] **Three controls still paint the browser's focus ring, not the house accent.** `.icon-link`
-      (footer icons), `#return-to-top`, and `.skip-link`. **Not a WCAG 2.4.7 failure** — a visible ring
-      exists — but it is not the 2px `--brand-accent` the contract promises, and
-      `.brand-footer-links a` in the *same declaration block* does paint correctly.
-      **Do not re-derive what has already been ruled out** (all by measurement, 2026-08-06, Entry 123):
-      the rule is present in the built CSS; an injected `!important` rule with the identical selector
-      also fails, so it is *not* being outranked; moving the ring into the utilities layer on the
-      element changes nothing, so it is not the Entries 121–122 layer trap; and longhands behave the
-      same as the `outline:` shorthand. The only pattern is that the working one carries no Tailwind
-      classes and the three failures all do.
-      **Retest headed first.** All of the above was measured in headless Chrome, and this project's
-      convention is that focus and GUI behaviour are only trustworthy in a headed browser. Reproduce
-      with real Tab presses, not `el.focus()` — programmatic focus does not reliably engage
-      `:focus-visible`.
 - [ ] **Two prose measure caps survived the 2026-07-31 "no measure caps" direction.**
       `max-w-[560px]` on the Contact intro and `max-w-[480px]` on the thanks-page paragraph. The About
       box, Contact form and `.project-desc` caps were all removed then; these two were missed. Removing
       them makes both lines span the full 1400px container, which on a two-sentence paragraph is a real
       visual change — hence a user call rather than a silent fix.
 
-- [ ] **Gallery filter entrance stagger (Track B leftover, deliberate).** The concept's §4 asks for
-      entering cards to fade up from `0.96` staggered ~25ms by grid position. The *movement* tween
-      shipped in Entry 118 and is the part that section calls the one that makes filtering feel
-      designed; the stagger did not, for a real reason: inside a view transition CSS cannot tell an
-      entering element from a persisting one, so a blanket `::view-transition-new(*)` rule makes every
-      *surviving* card pulse on every filter change — contradicting the same section's "staying: tween
-      to their new grid positions". Doing it properly means giving entering and leaving cards separate
-      `view-transition-name` values through refs before the snapshot is taken. Scoped, not blocked.
 - [ ] **Standalone "A History of Mistrust" viewer page** with all canonical slide content and a
       numbered bibliography. Slides and a Sources section currently live inside the Projects tab.
 - [ ] **Ten orphaned icon files still ship, 40 KB total.** Found by the same audit that cleared the
@@ -77,6 +55,19 @@ before a push ships in the same deploy.
       WebKit on Windows, which may not represent iOS Safari at all. If it does not reproduce on the
       user's iPhone or iPad, close this.
 - [ ] **Watermark artwork.** User's own task.
+- [ ] **The 82 Projects reference links paint the browser's default focus ring, not the accent.**
+      Found by the 2026-10-04 plan review (Entry 134): `auto 1px rgb(0,95,204)` in Chromium and
+      WebKit, which contradicts the AGENTS.md focus contract. Not a fade like the footer controls —
+      no rule targets them at all. Needs a selector for the Sources/reference anchors in the Projects
+      tab and an assertion in `tests/focus-ring.spec.js` (which already walks every one of them).
+      Scoped out of Entry 134 because it was not in the approved proposal.
+- [ ] **`npx playwright test` cannot run whole on a fresh checkout without the allow-list.**
+      `tests/google-docs.test.js` calls `loadAllowList()`, which `process.exit(1)`s at *collection*
+      when the gitignored `docs/sync/google-docs.json` is missing, so every other spec dies with it
+      (seen on VOID, 2026-10-04). Fix: skip that file when the allow-list is absent instead of exiting.
+      Until then, run specs by explicit file list (`ls tests/*.spec.js`). Also: all 40 visual
+      baselines are `chromium-win32`, so the visual gate only compares on the Windows box; Entry 134
+      used a darwin before/after in a scratch worktree instead.
 
 
 ### Blocked on a prerequisite
@@ -131,6 +122,19 @@ Gallery per-piece tool tags are **not** duplicated here — they are the `tools`
 
 Full detail in `LOGBOOK.md` (newest-first). Plan docs live in `docs/plans/`; earlier ones are
 consolidated in [`docs/archives/plans.md`](docs/archives/plans.md).
+
+### 2026-10
+
+- **Oct 4** — **Focus rings paint the accent on focus.** The three "non-accent" rings were never
+  failing the rule: Tailwind v4's `transition-colors` includes `outline-color` (and
+  `transition-all` everything), so the ring faded in over 150ms and every probe since Entry 123
+  sampled it mid-fade. Narrowed the transition on the three components; new
+  `tests/focus-ring.spec.js` walks every page with real Tab presses on chromium and webkit-mobile
+  and fails on any outline transition (10/10 red on the old code). Entry 134.
+- **Oct 4** — **Gallery filter entrance stagger.** Entering cards fade up from 0.96, 25ms apart by
+  grid position; staying cards only tween. Three new specs, each proven red against a mutant.
+  Committed locally, **not pushed** (a push is a 15-credit production deploy). Entry 134.
+- **Oct 4** — The two plans shipped in `73b5fa4` archived; `docs/plans/` holds open plans only.
 
 ### 2026-08
 
