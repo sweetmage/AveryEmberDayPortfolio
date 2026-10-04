@@ -99,7 +99,8 @@ Do NOT use these in `bash` tool calls (they are PowerShell-specific and often fa
 > them without deciding first that they should exist.
 
 > **The suite is not single-engine any more.** Two projects: `chromium` (everything) and
-> **`webkit-mobile`**, scoped by `testMatch` to `tests/nav-safari.spec.js` alone. It exists because
+> **`webkit-mobile`**, scoped by `testMatch` to `tests/nav-safari.spec.js` and
+> `tests/focus-ring.spec.js` (added 2026-10-04, Entry 134). It exists because
 > the theme toggle rendered off screen on every iPhone and iPad for a full release while Chromium
 > stayed green — WebKit does not fold an `aspect-ratio`-derived width into a flex item's intrinsic
 > contribution (Entry 127). **A layout bug a user reports on iOS will not reproduce in the chromium
@@ -220,7 +221,12 @@ In Node.js scripts, load with `import 'dotenv/config'` (or `require('dotenv').co
 - Brand tokens in `brand.css` are the source of truth for color contrast
 - `prefers-reduced-motion` must disable physics bubbles, spinning rings, and float animations
 - Focus-visible contract: **`var(--brand-accent)`**, 2px outline, on all interactive
-  elements. `.brand-btn` was the last holdout on `--brand-border-focus` (a near-invisible
+  elements, **painted the instant focus lands.** Never put `transition-colors` or `transition-all`
+  on a focusable element: in Tailwind v4 both include `outline-color`, so the ring fades in from
+  `currentColor` over 150ms, and `brand.css` (in `layer(components)`) cannot override a utility's
+  `transition-property`. Use `transition-[color,background-color,border-color]` instead. This
+  hid as "the rule does not apply" for two months (Entries 123, 134); `tests/focus-ring.spec.js`
+  walks every page with real Tab presses and fails on any outline transition. `.brand-btn` was the last holdout on `--brand-border-focus` (a near-invisible
   `rgba(255,255,255,0.24)` in dark) until Entry 107 — if you add a button variant, use the accent. (This line previously named `--brand-border-focus`; that token is
   `rgba(255,255,255,0.24)` in dark and produces a much weaker ring than the accent the
   code has always shipped. Corrected 2026-07-23 to match the code, not the reverse.)

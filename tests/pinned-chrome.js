@@ -15,7 +15,7 @@
  * `position`, do not read `--brand-nav-overlay`, which reads back as the
  * literal `clamp(...)` string and parses to NaN.
  *
- * See docs/plans/2026-08-10-sticky-rail-one-column-rule.md.
+ * See docs/archives/plans.md (stub: 2026-08-10-sticky-rail-one-column-rule).
  */
 export async function pinnedChromeHeight(page) {
   return page.evaluate(() => {

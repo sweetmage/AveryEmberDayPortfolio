@@ -4,6 +4,9 @@ All completed, cancelled, and superseded implementation plans consolidated from 
 
 ## Table of Contents
 
+### Retired stubs (2026-10-04)
+The two plans shipped in the 2026-08-10 release — see [Consolidation Stubs — 2026-10-04](#consolidation-stubs-2026-10-04).
+
 ### Retired stubs (2026-08-09 consolidation)
 Every plan that had shipped as of 2026-08-09 — see [Consolidation Stubs — 2026-08-09](#consolidation-stubs-2026-08-09) for outcome + LOGBOOK entry per file, and the recovery commands.
 
@@ -1893,3 +1896,21 @@ git show <sha>:<path> > <path>                      # restore locally
 | `docs/plans/2026-07-13-srcset-variants.md` | Shipped. srcset and @2x variants. Entry 073, commit `f63671d`. |
 | `docs/plans/2026-07-12-motion-load-perf.md` | Shipped. Time-to-motion and TTI reductions. Entry 072. |
 
+
+<a id="consolidation-stubs-2026-10-04"></a>
+# Consolidation Stubs — 2026-10-04
+
+The two plans `docs/plans/README.md` had parked under "Shipped, awaiting archive": both were complete
+on 2026-08-10 but could not be archived in the commit that first tracked them, because the recovery
+path below is `git show <sha>:<path>` and a file with no history would be lost rather than archived.
+Both entered history in `73b5fa4`. Recover either with:
+
+```bash
+git show 73b5fa4:docs/plans/2026-08-10-sticky-rail-one-column-rule.md
+git show 73b5fa4:docs/plans/2026-08-09-bubble-exclusion-flake.md
+```
+
+| Removed file | Outcome |
+|---|---|
+| `docs/plans/2026-08-10-sticky-rail-one-column-rule.md` | Shipped, released `73b5fa4`. Nav unpinned below 768px; tab/filter groups pinned from 768px up; `--brand-*-overlay` tokens so "one screen" means the chrome actually pinned; the site's first `scroll-padding-top`. Found on the way: the `lg:sticky` Projects rail had zero travel since Entry 079. 18 `sticky-chrome.spec.js` cases. Entry 133. |
+| `docs/plans/2026-08-09-bubble-exclusion-flake.md` | **Partly superseded.** Written on a `develop` that was 8 commits stale; production had already fixed the wedge (Entry 131, rescue on lack of progress), and that mechanism shipped. This plan's Fix B was dropped. **Fix A, the seed-clear**, and the from-frame-0 parking spec survived. Its 67-overlap-frame measurement independently corroborates Entry 131's 68. Entry 133. |

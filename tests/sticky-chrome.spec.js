@@ -17,7 +17,7 @@ const BASE_URL = 'http://localhost:4322';
  * travel shipped unnoticed from Entry 079 until it was measured on 2026-08-10.
  * Every assertion here is therefore taken AFTER a scroll.
  *
- * Plan: docs/plans/2026-08-10-sticky-rail-one-column-rule.md
+ * Plan (archived): docs/archives/plans.md, stub 2026-08-10-sticky-rail-one-column-rule
  */
 
 const PAGES = [
