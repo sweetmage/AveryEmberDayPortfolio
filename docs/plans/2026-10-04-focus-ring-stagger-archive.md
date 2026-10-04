@@ -87,27 +87,68 @@ runs mid-transition (it should not).
 filenames). This plan doc itself stays in `docs/plans/` until shipped and committed, then archives in
 a later session, per the README rule.
 
+## Plan review (oracle/opus, 1 round, PASS) — changes adopted
+
+Every finding was checked against the code; all held. What changed:
+
+- **F1: the full suite cannot run on this host as-is.** `tests/google-docs.test.js` exits at
+  collection without the gitignored `docs/sync/google-docs.json` (user-owned), and the 40 visual
+  baselines are `chromium-win32` only. **Resolution:** run the suite by explicit file list (every spec
+  except `google-docs.test.js` and `visual-baseline.spec.js`; Playwright only loads files matching
+  the CLI filter). **Visual gate:** a local before/after on darwin in a scratch worktree: capture
+  darwin baselines at `df0db2d` (`--update-snapshots`, untracked, scratch only), check out the
+  integrated HEAD in that same worktree, compare. Proves "nothing at rest moved" for this diff; the
+  canonical win32 gate is not run here and is recorded as such.
+- **F2:** `playwright.config.js` `webkit-mobile` `testMatch` gains `focus-ring\.spec\.js`; AGENTS.md
+  Build & Test updated to match. (T1 files.)
+- **F3:** the invariant becomes: for every focus stop with a painted outline, no entry of
+  `transition-property` that is `all` or contains `outline` has a **non-zero** paired
+  `transition-duration`. The initial value `all 0s` passes.
+- **F4:** the stale plan references at `brand.css:692`, `tests/sticky-chrome.spec.js:20`,
+  `tests/pinned-chrome.js:18` repoint to the archive. `brand.css:692` moves into T1b (after T2).
+- **F5–F9 (stagger mechanics), adopted into T2's brief:** compute the entering set **inside** `update`
+  from a ref holding the last committed `filteredItems`; set entering state **only on the transition
+  path** (never on reduced-motion / no-API / catch paths); `.catch` every promise derived from the
+  transition (a skipped transition rejects `ready` and raises a pageerror otherwise); clear entering
+  state on `finished` guarded by a per-transition token; `applyWithViewTransition` changes to return
+  the transition (or null) — `handleToggle` and the Escape handler ignore it. The comment at
+  `GalleryGrid.tsx:95-97` (a concurrent transition does NOT throw; the old one is skipped) is
+  corrected. N1: the spec filters `getAnimations()` to the entering names. N3: apply `gallery-enter`
+  only when `Element.prototype.animate` exists. Rewrite the `brand.css:1725-1731` TODO pointer.
+- **F10:** Playwright runs serialize — they share port 4322 (`tests/global-setup.js` kills it). T2's
+  helper verifies with `tsc` and `next build` only; the main agent runs the gallery spec after
+  integration.
+- **F12:** `npm run css:build` and commit `style.css` once, after T1 and T2 are integrated.
+- **F13 (out of scope, recorded):** the 82 Projects reference links paint the browser default ring,
+  not the accent — new TODO item.
+- **N5:** restore `tsconfig.tsbuildinfo` after `tsc`. **N7:** `shxdowmap refresh --auto` and the
+  AGENTS.md test count. **N8:** item 3 of the proposal (blockers: none owned by the user besides the
+  push) was omitted from the quote, nothing dropped.
+
 ## Track table
 
 | Track | Owner | Files (write) | Depends on | Verify |
 |---|---|---|---|---|
-| T1 focus ring | main agent | `app/components/ConnectLinks.tsx`, `app/components/ReturnToTop.tsx`, `app/components/SkipLink.tsx`, `tests/focus-ring.spec.js` (new) | — | `npx playwright test tests/focus-ring.spec.js` |
-| T1b focus comment | main agent | `brand.css` lines ~1842–1866 only | **T2 integrated** (T2 also writes `brand.css`) | read diff |
-| T2 gallery stagger | pro nano-agent (opencode), detached worktree | `app/gallery/GalleryGrid.tsx`, `brand.css` view-transition section (~1718–1781) only, `tests/gallery-expand.spec.js` | — | `npx playwright test tests/gallery-expand.spec.js --project=chromium` |
-| T3 plan archive | main agent | `docs/archives/plans.md`, `docs/plans/README.md`, the two plan files (deleted) | — | `grep -rn "^\s*- \[ \]" docs/plans/`; `grep -rn` both filenames |
+| T1 focus ring | main agent | `app/components/ConnectLinks.tsx`, `app/components/ReturnToTop.tsx`, `app/components/SkipLink.tsx`, `tests/focus-ring.spec.js` (new), `playwright.config.js`, `AGENTS.md` | — | `npx playwright test tests/focus-ring.spec.js` (both projects) |
+| T2 gallery stagger | pro nano-agent, detached worktree | `app/gallery/GalleryGrid.tsx`, `brand.css` view-transition section (~1718–1781) only, `tests/gallery-expand.spec.js` | — | helper: `npx tsc --noEmit`, `npm run build:next`; main: `npx playwright test tests/gallery-expand.spec.js` **after T1's Playwright runs finish** (port 4322) |
+| T3 plan archive | main agent | `docs/archives/plans.md`, `docs/plans/README.md`, the two plan files (deleted), `tests/sticky-chrome.spec.js` (comment), `tests/pinned-chrome.js` (comment) | — | listing of `docs/plans/`; `grep -rn` both filenames returns only the archive |
+| T1b brand.css comments | main agent | `brand.css` ~692 and ~1842–1866 only | **T2 integrated** (T2 writes `brand.css`) | read diff |
+| T4 CSS rebuild | main agent | `style.css` | **T1, T1b, T2 integrated** | `npm run css:build` |
 
-T1, T2, T3 launch together (cap 3; T2 is the only helper). T1b waits on T2 because both write
-`brand.css`. Then full suite, TODO/LOGBOOK, commit.
+T1 and T3 run in the main agent while T2's helper runs (cap 3; one helper is enough for this
+scope). Then T1b, T4, gallery spec, suite by file list twice, darwin visual before/after,
+TODO/LOGBOOK, map refresh, commit.
 
 ## Verification
 
 1. `npx playwright test tests/focus-ring.spec.js` green on both projects; the same spec **red** on the
    pre-fix components (revert the three class edits locally, run, restore) — proves it detects the bug.
 2. Stagger spec green; the entering-only assertion red if the class is applied to all cards.
-3. Full suite `npx playwright test` green, twice (this suite has a flake history). Estimate stated
+3. Suite by explicit file list (all specs except `google-docs.test.js` and
+   `visual-baseline.spec.js`, see F1) green, twice (this suite has a flake history). Estimate stated
    before, actual recorded after.
-4. Visual gate: no baselines regenerated. Focus rings and transitions are not captured at rest, so
-   none should move; any move is investigated, not re-baselined.
+4. Visual: darwin before/after in a scratch worktree (F1). No committed baselines regenerated. Focus
+   rings and transitions are not captured at rest, so nothing should move; any move is investigated.
 5. `npx tsc --noEmit` clean.
 6. Headed re-run of the scratch probe: all four controls accent on focus, not just at +500ms.
 
