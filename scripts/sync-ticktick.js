@@ -2,7 +2,7 @@
 // scripts/sync-ticktick.js
 // Syncs docs/sync/local-tasks.json outbound to TickTick via REST API.
 // Usage: node scripts/sync-ticktick.js [--dry-run] [--apply] [--project-id=69c8addc8f0823c509e1979f]
-// Requires: TICKTICK_ACCESS_TOKEN in .env (obtain via scripts/ticktick-oauth.js)
+// Requires: TICKTICK_ACCESS_TOKEN in .env (no OAuth helper exists in this repo; see sync-all.js)
 
 const https = require("node:https");
 const fs = require("node:fs");

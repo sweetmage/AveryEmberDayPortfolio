@@ -76,10 +76,11 @@ async function main() {
       failed = true;
     }
   } else {
-    console.log("\n[sync-all] Skipping TickTick sync — TICKTICK_ACCESS_TOKEN not found in .env");
-    console.log("           1. Register app at https://developer.ticktick.com/");
-    console.log("           2. Add TICKTICK_CLIENT_ID and TICKTICK_CLIENT_SECRET to .env");
-    console.log("           3. Run: node scripts/ticktick-oauth.js");
+    console.log("\n[sync-all] Skipping TickTick sync: no TICKTICK_ACCESS_TOKEN in .env.");
+    console.log("           This repo has no OAuth helper. The Portfolio Website list is kept");
+    console.log("           in sync through a creative-hub [TICK] issue, using the TickTick connector.");
+    console.log("           Do not add a token just to run sync-ticktick.js: it deletes remote tasks");
+    console.log("           and its mapping does not know about tasks the connector created.");
   }
 
   console.log("\n========================================");
