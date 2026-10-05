@@ -19,7 +19,17 @@
  * guard for both invariants lands with the test suite (plan Track D).
  */
 
+import tileManifest from './mistrust-tiles.json';
+
 const BASE = '/images/myart/A History of Mistrust/slides/';
+
+/* Slides whose mosaic tile is cut from the set strip rather than being the
+   slide itself. Written by scripts/generate-mistrust-assets.js, which explains
+   why: adjacent slides can share artwork (1|2 share a 19px band) and slide 21
+   is not square, so the plain slides do not join seamlessly in the mosaic. */
+const SEAMLESS_TILES: ReadonlySet<number> = new Set(
+  tileManifest.sets.flatMap((set) => set.tiles.filter((t) => t.seamless).map((t) => t.slide)),
+);
 
 export const SLIDES_PER_SET = 10;
 export const SET_COUNT = 3;
@@ -78,6 +88,12 @@ export type MistrustSlide = {
    * both consumers pick it up.
    */
   thumb: string;
+  /**
+   * The slide's square in the 30-slide mosaic. Its own `thumb` for most slides;
+   * a seamless tile cut from the set strip where the plain slide would show a
+   * seam against its neighbour (see `SEAMLESS_TILES`).
+   */
+  tile: string;
   /** Verbatim words on the slide. Alt text and lightbox caption source. */
   alt: string;
 };
@@ -97,6 +113,7 @@ export const MISTRUST_SLIDES: readonly MistrustSlide[] = Array.from(
       src: `${BASE}slide-${pad(n)}.webp`,
       full: `${BASE}slide-${pad(n)}@2x.webp`,
       thumb: `${BASE}slide-${pad(n)}.webp`,
+      tile: SEAMLESS_TILES.has(n) ? `${BASE}tile-${pad(n)}.webp` : `${BASE}slide-${pad(n)}.webp`,
       alt: SLIDE_ALT[i],
     };
   }

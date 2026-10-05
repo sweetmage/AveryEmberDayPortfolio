@@ -32,11 +32,22 @@
  * The 2026-07-27 note that composition "removes the whole class of bad-export bug" was half
  * right: it removes wrong-content bugs and introduced a seam bug of its own.
  *
+ * **The 30-slide mosaic on the project page needs seamless tiles of its own.** It lays the slides
+ * out as equal squares with no gutter, so the individual slide files reproduce exactly the seams
+ * this script removes from the strips: the 19px band shared by slides 1 and 2 is drawn twice (the
+ * break in the orange ring the user caught on 2026-10-05), 24|25 repeats one column, and slide 21
+ * (1056x1080) is scaled 2.3% larger than its neighbour by `object-fit: cover`. So each set's strip
+ * is also cut into one region per slide, splitting any shared band down the middle, and every
+ * slide whose region is not simply "its own square, untouched" gets a `slides/tile-NN.webp` cut
+ * from the strip and fitted to 720x720. The regions and which slides got a tile are written to
+ * `app/projects/mistrust-tiles.json`, which the mosaic and `tests/mistrust-sets.spec.js` read.
+ * The slideshow, filmstrip and lightbox keep the untouched slides: they show one post at a time.
+ *
  * Offsets are derived, not trusted: each slide is template-matched into its strip and must land
  * at a near-zero distance, and the resulting layout must reproduce the export's width exactly.
  * Anything else throws rather than quietly shipping a bad mosaic.
  *
- * Usage: node scripts/generate-mistrust-assets.js [--all]
+ * Usage: node scripts/generate-mistrust-assets.js [--all | --sets]
  * Plans: 2026-07-27-contact-unhide-mistrust-assets,
  *        2026-08-01-mistrust-set-seam-dedupe-shxdowloop
  *        (both archived 2026-08-09 — see docs/archives/plans.md)
@@ -54,12 +65,16 @@ const TREES = [path.join(ROOT, REL), path.join(ROOT, 'public', REL)];
 const QUALITY = 80;
 const SLIDE_COUNT = 30;
 const SET_COUNT = 3;
+const TILE_SIZE = 720;
+const TILE_MANIFEST = path.join(ROOT, 'app', 'projects', 'mistrust-tiles.json');
 
 // --all rebuilds every output. The default rebuilds only the sources whose *content* changed
 // per git, which matters because a Figma re-export rewrites the mtime of all 30 PNGs even when
 // only a handful differ — mtime would rebuild everything and bury the real diff under encoder
 // noise from a different libwebp build.
 const all = process.argv.includes('--all');
+// --sets rebuilds the three strips and their mosaic tiles without touching the 60 slide webps.
+const setsOnly = process.argv.includes('--sets');
 
 /** Source paths with uncommitted content changes (modified or untracked), as absolute paths. */
 function changedSources() {
@@ -202,6 +217,29 @@ async function deriveOffsets(n, members, metas) {
 }
 
 /**
+ * Where each slide's mosaic tile starts and ends inside set n's strip.
+ *
+ * Where two slides overlap, the cut falls in the middle of the shared band, so neither tile
+ * carries the whole band and the pair joins exactly as the strip does. A slide needs its own
+ * tile when its region is anything other than its native, square self.
+ */
+function tileRegions(members, metas, offsets, width) {
+  const cuts = [0];
+  for (let i = 0; i < members.length - 1; i++) {
+    const shared = offsets[i] + metas[i].width - offsets[i + 1];
+    cuts.push(offsets[i + 1] + Math.floor(shared / 2));
+  }
+  cuts.push(width);
+  return members.map((slide, i) => {
+    const start = cuts[i];
+    const end = cuts[i + 1];
+    const untouched =
+      start === offsets[i] && end === offsets[i] + metas[i].width && metas[i].width === metas[i].height;
+    return { slide, start, end, seamless: !untouched };
+  });
+}
+
+/**
  * Compose set n from its 10 slide PNGs at the offsets its Figma export actually uses.
  *
  * Slides keep their NATIVE widths — slide 21 is 1056x1080, not square, so fixed 1080px slots
@@ -227,7 +265,8 @@ async function buildSet(n) {
     top: 0,
   }));
 
-  const buf = await sharp({
+  // Lossless first: the set strip and the mosaic tiles are both cut from this one image.
+  const strip = await sharp({
     create: {
       width,
       height,
@@ -236,8 +275,23 @@ async function buildSet(n) {
     },
   })
     .composite(composite)
-    .webp({ quality: QUALITY })
+    .png()
     .toBuffer();
+  const buf = await sharp(strip).webp({ quality: QUALITY }).toBuffer();
+
+  const regions = tileRegions(members, metas, offsets, width);
+  for (const r of regions.filter((region) => region.seamless)) {
+    const tile = await sharp(strip)
+      .extract({ left: r.start, top: 0, width: r.end - r.start, height })
+      .resize(TILE_SIZE, TILE_SIZE, { fit: 'fill' })
+      .webp({ quality: QUALITY })
+      .toBuffer();
+    for (const tree of TREES) {
+      const dest = path.join(tree, 'slides', `tile-${String(r.slide).padStart(2, '0')}.webp`);
+      fs.writeFileSync(dest, tile);
+      console.log(`${path.relative(ROOT, dest).replace(/\\/g, '/')} (${Math.round(tile.length / 1024)} KB)`);
+    }
+  }
 
   for (const tree of TREES) {
     const dest = path.join(tree, 'sets', `set-${n}.webp`);
@@ -247,6 +301,20 @@ async function buildSet(n) {
     console.log(`${path.relative(ROOT, dest).replace(/\\/g, '/')} (${kb} KB)`);
   }
   return TREES.length;
+}
+
+/** Record every slide's mosaic region, for the mosaic and its test. Cheap: geometry only. */
+async function writeTileManifest() {
+  const sets = [];
+  for (let n = 1; n <= SET_COUNT; n++) {
+    const members = setMembers(n);
+    const metas = await Promise.all(members.map((slide) => sharp(sourceSlide(slide)).metadata()));
+    const { offsets, width } = await deriveOffsets(n, members, metas);
+    sets.push({ set: n, width, tiles: tileRegions(members, metas, offsets, width) });
+  }
+  const json = `${JSON.stringify({ tileSize: TILE_SIZE, sets }, null, 2)}\n`;
+  fs.writeFileSync(TILE_MANIFEST, json);
+  console.log(path.relative(ROOT, TILE_MANIFEST).replace(/\\/g, '/'));
 }
 
 async function main() {
@@ -298,6 +366,7 @@ async function main() {
   for (let n = 1; n <= SET_COUNT; n++) {
     const touched =
       !changed ||
+      setsOnly ||
       changed.has(setExport(n)) ||
       setMembers(n).some((s) => changed.has(sourceSlide(s)));
     if (!touched && fs.existsSync(path.join(TREES[0], 'sets', `set-${n}.webp`))) {
@@ -306,6 +375,8 @@ async function main() {
     }
     generated += await buildSet(n);
   }
+
+  await writeTileManifest();
 
   console.log(`\nDone: ${generated} generated, ${skipped} up to date.`);
 }

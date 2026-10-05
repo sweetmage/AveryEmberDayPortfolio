@@ -10,6 +10,10 @@ import { useMistrustLightbox } from './MistrustLightbox';
  * but every slide is individually clickable (user call, 2026-07-31: no gutter,
  * no per-cell number badges, grouped in sets of 10).
  *
+ * Each square is `slide.tile`, not `slide.thumb`: a few slides share artwork
+ * with their neighbour or are not square, and their plain files would show a
+ * seam here (user, 2026-10-05). See scripts/generate-mistrust-assets.js.
+ *
  * The strips stay on disk; they are the shareable full-set artefact and the
  * legacy root site still references them.
  *
@@ -35,7 +39,7 @@ export default function SlideGrid() {
                 aria-label={`Open slide ${slide.n} of ${SLIDE_COUNT}`}
                 onClick={() => open(slide.n - 1)}
               >
-                <img src={slide.thumb} alt="" loading="lazy" decoding="async" draggable={false} />
+                <img src={slide.tile} alt="" loading="lazy" decoding="async" draggable={false} />
               </button>
             ))}
           </div>
