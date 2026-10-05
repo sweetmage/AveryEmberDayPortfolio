@@ -18,6 +18,56 @@ When this logbook exceeds ~1000 lines, split it:
 
 ---
 
+## Entry 135 — 2026-10-05
+
+**Agent:** Opus 5.5 (fennel, main)
+**Cycle:** shxdowflow (continuation of Entry 134, same milestone)
+**Branch:** `portfoliowebsite` — committed, **not pushed**
+**Task:** user review of the Entry 134 build in the browser pane: "it would look better if the images
+on the grid moved over one or two spaces horizontally or vertically to fill in the space as an
+animation instead of them fading in and out"
+
+### Gallery filter motion, revised at the user's direction
+
+Measured first at 1440px (3 columns): staying cards already tweened, but in straight lines that
+were often **diagonal** (Overflow r1c1→r2c0, Faces r1c1→r0c2) or swept a whole row (Beheaded
+r2c0→r2c2), and cards the filter added or removed faded in place. Asked, and the user chose
+**"slide + quick fade"** for entering and leaving cards, and **"orthogonal, two legs"** for staying
+cards, extending the 2026-08-07 no-diagonals rule from expanding to filtering.
+
+- **Staying cards move horizontally, then vertically.** Both Chromium and WebKit expose the
+  browser's group tween as a CSS animation with two `matrix(1,0,0,1,x,y)` keyframes, so the
+  L-shaped path is one corner keyframe added with `setKeyframes`, not a second animation system.
+  The corner sits at `dx / (dx + dy)` so both legs move at the same average speed; each leg eases
+  on its own. Applies to the card and its separately named artwork alike. Pure translations only:
+  a box that also changes size is left alone.
+- **Entering and leaving cards slide one space** (a card's width plus the column gap), from or
+  toward the nearer side of the grid, with a fade over the first 45% of the slide so a moving
+  card is never seen on top of another. Entering keeps the 25ms stagger. Leaving cards' browser
+  fade is cancelled in script, so the slide is the whole exit. The 0.96 scale is gone.
+
+Verified in both engines (probe, 1440px): Digital → All and All → Traditional produce only
+horizontal or vertical legs; entering slides ±372px with delays 0/25/50; leaving slides −372px;
+no page errors. New specs: `filtering … moves no card on a diagonal` (×2) and `cards a filter
+removes slide one space out`; the no-diagonal spec proven red with the corner rewrite disabled.
+Suite by file list **147 passed** (3m05s against a ~2m50s estimate, +9%; three more tests).
+`.claude/launch.json` gained a `portfolio-export` entry (build, then serve `out/` on :4400) so the
+browser pane shows the Next.js export; the old `portfolio` entry serves the legacy static pages.
+
+### Recorded for later, at the user's request
+
+- **Combine the Projects and Gallery pages.** Projects become thumbnail tiles at the top, each
+  linking to its own project page (no more tabs), outlined, with a short description underneath
+  that makes it visually clear the tile goes to another page. Plan:
+  [`docs/plans/2026-10-05-combine-projects-gallery.md`](docs/plans/2026-10-05-combine-projects-gallery.md).
+  Not started.
+- **A History of Mistrust is not pixel perfect.** The first and second images in Set 1 need to be
+  replaced with a seamless version. This is the seam Entry 114 (and its Entry 125 validation)
+  addressed by taking pixels from the slides and geometry from the Figma export; the user's
+  reading of the site is that the join is still visible. Carried in `TODO.md`.
+
+---
+
 ## Entry 134 — 2026-10-04
 
 **Agent:** Opus 5.5 (fennel, main)

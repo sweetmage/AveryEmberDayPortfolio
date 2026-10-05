@@ -23,6 +23,17 @@ before a push ships in the same deploy.
 
 ### Ready to build now
 
+- [ ] **Combine the Projects and Gallery pages** (user, 2026-10-05). Projects become outlined
+      thumbnail tiles at the top of one page, each linking to its own project page instead of a
+      tab, with a short description under each that reads as "this goes somewhere". The gallery
+      grid follows below. Plan, with the decisions it still needs from the user:
+      [`docs/plans/2026-10-05-combine-projects-gallery.md`](docs/plans/2026-10-05-combine-projects-gallery.md).
+      Absorbs the "standalone Mistrust viewer page" item below.
+- [ ] **A History of Mistrust, Set 1: images 1 and 2 still show a seam** (user, 2026-10-05). They
+      need replacing with a seamless version. Entries 114 and 125 recorded this seam as fixed; the
+      user's review says it is still visible. First step: compare the live `set-1.webp` join
+      against the Figma export at 1:1 and decide whether the fix is a new seamless export from
+      Figma (the user's) or a regenerated composite (ours). Guard: `tests/mistrust-sets.spec.js`.
 - [ ] **Two prose measure caps survived the 2026-07-31 "no measure caps" direction.**
       `max-w-[560px]` on the Contact intro and `max-w-[480px]` on the thanks-page paragraph. The About
       box, Contact form and `.project-desc` caps were all removed then; these two were missed. Removing
@@ -131,8 +142,10 @@ consolidated in [`docs/archives/plans.md`](docs/archives/plans.md).
   sampled it mid-fade. Narrowed the transition on the three components; new
   `tests/focus-ring.spec.js` walks every page with real Tab presses on chromium and webkit-mobile
   and fails on any outline transition (10/10 red on the old code). Entry 134.
-- **Oct 4** — **Gallery filter entrance stagger.** Entering cards fade up from 0.96, 25ms apart by
-  grid position; staying cards only tween. Three new specs, each proven red against a mutant.
+- **Oct 4–5** — **Gallery filter motion.** Cards a filter adds or removes slide one space with a
+  short fade (entering 25ms apart by grid position) instead of fading in place, and staying cards
+  move horizontally then vertically, never on a diagonal — both at the user's direction after
+  reviewing the first cut. Three new specs, each proven red against a mutant.
   Committed locally, **not pushed** (a push is a 15-credit production deploy). Entry 134.
 - **Oct 4** — The two plans shipped in `73b5fa4` archived; `docs/plans/` holds open plans only.
 
