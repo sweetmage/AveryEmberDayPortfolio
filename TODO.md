@@ -26,7 +26,9 @@ before a push ships in the same deploy.
 - [ ] **Combine the Projects and Gallery pages** (user, 2026-10-05). Projects become outlined
       thumbnail tiles at the top of one page, each linking to its own project page instead of a
       tab, with a short description under each that reads as "this goes somewhere". The gallery
-      grid follows below. Plan, with the decisions it still needs from the user:
+      grid follows below. **Decided 2026-10-05:** nav item "Portfolio" at `/portfolio/` replaces
+      both, project pages at `/portfolio/<name>/`, cover + logo thumbnails, filter rail on the
+      gallery only. **Waiting on the user's two tile descriptions.** Plan:
       [`docs/plans/2026-10-05-combine-projects-gallery.md`](docs/plans/2026-10-05-combine-projects-gallery.md).
       Absorbs the "standalone Mistrust viewer page" item below.
 - [ ] **A History of Mistrust, Set 1: images 1 and 2 still show a seam** (user, 2026-10-05). They

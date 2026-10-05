@@ -20,7 +20,7 @@ That returns nothing as of 2026-10-04.
 |---|---|
 | [`2026-08-01-copy-pass-and-gallery-descriptions.md`](2026-08-01-copy-pass-and-gallery-descriptions.md) | **Tracks A and C wait on the user's first draft.** Track B is done (Entry 118); the render path for `description` now exists, so the copy is data only. |
 | [`2026-10-04-focus-ring-stagger-archive.md`](2026-10-04-focus-ring-stagger-archive.md) | **Shipped in Entry 134** (focus rings, gallery entrance stagger, this archive). Left here only because it first enters git history in that commit: archive it in the *next* session, since the archive's recovery path is `git show <sha>:<path>` and a file with no history would be lost rather than archived. |
-| [`2026-10-05-combine-projects-gallery.md`](2026-10-05-combine-projects-gallery.md) | **Planned, not started.** One page for projects and gallery; project tiles link to per-project pages. Blocked on five user decisions (URL, project URLs, tile copy, thumbnails, rail scope). |
+| [`2026-10-05-combine-projects-gallery.md`](2026-10-05-combine-projects-gallery.md) | **Planned, not started.** One page for projects and gallery; project tiles link to per-project pages. Decided: "Portfolio" at `/portfolio/`, project pages under it, cover + logo thumbnails, rail on the gallery only. **Open: the user's tile copy.** |
 
 ## Complete
 
