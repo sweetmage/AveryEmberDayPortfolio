@@ -95,6 +95,17 @@ credits (the 2026-08-08 account-level block, `docs/deploys.md`); the ignore rule
 against an unexpected `CACHED_COMMIT_REF`. **Not retried**, because a retry could spend another 15
 credits blind.
 
+**Cause found and fixed (same day).** With a personal access token the build record reads:
+"Failed during stage 'checking build content for changes': Canceled build due to no content
+change". So the build was cancelled, not failed. The ignore rule is right for real ranges: run
+locally with `df0db2d..0db364a` it says "deployable change → building". It only says "docs-only" when both refs
+are the same commit, and that is what Netlify passes when the branch has no cached build (8 weeks
+since the last one). `netlify.toml` gained an equal-ref guard, and all five cases were reproduced
+locally: equal refs build, an empty ref builds, an unknown ref builds, a real code range builds,
+and a genuine docs-only range still skips. `docs/deploys.md` records the trap. This one-line
+deploy-config change landed after the signoff PASS and was not re-signed. Verified by local
+reproduction of every branch of the rule. It ships in the retried deploy the user already approved.
+
 ---
 
 ## Entry 135 — 2026-10-05

@@ -160,6 +160,15 @@ Two rules when editing it:
   — and exit 0 means skip. That would silently skip *every* build forever. The empty-ref guard is
   load-bearing. See LOGBOOK Entry 103.
 
+- **Equal refs must exit 1 (build) too.** When Netlify has no cached build for the branch (the
+  cache expires after a long gap), it sets `$CACHED_COMMIT_REF` to `$COMMIT_REF`, and a commit
+  diffed against itself is always empty, so the rule read "docs-only". That cancelled deploy
+  `6ac41b0d` (commit `0db364a`, 27 code files, 2026-10-05) as "Canceled build due to no content
+  change", eight weeks after the last build. The equal-ref guard now builds instead. **A cancelled
+  deploy shows `state: error`** in the API, with the reason only in the build record
+  (`/api/v1/builds/<build_id>` → `error`), which needs a personal access token, not the
+  site-scoped one.
+
 A skipped build shows a `netlify-ignore:` line in the deploy log stating the decision.
 
 ### 2. Batch pushes
