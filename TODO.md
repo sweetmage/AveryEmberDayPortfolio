@@ -31,11 +31,12 @@ before a push ships in the same deploy.
       gallery only. **Waiting on the user's two tile descriptions.** Plan:
       [`docs/plans/2026-10-05-combine-projects-gallery.md`](docs/plans/2026-10-05-combine-projects-gallery.md).
       Absorbs the "standalone Mistrust viewer page" item below.
-- [ ] **A History of Mistrust, Set 1: images 1 and 2 still show a seam** (user, 2026-10-05). They
-      need replacing with a seamless version. Entries 114 and 125 recorded this seam as fixed; the
-      user's review says it is still visible. First step: compare the live `set-1.webp` join
-      against the Figma export at 1:1 and decide whether the fix is a new seamless export from
-      Figma (the user's) or a regenerated composite (ours). Guard: `tests/mistrust-sets.spec.js`.
+- [ ] **Regenerate 16 visual baselines on the Windows box** (`projects` and `projects-mistrust`,
+      all 4 breakpoints × 2 themes). The Mistrust mosaic intentionally changed in Entry 136
+      (seamless tiles for slides 1, 2, 21, 24); a darwin before/after confined every changed pixel
+      to Set 1's and Set 3's first mosaic rows. The win32 baselines can only be regenerated on
+      Windows, and the gate there is red on these 16 until then. Review each image before
+      committing. Do this together with the Portfolio merge's T5 if that lands first.
 - [ ] **Two prose measure caps survived the 2026-07-31 "no measure caps" direction.**
       `max-w-[560px]` on the Contact intro and `max-w-[480px]` on the thanks-page paragraph. The About
       box, Contact form and `.project-desc` caps were all removed then; these two were missed. Removing
@@ -138,6 +139,11 @@ consolidated in [`docs/archives/plans.md`](docs/archives/plans.md).
 
 ### 2026-10
 
+- **Oct 5** — **A History of Mistrust mosaic is seamless.** The 30-slide mosaic drew the 19px band
+  slides 1 and 2 share twice (the break in the orange ring), repeated a column at 24|25, and
+  scaled the non-square slide 21 2.3% off its neighbour. The generator now cuts seamless tiles from
+  each set's strip for those four slides; a new spec holds every square to the Figma export at its
+  edges. Entry 136.
 - **Oct 4** — **Focus rings paint the accent on focus.** The three "non-accent" rings were never
   failing the rule: Tailwind v4's `transition-colors` includes `outline-color` (and
   `transition-all` everything), so the ring faded in over 150ms and every probe since Entry 123

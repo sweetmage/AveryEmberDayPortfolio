@@ -18,6 +18,62 @@ When this logbook exceeds ~1000 lines, split it:
 
 ---
 
+## Entry 136 — 2026-10-05
+
+**Agent:** Opus 5.5 (fennel, main)
+**Cycle:** shxdowflow, user-directed ("hold the push, prioritize fixing the pixel imperfections in a
+history of mistrust first")
+**Branch:** `portfoliowebsite` — committed `1041b39`, **not pushed** (held at the user's instruction)
+
+### Why Entry 114's fix never reached what the user sees
+
+Entry 114 removed the duplicated 19px band from the `sets/set-N.webp` strips. **The Next site does
+not show those strips.** `SlideGrid.tsx` builds its own 30-square mosaic from the individual slide
+files, laid out with no gutter, and `tests/mistrust-sets.spec.js` said as much in its header. So the
+mosaic kept drawing slides 1 and 2 edge to edge at their full widths, and the band they share was
+drawn twice: the orange ring notches and the peach ribbon steps at the join (measured side by side
+against `A History of Mistrust Set 1.png`).
+
+### Every join, measured
+
+Taken from the generator's own template matching, which is exact:
+
+| Set | Join | Overlap | Effect in the mosaic |
+|---|---|---|---|
+| 1 | 1\|2 | 19px | Band drawn twice: the visible break |
+| 3 | 24\|25 | 1px | One column drawn twice; invisible but not exact |
+| 3 | 21\|22 | 0 | Slide 21 is 1056×1080; `object-fit: cover` scales it 2.3% larger than 22 |
+
+The other joins with high edge-difference scores (4|5, 11|12, 16|17, 18|19, 29|30) are hard edges in
+the Figma exports themselves. Set 2's export is exactly 10 × 1080, with no overlap anywhere.
+
+### Fix
+
+`scripts/generate-mistrust-assets.js` builds each set's strip losslessly, then cuts it into one
+region per slide. Where slides overlap, the cut splits the shared band down the middle (1|2 is cut
+at x = 1070). Each slide whose region is anything other than its own untouched square gets a 720px
+`slides/tile-NN.webp` (slides 1, 2, 21 and 24, in both trees, 118 KB in total). All 30 regions are
+recorded in `app/projects/mistrust-tiles.json`. `mistrustSlides.ts` gains a `tile` field driven by
+that manifest, and `SlideGrid` uses it. The slideshow, filmstrip and lightbox keep the original
+posts, since they show one slide at a time. A new `--sets` flag rebuilds the strips and tiles
+without touching the 60 slide webps, and the rebuilt strips are byte-identical to the committed ones.
+
+### Verification
+
+- **New spec** (`mistrust-sets.spec.js`, 3 cases): every mosaic square, in both trees, matches its
+  export region at its 12 outer columns each side, and a plain slide must be square. Measured: all
+  squares are ≤ 0.61; the old mosaic scored 4.07, 2.36 and 1.44 on slides 1, 2 and 21; the bound is
+  1. **Proven red** with every tile disabled: slide 1 fails on its edges, slide 21 on squareness.
+- The live page requests `tile-01.webp` and `tile-02.webp` (200, `image/webp`). A headless 2×
+  screenshot of the join shows the ring and the ribbon continuous.
+- Suite by file list: **150 passed** in 3m05s (estimate ~3m10s, −3%).
+- Visual, darwin before/after in a scratch worktree: **16 changed** (`projects` and
+  `projects-mistrust`, every breakpoint and theme), 24 unchanged. At 1440px every changed pixel lies
+  in y 1550–1800 and y 2550–2800, which are Set 1's and Set 3's first mosaic rows, where the four
+  tiles are. Intended. **The 16 win32 baselines need regenerating on the Windows box** (TODO).
+
+---
+
 ## Entry 135 — 2026-10-05
 
 **Agent:** Opus 5.5 (fennel, main)
