@@ -106,6 +106,14 @@ and a genuine docs-only range still skips. `docs/deploys.md` records the trap. T
 deploy-config change landed after the signoff PASS and was not re-signed. Verified by local
 reproduction of every branch of the rule. It ships in the retried deploy the user already approved.
 
+**RELEASED `c568b93`** (2026-10-05): production build `ready`. Live checks on averyemberday.com:
+all 5 pages return 200; `slides/tile-01.webp` and `tile-21.webp` return 200 (both 404'd before);
+`/projects/` requests `tile-01.webp` and `tile-02.webp`; the shipped HTML carries
+`transition-[color,background-color,border-color]` and the skip link's `transition-[top]`; the
+live gallery chunk contains the `view-transition-group(vt-gal-` corner rewrite. One production
+deploy (15 credits). The 16 win32 visual baselines still need regenerating on the Windows box
+(TODO).
+
 ---
 
 ## Entry 135 — 2026-10-05
