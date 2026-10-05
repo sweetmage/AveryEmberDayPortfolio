@@ -130,6 +130,89 @@ function applyWithViewTransition(update: (transitioning: boolean) => void): View
   }
 }
 
+/* ── Filter motion: nothing travels on a diagonal ───────────────────────
+   User rule, 2026-08-07, extended to filtering 2026-10-05: cards move
+   horizontally or vertically, never diagonally, and cards a filter adds or
+   removes slide one space with a short fade instead of fading in place.
+
+   The browser animates every view-transition group in a straight line from
+   its old box to its new one, as a CSS animation with two keyframes holding
+   `matrix(1,0,0,1,x,y)`. Both Chromium and WebKit expose those keyframes, so
+   the L-shaped path is one extra keyframe at the corner rather than a second
+   animation system: horizontal leg first, then vertical, each leg eased on its
+   own, with the corner placed so both legs move at the same average speed. */
+
+type Matrix = [number, number, number, number, number, number];
+
+function parseMatrix(value: unknown): Matrix | null {
+  if (typeof value !== 'string') return null;
+  const match = /^matrix\(([^)]+)\)$/.exec(value.trim());
+  if (!match) return null;
+  const parts = match[1].split(',').map(Number);
+  return parts.length === 6 && parts.every(Number.isFinite) ? (parts as Matrix) : null;
+}
+
+/** Rewrite each gallery group's straight-line tween into a horizontal-then-vertical one. */
+function orthogonalizeGalleryGroups(easing: string): void {
+  for (const animation of document.getAnimations()) {
+    const effect = animation.effect as KeyframeEffect | null;
+    if (!effect || !effect.pseudoElement?.startsWith('::view-transition-group(vt-gal-')) continue;
+    const frames = effect.getKeyframes();
+    if (frames.length !== 2) continue;
+    const from = parseMatrix(frames[0].transform);
+    const to = parseMatrix(frames[1].transform);
+    if (!from || !to) continue;
+    // Only pure translations: a box that also changes shape is left alone.
+    if (from[0] !== to[0] || from[1] !== to[1] || from[2] !== to[2] || from[3] !== to[3]) continue;
+    const dx = Math.abs(to[4] - from[4]);
+    const dy = Math.abs(to[5] - from[5]);
+    if (dx < 1 || dy < 1) continue; // already orthogonal
+    const corner = `matrix(${from.slice(0, 4).join(', ')}, ${to[4]}, ${from[5]})`;
+    try {
+      effect.setKeyframes([
+        { ...frames[0], easing },
+        { offset: dx / (dx + dy), transform: corner, easing },
+        { ...frames[1] },
+      ]);
+    } catch {
+      // Leave the browser's straight-line tween in place.
+    }
+  }
+}
+
+/** Slide a pseudo one space sideways with a quick fade; `entering` reverses it. */
+function slideOneSpace(
+  pseudoElement: string,
+  offsetPx: number,
+  entering: boolean,
+  timing: { duration: number; easing: string; delay?: number },
+): void {
+  const away = `translateX(${offsetPx}px)`;
+  const fadeDuration = timing.duration * 0.45;
+  try {
+    document.documentElement.animate(
+      { transform: entering ? [away, 'none'] : ['none', away] },
+      { pseudoElement, duration: timing.duration, easing: timing.easing, delay: timing.delay ?? 0, fill: 'both' },
+    );
+    document.documentElement.animate(
+      { opacity: entering ? [0, 1] : [1, 0] },
+      {
+        pseudoElement,
+        duration: fadeDuration,
+        easing: 'linear',
+        /* The fade covers the first 45% of the slide in both directions: an
+           entering card is opaque well before it settles, and a leaving one is
+           gone before it reaches the neighbouring cell. That is what keeps a
+           sliding card from ever being seen on top of another. */
+        delay: timing.delay ?? 0,
+        fill: 'both',
+      },
+    );
+  } catch {
+    // Unsupported pseudo-element animation: the card simply appears or vanishes.
+  }
+}
+
 function readHash(): FilterKey {
   if (typeof window === 'undefined') return 'all';
   const hash = window.location.hash.replace('#', '');
@@ -318,11 +401,22 @@ export default function GalleryGrid({ items }: GalleryGridProps) {
   const handleFilterClick = useCallback(
     (key: FilterKey) => {
       let enteringItems: GalleryItem[] = [];
+      /* Leaving cards are gone from the DOM once the update commits, so where
+         they stood is read at the start of the update, while the old layout is
+         still live. */
+      let leaving: { index: number; centerX: number; width: number }[] = [];
       const transition = applyWithViewTransition((transitioning) => {
         if (transitioning) {
           const previous = new Set(committedFilteredSrcs.current);
           const nextItems = items.filter((item) => matchesFilter(item, key));
+          const next = new Set(nextItems.map((item) => item.src));
           enteringItems = nextItems.filter((item) => !previous.has(item.src));
+          leaving = committedFilteredSrcs.current.flatMap((src) => {
+            if (next.has(src)) return [];
+            const index = indexBySrc.get(src);
+            const rect = cardRefs.current.get(src)?.getBoundingClientRect();
+            return index === undefined || !rect ? [] : [{ index, centerX: rect.left + rect.width / 2, width: rect.width }];
+          });
           const animatePseudo = typeof Element !== 'undefined' && typeof Element.prototype.animate === 'function';
           setEnteringSrcs(animatePseudo ? new Set(enteringItems.map((item) => item.src)) : new Set());
         }
@@ -347,6 +441,31 @@ export default function GalleryGrid({ items }: GalleryGridProps) {
             : parseFloat(durationValue) * 1000;
           const easing = rootStyle.getPropertyValue('--brand-ease-layout').trim();
           transition.ready.then(() => {
+            orthogonalizeGalleryGroups(easing);
+
+            /* One space = a card's width plus the column gap. A card in the left
+               half of the grid comes from (and leaves toward) the left edge, one
+               in the right half the right edge, so the slide never crosses the
+               middle of the grid. */
+            const grid = gridRef.current;
+            if (!grid) return;
+            const gridRect = grid.getBoundingClientRect();
+            const gridCenter = gridRect.left + gridRect.width / 2;
+            const gap = parseFloat(getComputedStyle(grid).columnGap) || 0;
+            const side = (centerX: number) => (centerX < gridCenter ? -1 : 1);
+
+            for (const card of leaving) {
+              const offset = side(card.centerX) * (card.width + gap);
+              for (const name of [`vt-gal-${card.index}`, `vt-gal-art-${card.index}`]) {
+                const pseudoElement = `::view-transition-old(${name})`;
+                // Drop the browser's own fade so the slide is the whole exit.
+                for (const animation of document.getAnimations()) {
+                  if ((animation.effect as KeyframeEffect | null)?.pseudoElement === pseudoElement) animation.cancel();
+                }
+                slideOneSpace(pseudoElement, offset, false, { duration, easing });
+              }
+            }
+
             const byGridPosition = [...enteringItems].sort((a, b) => {
               const aRect = cardRefs.current.get(a.src)?.getBoundingClientRect();
               const bRect = cardRefs.current.get(b.src)?.getBoundingClientRect();
@@ -355,21 +474,14 @@ export default function GalleryGrid({ items }: GalleryGridProps) {
             });
             byGridPosition.forEach((item, rank) => {
               const index = indexBySrc.get(item.src);
-              if (index === undefined) return;
-              try {
-                document.documentElement.animate(
-                  [{ opacity: 0, transform: 'scale(0.96)' }, { opacity: 1, transform: 'none' }],
-                  {
-                    pseudoElement: `::view-transition-new(vt-gal-${index})`,
-                    duration,
-                    easing,
-                    delay: rank * 25,
-                    fill: 'backwards',
-                  },
-                );
-              } catch {
-                // Unsupported pseudo-element animation falls back to the card transition.
-              }
+              const rect = cardRefs.current.get(item.src)?.getBoundingClientRect();
+              if (index === undefined || !rect) return;
+              const offset = side(rect.left + rect.width / 2) * (rect.width + gap);
+              slideOneSpace(`::view-transition-new(vt-gal-${index})`, offset, true, {
+                duration,
+                easing,
+                delay: rank * 25,
+              });
             });
           }).catch(() => {});
         }

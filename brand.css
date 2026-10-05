@@ -1723,10 +1723,15 @@ button.brand-chip:hover {
    tweens the difference, siblings included, which is why the expand and the
    filter reflow share one mechanism.
 
-   Leaving cards keep the browser's default fade. GalleryGrid marks only newly
-   entering cards with the `gallery-enter` view-transition-class and flattens
-   their artwork into the card snapshot. The class lets the script replace the
-   browser fade on those cards without affecting cards that stay and tween. */
+   On a FILTER change nothing moves on a diagonal (user rule, 2026-08-07 for
+   expanding, extended to filtering 2026-10-05). GalleryGrid rewrites each
+   staying card's straight-line group tween into horizontal-then-vertical, and
+   cards the filter adds or removes slide one space (from or toward the nearer
+   side of the grid) with a short fade, instead of fading in place. Entering
+   cards are marked with the `gallery-enter` view-transition-class, which turns
+   off the browser fade below so the script's slide is the whole entrance; their
+   artwork is flattened into the card snapshot so it travels with the card.
+   Leaving cards need no class: their browser fade is cancelled in script. */
 ::view-transition-group(*) {
     animation-duration: var(--brand-duration-layout);
     animation-timing-function: var(--brand-ease-layout);

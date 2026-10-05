@@ -4,8 +4,22 @@
     {
       "name": "portfolio",
       "runtimeExecutable": "npx",
-      "runtimeArgs": ["serve", "-l", "3478", "."],
+      "runtimeArgs": [
+        "serve",
+        "-l",
+        "3478",
+        "."
+      ],
       "port": 3478
+    },
+    {
+      "name": "portfolio-export",
+      "runtimeExecutable": "sh",
+      "runtimeArgs": [
+        "-c",
+        "npm run build:next && npx serve out -l 4400"
+      ],
+      "port": 4400
     }
   ]
 }

@@ -605,7 +605,9 @@ test.describe('gallery expand-on-click', () => {
 
     const expectedPseudos = entering.map((card) => `::view-transition-new(${card.cardName})`);
     const animations = () => page.evaluate((pseudos) => document.getAnimations()
-      .filter((animation) => pseudos.includes(animation.effect?.pseudoElement))
+      // The slide (transform) carries the stagger; its paired fade starts with it.
+      .filter((animation) => pseudos.includes(animation.effect?.pseudoElement)
+        && animation.effect.getKeyframes().some((frame) => frame.transform))
       .map((animation) => ({ pseudo: animation.effect.pseudoElement, delay: animation.effect.getTiming().delay })), expectedPseudos);
     await expect.poll(async () => (await animations()).length).toBe(entering.length);
     const stagger = await animations();
@@ -616,6 +618,69 @@ test.describe('gallery expand-on-click', () => {
       && [...document.querySelectorAll('.gallery-item')].every((card) =>
         !getComputedStyle(card).viewTransitionClass.includes('gallery-enter')
         && Boolean(card.querySelector('.gallery-item-art').style.viewTransitionName)));
+  });
+
+  /* Filtering follows the same no-diagonals rule as expanding (user, 2026-08-07
+     and 2026-10-05). The browser tweens each group in a straight line, so the
+     component adds a corner keyframe: horizontal first, then vertical. */
+  for (const [from, to] of [['Digital', 'All'], ['All', 'Traditional']]) {
+    test(`filtering ${from} → ${to} moves no card on a diagonal`, async ({ page }) => {
+      await page.goto(`${BASE_URL}/gallery/`, { waitUntil: 'networkidle' });
+      if (from !== 'All') {
+        await page.getByRole('button', { name: from }).click();
+        await page.waitForTimeout(900);
+      }
+
+      const paths = await page.evaluate(async (target) => {
+        [...document.querySelectorAll('button')].find((b) => b.textContent.trim() === target).click();
+        await new Promise((resolve) => setTimeout(resolve, 60));
+        const xy = (t) => {
+          const m = /matrix\(([^)]+)\)/.exec(t || '');
+          if (!m) return null;
+          const v = m[1].split(',').map(Number);
+          return [v[4], v[5]];
+        };
+        return document.getAnimations()
+          .filter((a) => a.effect?.pseudoElement?.startsWith('::view-transition-group(vt-gal-'))
+          .map((a) => ({ pseudo: a.effect.pseudoElement, points: a.effect.getKeyframes().map((k) => xy(k.transform)) }))
+          .filter((p) => p.points.every(Boolean));
+      }, to);
+
+      const moving = paths.filter(({ points }) => {
+        const [a, z] = [points[0], points[points.length - 1]];
+        return Math.abs(a[0] - z[0]) >= 1 || Math.abs(a[1] - z[1]) >= 1;
+      });
+      expect(moving.length, 'some card should move on this filter change').toBeGreaterThan(0);
+      for (const { pseudo, points } of moving) {
+        for (let i = 1; i < points.length; i += 1) {
+          const dx = Math.abs(points[i][0] - points[i - 1][0]);
+          const dy = Math.abs(points[i][1] - points[i - 1][1]);
+          expect(dx < 1 || dy < 1, `${pseudo} leg ${i} is diagonal: ${JSON.stringify(points)}`).toBe(true);
+        }
+      }
+    });
+  }
+
+  test('cards a filter removes slide one space out instead of fading in place', async ({ page }) => {
+    await page.goto(`${BASE_URL}/gallery/`, { waitUntil: 'networkidle' });
+    const result = await page.evaluate(async () => {
+      const before = [...document.querySelectorAll('.gallery-item')].length;
+      [...document.querySelectorAll('button')].find((b) => b.textContent.trim() === 'Traditional').click();
+      await new Promise((resolve) => setTimeout(resolve, 60));
+      const old = document.getAnimations().filter((a) => /^::view-transition-old\(vt-gal-\d+\)$/.test(a.effect?.pseudoElement || ''));
+      const slides = old.filter((a) => a.effect.getKeyframes().some((k) => /translateX/.test(k.transform || '')));
+      // Only the leaving cards' own pseudos: a staying card's old snapshot keeps
+      // the browser's cross-fade into its new one, which is unchanged.
+      const leavingPseudos = new Set(slides.map((a) => a.effect.pseudoElement));
+      const uaFades = old.filter((a) => a.animationName && leavingPseudos.has(a.effect.pseudoElement));
+      const after = await new Promise((resolve) => setTimeout(() => resolve(document.querySelectorAll('.gallery-item').length), 1200));
+      return { removed: before - after, slides: slides.length, uaFades: uaFades.length,
+        distances: slides.map((a) => a.effect.getKeyframes().at(-1).transform) };
+    });
+    expect(result.removed).toBeGreaterThan(0);
+    expect(result.slides).toBe(result.removed);
+    expect(result.uaFades, 'the browser fade-out should be replaced, not stacked').toBe(0);
+    for (const t of result.distances) expect(t).toMatch(/^translateX\(-?\d+(\.\d+)?px\)$/);
   });
 
   /* A click that lands while a filter transition is still running skips that
