@@ -83,6 +83,18 @@ third, "no test of neighbour-to-neighbour continuity", needed no change. Each ti
 export region right up to the shared cut, so two adjacent tiles that both pass join exactly as the
 export does. Plan review earlier in the milestone: `oracle/opus`, PASS, 1 round.
 
+**Pushed `df0db2d..0db364a` on 2026-10-05 at the user's instruction. The Netlify deploy did not go
+live.** Deploy `6ac41b0dfd7f110009f57b50` (production, `0db364a`) shows `state: error` with no
+`error_message`, no `published_at` and no `deploy_time`, the same signature as the docs-only
+cancellation of `6bf9598` on 2026-08-10. On the live site `slides/tile-01.webp` is 404. The
+build is not the cause as far as it can be checked from here: `next build` under Node 20.20.2 (the
+version `netlify.toml` pins) succeeds. The build log needs an authenticated call, and this Mac has
+no `NETLIFY_AUTH_TOKEN` (the repo `.env` exists only on the Windows box, `~/Repos/.env` has no such
+key, and there is no keystore or Netlify CLI). Candidates, in order: the account is out of build
+credits (the 2026-08-08 account-level block, `docs/deploys.md`); the ignore rule cancelled it
+against an unexpected `CACHED_COMMIT_REF`. **Not retried**, because a retry could spend another 15
+credits blind.
+
 ---
 
 ## Entry 135 — 2026-10-05
