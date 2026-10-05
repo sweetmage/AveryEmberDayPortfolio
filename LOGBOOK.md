@@ -72,6 +72,17 @@ without touching the 60 slide webps, and the rebuilt strips are byte-identical t
   in y 1550–1800 and y 2550–2800, which are Set 1's and Set 3's first mosaic rows, where the four
   tiles are. Intended. **The 16 win32 baselines need regenerating on the Windows box** (TODO).
 
+### Release
+
+The user said "push changes and commit". A push to `portfoliowebsite` is a production deploy, which
+triggers the Final signoff. **Signoff: `codex/gpt-6-luna`, PASS, round 1 of 2.** The review covered
+`df0db2d..HEAD` from a frozen worktree and returned every goal built (the Portfolio merge as a plan
+only, as requested), with no findings. Of its three nits, two were applied in the release commit: the
+Portfolio plan's stale "Mistrust seam is separate work" note, and the AGENTS.md test count (190). The
+third, "no test of neighbour-to-neighbour continuity", needed no change. Each tile must match its own
+export region right up to the shared cut, so two adjacent tiles that both pass join exactly as the
+export does. Plan review earlier in the milestone: `oracle/opus`, PASS, 1 round.
+
 ---
 
 ## Entry 135 — 2026-10-05

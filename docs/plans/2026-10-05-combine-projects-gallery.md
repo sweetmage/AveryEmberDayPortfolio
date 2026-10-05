@@ -109,14 +109,13 @@ before/after from Entry 134 stands in until then.
   the same class of late layout shift as Trap 6.
 - **SEO:** canonical URLs change. The 301s carry link equity; update `alternates.canonical` on every
   page.
-- **Deploy:** this ships in the same 15-credit deploy as whatever is still unpushed (currently Entries
-  134–135). Batch on purpose.
+- **Deploy:** this ships in its own 15-credit deploy (Entries 134–136 were released 2026-10-05).
 
 ## Related, separate
 
-- **Mistrust Set 1 seam** (TODO, 2026-10-05): images 1 and 2 of Set 1 need a seamless replacement.
-  It touches `mistrust-sets.spec.js`, which T4 also edits. Do it before or after this plan, not
-  interleaved.
+- **Mistrust Set 1 seam: done first** (Entry 136, 2026-10-05). The mosaic now uses seamless tiles
+  from `app/projects/mistrust-tiles.json`; T1 moves that manifest along with `mistrustSlides.ts`
+  (it is imported relative to it). The 16 win32 baselines it changed are regenerated in T5.
 
 ## Planning shape
 
