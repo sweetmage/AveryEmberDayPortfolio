@@ -11,9 +11,16 @@ const BASE_URL = 'http://localhost:4322';
    pixels, over the 500 floor below. Each recapture of 40 fresh baselines failed
    exactly one page, a different one each time (measured on SOL, 2026-10-06),
    after the font-loading wait had already been fixed. Grey-scale, unhinted text
-   is stable. This changes how every page renders in the gate, so the baselines
-   were regenerated with it; never remove it without regenerating them. */
-test.use({ launchOptions: { args: ['--font-render-hinting=none', '--disable-lcd-text'] } });
+   cut it to an occasional page; the rest was sub-pixel glyph POSITIONING (same
+   weight, ink within 0.2%, letters a fraction of a pixel apart between runs),
+   which the third flag pins to whole pixels. This changes how every page renders
+   in the gate, so the baselines were regenerated with it; never remove a flag
+   without regenerating them. */
+test.use({
+  launchOptions: {
+    args: ['--font-render-hinting=none', '--disable-lcd-text', '--disable-font-subpixel-positioning'],
+  },
+});
 
 /* Projects and Gallery merged into /portfolio/ on 2026-10-05, and each
    project got its own page. Still 5 captures x 4 widths x 2 themes = 40. */
