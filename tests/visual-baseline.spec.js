@@ -4,6 +4,17 @@ import { test, expect } from '@playwright/test';
 // Deliberately not 3000/3001 -- those are where `next dev` lands.
 const BASE_URL = 'http://localhost:4322';
 
+/* Deterministic text rasterisation for the captures only. With default
+   hinting and LCD anti-aliasing, Chromium on Windows rendered Outfit 600 (the
+   portfolio's tile and section titles, from 2026-10-05) with run-to-run
+   sub-pixel differences: identical glyphs to the eye, 770 to 1,119 differing
+   pixels, over the 500 floor below. Each recapture of 40 fresh baselines failed
+   exactly one page, a different one each time (measured on SOL, 2026-10-06),
+   after the font-loading wait had already been fixed. Grey-scale, unhinted text
+   is stable. This changes how every page renders in the gate, so the baselines
+   were regenerated with it; never remove it without regenerating them. */
+test.use({ launchOptions: { args: ['--font-render-hinting=none', '--disable-lcd-text'] } });
+
 /* Projects and Gallery merged into /portfolio/ on 2026-10-05, and each
    project got its own page. Still 5 captures x 4 widths x 2 themes = 40. */
 const PAGES = [
