@@ -1,6 +1,6 @@
 # Combine Projects and Gallery — 2026-10-05
 
-**Agent:** Opus 5.5 (fennel, main) · **Status:** planned, decisions D1, D2, D4, D5 answered; D3 (copy) open · **Branch:** `portfoliowebsite`
+**Agent:** Opus 5.5 (fennel, main) · **Status:** in progress. D1, D2, D4, D5 answered; D3 drafted by the agent at the user's request, awaiting the user's OK · **Branch:** `portfoliowebsite`
 **Asked by the user (2026-10-05, verbatim):** "i want to combine the projects and gallery pages. the
 projects should contain a thumbnail at the top that lead to each project page (no longer tabbed in
 a separate section) and should show an outline around the card and a short description of the
@@ -58,23 +58,60 @@ to their pages client-side, and passes `#filter=…` through to the gallery unch
 splat rules retarget: `/projects/history-of-mistrust/*` → `/portfolio/history-of-mistrust/` and
 `/projects/brand-avery-ember-day/*` → `/portfolio/brand/`.
 
+## Plan review (oracle/opus, 1 round, FAIL), fixed here without a second round
+
+The reviewer applied the old T1 move list in a scratch copy and got 6 `tsc` errors, then applied
+all moves together and got a clean `tsc`, a clean `next build`, and the three `out/portfolio/…`
+pages. Findings adopted:
+
+- **F1 / F2 / F3: one atomic restructure.** The move must take `mistrust-tiles.json` with it, retire
+  `app/projects/page.tsx` and `ProjectTabs.tsx` in the same step, and repoint
+  `scripts/generate-mistrust-assets.js` (`TILE_MANIFEST`) and `tests/mistrust-sets.spec.js` at the
+  new path. Moving the gallery files at the same time removes the double write to
+  `app/portfolio/page.tsx`. All of this is coupled through imports, so it is one main-agent track.
+- **F4: one Next build at a time.** `out/` is shared, and `next build` kills a running `next dev`.
+  The spec helper works in its own worktree and never builds there.
+- **F5 / F6: the dependency column follows the decisions.** D1, D2, D4 and D5 are answered. D3
+  (copy) is drafted by the agent at the user's request (2026-10-05) and needs the user's OK before
+  push. Nothing waits on it except the push.
+- **F7 / F8: Windows baselines, before the single push.** Baseline commits are not docs-only, so
+  committing them after the code push bills a second deploy. They are regenerated on SOL **before**
+  the one push. Doing so needs the code on SOL (the Mac's home is `M:` there) and the user's
+  go-ahead for SOL. If SOL is unavailable, the push waits or the user accepts a second deploy;
+  that is the user's call.
+- **F9: bubbles.** Each tile's thumbnail is a plain `<img>` (Mistrust: `slides/slide-01@2x.webp`;
+  Brand: `images/icons/BubbleLogo/bubbleLogo.png`), so `FRAME_ZONE_SELECTOR` (`'img, …'`) makes
+  the picture a zone and the card is not one, matching the picture-is-the-wall rule. Never inline
+  `BubbleLogo.tsx` here. New case in `bubbles-exclusion.spec.js`.
+- **F10: the outline is visible.** At rest the tile has a 1px `--brand-text-muted` border (about 8:1
+  in dark, 5:1 in light), switching to `--brand-accent` with the house purple hover and focus ring.
+  `--brand-border-mid` (about 1.3:1) is not used.
+- **Nits adopted:**
+  - Hash forwarder: `location.replace`, and `#filter=` scrolls to the gallery.
+  - Explicit redirect order; a post-deploy `curl -sI` check of each old URL.
+  - `aria-current` on Portfolio for `/portfolio/<project>/`.
+  - Each project page gets its own `h1`.
+  - The shared og card is reused, so there is no per-project image.
+  - Mistrust is the first tile.
+  - AGENTS.md and `brand.css` comment references updated; `style.css` rebuilt in track A.
+  - A placeholder marker (`TILE-COPY-PENDING`) is grepped before push.
+  - The arrow nudge respects reduced motion.
+  - The visual spec is excluded on the Mac.
+  - A Final signoff runs before the push.
+  - The "standalone viewer" TODO stays open; its numbered bibliography is not in scope.
+
 ## Track table
 
 | Track | Owner | Files (write) | Depends on | Verify |
 |---|---|---|---|---|
-| T0 decisions | user | — | — | D1–D5 answered |
-| T1 project pages | pro nano-agent | `app/portfolio/history-of-mistrust/page.tsx` (new), `app/portfolio/brand/page.tsx` (new); `git mv` of `MistrustProject.tsx`, `MistrustSlideshow.tsx`, `MistrustLightbox.tsx`, `SlideGrid.tsx`, `mistrustSlides.ts`, `useSwipeDeck.ts`, `slideshow.css`, `BrandProject.tsx` from `app/projects/` to `app/portfolio/` (back link added to the two project components) | T0 | `npx tsc --noEmit`, `npm run build:next` |
-| T2 tile + combined page | main agent | `app/components/ProjectTile.tsx` (new), `app/portfolio/page.tsx` (new), `brand.css` (tile section only) | T0 (**D3 copy**) | build; headed review in the browser pane |
-| T3 routing | main agent | `app/components/Nav.tsx`, `app/components/Footer.tsx`, `netlify.toml`, delete `app/projects/page.tsx` and `app/projects/ProjectTabs.tsx`, move `app/gallery/GalleryGrid.tsx` + `gallery-data.ts` under `app/portfolio/`, delete `app/gallery/page.tsx` | **T1, T2** (routes must exist before links move) | build; `grep -rn "/gallery/\|/projects/" app` returns nothing |
-| T4 tests | main agent | `tests/smoke-next.spec.js`, `tests/mistrust-slideshow.spec.js`, `tests/mistrust-sets.spec.js`, `tests/sticky-chrome.spec.js`, `tests/bubbles-exclusion.spec.js`, `tests/gallery-expand.spec.js`, `tests/focus-ring.spec.js`, `tests/nav-safari.spec.js`, `tests/mobile-zoom.spec.js`, `tests/visual-baseline.spec.js`, `tests/project-tiles.spec.js` (new), `scripts/measure-content-widths.js` | **T3** | suite by file list, twice |
-| T5 visual baselines | main agent on the **Windows box** | `tests/visual-baseline.spec.js-snapshots/*` | **T4** | regenerate win32 baselines, review every image |
+| A restructure | main agent | `git mv` of `app/projects/{BrandProject,MistrustProject,MistrustSlideshow,MistrustLightbox,SlideGrid,useSwipeDeck}.tsx/.ts`, `mistrustSlides.ts`, `mistrust-tiles.json`, `slideshow.css`, and `app/gallery/{GalleryGrid.tsx,gallery-data.ts}` into `app/portfolio/`; delete `app/projects/page.tsx`, `app/projects/ProjectTabs.tsx`, `app/gallery/page.tsx`; new `app/portfolio/page.tsx`, `app/portfolio/history-of-mistrust/page.tsx`, `app/portfolio/brand/page.tsx`, `app/components/ProjectTile.tsx`; `app/components/Nav.tsx`, `app/components/Footer.tsx`, `netlify.toml`, `scripts/generate-mistrust-assets.js`, `brand.css`, `style.css`, `AGENTS.md` | D1, D2, D4, D5 (answered) | `npx tsc --noEmit`, `npm run build:next`, headed review in the pane |
+| B spec URLs | pro nano-agent, own worktree, **no builds** | the 10 specs under `tests/` that load `/projects/` or `/gallery/` (excluding `visual-baseline.spec.js`, which is track D), `scripts/measure-content-widths.js` | D1, D2 (answered); runs **in parallel with A** | `node --check` per file; real run after merge |
+| C new specs and suite | main agent | `tests/project-tiles.spec.js` (new), `bubbles-exclusion.spec.js` tile case, `mistrust-sets.spec.js` manifest path; merge of B | **A and B** | suite by file list, twice |
+| D visual baselines | main agent on **SOL** over SSH | `tests/visual-baseline.spec.js` (page list), `tests/visual-baseline.spec.js-snapshots/*`, with the orphaned `projects-*` and `gallery-*` PNGs deleted | **C**, plus the user's go-ahead for SOL | regenerate, review every image |
+| E release | main agent | — | **D**, the user's OK on the tile copy (D3), Final signoff PASS | one push, live `curl` checks |
 
-T1 and T2 run in parallel (disjoint files; T1 is the only helper). T3 serialises after both because
-it removes the routes the old links point to. T4 rewrites every spec that loads `/projects/` or
-`/gallery/`, so it waits on T3. **T5 has a forcing reason for its own boundary:** the 40 committed
-baselines are `chromium-win32`, so they can only be regenerated on Windows. On this Mac, the darwin
-before/after from Entry 134 stands in until then.
-
+A and B launch together; that is the useful parallelism, since everything in A couples through
+imports.
 ## Verification
 
 1. `tests/project-tiles.spec.js` (new):
