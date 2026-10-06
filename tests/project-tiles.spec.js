@@ -32,24 +32,41 @@ function contrast(fg, bg) {
 }
 
 test.describe('portfolio project tiles', () => {
+  /* The outline is the brand spectrum (user, 2026-10-06): a 2px transparent
+     border with the six `--brand-ir-*` stops painted through it. Every stop
+     must clear 3:1 against the page, or part of the ring disappears. */
   for (const colorScheme of ['dark', 'light']) {
-    test(`the outline is visible at rest (${colorScheme})`, async ({ browser }) => {
+    test(`the spectrum outline is visible at rest (${colorScheme})`, async ({ browser }) => {
       const context = await browser.newContext({ viewport: { width: 1440, height: 900 }, colorScheme });
       const page = await context.newPage();
       await page.goto(`${BASE_URL}/portfolio/`, { waitUntil: 'networkidle' });
-      const { border, width, bg } = await page.evaluate(() => {
+      const { width, image, stops, bg } = await page.evaluate(() => {
         const tile = document.querySelector('.project-tile');
         const cs = getComputedStyle(tile);
-        const probe = document.createElement('div');
-        probe.style.background = 'var(--brand-bg)';
-        document.body.appendChild(probe);
-        const bg = getComputedStyle(probe).backgroundColor;
-        probe.remove();
-        return { border: cs.borderTopColor, width: cs.borderTopWidth, bg };
+        const resolve = (value, prop) => {
+          const probe = document.createElement('div');
+          probe.style[prop] = value;
+          document.body.appendChild(probe);
+          const out = getComputedStyle(probe)[prop];
+          probe.remove();
+          return out;
+        };
+        return {
+          width: cs.borderTopWidth,
+          image: cs.backgroundImage,
+          // The ring's own stops: ir-5 is swapped for the deeper ring teal in light.
+          stops: ['--brand-ir-1', '--brand-ir-2', '--brand-ir-3', '--brand-ir-4', '--brand-ring-ir-5, var(--brand-ir-5)', '--brand-ir-6']
+            .map((v) => resolve(`var(${v})`, 'color')),
+          bg: resolve('var(--brand-bg)', 'backgroundColor'),
+        };
       });
       await context.close();
-      expect(parseFloat(width)).toBeGreaterThanOrEqual(1);
-      expect(contrast(border, bg), `outline ${border} on ${bg}`).toBeGreaterThanOrEqual(3);
+      expect(parseFloat(width)).toBeGreaterThanOrEqual(2);
+      // Three layers: the fill, the page colour, and the spectrum ring.
+      expect(image.match(/linear-gradient/g)).toHaveLength(3);
+      for (const stop of stops) {
+        expect(contrast(stop, bg), `spectrum stop ${stop} on ${bg}`).toBeGreaterThanOrEqual(3);
+      }
     });
   }
 

@@ -204,6 +204,7 @@
     --brand-ir-3: #995008;
     --brand-ir-4: #1A7ACC;
     --brand-ir-5: #0A9EAA;
+    --brand-ring-ir-5: #08848E; /* ir-5 is 2.85:1 on the light bg; a ring needs 3:1 (3.92) */
     --brand-ir-6: #006e82;
 
     /* Borders */
@@ -268,6 +269,7 @@
         --brand-ir-3: #995008;
         --brand-ir-4: #1A7ACC;
         --brand-ir-5: #0A9EAA;
+    --brand-ring-ir-5: #08848E; /* ir-5 is 2.85:1 on the light bg; a ring needs 3:1 (3.92) */
         --brand-ir-6: #006e82;
         --brand-border:       rgba(0, 0, 0, 0.09);
         --brand-border-mid:   rgba(0, 0, 0, 0.14);
@@ -1318,6 +1320,21 @@ html.dark .brand-circle-icon {
             drop-shadow(0 0 8px color-mix(in srgb, var(--brand-ir-1) 55%, transparent));
 }
 
+:root {
+    /* The six-stop ramp of the nav bar and page titles, as one value, so new
+       surfaces (portfolio tiles and section titles, 2026-10-06) cannot drift
+       from it. Resolves per theme because the `--brand-ir-*` stops do. */
+    --brand-spectrum: linear-gradient(90deg,
+        var(--brand-ir-1), var(--brand-ir-2), var(--brand-ir-3),
+        var(--brand-ir-4), var(--brand-ir-5), var(--brand-ir-6));
+    /* The same ramp for an outline that has to stay visible (the portfolio
+       tiles). Identical in dark; in light, the teal stop is one step deeper,
+       because #0A9EAA is 2.85:1 on the off-white page and a ring needs 3:1. */
+    --brand-spectrum-ring: linear-gradient(90deg,
+        var(--brand-ir-1), var(--brand-ir-2), var(--brand-ir-3),
+        var(--brand-ir-4), var(--brand-ring-ir-5, var(--brand-ir-5)), var(--brand-ir-6));
+}
+
 /* ── Spectrum bar ────────────────────────────────────────────────── */
 .brand-spectrum-bar {
     display: flex;
@@ -1719,45 +1736,68 @@ button.brand-chip:hover {
 /* ── Portfolio: project tiles ────────────────────────────────────────
    One tile per project on /portfolio/, each a single link to the project's own
    page. The user's ask (2026-10-05) is that it reads as "this opens another page"
-   at rest, so the outline is a real border, not a hairline: `--brand-text-muted`
-   is about 8:1 on the dark background and 5:1 on the light one.
-   `--brand-border-mid` (about 1.3:1) was rejected in plan review for being
-   invisible. Hover and focus go to the house purple.
+   at rest, so the outline is a real 2px border in the brand spectrum (user,
+   2026-10-06). Every `--brand-ir-*` stop is at least 3:1 against the page in
+   both themes; tests/project-tiles.spec.js asserts it. `--brand-border-mid`
+   (about 1.3:1) was rejected in plan review for being invisible.
 
    Transitions name their properties and never include `outline`: a
    transitioned outline fades the focus ring in, which tests/focus-ring.spec.js
    fails (Entry 134). */
+/* The section titles carry the same spectrum underline as the page title
+   (user, 2026-10-06), replacing the grey rule the legacy base `h2` in
+   src/css/site.css draws. */
 .portfolio-section-title {
     font-family: var(--brand-font-heading);
     font-size: 1.5rem;
     font-weight: 600;
     color: var(--brand-text);
-    margin: 0 0 1rem;
+    margin: 0 0 1.25rem;
+    padding-bottom: 0;
+    border-bottom: none;
 }
 
+.portfolio-section-title::after {
+    content: '';
+    display: block;
+    height: 3px;
+    margin-top: 0.6rem;
+    background: var(--brand-spectrum);
+    filter: drop-shadow(0 0 6px rgba(199,125,255,0.45))
+            drop-shadow(0 0 14px rgba(0,245,255,0.25));
+}
+
+/* The outline is the brand spectrum (user, 2026-10-06). A gradient cannot be
+   a border colour, so the border is transparent and two backgrounds paint
+   through it: the tile fill clipped to the padding box over the page colour,
+   and the spectrum clipped to the border box, showing only in the 2px ring.
+   This keeps the rounded corners, which `border-image` would square off. */
 .project-tile {
     display: flex;
     flex-direction: column;
     height: 100%;
-    border: 1px solid var(--brand-text-muted);
+    border: 2px solid transparent;
     border-radius: var(--brand-radius-lg);
     overflow: hidden;
-    background: var(--brand-frame-fill);
+    background:
+        linear-gradient(var(--project-tile-fill), var(--project-tile-fill)) padding-box,
+        linear-gradient(var(--brand-bg), var(--brand-bg)) padding-box,
+        var(--brand-spectrum-ring) border-box;
+    --project-tile-fill: var(--brand-frame-fill);
     color: inherit;
     text-decoration: none;
-    transition: border-color var(--brand-transition-fast),
-                background-color var(--brand-transition-fast);
+    transition: filter var(--brand-transition-fast);
 }
 
 .project-tile:hover {
-    border-color: var(--brand-accent);
-    background-color: var(--brand-accent-dim);
+    --project-tile-fill: var(--brand-accent-dim);
+    filter: drop-shadow(0 0 8px rgba(199,125,255,0.45))
+            drop-shadow(0 0 18px rgba(0,245,255,0.25));
 }
 
 .project-tile:focus-visible {
     outline: 2px solid var(--brand-accent);
-    outline-offset: 2px;
-    border-color: var(--brand-accent);
+    outline-offset: 3px;
 }
 
 /* Square images in rounded frames (AGENTS.md): the frame rounds, the picture
@@ -1770,12 +1810,10 @@ button.brand-chip:hover {
     display: flex;
     align-items: center;
     justify-content: center;
-    border-bottom: 1px solid var(--brand-text-muted);
-}
-
-.project-tile:hover .project-tile-thumb,
-.project-tile:focus-visible .project-tile-thumb {
-    border-bottom-color: var(--brand-accent);
+    /* The picture's bottom edge is a spectrum line too. No radius here (the
+       tile clips the corners), so `border-image` is safe. */
+    border-bottom: 2px solid transparent;
+    border-image: var(--brand-spectrum-ring) 1;
 }
 
 .project-tile-img {
