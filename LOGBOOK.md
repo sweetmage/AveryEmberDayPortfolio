@@ -18,6 +18,54 @@ When this logbook exceeds ~1000 lines, split it:
 
 ---
 
+## Entry 142 - 2026-10-06
+
+**Agent:** Opus 5.5 (fennel, VOID), main
+**Cycle:** release: the Portfolio merge
+**Task:** merge it and ship the portfolio (after a fresh full review)
+**Branch:** `portfoliowebsite`, pushed at the user's instruction (one production deploy)
+
+Release of the Portfolio merge and the focus-ring and test-runner loop, at the user's instruction ("merge it and ship the portfolio"), following "Fresh full review" after Entry 141's hold.
+
+### Final signoff, run fresh at the user's direction
+
+The two-round cap held the release in Entry 141, after `codex/gpt-6-luna` read only 17 of 47 files. On the user's choice of a fresh full review, the diff `4ddb8ee..HEAD` was split into five areas, each given to its own fresh-context native `oracle` reviewer using the verbatim signoff prompt and a mandatory coverage table:
+
+1. routes, redirects and pages;
+2. styles and page components;
+3. Mistrust components and scripts;
+4. page specs;
+5. the remaining tests and docs.
+
+**All five returned PASS, with every file in their shares read.** None found a blocking defect. They also ran checks themselves:
+
+- They parsed `netlify.toml` and simulated its build-skip rule.
+- They resolved every tile path.
+- They mutation-tested the Google Docs tests.
+- They confirmed a missing baseline is never retried.
+
+### Findings applied under the PASS (`7ea4215`)
+
+- **Square images, rounded frames.** The tile's 16px radius and `overflow: hidden` clipped the Mistrust cover's corners. The picture is now padded inside the frame.
+- **Decorative thumbnails.** The thumbnails are now `alt=""`, because screen readers announced the title twice.
+- **Mojibake fixed.** The Mistrust source list showed `â€“` and `â€”` where the cited titles have an en dash (1932–1972) and an em dash (source titles, not the user's prose). This predated the merge, but now ships on a page with its own canonical URL.
+- **Outline test.** It reads the ring stops off the painted tile. Pointing the ring at the plain spectrum fails it on the light teal (2.85:1).
+- **Breakpoint test.** It probes 768 and 767.
+- **Docs tests.** The enforcement tests also reject a superstring alias.
+- **Visual retry.** It is scoped to the three semibold pages; home and contact grade strictly again. A dead `projects-mistrust` branch is gone.
+- **Untracked build cache.** `tsconfig.tsbuildinfo` is untracked, because every `tsc` dirtied the tree.
+- **Stale references.** Comments and docs that still described `ProjectTabs`, `/projects/` and `/gallery/` were updated: `GalleryGrid` (its sticky-rail rationale now lives inline), `MistrustLightbox`, the header, `brand.css`, `AGENTS.md`, `docs/visual-gate.md`, the `ARCHITECTURE.md` routes, and plan status lines.
+
+### Verification before the push
+
+- **Suite by file list:** 158 of 158, in 3m16s.
+- **`npm run test:docs`:** 8 of 8.
+- **`tsc`:** clean.
+- **Visual baselines on SOL:** regenerated at `7ea4215`. Both re-checks exited 0, and a 3-run soak passed 40/40 each time with no retries.
+- **Changed baselines:** exactly 16. The 8 `portfolio-*` capture the padded cover, and the 8 `portfolio-mistrust-*` capture the fixed source punctuation. Each changed area was cropped and reviewed.
+
+---
+
 ## Entry 141 - 2026-10-06
 
 **Agent:** Opus 5.5 (fennel, VOID), main

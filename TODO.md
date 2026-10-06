@@ -23,19 +23,6 @@ before a push ships in the same deploy.
 
 ### Ready to build now
 
-- [ ] **BLOCKING: Portfolio release held at the Final signoff cap** (2026-10-06). The user said
-      "merge it and ship the portfolio". The merge is done locally (`portfoliowebsite` at `412e5c4`, 18
-      commits ahead of the live `4ddb8ee`, suite 158/158), the tile copy is approved, and **nothing
-      is pushed**. Final signoff (`codex/gpt-6-luna`, both rounds):
-      - Round 1 FAILED on a real finding: the Google Docs enforcement test passed on any non-zero
-        exit. It was fixed in `412e5c4` and proven red with a mutant.
-      - Round 2 FAILED only on coverage. It found no defect, but read 17 of the 47 files because its
-        reader truncated the larger diffs, and marked the other 30 as not reviewed.
-
-      The two-round cap holds the rollout. Needs the user's decision: run a fresh signoff on a route
-      that can read the whole diff (e.g. per-area reviewers), or release on the evidence (the suite,
-      the plan reviews, the main agent's diff read) as an explicit override.
-      Plan: [`docs/plans/2026-10-05-combine-projects-gallery.md`](docs/plans/2026-10-05-combine-projects-gallery.md).
 - [ ] **Two prose measure caps survived the 2026-07-31 "no measure caps" direction.**
       `max-w-[560px]` on the Contact intro and `max-w-[480px]` on the thanks-page paragraph. The About
       box, Contact form and `.project-desc` caps were all removed then; these two were missed. Removing
@@ -124,6 +111,10 @@ consolidated in [`docs/archives/plans.md`](docs/archives/plans.md).
 
 ### 2026-10
 
+- **Oct 6** — **RELEASED: the Portfolio.** One page for the work at `/portfolio/` (spectrum-outlined
+  project tiles, then the gallery), each project on its own page, old `/projects/` and `/gallery/`
+  links redirecting. It shipped with the focus-ring and test-runner loop. The Final signoff was rerun
+  fresh as five area reviews, all PASS. Entry 142.
 - **Oct 6** — **Every focus stop paints the 2px accent ring.** The 82 Mistrust source links (browser
   default) and the 3 contact fields (no outline at all) were the last ones off the contract. The focus
   spec now checks every stop on every page. **A bare `npx playwright test` runs again**: Playwright
