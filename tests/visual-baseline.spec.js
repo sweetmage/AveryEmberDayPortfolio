@@ -4,11 +4,13 @@ import { test, expect } from '@playwright/test';
 // Deliberately not 3000/3001 -- those are where `next dev` lands.
 const BASE_URL = 'http://localhost:4322';
 
+/* Projects and Gallery merged into /portfolio/ on 2026-10-05, and each
+   project got its own page. Still 5 captures x 4 widths x 2 themes = 40. */
 const PAGES = [
   { name: 'index', url: '/' },
-  { name: 'projects', url: '/projects/' },
-  { name: 'projects-mistrust', url: '/projects/#history-of-mistrust' },
-  { name: 'gallery', url: '/gallery/' },
+  { name: 'portfolio', url: '/portfolio/' },
+  { name: 'portfolio-mistrust', url: '/portfolio/history-of-mistrust/' },
+  { name: 'portfolio-brand', url: '/portfolio/brand/' },
   { name: 'contact', url: '/contact/' },
 ];
 
