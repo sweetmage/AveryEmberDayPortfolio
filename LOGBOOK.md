@@ -44,6 +44,12 @@ right to keep the plain slides: its thumbs sit 8px apart.
 - **Suite by file list: 151 passed** (2m53s, estimate ~3m10s, −9%).
 - The stage's resting capture of slide 1 also shifts slightly. It falls in the same 16 win32 baselines
   already queued for regeneration (TODO).
+- **Signoff, `codex/gpt-6-luna`: PASS on round 2 of 2.** Round 1 also answered PASS, but the launcher voided
+  it (`void-review:truncated-read`: part of the diff was cut by Codex's output limit). Round 2 read
+  one file per command. No findings. Nit accepted as a deliberate tradeoff: slide 21's tiles
+  (1056px wide) are stretched about 2.3% horizontally into a square, because that is what lets it
+  join slide 22 without a seam in every edge-to-edge surface, the lightbox included.
+- Pushed at the user's instruction ("push it").
 
 ---
 
