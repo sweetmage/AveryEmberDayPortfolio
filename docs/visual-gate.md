@@ -177,6 +177,41 @@ consecutive animation frames. Height rather than the token itself, deliberately:
 reflow including ones nobody has thought of yet, and it does not need to know which pages have a
 rail. If you add anything that sizes itself from JS after mount, this is what keeps the gate honest.
 
+### Trap 7 — sub-pixel text noise on pages that render semibold webfonts
+
+Found 2026-10-06, regenerating all 40 baselines on SOL for the Portfolio merge. Each fresh set
+failed its own re-capture on one or two pages, a different page each time, always among the
+portfolio and project pages, never home or contact. The diffs were 600 to 1,100 pixels, only
+on text set in Outfit and Inter. The glyphs looked identical, with ink within 0.2%. Those pages
+are the ones that load the **600** weights; home and contact never do.
+
+Tried in order, each a real improvement, none a full cure:
+
+1. **Wait for every face the page renders**, read off the DOM, instead of a fixed list.
+   A fixed `600 Outfit` would hang home and contact, which never load it.
+2. **Pass each font the exact text it renders** to `document.fonts.load()`. Google Fonts splits
+   faces into per-unicode-range files, and a bare `load(font)` fetches only the default sample's.
+3. **Launch flags for the visual spec only:** `--font-render-hinting=none`, `--disable-lcd-text`,
+   `--disable-font-subpixel-positioning`.
+
+After all three, about one page in every five runs still differed. So the visual spec retries
+once (`test.describe.configure({ retries: 1 })`). Noise does not repeat, and a real regression
+fails both attempts.
+
+Soak after the retry: **5 runs, 0 hard failures**, 3 captures passing on retry. The flags change
+how every page renders in the gate, so **never drop one without regenerating all 40.**
+
+**Where baselines come from now:** SOL, over SSH from the Mac, because the committed set is
+`chromium-win32`:
+
+1. Shallow-clone the branch from the Mac into `%TEMP%\wt-portfolio-baselines`.
+2. `npm ci` and `npx playwright install chromium`.
+3. `--update-snapshots`, then **two** re-checks.
+4. Zip and `scp` the images back to the Mac, review every one, and commit.
+
+Before trusting a new machine or a reinstall, compare the pre-change commit first. All untouched
+pages must pass; on 2026-10-06 that was 24 of 24 at `c6b83aa`.
+
 ## Motion-enabled specs
 
 `tests/bubbles-exclusion.spec.js` is the counterpart to this gate — the only spec that runs with

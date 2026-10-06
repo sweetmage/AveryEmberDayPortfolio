@@ -18,6 +18,47 @@ When this logbook exceeds ~1000 lines, split it:
 
 ---
 
+## Entry 139 — 2026-10-06
+
+**Agent:** Opus 5.5 (fennel, main)
+**Cycle:** shxdowflow, the Portfolio merge, continued: the user's design review and the Windows baselines
+**Branch:** `portfoliowebsite`, committed, **not pushed**
+
+### The user's direction on review
+
+- **"Add spectral brand colors to the outlines of the projects and to the underline below the titles."**
+  - Tiles: a 2px transparent border with the `--brand-ir-*` ramp painted through it. This keeps the
+    rounded corners, which `border-image` would square off. The picture's bottom edge and the
+    Projects / Gallery title underlines use the same ramp.
+  - New tokens: `--brand-spectrum` and `--brand-spectrum-ring`.
+  - In light theme the ring's teal stop is `#08848E`, because the site teal `#0A9EAA` is 2.85:1 on
+    the off-white page. The tile spec asserts every ring stop at 3:1 or better in both themes, and
+    that check is what caught the teal.
+- **"Ensure the decorative bubbles are excluded from these cards."** The whole tile carries
+  `bubble-exclude`. This is a deliberate exception to the gallery's picture-is-the-wall rule, which
+  is unchanged for gallery cards. The bubble specs assert on `.project-tile`.
+
+### Windows baselines, on SOL (user go-ahead: "Use SOL")
+
+- **Rendering check first.** SOL's Windows was reinstalled on 2026-09-11. A shallow clone from the
+  Mac, checked out at the pre-merge `c6b83aa`, matched the committed baselines on all 24 untouched
+  captures (home, gallery and contact). Only the 16 Projects/Mistrust captures differed, which is
+  the known tile change. So SOL renders like the machine that made the set.
+- **All 40 regenerated** at the new routes: home, portfolio, the two project pages, contact. The 24
+  orphaned `projects-*` and `gallery-*` images were removed, and every new image was reviewed on
+  contact sheets before commit.
+- **The gate was not stable on the new pages, and that took four fixes** (`docs/visual-gate.md`,
+  Trap 7):
+  1. A per-page font wait, read off the DOM.
+  2. Per-text unicode-range loading.
+  3. Three text-rendering launch flags.
+  4. Finally one retry for residual sub-pixel noise on the pages that render the semibold webfont
+     weights.
+
+  Soak after the retry: **5 runs, 0 hard failures.**
+
+---
+
 ## Entry 138 — 2026-10-05
 
 **Agent:** Opus 5.5 (fennel, main)

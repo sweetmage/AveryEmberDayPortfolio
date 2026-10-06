@@ -23,22 +23,12 @@ before a push ships in the same deploy.
 
 ### Ready to build now
 
-- [~] **Combine the Projects and Gallery pages** (user, 2026-10-05). **Built and committed, not pushed
-      (Entry 138).** `/portfolio/` has the tiles, then the gallery; each project has its own page; the
-      old URLs 301 to the new ones. Before release, in order:
-      1. The user approves the drafted tile copy (`TILE-COPY-PENDING` in `app/portfolio/page.tsx`)
-         and does a headed review.
-      2. Regenerate the visual baselines on SOL (needs the user's go-ahead). The page list changes,
-         and the 24 orphaned `projects-*` and `gallery-*` PNGs are deleted. This also covers the 16
-         Mistrust baselines below.
-      3. Final signoff, then one push, then `curl -sI` every old URL on the live site.
+- [~] **Combine the Projects and Gallery pages** (user, 2026-10-05). **Built, styled to the user's
+      direction (spectrum outlines and underlines, bubbles kept off the whole tile), baselines
+      regenerated on SOL. Committed, not pushed (Entries 138 to 139).** Before release:
+      1. The user approves the drafted tile copy (`TILE-COPY-PENDING` in `app/portfolio/page.tsx`).
+      2. Final signoff, then one push, then `curl -sI` every old URL on the live site.
       Plan: [`docs/plans/2026-10-05-combine-projects-gallery.md`](docs/plans/2026-10-05-combine-projects-gallery.md).
-- [ ] **Regenerate 16 visual baselines on the Windows box** (`projects` and `projects-mistrust`,
-      all 4 breakpoints × 2 themes). The Mistrust mosaic intentionally changed in Entry 136
-      (seamless tiles for slides 1, 2, 21, 24); a darwin before/after confined every changed pixel
-      to Set 1's and Set 3's first mosaic rows. The win32 baselines can only be regenerated on
-      Windows, and the gate there is red on these 16 until then. Review each image before
-      committing. Do this together with the Portfolio merge's T5 if that lands first.
 - [ ] **Two prose measure caps survived the 2026-07-31 "no measure caps" direction.**
       `max-w-[560px]` on the Contact intro and `max-w-[480px]` on the thanks-page paragraph. The About
       box, Contact form and `.project-desc` caps were all removed then; these two were missed. Removing
