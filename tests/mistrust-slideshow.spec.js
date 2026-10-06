@@ -142,7 +142,8 @@ test.describe('Mistrust slideshow', () => {
     await page.locator('.mistrust-nav-next').click();
     await expect(counter).toHaveText('Slide 2 of 10');
 
-    await expect(activeImg).toHaveAttribute('src', /slide-01/);
+    // Slide 1 is drawn from its seamless tile (it shares a band with slide 2).
+    await expect(activeImg).toHaveAttribute('src', /(slide|tile)-01\.webp/);
     await page.locator('.mistrust-set-tab').nth(1).click();
     await expect(counter).toHaveText('Slide 1 of 10');
     await expect(page.locator('.mistrust-slide').first().locator('img')).toHaveAttribute(
@@ -289,4 +290,32 @@ test.describe('mistrust leads the projects page', () => {
         .toBeLessThanOrEqual(vp.height - nav + 1);
     });
   }
+
+  /* The stage and the lightbox are edge-to-edge sliding tracks, so mid-swipe two
+     neighbours share the screen. Slides whose plain file does not join its
+     neighbour (app/projects/mistrust-tiles.json: 1, 2, 21, 24) must be drawn from
+     their seamless tiles there, as the mosaic already is. The user caught the
+     stage still showing the 1|2 seam on 2026-10-05 after only the mosaic had
+     been switched. The filmstrip's thumbs sit 8px apart, so it keeps the
+     plain slides. */
+  test('the stage and lightbox draw the seamless tiles where slides touch', async ({ page }) => {
+    await gotoMistrust(page);
+    const stage = await page.locator('.mistrust-slide img').evaluateAll((imgs) =>
+      imgs.slice(0, 3).map((i) => decodeURI(i.getAttribute('src')).split('/').pop()));
+    expect(stage).toEqual(['tile-01.webp', 'tile-02.webp', 'slide-03.webp']);
+
+    const strip = await page.locator('.mistrust-thumb img').evaluateAll((imgs) =>
+      imgs.slice(0, 2).map((i) => decodeURI(i.getAttribute('src')).split('/').pop()));
+    expect(strip).toEqual(['slide-01.webp', 'slide-02.webp']);
+
+    await page.locator('.mistrust-stage').click();
+    await expect(page.locator('.lightbox-overlay')).toBeVisible();
+    const lightbox = await page.locator('.lightbox-slide img').evaluateAll((imgs) =>
+      imgs.map((i) => decodeURI(i.getAttribute('src')).split('/').pop()));
+    expect(lightbox).toHaveLength(30);
+    for (const n of [1, 2, 21, 24]) {
+      expect(lightbox[n - 1], `lightbox slide ${n}`).toBe(`tile-${String(n).padStart(2, '0')}@2x.webp`);
+    }
+    expect(lightbox[2]).toBe('slide-03@2x.webp');
+  });
 });

@@ -150,8 +150,11 @@ export default function MistrustSlideshow() {
           <div className="mistrust-track" key={set} style={{ transition, transform: `translateX(calc(${-index * 100}% + ${dragPx}px))` }}>
             {slides.map((slide, i) => (
               <div className="mistrust-slide" key={slide.n} aria-hidden={i !== index}>
+                {/* `tile`, not `src`: the track lays slides edge to edge, so mid-swipe
+                    two neighbours share the stage and a plain slide shows the seam
+                    (slides 1|2 share a 19px band; user, 2026-10-05). */}
                 <img
-                  src={slide.src}
+                  src={slide.tile}
                   alt={i === index ? slide.alt : ''}
                   loading={Math.abs(i - index) <= 1 ? 'eager' : 'lazy'}
                   decoding="async"

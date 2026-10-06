@@ -18,6 +18,35 @@ When this logbook exceeds ~1000 lines, split it:
 
 ---
 
+## Entry 137 — 2026-10-05
+
+**Agent:** Opus 5.5 (fennel, main)
+**Cycle:** bug fix, user-reported ("a history of mistrust. the slideshow was not updated")
+**Branch:** `portfoliowebsite` — committed, **not pushed** (a push is a production deploy)
+
+Entry 136 fixed the mosaic and left the slideshow on the plain slides, on the stated reasoning
+that it "shows one slide at a time". **That reasoning was wrong.** The stage (`.mistrust-track`)
+and the lightbox (`.lightbox-track`) are flex tracks with the slides edge to edge, translated by
+`-index × 100%`. Every swipe, drag or arrow press puts two neighbours on screen together, so the
+doubled 1|2 band showed mid-transition exactly as it had in the mosaic. Only the filmstrip was
+right to keep the plain slides: its thumbs sit 8px apart.
+
+- `scripts/generate-mistrust-assets.js` also cuts a 1080px `tile-NN@2x.webp` for each seamless
+  slide (1, 2, 21, 24), next to the 720px tile. The rebuilt 720 tiles and strips are byte-identical.
+- `mistrustSlides.ts` gains `tileFull`. The stage draws `slide.tile` and the lightbox draws
+  `slide.tileFull`.
+- **Tests:**
+  - The edge-fidelity spec now checks both tile sizes in both trees.
+  - A new slideshow spec asserts the stage uses `tile-01`/`tile-02`, the filmstrip `slide-01`/`slide-02`,
+    and the lightbox the four `@2x` tiles. It was proven red with the stage reverted to `slide.src`.
+- **Proof:** a 2× capture of the stage frozen halfway between slides 1 and 2. Before, the ring notches
+  and the ribbon steps; after, both are continuous.
+- **Suite by file list: 151 passed** (2m53s, estimate ~3m10s, −9%).
+- The stage's resting capture of slide 1 also shifts slightly. It falls in the same 16 win32 baselines
+  already queued for regeneration (TODO).
+
+---
+
 ## Entry 136 — 2026-10-05
 
 **Agent:** Opus 5.5 (fennel, main)

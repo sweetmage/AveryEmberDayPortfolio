@@ -89,11 +89,14 @@ export type MistrustSlide = {
    */
   thumb: string;
   /**
-   * The slide's square in the 30-slide mosaic. Its own `thumb` for most slides;
-   * a seamless tile cut from the set strip where the plain slide would show a
-   * seam against its neighbour (see `SEAMLESS_TILES`).
+   * The slide as drawn wherever it touches its neighbours edge to edge: the
+   * 30-slide mosaic and the stage's sliding track. Its own 720px file for most
+   * slides; a seamless tile cut from the set strip where the plain slide would
+   * show a seam against its neighbour (see `SEAMLESS_TILES`).
    */
   tile: string;
+  /** The 1080px twin of `tile`, for the lightbox, whose track is edge to edge too. */
+  tileFull: string;
   /** Verbatim words on the slide. Alt text and lightbox caption source. */
   alt: string;
 };
@@ -114,6 +117,7 @@ export const MISTRUST_SLIDES: readonly MistrustSlide[] = Array.from(
       full: `${BASE}slide-${pad(n)}@2x.webp`,
       thumb: `${BASE}slide-${pad(n)}.webp`,
       tile: SEAMLESS_TILES.has(n) ? `${BASE}tile-${pad(n)}.webp` : `${BASE}slide-${pad(n)}.webp`,
+      tileFull: SEAMLESS_TILES.has(n) ? `${BASE}tile-${pad(n)}@2x.webp` : `${BASE}slide-${pad(n)}@2x.webp`,
       alt: SLIDE_ALT[i],
     };
   }

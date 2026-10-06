@@ -39,9 +39,12 @@
  * (1056x1080) is scaled 2.3% larger than its neighbour by `object-fit: cover`. So each set's strip
  * is also cut into one region per slide, splitting any shared band down the middle, and every
  * slide whose region is not simply "its own square, untouched" gets a `slides/tile-NN.webp` cut
- * from the strip and fitted to 720x720. The regions and which slides got a tile are written to
+ * from the strip and fitted to 720x720, plus a 1080x1080 `tile-NN@2x.webp`. The regions and which slides got a tile are written to
  * `app/projects/mistrust-tiles.json`, which the mosaic and `tests/mistrust-sets.spec.js` read.
- * The slideshow, filmstrip and lightbox keep the untouched slides: they show one post at a time.
+ * The slideshow stage and the lightbox use the tiles too: both are edge-to-edge sliding tracks, so
+ * two neighbours share the screen mid-swipe (the user caught the stage still showing the seam on
+ * 2026-10-05, after the mosaic alone had been fixed). Only the filmstrip keeps the untouched slides,
+ * because its thumbnails sit 8px apart and never touch.
  *
  * Offsets are derived, not trusted: each slide is template-matched into its strip and must land
  * at a near-zero distance, and the resulting layout must reproduce the export's width exactly.
@@ -66,6 +69,12 @@ const QUALITY = 80;
 const SLIDE_COUNT = 30;
 const SET_COUNT = 3;
 const TILE_SIZE = 720;
+// The seamless tiles come in the same two sizes as the slides they replace: 720 for the stage and
+// the mosaic (like `slide-NN.webp`), 1080 for the lightbox (like `slide-NN@2x.webp`).
+const TILE_VARIANTS = [
+  { size: TILE_SIZE, suffix: '' },
+  { size: 1080, suffix: '@2x' },
+];
 const TILE_MANIFEST = path.join(ROOT, 'app', 'projects', 'mistrust-tiles.json');
 
 // --all rebuilds every output. The default rebuilds only the sources whose *content* changed
@@ -281,15 +290,17 @@ async function buildSet(n) {
 
   const regions = tileRegions(members, metas, offsets, width);
   for (const r of regions.filter((region) => region.seamless)) {
-    const tile = await sharp(strip)
-      .extract({ left: r.start, top: 0, width: r.end - r.start, height })
-      .resize(TILE_SIZE, TILE_SIZE, { fit: 'fill' })
-      .webp({ quality: QUALITY })
-      .toBuffer();
-    for (const tree of TREES) {
-      const dest = path.join(tree, 'slides', `tile-${String(r.slide).padStart(2, '0')}.webp`);
-      fs.writeFileSync(dest, tile);
-      console.log(`${path.relative(ROOT, dest).replace(/\\/g, '/')} (${Math.round(tile.length / 1024)} KB)`);
+    for (const { size, suffix } of TILE_VARIANTS) {
+      const tile = await sharp(strip)
+        .extract({ left: r.start, top: 0, width: r.end - r.start, height })
+        .resize(size, size, { fit: 'fill' })
+        .webp({ quality: QUALITY })
+        .toBuffer();
+      for (const tree of TREES) {
+        const dest = path.join(tree, 'slides', `tile-${String(r.slide).padStart(2, '0')}${suffix}.webp`);
+        fs.writeFileSync(dest, tile);
+        console.log(`${path.relative(ROOT, dest).replace(/\\/g, '/')} (${Math.round(tile.length / 1024)} KB)`);
+      }
     }
   }
 

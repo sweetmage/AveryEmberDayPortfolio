@@ -216,8 +216,10 @@ function Lightbox({
                 {/* Only the current slide and its neighbours load eagerly. The old
                     script assigned all 30 @2x sources up front — ~1.1 MB before the
                     visitor had moved. */}
+                {/* `tileFull`, not `full`: this track is edge to edge as well, so
+                    the seamless 1080px tiles keep neighbours joining mid-swipe. */}
                 <img
-                  src={slide.full}
+                  src={slide.tileFull}
                   alt={i === index ? slide.alt : ''}
                   loading={near ? 'eager' : 'lazy'}
                   decoding="async"

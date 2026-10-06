@@ -83,6 +83,8 @@ for (const n of [1, 2, 3]) {
  * for those slides from the strip and records every slide's region in
  * `app/projects/mistrust-tiles.json`.
  *
+ * Both sizes are checked: 720px (stage and mosaic) and the 1080px `@2x` (lightbox).
+ *
  * Measured 2026-10-05, mean grey-level difference over the 12 outer columns each side: every
  * square is ≤0.61 against the export; the old mosaic was 4.07 (slide 1), 2.36 (slide 2) and 1.44
  * (slide 21). The bound sits between the two.
@@ -112,7 +114,7 @@ function edgeDifference(a, b, size) {
 }
 
 for (const set of manifest.sets) {
-  test(`set ${set.set} mosaic squares join exactly as the Figma export does`, async () => {
+  test(`set ${set.set} slides join exactly as the Figma export does (mosaic, stage, lightbox)`, async () => {
     const size = manifest.tileSize;
     const exported = exportPath(set.set);
     const height = (await sharp(exported).metadata()).height;
@@ -124,12 +126,12 @@ for (const set of manifest.sets) {
 
     for (const t of set.tiles) {
       const nn = String(t.slide).padStart(2, '0');
-      const file = `${t.seamless ? 'tile' : 'slide'}-${nn}.webp`;
+      const files = [`${t.seamless ? 'tile' : 'slide'}-${nn}.webp`, `${t.seamless ? 'tile' : 'slide'}-${nn}@2x.webp`];
       const want = await squareGrey(
         await sharp(exported).extract({ left: t.start, top: 0, width: t.end - t.start, height }).toBuffer(),
         size
       );
-      for (const tree of ['.', 'public']) {
+      for (const tree of ['.', 'public']) for (const file of files) {
         const filePath = path.join(ROOT, tree, REL, 'slides', file);
         // The mosaic draws a plain slide with `object-fit: cover`, which only leaves it
         // undistorted when it is square. A non-square slide must have a seamless tile instead.
