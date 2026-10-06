@@ -28,9 +28,9 @@ export const metadata: Metadata = {
 const MISTRUST_THUMB = '/images/myart/A History of Mistrust/slides/slide-01@2x.webp';
 
 /* Mistrust leads, as it led the old Projects tabs (AGENTS.md).
-   TILE-COPY-PENDING: drafted by the agent at the user's request on 2026-10-05
-   from each project's own intro; the user approves before push. Remove this
-   marker once approved; the release check greps for it. */
+   Tile copy: drafted by the agent at the user's request on 2026-10-05 from
+   each project's own intro, and approved by the user for release on
+   2026-10-06 ("merge it and ship the portfolio"). */
 const projects = [
   {
     href: '/portfolio/history-of-mistrust/',
