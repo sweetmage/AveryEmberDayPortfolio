@@ -10,10 +10,10 @@ const BASE_URL = 'http://localhost:4322';
    sub-pixel differences: identical glyphs to the eye, 770 to 1,119 differing
    pixels, over the 500 floor below. Each recapture of 40 fresh baselines failed
    exactly one page, a different one each time (measured on SOL, 2026-10-06),
-   after the font-loading wait had already been fixed. Grey-scale, unhinted text
-   cut it to an occasional page; the rest was sub-pixel glyph POSITIONING (same
-   weight, ink within 0.2%, letters a fraction of a pixel apart between runs),
-   which the third flag pins to whole pixels. This changes how every page renders
+   before the font wait below loaded every unicode-range file. Grey-scale,
+   unhinted text and whole-pixel glyph positions cut it to an occasional page;
+   the rest was the range-file race, fixed in the font wait. The flags stay
+   because they remove a real source of jitter. This changes how every page renders
    in the gate, so the baselines were regenerated with it; never remove a flag
    without regenerating them. */
 test.use({
@@ -169,16 +169,27 @@ for (const page of PAGES) {
              project pages 500/600 Outfit and 600 Inter; contact 500 Outfit).
              `document.fonts.load()` requests a face and resolves once it is
              ready, and resolves at once for faces that are already loaded. */
+          /* The TEXT matters as much as the font. Google Fonts splits every
+             face into per-unicode-range files (latin, latin-ext, symbols), and
+             `fonts.load(font)` with no text fetches only what a default sample
+             needs. Characters like the tiles' `→`, the Brand page's `·` and the
+             em dashes live in other range files, which then landed after the
+             capture: run-to-run diffs on those pages only, a different page
+             each time (2026-10-06). Passing each font the exact text it renders
+             loads every range file that text touches. */
           await p.evaluate(async () => {
-            const needed = new Set();
+            const needed = new Map();
             const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
             for (let node = walker.nextNode(); node; node = walker.nextNode()) {
-              if (!node.textContent.trim() || !node.parentElement) continue;
+              const text = node.textContent.trim();
+              if (!text || !node.parentElement) continue;
               const cs = getComputedStyle(node.parentElement);
               if (cs.display === 'none' || cs.visibility === 'hidden') continue;
-              needed.add(`${cs.fontStyle} ${cs.fontWeight} 16px ${cs.fontFamily}`);
+              const font = `${cs.fontStyle} ${cs.fontWeight} 16px ${cs.fontFamily}`;
+              needed.set(font, (needed.get(font) || '') + text);
             }
-            await Promise.all([...needed].map((font) => document.fonts.load(font)));
+            await Promise.all([...needed].map(([font, text]) => document.fonts.load(font, text)));
+            await document.fonts.ready;
           });
           /* Then wait for the DOCUMENT HEIGHT to stop moving.
 
