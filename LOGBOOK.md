@@ -18,6 +18,24 @@ When this logbook exceeds ~1000 lines, split it:
 
 ---
 
+## Entry 141 - 2026-10-06
+
+**Agent:** Opus 5.5 (fennel, VOID), main
+**Cycle:** release attempt: merge and ship the Portfolio
+**Task:** merge it and ship the portfolio
+**Branch:** `portfoliowebsite` @ `412e5c4`, merged locally, **not pushed** (held at the signoff cap)
+
+The user said "merge it and ship the portfolio". The loop branch was fast-forwarded into `portfoliowebsite`, and the drafted tile copy was taken as approved by that instruction (`TILE-COPY-PENDING` removed, `a016d7e`). The suite on the merged tree passed 158 of 158 and `tsc` was clean. **Nothing is pushed: the release is held.**
+
+### Final signoff, `codex/gpt-6-luna`, two rounds, both FAIL
+
+- **Round 1** found a real defect. The Google Docs "allow-list enforcement" case passed on any non-zero exit, and because `main()` checks `GOOGLE_REFRESH_TOKEN` first, it never reached the allow-list without real credentials. Track B had kept that weakness from the original test. Fixed in `412e5c4`: `resolveDoc()` is tested directly against an inline allow-list on every checkout, 8 of 8 pass, and a mutant that accepts anything fails 3. Round 1 also admitted it had not finished the per-file reading.
+- **Round 2** got the diff split one file per command and a mandatory coverage table. It read 17 of 47 files, all "ok", including `netlify.toml`, the nav, the tiles and the hash forwarder. The other 30 were truncated by its reader or not reached, and it marked them as findings, as instructed. It found no defect.
+
+Two rounds is the cap. An open blocking finding holds the rollout, so the push waits on the user's decision (TODO, top of Open work). This is a route-capacity limit on a 47-file diff, not a failure of the code.
+
+---
+
 ## Entry 140 - 2026-10-06
 
 **Agent:** Opus 5.5 (fennel, VOID), main

@@ -23,11 +23,18 @@ before a push ships in the same deploy.
 
 ### Ready to build now
 
-- [~] **Combine the Projects and Gallery pages** (user, 2026-10-05). **Built, styled to the user's
-      direction (spectrum outlines and underlines, bubbles kept off the whole tile), baselines
-      regenerated on SOL. Committed, not pushed (Entries 138 to 139).** Before release:
-      1. The user approves the drafted tile copy (`TILE-COPY-PENDING` in `app/portfolio/page.tsx`).
-      2. Final signoff, then one push, then `curl -sI` every old URL on the live site.
+- [ ] **BLOCKING: Portfolio release held at the Final signoff cap** (2026-10-06). The user said
+      "merge it and ship the portfolio". The merge is done locally (`portfoliowebsite` at `412e5c4`, 18
+      commits ahead of the live `4ddb8ee`, suite 158/158), the tile copy is approved, and **nothing
+      is pushed**. Final signoff (`codex/gpt-6-luna`, both rounds):
+      - Round 1 FAILED on a real finding: the Google Docs enforcement test passed on any non-zero
+        exit. It was fixed in `412e5c4` and proven red with a mutant.
+      - Round 2 FAILED only on coverage. It found no defect, but read 17 of the 47 files because its
+        reader truncated the larger diffs, and marked the other 30 as not reviewed.
+
+      The two-round cap holds the rollout. Needs the user's decision: run a fresh signoff on a route
+      that can read the whole diff (e.g. per-area reviewers), or release on the evidence (the suite,
+      the plan reviews, the main agent's diff read) as an explicit override.
       Plan: [`docs/plans/2026-10-05-combine-projects-gallery.md`](docs/plans/2026-10-05-combine-projects-gallery.md).
 - [ ] **Two prose measure caps survived the 2026-07-31 "no measure caps" direction.**
       `max-w-[560px]` on the Contact intro and `max-w-[480px]` on the thanks-page paragraph. The About
