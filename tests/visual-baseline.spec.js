@@ -22,6 +22,17 @@ test.use({
   },
 });
 
+/* One retry, for the visual captures only. On the pages that render the
+   semibold Outfit and Inter faces (the portfolio and both project pages,
+   since 2026-10-05), Chromium on Windows still produces sub-pixel text noise
+   about one page per run in five, after the font waits and launch flags above:
+   identical glyphs, ink within 0.2%, 600 to 1,100 differing pixels, a different
+   page each time (soaked on SOL, 2026-10-06). Home and contact, which never load
+   those weights, never did it. A real regression fails both attempts, so the
+   gate still catches it; noise does not repeat. Logged as Trap 7 in
+   docs/visual-gate.md. */
+test.describe.configure({ retries: 1 });
+
 /* Projects and Gallery merged into /portfolio/ on 2026-10-05, and each
    project got its own page. Still 5 captures x 4 widths x 2 themes = 40. */
 const PAGES = [
