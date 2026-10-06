@@ -47,3 +47,4 @@ next-env.d.ts
 # up as code directories in the ARCHITECTURE.md module map, where they mislead.
 /output/
 /Script.js
+tsconfig.tsbuildinfo

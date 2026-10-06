@@ -247,7 +247,7 @@ test.describe('mistrust stage height budget', () => {
 
 /* Mistrust leads the Projects page, and the whole viewer fits one screen.
    User calls, 2026-08-07. */
-test.describe('mistrust leads the projects page', () => {
+test.describe('mistrust leads the portfolio', () => {
   /* Since the 2026-10-05 merge the projects are tiles on /portfolio/, each a
      link to its own page, and Mistrust still leads. */
   test('it is the first project tile and its page opens on the viewer', async ({ page }) => {

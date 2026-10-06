@@ -1,6 +1,6 @@
 /**
  * "A History of Mistrust" slide data — the single source of truth for the
- * Projects-page slideshow, the lightbox, and the 30-thumb grid.
+ * Mistrust page's slideshow, the lightbox, and the 30-thumb grid.
  *
  * Moved verbatim from `public/scripts/history-of-mistrust-slideshow.js` on
  * 2026-07-31 when the feature was ported from a vanilla IIFE to React.

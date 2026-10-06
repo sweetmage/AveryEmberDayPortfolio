@@ -36,7 +36,7 @@ export function topOverlayPx(): number {
  * and covers nothing. That distinction is measured geometrically — do the two
  * boxes share horizontal range? — rather than by re-encoding 1024px in a third
  * place: a breakpoint copied into JS is exactly how `max-[399px]` vs
- * `max-[400px]` produced a 0px-wide divider (see the note in ProjectTabs.tsx).
+ * `max-[400px]` produced a 0px-wide divider (see the note in app/portfolio/GalleryGrid.tsx).
  *
  * Height is content-dependent (label wrapping, the Gallery result count), so
  * CSS cannot state it and a hardcoded constant would rot the moment a tab is

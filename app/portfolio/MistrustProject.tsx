@@ -47,7 +47,7 @@ export default function MistrustProject() {
         <SlideGrid />
       </section>
 
-      {/* Moodboard & Storyboard â€” deliberately after All Slides: the finished
+      {/* Moodboard & Storyboard: deliberately after All Slides: the finished
           carousels come first, then the preproduction that led to them. */}
       <section className="project-section px-6 pb-12">
         <h4 className="section-title mb-5 border-none p-0 text-left font-heading text-xl font-semibold normal-case tracking-normal text-text">
@@ -133,7 +133,7 @@ export default function MistrustProject() {
           <li>Prison Policy. <em>&quot;If They Hand You a Paper, You Sign It&quot;: A Call to End the Sterilization of Women in Prison</em>. <a href="https://www.prisonpolicy.org/scans/Roth_If_They_Hand_You_1_15_2015.pdf" target="_blank" rel="noopener noreferrer">Link</a></li>
           <li>Stern, A. M. (2005). STERILIZED in the Name of Public Health. Race, Immigration, and Reproductive Control in Modern California. <em>American Journal of Public Health, 95</em>(7), 1128-1138. <a href="https://doi.org/10.2105/ajph.2004.041608" target="_blank" rel="noopener noreferrer">Link</a></li>
           <li>PMC. <em>STERILIZED in the Name of Public Health: Race, Immigration, and Reproductive Control in Modern California</em>. <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC1449330/" target="_blank" rel="noopener noreferrer">Link</a></li>
-          <li>Embryo Project Encyclopedia. <em>The Tuskegee Syphilis Study (1932â€“1972)</em>. <a href="https://embryo.asu.edu/pages/tuskegee-syphilis-study-1932-1972" target="_blank" rel="noopener noreferrer">Link</a></li>
+          <li>Embryo Project Encyclopedia. <em>The Tuskegee Syphilis Study (1932–1972)</em>. <a href="https://embryo.asu.edu/pages/tuskegee-syphilis-study-1932-1972" target="_blank" rel="noopener noreferrer">Link</a></li>
           <li>PMC. <em>Fiftieth Anniversary of Uncovering the Tuskegee Syphilis Study: The Story and Timeless Lessons</em>. <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC9872801/" target="_blank" rel="noopener noreferrer">Link</a></li>
           <li>CDC. <em>About The Untreated Syphilis Study at Tuskegee</em>. <a href="https://www.cdc.gov/tuskegee/about/index.html" target="_blank" rel="noopener noreferrer">Link</a></li>
           <li>Reagan Presidential Library. <em>The President's News Conference</em>. <a href="https://www.reaganlibrary.gov/archives/speech/presidents-news-conference-16" target="_blank" rel="noopener noreferrer">Link</a></li>
@@ -156,12 +156,12 @@ export default function MistrustProject() {
           <li>PMC. <em>Identifying and Addressing Barriers to Transgender Healthcare</em>. <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC8606364/" target="_blank" rel="noopener noreferrer">Link</a></li>
           <li>PubMed. <em>Racial bias in pain assessment and treatment recommendations...</em>. <a href="https://pubmed.ncbi.nlm.nih.gov/27044069/" target="_blank" rel="noopener noreferrer">Link</a></li>
           <li>SF.gov. <em>HIV Epidemiology Annual Report 2022</em>. <a href="https://www.sf.gov/sites/default/files/2023-12/AnnualReport2022%2020231109Final_0.pdf" target="_blank" rel="noopener noreferrer">Link</a></li>
-          <li>AJPH. <em>Trends and Racial Disparities of Late-Stage HIV Diagnosis: Hawaii, 2010â€“2016</em>. <a href="https://ajph.aphapublications.org/doi/full/10.2105/AJPH.2018.304506" target="_blank" rel="noopener noreferrer">Link</a></li>
+          <li>AJPH. <em>Trends and Racial Disparities of Late-Stage HIV Diagnosis: Hawaii, 2010–2016</em>. <a href="https://ajph.aphapublications.org/doi/full/10.2105/AJPH.2018.304506" target="_blank" rel="noopener noreferrer">Link</a></li>
           <li>SEER Program. <em>Cancer Stat Facts: Female Breast Cancer</em>. <a href="https://seer.cancer.gov/statfacts/html/breast.html" target="_blank" rel="noopener noreferrer">Link</a></li>
-          <li>CDC. <em>Vital Signs: Racial Disparities in Breast Cancer Severity â€” United States, 2005â€“2009</em>. <a href="https://www.cdc.gov/mmwr/preview/mmwrhtml/mm6145a5.htm" target="_blank" rel="noopener noreferrer">Link</a></li>
+          <li>CDC. <em>Vital Signs: Racial Disparities in Breast Cancer Severity — United States, 2005–2009</em>. <a href="https://www.cdc.gov/mmwr/preview/mmwrhtml/mm6145a5.htm" target="_blank" rel="noopener noreferrer">Link</a></li>
           <li>American Cancer Society. <em>Breast Cancer Facts & Figures 2024-2025</em>. <a href="https://www.cancer.org/content/dam/cancer-org/research/cancer-facts-and-statistics/breast-cancer-facts-and-figures/2024/breast-cancer-facts-and-figures-2024.pdf" target="_blank" rel="noopener noreferrer">Link</a></li>
           <li>WHO. <em>HIV - World Health Organization</em>. <a href="https://www.who.int/data/gho/data/themes/hiv-aids" target="_blank" rel="noopener noreferrer">Link</a></li>
-          <li>UNAIDS. <em>Global HIV & AIDS statistics â€” Fact sheet</em>. <a href="https://www.unaids.org/en/resources/fact-sheet" target="_blank" rel="noopener noreferrer">Link</a></li>
+          <li>UNAIDS. <em>Global HIV & AIDS statistics — Fact sheet</em>. <a href="https://www.unaids.org/en/resources/fact-sheet" target="_blank" rel="noopener noreferrer">Link</a></li>
           <li>Howard Brown Health. <em>Community Based Research</em>. <a href="https://howardbrown.org/era/research/community-based-research/" target="_blank" rel="noopener noreferrer">Link</a></li>
           <li>PMC. <em>Health Communication and Sexual Orientation, Gender Identity, and Expression</em>. <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC9219031/" target="_blank" rel="noopener noreferrer">Link</a></li>
           <li>PMC. <em>Community engagement to improve access to healthcare: a comparative case study to advance implementation science for transgender health equity</em>. <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC9339189/" target="_blank" rel="noopener noreferrer">Link</a></li>

@@ -399,8 +399,8 @@ test.describe('no bubble parks inside a zone, from the first frame', () => {
   /* The two recorded failure cases, asserted on the same furniture the
      settled tests above assert on — this is the from-frame-0 version of them.
      Contact @1440 is the one the suite kept reporting (~1950px², a whole
-     bubble); Projects tabs @768 was the second case found on 2026-08-07 (now the project
-     tile pictures, since the tabs went away with the 2026-10-05 merge), which proved
+     bubble); Projects tabs @768 was the second case found on 2026-08-07 (now the whole
+     project tiles, since the tabs went away with the 2026-10-05 merge), which proved
      the defect was never specific to that one form or that one width. */
   const CASES = [
     { name: 'Contact form @ 1440px', path: '/contact/', width: 1440, sel: 'form[name="contact"]' },

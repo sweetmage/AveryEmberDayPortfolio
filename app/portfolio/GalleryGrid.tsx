@@ -565,26 +565,33 @@ export default function GalleryGrid({ items }: GalleryGridProps) {
           `max-w-(--brand-content-max)` with the 24px gutter supplied by the children, so
           the rail, the title and the title bar all share one left edge. */}
       <div className="mx-auto max-w-(--brand-content-max) lg:flex lg:items-start">
-        {/* Sticky on THIS column, not on the filter bar inside it, and
-            `lg:items-start` on the parent is load-bearing for that — see the
-            long note on the same element in ProjectTabs.tsx. The wrapper class
-            list is deliberately identical to that one; the bar inside carries
-            two extra classes of its own. */}
+        {/* Sticky on THIS column, not on the filter bar inside it. A sticky
+            child of a box exactly its own height has zero travel and behaves as
+            static, which is how the old Projects rail never stuck from Entry 079
+            to 2026-08-10 (measured travel 0px; invisible to the visual gate,
+            which captures at scroll 0). `lg:items-start` on the parent is
+            load-bearing in the counter-intuitive direction: it keeps this column
+            short while the grid makes the container tall, and the difference is
+            the travel. Change it to `stretch` and the rail silently stops
+            sticking again. */}
         <div
           ref={railRef}
           className="md:sticky md:top-(--brand-nav-height) md:max-lg:z-40 md:max-lg:bg-bg lg:w-[260px] lg:shrink-0"
         >
           {/* Filter bar — a filter group, not a tablist, so no role="tab"/
               aria-selected: aria-pressed on each button is the correct
-              pattern here. Below lg it's a horizontal row with the same
-              spectrum dividers and zero gap as the Projects tablist; at lg it
-              becomes the sticky rail, mirroring ProjectTabs. */}
-          {/* `max-[400px]:flex-col` mirrors ProjectTabs for the same reason:
-              `.brand-tab-divider` flips horizontal below 400px, so the group
-              has to actually be a column there or the rules dangle as slivers
-              inside a row. See the note on that rule in brand.css. */}
-          {/* `sticky`/`top-16` removed here and replaced on the column above,
-              for the reasons documented at the same edit in ProjectTabs.tsx. */}
+              pattern here. Below lg it's a horizontal row with spectrum
+              dividers and zero gap; at lg it becomes the sticky rail. */}
+          {/* `max-[400px]:flex-col`: `.brand-tab-divider` flips horizontal below
+              400px, so the group has to actually be a column there or the rules
+              dangle as slivers inside a row. Deliberately `400`, not `399`:
+              Tailwind compiles `max-[N]` to `not all and (min-width: N)`, which
+              EXCLUDES N, and `max-[399px]` once produced a 0px-wide divider at
+              exactly 399px. See the note on that rule in brand.css. */}
+          {/* No `sticky` here: it lives on the column above, the only element
+              with room to travel. The old `top-16` was a hardcoded guess at
+              `--brand-nav-height` (`clamp(62px, 6vw, 76px)`), 12px short at
+              1440 and wider. */}
           <div className="gallery-filter-bar bubble-exclude flex flex-wrap gap-0 px-6 pt-6 pb-4 max-[400px]:flex-col lg:flex-col lg:flex-nowrap lg:pt-8 lg:pb-0">
             <span className="sr-only">Filter by production type</span>
             {FILTER_BUTTONS.map(({ key, label }, i) => (

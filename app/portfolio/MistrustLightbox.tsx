@@ -18,9 +18,10 @@ import { useReducedMotion, useSwipeDeck } from './useSwipeDeck';
  *
  * Replaces the global `<div id="lightbox">` that used to sit in `page.tsx` and be
  * driven by `public/scripts/history-of-mistrust-slideshow.js`. That arrangement is
- * why `ProjectTabs.tsx` had to reach into `document.getElementById('lightbox')` and
- * mutate classes by hand when you switched project tabs — unmounting the provider's
- * child does that for free now.
+ * why the old Projects tabs had to reach into `document.getElementById('lightbox')`
+ * and mutate classes by hand on a tab switch. Unmounting the provider's child does
+ * that for free, and since 2026-10-05 the project has its own page, so the
+ * provider unmounts on route change.
  */
 
 type LightboxApi = {
@@ -39,10 +40,9 @@ export function useMistrustLightbox(): LightboxApi {
 }
 
 /**
- * Wraps the whole Mistrust panel, so the lightbox mounts and unmounts with it.
- * `ProjectTabs` renders that panel's contents conditionally, which is what makes
- * the unmount — and therefore the scroll-lock and focus-restore cleanup — actually
- * happen when you switch project tabs.
+ * Wraps the whole Mistrust project, so the lightbox mounts and unmounts with it.
+ * Leaving /portfolio/history-of-mistrust/ unmounts it, which is what runs the
+ * scroll-lock and focus-restore cleanup.
  */
 export function MistrustLightboxProvider({ children }: { children: ReactNode }) {
   const [index, setIndex] = useState<number | null>(null);
@@ -177,7 +177,7 @@ function Lightbox({
         first.focus();
       }
     },
-    [index, requestClose, step]
+    [index, step]
   );
 
   const transition =

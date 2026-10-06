@@ -69,9 +69,9 @@
 
   /* One screen, under the pinned chrome — the same rule the gallery art
      follows. `dvh` not `vh`: on mobile `100vh` counts browser chrome that hides
-     on scroll. `--brand-top-overlay` is the nav plus the pinned tab strip and
-     is 0 below 768px, where neither is pinned and the stage may use the whole
-     screen. */
+     on scroll. `--brand-top-overlay` is the nav plus any pinned rail strip and
+     is 0 below 768px, where nothing is pinned and the stage may use the whole
+     screen. The standalone Mistrust page has no rail, so here it is the nav. */
   --stage-cap: calc(100dvh - var(--brand-top-overlay) - var(--stage-chrome));
 
   display: flex;

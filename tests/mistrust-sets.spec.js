@@ -8,7 +8,7 @@ import sharp from 'sharp';
  *
  * These need their own gate because the visual baselines cannot cover them: the Next app renders
  * its own CSS mosaic from the individual slides (see `app/portfolio/SlideGrid.tsx`), so the
- * `projects-mistrust` screenshots stay green no matter what the strips look like. The only
+ * `portfolio-mistrust` screenshots stay green no matter what the strips look like. The only
  * consumer is the legacy root page `projects/history-of-mistrust.html`, which the suite does not
  * screenshot, plus whoever the full-set artefact is shared with.
  *

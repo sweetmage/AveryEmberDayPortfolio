@@ -113,7 +113,7 @@ nowhere in code — no tag system exists on the Projects page:
 > User's open question on the first row: whether to also list the portfolio site's own frameworks.
 
 Gallery per-piece tool tags are **not** duplicated here — they are the `tools` arrays in
-[`app/gallery/gallery-data.ts`](app/gallery/gallery-data.ts), which is the source of truth.
+[`app/portfolio/gallery-data.ts`](app/portfolio/gallery-data.ts), which is the source of truth.
 
 ---
 

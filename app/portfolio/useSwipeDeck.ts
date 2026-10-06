@@ -5,7 +5,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 /**
  * Finger-swipe / mouse-drag gesture for a horizontal slide deck.
  *
- * Shared by the Projects-page stage and the lightbox so the two feel identical.
+ * Shared by the Mistrust page's stage and the lightbox so the two feel identical.
  * Replaces the hand-rolled pointer handling in the deleted
  * `public/scripts/history-of-mistrust-slideshow.js`, which had three defects
  * this hook exists to avoid:

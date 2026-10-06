@@ -119,7 +119,7 @@ single stage: no forcing reason for a second.
 ## Merge readiness
 
 - [x] Suite by file list green: 158 passed. Bare `--list`: 198 tests in 11 files, exit 0.
-- [x] `npm run test:docs` green: 5 pass, `resolveDoc` skipped with its reason.
+- [x] `npm run test:docs` green: 5 pass (8 since the Final signoff's enforcement rewrite), `resolveDoc` skipped with its reason.
 - [x] TODO and LOGBOOK updated; branch pushed; no deploy triggered.
-- [ ] **The user's call:** merge into `portfoliowebsite`. That push is a production deploy, and it
-  carries the unreleased Portfolio work, whose tile copy is still awaiting approval.
+- [x] **The user's call, made 2026-10-06:** "merge it and ship the portfolio". Fast-forwarded into
+  `portfoliowebsite`; released together with the Portfolio work after the Final signoff (Entry 142).

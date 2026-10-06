@@ -104,10 +104,9 @@ Roles, for the directories that carry real weight:
 
 | Path | Role |
 |---|---|
-| [`app/`](../app/) | The deployed Next.js App Router site. Five routes: `/`, `/projects/`, `/gallery/`, `/contact/`, `/contact/thanks/`. |
+| [`app/`](../app/) | The deployed Next.js App Router site. Six routes: `/`, `/portfolio/`, `/portfolio/history-of-mistrust/`, `/portfolio/brand/`, `/contact/`, `/contact/thanks/` (`/projects/` and `/gallery/` 301 to `/portfolio/` since 2026-10-06; see `netlify.toml`). |
 | [`app/components/`](../app/components/) | Shared chrome: `Nav`, `Footer`, `SkipLink`, `ReturnToTop`, `BubbleLogo`, `BubblePhysics`, `ConnectLinks`. |
-| [`app/projects/`](../app/projects/) | Projects page. `ProjectTabs` drives a sticky vertical rail at `lg+`; `BrandProject` / `MistrustProject` are the two case-study panels. |
-| [`app/gallery/`](../app/gallery/) | Gallery page. `gallery-data.ts` is the item list (tags, tools, descriptions); `GalleryGrid` is the client filter + grid. |
+| [`app/portfolio/`](../app/portfolio/) | The Portfolio page (`page.tsx`: project tiles via [`ProjectTile`](../app/components/ProjectTile.tsx), then `GalleryGrid`, the client filter + grid with its sticky rail; `gallery-data.ts` is the item list), the two project pages (`history-of-mistrust/`, `brand/`), the `BrandProject` / `MistrustProject` case-study components, and `LegacyHashForwarder` for old `/projects/#…` links. Replaced `app/projects/` (tabs) and `app/gallery/` on 2026-10-05. |
 | [`brand.css`](../brand.css) | **Design-system source of truth.** All `--brand-*` tokens, keyframes, and component visuals. Imported into the `components` cascade layer - never linked directly. |
 | [`src/css/`](../src/css/) | `site.css` (reset, base type, logo theme-swap, `#return-to-top`) and `tailwind-preset.css` (bridges `--brand-*` tokens to Tailwind theme names). |
 | [`public/scripts/`](../public/scripts/) | The runtime JS the export actually serves: `bubbles.js`, `theme-init.js`. (`history-of-mistrust-slideshow.js` lived here until Entry 109 replaced it with React components.) |
@@ -120,8 +119,8 @@ Roles, for the directories that carry real weight:
 
 - Nav links, and the Contact-link enable/disable: [`app/components/Nav.tsx`](../app/components/Nav.tsx) + [`app/components/Footer.tsx`](../app/components/Footer.tsx).
 - Colors, spacing, radii, the content max-width: [`brand.css`](../brand.css) `:root`.
-- Gallery items, tags, tool lists: [`app/gallery/gallery-data.ts`](../app/gallery/gallery-data.ts).
-- Slide alt text and the slide manifest for the Mistrust case study: `SLIDE_ALT` in [`app/projects/mistrustSlides.ts`](../app/projects/mistrustSlides.ts).
+- Gallery items, tags, tool lists: [`app/portfolio/gallery-data.ts`](../app/portfolio/gallery-data.ts).
+- Slide alt text and the slide manifest for the Mistrust case study: `SLIDE_ALT` in [`app/portfolio/mistrustSlides.ts`](../app/portfolio/mistrustSlides.ts).
 - Social share card descriptor: [`app/og.ts`](../app/og.ts) (one shared object, all four pages).
 - Production headers/CSP: [`netlify.toml`](../netlify.toml). Dev-only headers: [`next.config.ts`](../next.config.ts).
 
@@ -154,11 +153,11 @@ every route starts 500ing with `ENOENT .../out/routes-manifest.json`.
   [`scripts/bubbles.js`](../scripts/bubbles.js); `public/` is the served copy.
 The Mistrust case study used to be a third runtime script
 (`history-of-mistrust-slideshow.js`, a carousel plus lightbox). Entry 109 replaced
-it with React client components under [`app/projects/`](../app/projects/):
+it with React client components under [`app/portfolio/`](../app/portfolio/):
 `MistrustSlideshow.tsx` (swipeable stage, Set 1/2/3 switcher, filmstrip and
-side-bar nav) on [`useSwipeDeck.ts`](../app/projects/useSwipeDeck.ts),
+side-bar nav) on [`useSwipeDeck.ts`](../app/portfolio/useSwipeDeck.ts),
 `MistrustLightbox.tsx`, `SlideGrid.tsx` for the All Slides mosaics, and
-[`mistrustSlides.ts`](../app/projects/mistrustSlides.ts) for the manifest. The old
+[`mistrustSlides.ts`](../app/portfolio/mistrustSlides.ts) for the manifest. The old
 script is deleted; nothing serves a slideshow from `public/scripts/` anymore.
 
 **Deploy flow:** push `portfoliowebsite` -> Netlify runs `next build` -> publishes
@@ -172,9 +171,9 @@ No database, no ORM, no migrations. "Data" is TypeScript literals and image tree
 
 | Store | Location | Shape |
 |---|---|---|
-| Gallery items | [`app/gallery/gallery-data.ts`](../app/gallery/gallery-data.ts) | `GalleryItem[]` = `{ src, alt, caption, width, height, tags, tools, description }`. `tags` (Digital/Traditional) drive the filter and render `sr-only`; `tools` is the visible middot-separated line; `description` is `''` on every item and awaits the user's copy pass. The render path for it **exists** as of Entry 118 - `GalleryGrid` shows it clamped to one line on a collapsed card and in full on an expanded one, but only when the string is non-empty, so filling these in needs no code change. |
-| Project case studies | [`app/projects/BrandProject.tsx`](../app/projects/BrandProject.tsx), [`MistrustProject.tsx`](../app/projects/MistrustProject.tsx) | JSX, not data. No tag system on this page. |
-| Slide captions | `SLIDE_ALT` in [`app/projects/mistrustSlides.ts`](../app/projects/mistrustSlides.ts) | 30-entry array. Feeds both `<img alt>` and lightbox captions. Set title cards must land on indices 1 / 11 / 21 for the `Math.ceil(n / 10)` set math. Twelve entries were found misordered against the artwork in Entry 106 - verify against the images, not the order. |
+| Gallery items | [`app/portfolio/gallery-data.ts`](../app/portfolio/gallery-data.ts) | `GalleryItem[]` = `{ src, alt, caption, width, height, tags, tools, description }`. `tags` (Digital/Traditional) drive the filter and render `sr-only`; `tools` is the visible middot-separated line; `description` is `''` on every item and awaits the user's copy pass. The render path for it **exists** as of Entry 118 - `GalleryGrid` shows it clamped to one line on a collapsed card and in full on an expanded one, but only when the string is non-empty, so filling these in needs no code change. |
+| Project case studies | [`app/portfolio/BrandProject.tsx`](../app/portfolio/BrandProject.tsx), [`MistrustProject.tsx`](../app/portfolio/MistrustProject.tsx) | JSX, not data. No tag system on this page. |
+| Slide captions | `SLIDE_ALT` in [`app/portfolio/mistrustSlides.ts`](../app/portfolio/mistrustSlides.ts) | 30-entry array. Feeds both `<img alt>` and lightbox captions. Set title cards must land on indices 1 / 11 / 21 for the `Math.ceil(n / 10)` set math. Twelve entries were found misordered against the artwork in Entry 106 - verify against the images, not the order. |
 | Mistrust set strips | [`scripts/generate-mistrust-assets.js`](../scripts/generate-mistrust-assets.js) | Composes `set-N.webp` taking **pixels from the slide PNGs** and **geometry from the Figma `Set N.png` exports**, because slides 1 and 2 share a 19px band that naive cumulative-width layout draws twice (Entry 114). Guarded by width/height assertions and `tests/mistrust-sets.spec.js`. |
 | Share card | [`app/og.ts`](../app/og.ts) | One `{ url, width, height, alt }` object consumed by all four pages. |
 

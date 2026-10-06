@@ -1351,9 +1351,11 @@ html.dark .brand-circle-icon {
 }
 
 /* ── Page & section titles ───────────────────────────────────────────
-   One recipe for every page/section title (Home "About Me", Gallery,
-   Projects, and the per-project h3s) so switching pages doesn't switch
-   type systems. Overrides the uppercase/muted/gray-rule base `h2` in
+   One recipe for every page/section title (Home "About Me", Portfolio, and
+   the per-project h3s) so switching pages doesn't switch type systems. The
+   Portfolio's "Projects" / "Gallery" section titles use
+   `.portfolio-section-title` instead and keep the base h2's capitals, which
+   the user approved on review (2026-10-06). Overrides the uppercase/muted/gray-rule base `h2` in
    src/css/site.css, which now only serves the legacy static pages. */
 .brand-page-title {
     font-family: var(--brand-font-display);
@@ -1376,7 +1378,8 @@ html.dark .brand-circle-icon {
     font-size: clamp(1.5rem, 3.5vw, 2.25rem);
 }
 
-/* Divider between the project tabs — the thinnest of the three bar sizes
+/* Divider between the filter buttons of the Gallery rail (it began between the
+   old Projects tabs, retired 2026-10-05) — the thinnest of the three bar sizes
    (hero 6px, title underline 3px, this 2px), so it reads as a separator inside
    the group rather than another section edge.
 
@@ -1737,8 +1740,10 @@ button.brand-chip:hover {
    One tile per project on /portfolio/, each a single link to the project's own
    page. The user's ask (2026-10-05) is that it reads as "this opens another page"
    at rest, so the outline is a real 2px border in the brand spectrum (user,
-   2026-10-06). Every `--brand-ir-*` stop is at least 3:1 against the page in
-   both themes; tests/project-tiles.spec.js asserts it. `--brand-border-mid`
+   2026-10-06). It paints `--brand-spectrum-ring`, NOT `--brand-spectrum`: every
+   stop of the ring is at least 3:1 against the page in both themes, which the
+   plain ramp is not (its light teal is 2.85:1). tests/project-tiles.spec.js
+   reads the stops off the painted tile, so swapping the token fails it. `--brand-border-mid`
    (about 1.3:1) was rejected in plan review for being invisible.
 
    Transitions name their properties and never include `outline`: a
@@ -1800,12 +1805,15 @@ button.brand-chip:hover {
     outline-offset: 3px;
 }
 
-/* Square images in rounded frames (AGENTS.md): the frame rounds, the picture
-   does not. A wide, short thumbnail keeps the two tiles from towering over the
-   gallery; `cover` crops the slide, `contain` letterboxes the logo on its
-   backdrop. */
+/* Square images in rounded frames (AGENTS.md, user rule 2026-08-01): the frame
+   rounds, the picture never does. The tile's 16px radius and `overflow: hidden`
+   used to clip the cover's top corners (Final signoff, 2026-10-06), so the
+   picture is now padded inside the frame and its corners stay square. A wide,
+   short thumbnail keeps the two tiles from towering over the gallery; `cover`
+   crops the slide, `contain` letterboxes the logo on its backdrop. */
 .project-tile-thumb {
     aspect-ratio: 16 / 9;
+    margin: 12px 12px 0;
     overflow: hidden;
     display: flex;
     align-items: center;

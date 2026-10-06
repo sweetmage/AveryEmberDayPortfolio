@@ -5,7 +5,7 @@ export interface ProjectTileProps {
   title: string;
   description: string;
   thumb: string;
-  /** The thumbnail's alt text. The tile's link text is the title, so this describes the picture. */
+  /** Unused by the markup (the thumbnail is decorative, `alt=""`): kept as a record of what the picture is. */
   thumbAlt: string;
   /** `cover` fills the square (artwork); `contain` letterboxes it (a logo on its own backdrop). */
   fit?: 'cover' | 'contain';
@@ -42,9 +42,12 @@ export default function ProjectTile({
     <li className="list-none">
       <Link href={href} className="project-tile bubble-exclude group">
         <div className="project-tile-thumb" style={backdrop ? { background: backdrop } : undefined}>
+          {/* Decorative: the title is the link's name. A described thumbnail made
+              screen readers announce the title twice ("Cover slide of A History
+              of Mistrust, A History of Mistrust, ..."); Final signoff 2026-10-06. */}
           <img
             src={thumb}
-            alt={thumbAlt}
+            alt=""
             loading="lazy"
             decoding="async"
             className={fit === 'contain' ? 'project-tile-img is-contain' : 'project-tile-img'}

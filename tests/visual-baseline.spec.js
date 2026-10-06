@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 
-// Must match the `serve out` webServer port in playwright.config.js.
+// Must match the `serve out` server started in tests/global-setup.js.
 // Deliberately not 3000/3001 -- those are where `next dev` lands.
 const BASE_URL = 'http://localhost:4322';
 
@@ -30,16 +30,16 @@ test.use({
    page each time (soaked on SOL, 2026-10-06). Home and contact, which never load
    those weights, never did it. A real regression fails both attempts, so the
    gate still catches it; noise does not repeat. Logged as Trap 7 in
-   docs/visual-gate.md. */
-test.describe.configure({ retries: 1 });
+   docs/visual-gate.md. The retry is set per page (`semibold` below), so home and
+   contact, which never showed the noise, keep strict single-attempt grading. */
 
 /* Projects and Gallery merged into /portfolio/ on 2026-10-05, and each
    project got its own page. Still 5 captures x 4 widths x 2 themes = 40. */
 const PAGES = [
   { name: 'index', url: '/' },
-  { name: 'portfolio', url: '/portfolio/' },
-  { name: 'portfolio-mistrust', url: '/portfolio/history-of-mistrust/' },
-  { name: 'portfolio-brand', url: '/portfolio/brand/' },
+  { name: 'portfolio', url: '/portfolio/', semibold: true },
+  { name: 'portfolio-mistrust', url: '/portfolio/history-of-mistrust/', semibold: true },
+  { name: 'portfolio-brand', url: '/portfolio/brand/', semibold: true },
   { name: 'contact', url: '/contact/' },
 ];
 
@@ -81,6 +81,8 @@ for (const page of PAGES) {
   for (const width of BREAKPOINTS) {
     for (const theme of THEMES) {
       test.describe(`${page.name} @ ${width}px — ${theme}`, () => {
+        // One retry, only where the semibold webfont noise lives (Trap 7).
+        if (page.semibold) test.describe.configure({ retries: 1 });
         test.beforeEach(async ({ context }) => {
           // localStorage ONLY. This used to also call
           // `document.documentElement.setAttribute('data-theme', t)`, which
@@ -107,14 +109,6 @@ for (const page of PAGES) {
           // stops honouring localStorage, fail loudly instead of quietly
           // re-baselining every snapshot against the default theme.
           await expect(p.locator('html')).toHaveAttribute('data-theme', theme);
-
-          // For the mistrust tab deep-link, ensure the tab is active before capture.
-          if (page.name === 'projects-mistrust') {
-            const mistrustTab = p.locator('button[aria-controls="panel-history-of-mistrust"]');
-            if (await mistrustTab.count()) {
-              await mistrustTab.click();
-            }
-          }
 
           // loading="lazy" images below the viewport never fetch during a
           // fullPage capture, so force them eager and wait for completion.

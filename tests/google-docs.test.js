@@ -111,8 +111,9 @@ describe("allow-list enforcement", () => {
     assert.strictEqual(resolveDoc(allowList, "1AbCdEfGhIjKlMnOp"), byAlias);
   });
 
-  it("never matches on a partial alias", () => {
+  it("never matches on a partial alias, either way round", () => {
     assert.strictEqual(resolveDoc(allowList, "allowed"), null);
+    assert.strictEqual(resolveDoc(allowList, "allowed-doc-extra"), null);
   });
 });
 

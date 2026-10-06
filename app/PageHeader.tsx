@@ -1,13 +1,13 @@
-/* Shared page header for the Projects and Gallery pages: a left-aligned title
+/* Shared page header (the Portfolio page; formerly Projects and Gallery): a left-aligned title
    in the 1400px content container with a thin iridescent gradient bar
    (the hero's `.brand-spectrum-bar`) underlining it across the page. Kept in
    one place so the title lands in the exact same spot when switching pages. */
 export default function PageHeader({ title }: { title: string }) {
   return (
     /* `max-w-(--brand-content-max) px-6` is the shared content geometry: the same container
-       width and the same 24px gutter that the Projects tablist and the Gallery
+       width and the same 24px gutter that the project tiles and the Gallery
        filter rail use. That is what makes the bar below start exactly at the
-       left edge of the tabs and stop the same distance from the right edge,
+       left edge of the rail and stop the same distance from the right edge,
        at every viewport — the header used to carry a `clamp(16px,4vw,40px)`
        gutter *inside* the container while both rails padded differently, so
        the three left edges never lined up. */

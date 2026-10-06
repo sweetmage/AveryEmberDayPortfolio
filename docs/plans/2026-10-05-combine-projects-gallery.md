@@ -1,6 +1,6 @@
 # Combine Projects and Gallery — 2026-10-05
 
-**Agent:** Opus 5.5 (fennel, main) · **Status:** in progress. D1, D2, D4, D5 answered; D3 drafted by the agent at the user's request, awaiting the user's OK · **Branch:** `portfoliowebsite`
+**Agent:** Opus 5.5 (fennel, main) · **Status:** built and approved for release on 2026-10-06 (user: "merge it and ship the portfolio"). The shipped design supersedes this plan in three places, noted inline: the tile copy (D3) was drafted by the agent at the user's request and approved; the outline is the 2px brand spectrum, not a 1px token; and the whole tile is a bubble wall.
 **Asked by the user (2026-10-05, verbatim):** "i want to combine the projects and gallery pages. the
 projects should contain a thumbnail at the top that lead to each project page (no longer tabbed in
 a separate section) and should show an outline around the card and a short description of the
@@ -20,7 +20,7 @@ expand-in-place cards, follows below. The Projects tab interface (`ProjectTabs.t
 |---|---|---|
 | D1 | Combined page | **"Portfolio" at `/portfolio/`.** User: "remove the nav for both and replace with portfolio". Nav becomes Home · Portfolio · Contact; `/projects/` and `/gallery/` 301 to `/portfolio/`. |
 | D2 | Project page URLs | **Under the combined page:** `/portfolio/history-of-mistrust/` and `/portfolio/brand/`. |
-| D3 | Tile copy | **Open: the user writes the two descriptions** (one or two sentences each); the agent proofreads only. Placeholder copy must not ship. |
+| D3 | Tile copy | **Drafted by the agent at the user's request** ("Draft them for me", 2026-10-05) from each project's own intro, and **approved for release** on 2026-10-06. |
 | D4 | Tile thumbnails | **Cover + logo:** Mistrust uses its cover slide; Brand uses the bubble logo on its brand background. |
 | D5 | Filter rail scope | **Gallery only:** tiles full width across the top; the rail starts with the gallery section. |
 
@@ -28,7 +28,7 @@ expand-in-place cards, follows below. The Projects tab interface (`ProjectTabs.t
 
 **Project tile** (`app/components/ProjectTile.tsx`, new). The whole tile is **one link**, the
 gallery's one-interactive-element-per-card rule: thumbnail, `<h2>`/`<h3>` title, description, and a
-visible "View project →" affordance inside a single `<a>`. At rest it shows a 1px `--brand-border-mid`
+visible "View project →" affordance inside a single `<a>`. (Superseded: shipped as a 2px brand-spectrum ring, see LOGBOOK Entry 139.) At rest it shows a 1px `--brand-border-mid`
 outline. On hover and focus it switches to the house hover contract (one purple, the accent ring on
 `:focus-visible`), and the arrow nudges right. **No `transition-colors`** on it (Entry 134:
 `tests/focus-ring.spec.js` fails a fading ring). Square image in a rounded frame, matching
@@ -140,7 +140,7 @@ imports.
   rules no longer collide with a real page; they are retargeted (above) rather than left pointing at
   a hash on a page that no longer exists.
 - **Visual gate:** page count goes from 5 to 6 (combined, Mistrust, Brand, home, contact, thanks
-  if captured). That is 40 baselines → about 48, and they can only be regenerated on Windows (T5).
+  if captured). (Actual: 40, five pages, the thanks page not captured.) That is 40 baselines → about 48, and they can only be regenerated on Windows (T5).
 - **Sticky chrome:** Entry 133's one-column rule and `--stage-cap` / `--art-cap` all read
   `--brand-rail-overlay`. Moving the Mistrust stage off a page with a rail changes the cap. This is
   the same class of late layout shift as Trap 6.

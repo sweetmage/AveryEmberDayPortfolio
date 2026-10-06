@@ -21,19 +21,19 @@ matters.
 | Baselines | `tests/visual-baseline.spec.js-snapshots/` — **40 PNGs** |
 | Failure artifacts | `test-results/` — actual, expected, and diff PNGs |
 | Coverage | 5 pages × 4 breakpoints × 2 themes |
-| Pages | `index`, `projects`, `projects-mistrust`, `gallery`, `contact` |
+| Pages | `index`, `portfolio`, `portfolio-mistrust`, `portfolio-brand`, `contact` (since 2026-10-06; `projects`, `projects-mistrust` and `gallery` retired with the Portfolio merge) |
 | Breakpoints | 360, 768, 1024, 1440 |
 | Themes | light, dark |
 
-`projects-mistrust` is the `#history-of-mistrust` deep link, and the spec clicks the tab before
-capturing so the panel is actually open.
+`portfolio-mistrust` and `portfolio-brand` are the project pages, `/portfolio/history-of-mistrust/`
+and `/portfolio/brand/`. Baselines are `chromium-win32` and are regenerated on SOL (Trap 7).
 
 ## Running it
 
 ```bash
-npm test                                  # whole suite (171 tests as of 2026-08-10)
+npm test                                  # whole suite (198 tests as of 2026-10-06; green only on Windows)
 npx playwright test visual-baseline       # just the gate
-npx playwright test -g "gallery @ 1440"   # one case
+npx playwright test -g "portfolio @ 1440" # one case
 ```
 
 The server is started **inside `tests/global-setup.js`**, not by `webServer.command`. This is
@@ -189,14 +189,15 @@ Tried in order, each a real improvement, none a full cure:
 
 1. **Wait for every face the page renders**, read off the DOM, instead of a fixed list.
    A fixed `600 Outfit` would hang home and contact, which never load it.
-2. **Pass each font the exact text it renders** to `document.fonts.load()`. Google Fonts splits
+2. **Launch flags for the visual spec only:** `--font-render-hinting=none` and `--disable-lcd-text`,
+   then `--disable-font-subpixel-positioning`.
+3. **Pass each font the exact text it renders** to `document.fonts.load()`. Google Fonts splits
    faces into per-unicode-range files, and a bare `load(font)` fetches only the default sample's.
-3. **Launch flags for the visual spec only:** `--font-render-hinting=none`, `--disable-lcd-text`,
-   `--disable-font-subpixel-positioning`.
 
 After all three, about one page in every five runs still differed. So the visual spec retries
-once (`test.describe.configure({ retries: 1 })`). Noise does not repeat, and a real regression
-fails both attempts.
+once, **on the three semibold pages only** (`semibold: true` in the page list); home and contact
+keep strict single-attempt grading. Noise does not repeat, and a real regression fails both
+attempts. A missing baseline is never retried.
 
 Soak after the retry: **5 runs, 0 hard failures**, 3 captures passing on retry. The flags change
 how every page renders in the gate, so **never drop one without regenerating all 40.**
