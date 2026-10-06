@@ -2046,7 +2046,10 @@ html.dark .brand-glow-text {
 
    Found by the pre-launch audit, 2026-08-06 (Entry 123). Grouped here rather
    than scattered so the next control added to the footer has an obvious place
-   to join. */
+   to join. The Mistrust page's 82 source links joined on 2026-10-06: no rule
+   targeted them, so they painted the browser's 1px blue default ring, caught
+   by the every-stop check in tests/focus-ring.spec.js. */
+.sources-list a:focus-visible,
 .brand-footer-links a:focus-visible,
 .icon-link:focus-visible,
 #return-to-top:focus-visible,

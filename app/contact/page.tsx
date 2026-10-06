@@ -79,7 +79,7 @@ export default function ContactPage() {
             name="name"
             type="text"
             required
-            className="rounded-md border border-line bg-surface-2 px-3 py-2 font-body text-sm text-text outline-none transition-colors pointer-coarse:text-base focus:border-accent"
+            className="rounded-md border border-line bg-surface-2 px-3 py-2 font-body text-sm text-text transition-[color,background-color,border-color] pointer-coarse:text-base focus:border-accent focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
           />
         </div>
 
@@ -92,7 +92,7 @@ export default function ContactPage() {
             name="email"
             type="email"
             required
-            className="rounded-md border border-line bg-surface-2 px-3 py-2 font-body text-sm text-text outline-none transition-colors pointer-coarse:text-base focus:border-accent"
+            className="rounded-md border border-line bg-surface-2 px-3 py-2 font-body text-sm text-text transition-[color,background-color,border-color] pointer-coarse:text-base focus:border-accent focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
           />
         </div>
 
@@ -105,7 +105,7 @@ export default function ContactPage() {
             name="message"
             rows={5}
             required
-            className="rounded-md border border-line bg-surface-2 px-3 py-2 font-body text-sm text-text outline-none transition-colors pointer-coarse:text-base focus:border-accent"
+            className="rounded-md border border-line bg-surface-2 px-3 py-2 font-body text-sm text-text transition-[color,background-color,border-color] pointer-coarse:text-base focus:border-accent focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
           />
         </div>
 

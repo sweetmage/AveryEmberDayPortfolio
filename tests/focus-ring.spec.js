@@ -68,13 +68,24 @@ function readFocused() {
   };
 }
 
+/* Two contract checks per focus stop, in one Tab walk (the Mistrust page alone
+   has ~140 stops):
+   1. no transition animates the outline (Entry 134), and
+   2. the ring IS the contract: solid, 2px or wider, `--brand-accent`. Added
+      2026-10-06, when an audit found the 82 Mistrust source links still on the
+      browser's 1px blue default and the three contact fields painting no
+      outline at all (`outline-none` plus a 1px border that faded in). Inset
+      rings (gallery toggles, mosaic cells) are still solid 2px accent, so they
+      pass; the offset is not part of the contract. */
 test.describe('focus rings do not fade in', () => {
   for (const path of PAGES) {
-    test(`no focus stop animates its outline — ${path}`, async ({ page, browserName }) => {
+    test(`every focus stop paints the 2px accent at once — ${path}`, async ({ page, browserName }) => {
       await page.goto(`${BASE_URL}${path}`, { waitUntil: 'networkidle' });
       const key = await tabKey(browserName);
+      const accent = await accentColor(page);
 
       const offenders = [];
+      const wrongRing = new Map();
       const seen = new Set();
       let stops = 0;
       // Walk until focus wraps back to an element already seen, with a hard cap
@@ -92,10 +103,17 @@ test.describe('focus rings do not fade in', () => {
         seen.add(id);
         stops += 1;
         if (f.outlineStyle !== 'none' && f.animatesOutline) offenders.push(f.label);
+        const ok = f.outlineStyle === 'solid' && parseFloat(f.outlineWidth) >= 2 && f.outlineColor === accent;
+        if (!ok) {
+          // Group by element kind so 82 identical links read as one line.
+          const key2 = `${f.label.replace(/ ".*"$/, '')} → ${f.outlineStyle} ${f.outlineWidth} ${f.outlineColor}`;
+          wrongRing.set(key2, (wrongRing.get(key2) || 0) + 1);
+        }
       }
 
       expect(stops, 'Tab reached no focus stops at all').toBeGreaterThan(0);
       expect(offenders, 'these controls fade their focus ring in').toEqual([]);
+      expect(Object.fromEntries(wrongRing), `focus ring is not solid 2px ${accent}`).toEqual({});
     });
   }
 });
