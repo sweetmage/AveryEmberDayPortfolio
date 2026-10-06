@@ -1,4 +1,4 @@
-# shxdowloop: focus rings everywhere, and a test runner that runs whole — 2026-10-06
+# shxdowloop: focus rings everywhere, and a test runner that runs whole (2026-10-06)
 
 **Agent:** Opus 5.5 (fennel, main) · **Mode:** Normal, unattended after the user's Proceed
 **Branch:** `shxdowloop/2026-10-06/focus-ring-and-test-runner` (from `portfoliowebsite` @ `e3e5fa7`,
@@ -40,13 +40,45 @@ without the gitignored `docs/sync/google-docs.json` and takes the whole run down
 `node --test` it fails the same way. Its "allow-list enforcement" case also writes
 `tests/tmp-allow-list.json`, which is never read, never deleted, and tracked in git.
 
+## Plan review (oracle/opus, 1 round, PASS): findings adopted
+
+Every claim the plan measured was re-measured and held. Adopted:
+
+- **F1 / F5:** B's before/after count uses an explicit file list that excludes
+  `tests/focus-ring.spec.js` (A rewrites it):
+  `npx playwright test --list $(ls tests/*.spec.js | grep -v focus-ring)` before, and the bare
+  `--list` with `focus-ring`'s own count subtracted after. A's verify runs on whatever config is
+  current; a top-level `testMatch` was shown to leave both projects' lists identical.
+- **F2:** the contact fields must **drop `outline-none`**, not just add a ring. In Tailwind v4,
+  `outline-none` sets `--tw-outline-style: none`, which the `outline-2` utilities read, so a ring
+  added beside it paints nothing. `transition-colors` becomes
+  `transition-[color,background-color,border-color]` (Entry 134 trap).
+- **F3:** the fields have no hover style; the check is that the focus border colour still
+  transitions while `outline` is not in `transition-property`.
+- **F4:**
+  - Only the three `resolveDoc` cases need the guard. The enforcement case never loads the
+    allow-list in-process.
+  - The suite-level skip marker is the evidence, because `node:test` prints `skipped 0` for a
+    skipped `describe`.
+  - The dead `ENV_PATH` / `tmp-test.env` scaffolding goes with the dead temp allow-list write.
+  - The command is `npm run test:docs` (`node --test tests/google-docs.test.js`).
+- **F6:** `shxdowmap refresh --auto` after B (`package.json` is a tracked manifest).
+- **F7:** the loop stops at "branch pushed". Merging into `portfoliowebsite` is a production
+  deploy and the user's call.
+- **Nits:**
+  - AGENTS.md is to say a bare run on a non-Windows host still runs the visual spec against
+    win32-only baselines.
+  - Re-count tests instead of restating them.
+  - One commit per track, then a push.
+  - Concurrency cap 3 (nano `parallel-max`); two tracks fit.
+
 ## Track table
 
 | Track | Owner | Files (write) | Depends on | Verify |
 |---|---|---|---|---|
 | A focus rings | main agent | `brand.css` (sources-list rule), `app/contact/page.tsx` (field classes), `tests/focus-ring.spec.js` (every stop must be the 2px accent), `style.css` (rebuild) | — | `npx playwright test tests/focus-ring.spec.js` (both projects), red first on the old code |
-| B test runner | native `builder` | `playwright.config.js` (`testMatch: '**/*.spec.js'`), `tests/google-docs.test.js` (skip allow-list cases when absent; drop the dead temp-file write), `tests/tmp-allow-list.json` (delete), `package.json` (`test:docs`) | — | `npx playwright test --list` exits 0 without the allow-list; `npm run test:docs` passes with skips |
-| C docs | main agent | `AGENTS.md`, `TODO.md`, `LOGBOOK.md` | **A and B** | read the diff |
+| B test runner | native `builder` | `playwright.config.js` (`testMatch: '**/*.spec.js'`), `tests/google-docs.test.js` (skip the three `resolveDoc` cases when the allow-list is absent; drop the dead temp-file and env scaffolding), `tests/tmp-allow-list.json` (delete), `package.json` (`test:docs`) | — (its `--list` count excludes `focus-ring.spec.js`, which A writes) | `npx playwright test --list` exits 0 without the allow-list; `npm run test:docs` passes with skips |
+| C docs | main agent | `AGENTS.md`, `TODO.md`, `LOGBOOK.md`, `docs/ARCHITECTURE.md` (refresh) | **A and B** | read the diff; `shxdowmap status` fresh |
 
 A and B write disjoint files and run in parallel. B never runs `next build` (only `--list` and
 `node --test`), so it cannot collide with A's Playwright runs on `out/` or port 4322. A
