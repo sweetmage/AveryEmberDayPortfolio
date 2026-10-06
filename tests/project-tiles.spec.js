@@ -117,3 +117,30 @@ test.describe('portfolio project tiles', () => {
     await expect(page.locator('#brand-nav-links a[aria-current="page"]')).toHaveText('Portfolio');
   });
 });
+
+test.describe('brand logo download kit', () => {
+  /* Added 2026-10-06 at the user's choice ("Brand kit downloads"): every logo
+     variant on the Brand page offers its SVG and PNG. Each href must serve a
+     real file, or the kit hands out 404s. */
+  test('every logo card offers an SVG and a PNG that exist', async ({ page, request }) => {
+    await page.goto(`${BASE_URL}/portfolio/brand/`, { waitUntil: 'networkidle' });
+    const links = page.locator('.logo-swatch a.logo-download');
+    await expect(links).toHaveCount(12);
+    const kit = await links.evaluateAll((as) =>
+      as.map((a) => ({
+        href: a.getAttribute('href'),
+        text: a.textContent,
+        label: a.getAttribute('aria-label'),
+        download: a.hasAttribute('download'),
+      })),
+    );
+    expect(new Set(kit.map((k) => k.href)).size).toBe(12);
+    for (const k of kit) {
+      expect(k.download, k.href).toBe(true);
+      expect(k.href).toMatch(new RegExp(`\\.${k.text.toLowerCase()}$`));
+      expect(k.label).toMatch(new RegExp(`^Download .+ as ${k.text}$`));
+      const res = await request.get(`${BASE_URL}${k.href}`);
+      expect(res.status(), k.href).toBe(200);
+    }
+  });
+});

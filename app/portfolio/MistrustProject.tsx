@@ -88,12 +88,15 @@ export default function MistrustProject() {
         </div>
       </section>
 
-      {/* Sources */}
+      {/* Sources. Numbered since 2026-10-06: an <ol> whose numbers are drawn by
+          a CSS counter (brand.css, `.sources-list`) so they sit in the hanging
+          indent the entries already had. `list-none` drops the list role in
+          WebKit, hence the explicit role="list". */}
       <section className="project-section px-6 pb-12">
         <h4 className="section-title mb-5 border-none p-0 text-left font-heading text-xl font-semibold normal-case tracking-normal text-text">
           Sources & Bibliography
         </h4>
-        <ul className="sources-list m-0 list-none gap-x-12 p-0 columns-1 min-[700px]:columns-2 min-[1100px]:columns-3 [&_a]:break-words [&_a]:text-text-soft [&_a]:underline [&_a]:underline-offset-2 [&_a:hover]:text-text [&_li]:mb-3 [&_li]:break-inside-avoid [&_li]:pl-6 [&_li]:-indent-6 [&_li]:font-body [&_li]:text-[0.82rem] [&_li]:leading-[1.55] [&_li]:text-text-muted">
+        <ol role="list" className="sources-list m-0 list-none gap-x-12 p-0 columns-1 min-[700px]:columns-2 min-[1100px]:columns-3 [&_a]:break-words [&_a]:text-text-soft [&_a]:underline [&_a]:underline-offset-2 [&_a:hover]:text-text [&_li]:mb-3 [&_li]:break-inside-avoid [&_li]:pl-6 [&_li]:-indent-6 [&_li]:font-body [&_li]:text-[0.82rem] [&_li]:leading-[1.55] [&_li]:text-text-muted">
           <li>AIDSVu. (2024). <em>AIDSVu Releases 2024 PrEP Use Data</em>. Emory University Rollins School of Public Health. <a href="https://aidsvu.org/news-updates/aidsvu-releases-2024-prep-use-data-showing-growing-use-across-the-u-s/" target="_blank" rel="noopener noreferrer">Link</a></li>
           <li>Alsan, M., Garrick, O., & Graziani, G. C. (2019). Does Diversity Matter for Health? Experimental Evidence from Oakland. <em>American Economic Review, 109</em>(12), 4071-4111. <a href="https://pubs.aeaweb.org/doi/10.1257/aer.20181446" target="_blank" rel="noopener noreferrer">Link</a></li>
           <li>American Medical Association (AMA). (2023). <em>Physicians can realize their power to advance health equity</em>. National Health Equity Grand Rounds. <a href="https://www.ama-assn.org/public-health/health-equity/physicians-can-realize-their-power-advance-health-equity" target="_blank" rel="noopener noreferrer">Link</a></li>
@@ -176,7 +179,7 @@ export default function MistrustProject() {
           <li>PMC. <em>Cultural competency education in the medical curriculum to overcome health care disparities</em>. <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC10443984/" target="_blank" rel="noopener noreferrer">Link</a></li>
           <li>The Spokesman-Review. <em>Black Women Told To Fight On, Even When Battle Unbearable</em>. <a href="https://www.spokesman.com/stories/1995/jul/10/black-women-told-to-fight-on-even-when-battle/" target="_blank" rel="noopener noreferrer">Link</a></li>
           <li>Professional Heart Daily. <em>Priority for Cardiovascular Health Equity among U.S. Women</em>. <a href="https://professional.heart.org/en/science-news/cardiovascular-disease-risk-factors-in-women-impact-of-race/commentary" target="_blank" rel="noopener noreferrer">Link</a></li>
-        </ul>
+        </ol>
       </section>
     </MistrustLightboxProvider>
   );

@@ -1,6 +1,7 @@
 const primarySwatches = [
   {
     src: '/images/icons/BubbleLogo/bubbleLogo.png',
+    file: 'bubbleLogo',
     alt: 'Blue logo with text',
     bg: '#0A0A0A',
     label: 'Blue',
@@ -8,6 +9,7 @@ const primarySwatches = [
   },
   {
     src: '/images/icons/BubbleLogo/bubbleLogo-black.svg',
+    file: 'bubbleLogo-black',
     alt: 'Black logo with text',
     bg: '#F2F0EC',
     label: 'Black',
@@ -15,6 +17,7 @@ const primarySwatches = [
   },
   {
     src: '/images/icons/BubbleLogo/bubbleLogo-white.svg',
+    file: 'bubbleLogo-white',
     alt: 'White logo with text',
     bg: '#1a1a1a',
     label: 'White',
@@ -25,6 +28,7 @@ const primarySwatches = [
 const iconMarkSwatches = [
   {
     src: '/images/icons/BubbleLogo/bubbleLogo-blue-notxt.png',
+    file: 'bubbleLogo-blue-notxt',
     alt: 'Blue icon mark',
     bg: '#0A0A0A',
     label: 'Blue',
@@ -32,6 +36,7 @@ const iconMarkSwatches = [
   },
   {
     src: '/images/icons/BubbleLogo/bubbleLogo-black-notxt.png',
+    file: 'bubbleLogo-black-notxt',
     alt: 'Black icon mark',
     bg: '#F2F0EC',
     label: 'Black',
@@ -39,6 +44,7 @@ const iconMarkSwatches = [
   },
   {
     src: '/images/icons/BubbleLogo/bubbleLogo-white-notxt.png',
+    file: 'bubbleLogo-white-notxt',
     alt: 'White icon mark',
     bg: '#1a1a1a',
     label: 'White',
@@ -61,6 +67,48 @@ const palette = [
   { name: 'Dark BG', hex: '#0A0A0A', bg: 'bg-[#0A0A0A]' },
   { name: 'Light BG', hex: '#F2F0EC', bg: 'bg-[#F2F0EC]' },
 ];
+
+/* Logo download kit (2026-10-06, the user's call: "Brand kit downloads").
+   Every variant ships as both SVG and PNG under the same stem, which is what
+   put the five previously unreferenced format twins to use. The link text is
+   the format alone; the accessible name carries the variant, since six cards
+   each read "SVG" and "PNG". Links sit in the label strip so the logo canvas
+   and its p-10 inset are untouched. */
+const DOWNLOAD_FORMATS = ['svg', 'png'] as const;
+
+type Swatch = (typeof primarySwatches)[number];
+
+function LogoSwatch({ swatch }: { swatch: Swatch }) {
+  return (
+    <div className="logo-swatch brand-frame flex flex-col [&_img]:h-40 [&_img]:w-40 [&_img]:object-contain">
+      <div
+        className="logo-swatch-canvas flex flex-1 items-center justify-center p-10"
+        style={{ backgroundColor: swatch.bg }}
+      >
+        <img src={swatch.src} alt={swatch.alt} loading="lazy" decoding="async" />
+      </div>
+      <div className="logo-swatch-label brand-frame-divider flex items-center justify-between gap-3 border-t px-4 py-3 [&_span]:font-body [&_span]:text-xs [&_span]:text-text-muted [&_strong]:block [&_strong]:font-body [&_strong]:text-sm [&_strong]:font-medium [&_strong]:text-text">
+        <div className="min-w-0">
+          <strong>{swatch.label}</strong>
+          <span>{swatch.desc}</span>
+        </div>
+        <div className="flex shrink-0 gap-3">
+          {DOWNLOAD_FORMATS.map((fmt) => (
+            <a
+              key={fmt}
+              className="logo-download"
+              href={`/images/icons/BubbleLogo/${swatch.file}.${fmt}`}
+              download
+              aria-label={`Download ${swatch.alt} as ${fmt.toUpperCase()}`}
+            >
+              {fmt.toUpperCase()}
+            </a>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
 
 export default function BrandProject() {
   return (
@@ -96,21 +144,7 @@ export default function BrandProject() {
           </h5>
           <div className="logo-grid grid grid-cols-[repeat(auto-fill,minmax(280px,1fr))] gap-4">
             {primarySwatches.map((swatch) => (
-              <div
-                key={swatch.src}
-                className="logo-swatch brand-frame flex flex-col [&_img]:h-40 [&_img]:w-40 [&_img]:object-contain"
-              >
-                <div
-                  className="logo-swatch-canvas flex flex-1 items-center justify-center p-10"
-                  style={{ backgroundColor: swatch.bg }}
-                >
-                  <img src={swatch.src} alt={swatch.alt} loading="lazy" decoding="async" />
-                </div>
-                <div className="logo-swatch-label brand-frame-divider border-t px-4 py-3 [&_span]:font-body [&_span]:text-xs [&_span]:text-text-muted [&_strong]:block [&_strong]:font-body [&_strong]:text-sm [&_strong]:font-medium [&_strong]:text-text">
-                  <strong>{swatch.label}</strong>
-                  <span>{swatch.desc}</span>
-                </div>
-              </div>
+              <LogoSwatch key={swatch.src} swatch={swatch} />
             ))}
           </div>
         </div>
@@ -121,21 +155,7 @@ export default function BrandProject() {
           </h5>
           <div className="logo-grid grid grid-cols-[repeat(auto-fill,minmax(280px,1fr))] gap-4">
             {iconMarkSwatches.map((swatch) => (
-              <div
-                key={swatch.src}
-                className="logo-swatch brand-frame flex flex-col [&_img]:h-40 [&_img]:w-40 [&_img]:object-contain"
-              >
-                <div
-                  className="logo-swatch-canvas flex flex-1 items-center justify-center p-10"
-                  style={{ backgroundColor: swatch.bg }}
-                >
-                  <img src={swatch.src} alt={swatch.alt} loading="lazy" decoding="async" />
-                </div>
-                <div className="logo-swatch-label brand-frame-divider border-t px-4 py-3 [&_span]:font-body [&_span]:text-xs [&_span]:text-text-muted [&_strong]:block [&_strong]:font-body [&_strong]:text-sm [&_strong]:font-medium [&_strong]:text-text">
-                  <strong>{swatch.label}</strong>
-                  <span>{swatch.desc}</span>
-                </div>
-              </div>
+              <LogoSwatch key={swatch.src} swatch={swatch} />
             ))}
           </div>
         </div>

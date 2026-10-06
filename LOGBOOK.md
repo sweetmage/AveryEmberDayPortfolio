@@ -18,6 +18,19 @@ When this logbook exceeds ~1000 lines, split it:
 
 ---
 
+## Entry 144 - 2026-10-06
+
+**Agent:** Claude Opus 5.5 (juniper, VOID), main
+**Cycle:** shxdowloop, Stage 1 (interim, usage limit)
+**Task:** Normal run of the dry-run plan: archive shipped plans, logo download kit (user chose Brand kit), numbered Mistrust bibliography.
+
+- Plan review: oracle PASS, 6 findings applied. Claude usage hit 97%, so tracks A/B/C ran on the main agent, serially.
+- Done: 3 plans archived (stubs 2026-10-06), README rewritten; 12 SVG/PNG download links on /portfolio/brand/; 4 files deleted (a byte duplicate and 3 third-party marks); the 82 sources are an ol numbered by a CSS counter; style.css rebuilt.
+- Verification: tsc clean; focused specs 51/52, then the fixed alignment test passes (3/3 new tests green); the same 3 fail on the old code (red proof in a temp worktree). Screenshots of the kit reviewed, dark 1440 and 360 with focus ring.
+- Left: review the sources screenshot at 360; C2 (16 baselines on SOL); full non-visual suite; next build; Final signoff on nano Codex (trigger: data deletion); TODO condense. The Blue swatch caption (#9acdff) vs the artwork (#7eb8ff) is the user's call.
+
+---
+
 ## Entry 143 - 2026-10-06
 
 **Agent:** Claude Opus 5.5 (juniper, VOID), main

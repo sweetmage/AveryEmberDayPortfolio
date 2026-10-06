@@ -1913,6 +1913,25 @@ button.brand-chip:hover {
     border-radius: 2px;
 }
 
+/* Logo kit download links on /portfolio/brand/ (2026-10-06). Same treatment
+   as the back link: soft text, accent on hover. The focus ring comes from the
+   grouped focus-visible rule further down; the transition names `color` only,
+   so it never animates `outline-color` (AGENTS.md, focus-visible contract). */
+.logo-download {
+    font-family: var(--brand-font-body);
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    color: var(--brand-text-soft);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    transition: color var(--brand-transition-fast);
+}
+
+.logo-download:hover {
+    color: var(--brand-accent);
+}
+
 /* ── Gallery view transitions ────────────────────────────────────────
    CSS Grid does not animate a span change and does not tween siblings into
    their new positions: flip `span 1` to `span 2` and every affected card
@@ -2058,6 +2077,7 @@ html.dark .brand-glow-text {
    targeted them, so they painted the browser's 1px blue default ring, caught
    by the every-stop check in tests/focus-ring.spec.js. */
 .sources-list a:focus-visible,
+.logo-download:focus-visible,
 .brand-footer-links a:focus-visible,
 .icon-link:focus-visible,
 #return-to-top:focus-visible,
@@ -2074,6 +2094,28 @@ html.dark .brand-glow-text {
     outline-style: solid;
     outline-color: var(--brand-accent);
     outline-offset: 2px;
+}
+
+/* Mistrust bibliography numbering (2026-10-06). The entries already hang:
+   `pl-6 -indent-6` starts the first line 1.5rem left of the wrapped lines.
+   The number fills exactly that 1.5rem, so wrapped lines still align with the
+   text, not the number. A counter rather than `list-decimal` because outside
+   markers would sit in the column gap and inside markers break the indent.
+   Two digits at 0.82rem fit in 1.5rem; a 100th source would need more. */
+.sources-list {
+    counter-reset: source;
+}
+
+.sources-list > li {
+    counter-increment: source;
+}
+
+.sources-list > li::before {
+    content: counter(source) ".";
+    display: inline-block;
+    width: 1.5rem;
+    text-indent: 0;
+    font-variant-numeric: tabular-nums;
 }
 
 .brand-footer-connect {

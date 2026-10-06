@@ -316,3 +316,60 @@ test.describe('mistrust leads the portfolio', () => {
     expect(lightbox[2]).toBe('slide-03@2x.webp');
   });
 });
+
+test.describe('mistrust bibliography', () => {
+  /* Numbered since 2026-10-06 (the TODO asked for "a numbered bibliography").
+     The numbers come from a CSS counter in brand.css, so the check reads the
+     painted ::before content rather than trusting the <ol> alone, and checks
+     the hang: wrapped lines must align with the entry text, not the number. */
+  test('the sources are an ordered list numbered 1 to 82', async ({ page }) => {
+    await gotoMistrust(page);
+    const items = page.locator('ol.sources-list > li');
+    await expect(items).toHaveCount(82);
+    await expect(page.locator('ol.sources-list')).toHaveAttribute('role', 'list');
+    const markers = await items.evaluateAll((lis) =>
+      lis.map((li) => getComputedStyle(li, '::before').content),
+    );
+    // Computed `content` reports the counter() expression, not its value. Every
+    // item drawing it, with one reset on the list and one increment per item,
+    // is what makes the painted numbers run 1 to 82.
+    expect(new Set(markers)).toEqual(new Set(['counter(source) "."']));
+    const increments = await items.evaluateAll((lis) =>
+      lis.map((li) => getComputedStyle(li).counterIncrement),
+    );
+    expect(new Set(increments)).toEqual(new Set(['source 1']));
+    expect(await page.locator('.sources-list').evaluate(
+      (ol) => getComputedStyle(ol).counterReset,
+    )).toContain('source');
+  });
+
+  test('wrapped source lines align with the text, not the number', async ({ page }) => {
+    await page.setViewportSize({ width: 360, height: 800 });
+    await gotoMistrust(page);
+    const geometry = await page.locator('ol.sources-list > li').first().evaluate((li) => {
+      const before = getComputedStyle(li, '::before');
+      const range = document.createRange();
+      range.selectNodeContents(li);
+      const box = li.getBoundingClientRect();
+      // One rect per inline fragment (<em>, <a> split a line into several), so
+      // keep the leftmost rect on each line: that is where the line starts.
+      const lineStarts = new Map();
+      for (const r of range.getClientRects()) {
+        if (r.width === 0) continue;
+        const top = Math.round(r.top);
+        lineStarts.set(top, Math.min(lineStarts.get(top) ?? Infinity, r.left - box.left));
+      }
+      return {
+        markerWidth: parseFloat(before.width),
+        starts: [...lineStarts.values()].map(Math.round),
+        pad: parseFloat(getComputedStyle(li).paddingLeft),
+      };
+    });
+    expect(geometry.markerWidth).toBeCloseTo(geometry.pad, 0);
+    // At 360px the first entry wraps, and every line, the first included, starts
+    // at the padding edge: the first line's text follows the marker, which fills
+    // the negative indent.
+    expect(geometry.starts.length).toBeGreaterThan(1);
+    for (const s of geometry.starts) expect(Math.abs(s - geometry.pad)).toBeLessThanOrEqual(2);
+  });
+});

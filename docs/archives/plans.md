@@ -4,6 +4,9 @@ All completed, cancelled, and superseded implementation plans consolidated from 
 
 ## Table of Contents
 
+### Retired stubs (2026-10-06)
+The three plans shipped in the 2026-10-06 Portfolio release — see [Consolidation Stubs — 2026-10-06](#consolidation-stubs-2026-10-06).
+
 ### Retired stubs (2026-10-04)
 The two plans shipped in the 2026-08-10 release — see [Consolidation Stubs — 2026-10-04](#consolidation-stubs-2026-10-04).
 
@@ -1914,3 +1917,22 @@ git show 73b5fa4:docs/plans/2026-08-09-bubble-exclusion-flake.md
 |---|---|
 | `docs/plans/2026-08-10-sticky-rail-one-column-rule.md` | Shipped, released `73b5fa4`. Nav unpinned below 768px; tab/filter groups pinned from 768px up; `--brand-*-overlay` tokens so "one screen" means the chrome actually pinned; the site's first `scroll-padding-top`. Found on the way: the `lg:sticky` Projects rail had zero travel since Entry 079. 18 `sticky-chrome.spec.js` cases. Entry 133. |
 | `docs/plans/2026-08-09-bubble-exclusion-flake.md` | **Partly superseded.** Written on a `develop` that was 8 commits stale; production had already fixed the wedge (Entry 131, rescue on lack of progress), and that mechanism shipped. This plan's Fix B was dropped. **Fix A, the seed-clear**, and the from-frame-0 parking spec survived. Its 67-overlap-frame measurement independently corroborates Entry 131's 68. Entry 133. |
+
+
+<a id="consolidation-stubs-2026-10-06"></a>
+# Consolidation Stubs — 2026-10-06
+
+The three plans that shipped in the 2026-10-06 Portfolio release (Entry 142). All three are in
+history at `7ea4215`, the signoff-fix commit on the released branch. Recover any of them with:
+
+```bash
+git show 7ea4215:docs/plans/2026-10-04-focus-ring-stagger-archive.md
+git show 7ea4215:docs/plans/2026-10-05-combine-projects-gallery.md
+git show 7ea4215:docs/plans/2026-10-06-focus-ring-and-test-runner-shxdowloop.md
+```
+
+| Removed file | Outcome |
+|---|---|
+| `docs/plans/2026-10-04-focus-ring-stagger-archive.md` | Shipped. The three "non-accent" focus rings were a Tailwind v4 `outline-color` transition, not a missing rule; the gallery filter entrance stagger; the archive of the two 2026-08-10 plans. Entries 134–135, released in Entry 142. |
+| `docs/plans/2026-10-05-combine-projects-gallery.md` | Shipped. Projects and Gallery became one `/portfolio/` page, with spectrum-outlined project tiles linking to per-project pages and 301s from the old URLs. Entries 138–139, released after a five-area fresh signoff in Entry 142. |
+| `docs/plans/2026-10-06-focus-ring-and-test-runner-shxdowloop.md` | Shipped. Every focus stop paints the 2px accent ring (the 82 Mistrust source links and the contact fields were the last), and a bare `npx playwright test` collects `*.spec.js` only. Entry 140, released in Entry 142. |

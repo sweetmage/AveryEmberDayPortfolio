@@ -10,7 +10,8 @@ an unticked box, it belongs in `TODO.md` too. Verify with:
 grep -rn "^\s*- \[ \]" docs/plans/
 ```
 
-That returns nothing as of 2026-10-04.
+As of 2026-10-06 it returns only the unticked phases of the two shxdowloop plans below while that
+run is open. The dry-run plan's boxes are never ticked: it describes a run, it does not track one.
 
 ---
 
@@ -19,18 +20,21 @@ That returns nothing as of 2026-10-04.
 | Plan | Status |
 |---|---|
 | [`2026-08-01-copy-pass-and-gallery-descriptions.md`](2026-08-01-copy-pass-and-gallery-descriptions.md) | **Tracks A and C wait on the user's first draft.** Track B is done (Entry 118); the render path for `description` now exists, so the copy is data only. |
-| [`2026-10-04-focus-ring-stagger-archive.md`](2026-10-04-focus-ring-stagger-archive.md) | **Shipped in Entry 134** (focus rings, gallery entrance stagger, this archive). Left here only because it first enters git history in that commit: archive it in the *next* session, since the archive's recovery path is `git show <sha>:<path>` and a file with no history would be lost rather than archived. |
-| [`2026-10-05-combine-projects-gallery.md`](2026-10-05-combine-projects-gallery.md) | **Planned, not started.** One page for projects and gallery; project tiles link to per-project pages. Decided: "Portfolio" at `/portfolio/`, project pages under it, cover + logo thumbnails, rail on the gallery only. **Open: the user's tile copy.** |
+| [`2026-10-06-next-step-cleanup-icons-mistrust-shxdowloop.md`](2026-10-06-next-step-cleanup-icons-mistrust-shxdowloop.md) | **In progress** on `shxdowloop/2026-10-06/next-step-cleanup-icons-mistrust`: this archive, the logo download kit on the Brand page, and the numbered Mistrust bibliography. |
+| [`2026-10-06-next-step-cleanup-icons-mistrust-shxdowloop-dry-run.md`](2026-10-06-next-step-cleanup-icons-mistrust-shxdowloop-dry-run.md) | The dry run for the plan above, kept for its fact base (file lists, sizes, reference greps). Archive both together once the loop merges. |
 
 ## Complete
 
-Nothing. **On 2026-08-09 all 23 finished plans were archived** into
-[`../archives/plans.md`](../archives/plans.md#consolidation-stubs-2026-08-09), and on 2026-10-04 the
-two shipped on 2026-08-10 joined them
-([stubs](../archives/plans.md#consolidation-stubs-2026-10-04)). The archive carries the
-outcome and LOGBOOK entry for each one plus the git commands to restore any full text. This
-directory now holds only plans with work still open, which is the point of the split: a plan sitting
-here means something is unfinished.
+Nothing. Finished plans are moved into [`../archives/plans.md`](../archives/plans.md) as stubs, each
+with its outcome, its LOGBOOK entries, and the `git show <sha>:<path>` command that restores the full
+text:
+
+- 2026-08-09: all 23 plans finished by then ([stubs](../archives/plans.md#consolidation-stubs-2026-08-09));
+- 2026-10-04: the two shipped on 2026-08-10 ([stubs](../archives/plans.md#consolidation-stubs-2026-10-04));
+- 2026-10-06: the three shipped in the Portfolio release, Entry 142 ([stubs](../archives/plans.md#consolidation-stubs-2026-10-06)).
+
+A plan is archived only once it is in git history, since the recovery path is `git show`. This
+directory holds only plans with work still open: a plan sitting here means something is unfinished.
 
 **Do not look for design rationale in the archive first.** The load-bearing rules those plans
 established were promoted into [`../../AGENTS.md`](../../AGENTS.md) as they landed — the hover
