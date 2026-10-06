@@ -111,10 +111,15 @@ single stage: no forcing reason for a second.
 
 ## Checkpoint log
 
-- (filled in as stages complete)
+- `931fafa`, `75835b5`: process plan, then the plan-review findings. Both pushed.
+- `45f6af7`: Track A, focus rings (main agent). Red first, then 12/12.
+- `c6e0d78`: Track B, test runner (native `builder`, diff reviewed by the main agent).
+- Docs commit: AGENTS.md, TODO, LOGBOOK Entry 140, map refresh. Pushed.
 
 ## Merge readiness
 
-- [ ] Suite by file list green; `--list` clean without the allow-list
-- [ ] `npm run test:docs` green
-- [ ] TODO / LOGBOOK updated; branch pushed; no deploy triggered
+- [x] Suite by file list green: 158 passed. Bare `--list`: 198 tests in 11 files, exit 0.
+- [x] `npm run test:docs` green: 5 pass, `resolveDoc` skipped with its reason.
+- [x] TODO and LOGBOOK updated; branch pushed; no deploy triggered.
+- [ ] **The user's call:** merge into `portfoliowebsite`. That push is a production deploy, and it
+  carries the unreleased Portfolio work, whose tile copy is still awaiting approval.

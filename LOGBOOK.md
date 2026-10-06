@@ -18,6 +18,48 @@ When this logbook exceeds ~1000 lines, split it:
 
 ---
 
+## Entry 140 - 2026-10-06
+
+**Agent:** Opus 5.5 (fennel, VOID), main
+**Cycle:** shxdowloop, unattended after the user's Proceed
+**Task:** next step: the two self-contained TODO items (focus rings, test runner)
+**Branch:** `shxdowloop/2026-10-06/focus-ring-and-test-runner`, pushed, not merged into `portfoliowebsite`
+
+Plan: [`docs/plans/2026-10-06-focus-ring-and-test-runner-shxdowloop.md`](docs/plans/2026-10-06-focus-ring-and-test-runner-shxdowloop.md).
+
+The user asked for the loop's "next step". The literal next step, shipping the Portfolio page, needs the user's OK on the tile copy and a production push, so it stays out of an unattended loop. The loop took the next two self-contained TODO items instead, on its own branch. Netlify deploys only `portfoliowebsite`, and a builds-API check after the first push showed no new build.
+
+### Track A: every focus stop paints the 2px accent ring (main agent)
+
+A Tab-walk audit of all five pages, in both themes and both engines, found two groups off the contract:
+
+- **The 82 Mistrust source links** painted the browser default ring: Chromium `auto 1px rgb(0,95,204)`, WebKit `auto 3px`. No rule targeted them. They joined the shared focus block in `brand.css`.
+- **The 3 contact fields** painted no outline at all. They had `outline-none` plus `focus:border-accent`, a 1px border that faded in through `transition-colors`. Plan review caught the trap in the obvious fix: in Tailwind v4, `outline-none` sets `--tw-outline-style: none`, which the `outline-2` utilities read, so a ring added beside it paints nothing. The fields drop `outline-none`, take `focus-visible:outline-2 outline-offset-2 outline-accent`, and narrow the transition to `color, background-color, border-color`. The resting look is unchanged (probed: no outline, the same 1px border), so the contact baselines stay valid.
+
+`tests/focus-ring.spec.js` now checks, in the same Tab walk, that every stop paints solid, 2px, accent. It was **red on the old code** (82 links and 3 fields, both engines) and is **12/12 green** after.
+
+### Track B: a bare `npx playwright test` works without the docs allow-list (native `builder`)
+
+`tests/google-docs.test.js` is a `node:test` file, not Playwright. Playwright's default pattern also collected `*.test.js`, so it loaded the file, and `loadAllowList()` called `process.exit(1)` without the gitignored `docs/sync/google-docs.json`, taking the whole run down. Under `node --test` it failed the same way.
+
+- `testMatch: '**/*.spec.js'`, verified to leave both projects' lists identical.
+- `npm run test:docs`, with the three `resolveDoc` cases skipped when the allow-list is absent. The skip shows on the suite line; node:test prints `skipped 0` for a skipped describe.
+- Removed: the dead temp allow-list write, the fake-env scaffolding (`scripts/google-docs.js` hard-codes `.env`), and the tracked `tests/tmp-allow-list.json` it left behind.
+
+### Review
+
+- **Plan review:** `oracle/opus`, PASS, 1 round, 7 findings adopted. The ones that mattered: the `outline-none` trap, the cross-track `--list` dependency, and the merge being the user's call.
+- **Final signoff:** no Review Contract trigger is touched, so none ran; the main agent's diff read is the final check.
+
+### Verification
+
+- Suite by file list (everything except visual): **158 passed** in 3m16s (estimate ~3m20s).
+- `npm run test:docs`: 5 pass, `resolveDoc` skipped with its reason.
+- Bare `npx playwright test --list`: **198 tests in 11 files**, exit 0. It died at collection before.
+- Count before and after: 186 tests outside `focus-ring.spec.js`, unchanged.
+
+---
+
 ## Entry 139 — 2026-10-06
 
 **Agent:** Opus 5.5 (fennel, main)

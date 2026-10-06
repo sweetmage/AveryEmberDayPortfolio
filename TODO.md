@@ -61,20 +61,6 @@ before a push ships in the same deploy.
       WebKit on Windows, which may not represent iOS Safari at all. If it does not reproduce on the
       user's iPhone or iPad, close this.
 - [ ] **Watermark artwork.** User's own task.
-- [ ] **The 82 Projects reference links paint the browser's default focus ring, not the accent.**
-      Found by the 2026-10-04 plan review (Entry 134): `auto 1px rgb(0,95,204)` in Chromium and
-      WebKit, which contradicts the AGENTS.md focus contract. Not a fade like the footer controls —
-      no rule targets them at all. Needs a selector for the Sources/reference anchors in the Projects
-      tab and an assertion in `tests/focus-ring.spec.js` (which already walks every one of them).
-      Scoped out of Entry 134 because it was not in the approved proposal.
-- [ ] **`npx playwright test` cannot run whole on a fresh checkout without the allow-list.**
-      `tests/google-docs.test.js` calls `loadAllowList()`, which `process.exit(1)`s at *collection*
-      when the gitignored `docs/sync/google-docs.json` is missing, so every other spec dies with it
-      (seen on VOID, 2026-10-04). Fix: skip that file when the allow-list is absent instead of exiting.
-      Until then, run specs by explicit file list (`ls tests/*.spec.js`). Also: all 40 visual
-      baselines are `chromium-win32`, so the visual gate only compares on the Windows box; Entry 134
-      used a darwin before/after in a scratch worktree instead.
-
 
 ### Blocked on a prerequisite
 
@@ -131,6 +117,11 @@ consolidated in [`docs/archives/plans.md`](docs/archives/plans.md).
 
 ### 2026-10
 
+- **Oct 6** — **Every focus stop paints the 2px accent ring.** The 82 Mistrust source links (browser
+  default) and the 3 contact fields (no outline at all) were the last ones off the contract. The focus
+  spec now checks every stop on every page. **A bare `npx playwright test` runs again**: Playwright
+  collects `*.spec.js` only, and the Google Docs unit tests run with `npm run test:docs`. On the
+  shxdowloop branch `shxdowloop/2026-10-06/focus-ring-and-test-runner`, not merged.
 - **Oct 5** — **A History of Mistrust mosaic is seamless.** The 30-slide mosaic drew the 19px band
   slides 1 and 2 share twice (the break in the orange ring), repeated a column at 24|25, and
   scaled the non-square slide 21 2.3% off its neighbour. The generator now cuts seamless tiles from
