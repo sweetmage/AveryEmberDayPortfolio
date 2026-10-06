@@ -142,19 +142,18 @@ test.describe('bubble exclusion zones', () => {
     });
   }
 
-  // Project tiles on /portfolio/ (2026-10-05). Picture-is-the-wall: the
-  // thumbnail is a plain <img>, so FRAME_ZONE_SELECTOR registers it as a zone,
-  // and bubbles must never cross it. This replaced the Projects-tabs case: the
-  // tabs went away with the merge (the tabs had once dropped out of the zone list
-  // when restyled, Entry 085; the tile picture must not repeat that).
+  // Project tiles on /portfolio/. The user asked (2026-10-06) for the
+  // decorative bubbles to stay off these cards entirely, so the WHOLE tile is a
+  // zone (`bubble-exclude`), not just its picture. A deliberate exception to the
+  // gallery's picture-is-the-wall rule, which these tests leave untouched.
   for (const width of [768, 1440]) {
-    test(`physics bubbles never cover the project tile pictures @ ${width}px`, async ({ page }) => {
+    test(`physics bubbles never cover the project tiles @ ${width}px`, async ({ page }) => {
       await page.setViewportSize({ width, height: 900 });
       await page.goto(`${BASE_URL}/portfolio/`, { waitUntil: 'networkidle' });
       await waitForEngine(page);
 
-      expect(await allRegisteredAsZones(page, '.project-tile-img')).toBe(true);
-      expect(await maxBubbleOverlap(page, '.project-tile-img')).toBe(0);
+      expect(await allRegisteredAsZones(page, '.project-tile')).toBe(true);
+      expect(await maxBubbleOverlap(page, '.project-tile')).toBe(0);
     });
   }
 
@@ -405,7 +404,7 @@ test.describe('no bubble parks inside a zone, from the first frame', () => {
      the defect was never specific to that one form or that one width. */
   const CASES = [
     { name: 'Contact form @ 1440px', path: '/contact/', width: 1440, sel: 'form[name="contact"]' },
-    { name: 'Project tile pictures @ 768px', path: '/portfolio/', width: 768, sel: '.project-tile-img' },
+    { name: 'Project tiles @ 768px', path: '/portfolio/', width: 768, sel: '.project-tile' },
   ];
 
   for (const c of CASES) {

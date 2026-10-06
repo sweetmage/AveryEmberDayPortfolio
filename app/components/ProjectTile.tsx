@@ -21,11 +21,13 @@ export interface ProjectTileProps {
  * 2026-10-05): a visible outline (`.project-tile`, brand.css), a description
  * under the picture, and an explicit "View project →" label.
  *
- * The thumbnail is a plain <img> on purpose: `FRAME_ZONE_SELECTOR` in
- * scripts/bubbles.js registers every img as a bubble wall, which is the
- * picture-is-the-wall rule, while the card itself stays permeable. Never swap it
- * for the inline-SVG `BubbleLogo` component, which is not an img and would drop
- * out of the zone list (the Entry 090 hero-logo trap).
+ * The WHOLE tile is a bubble wall (`bubble-exclude`, in the engine's
+ * DEFAULT_EXCLUSIONS): the decorative bubbles stay off these cards entirely
+ * (user, 2026-10-06). This is a deliberate exception to the gallery's
+ * picture-is-the-wall rule, where only the artwork is a zone and the card is
+ * permeable; the project tiles are navigation, not art. The thumbnail is still a
+ * plain <img>, so the picture is a zone too. Never swap it for the inline-SVG
+ * `BubbleLogo` component (the Entry 090 hero-logo trap).
  */
 export default function ProjectTile({
   href,
@@ -38,7 +40,7 @@ export default function ProjectTile({
 }: ProjectTileProps) {
   return (
     <li className="list-none">
-      <Link href={href} className="project-tile group">
+      <Link href={href} className="project-tile bubble-exclude group">
         <div className="project-tile-thumb" style={backdrop ? { background: backdrop } : undefined}>
           <img
             src={thumb}

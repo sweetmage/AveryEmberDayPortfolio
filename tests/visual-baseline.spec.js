@@ -131,10 +131,7 @@ for (const page of PAGES) {
              contact @768 dark), all of which passed on immediate re-run.
 
              So wait for the faces to exist AND report loaded. The three below
-             are the ones the site actually requests, confirmed by reading
-             `document.fonts` on a loaded page — do not add `600 Outfit`, which
-             is declared in the import URL but never used, so `check()` returns
-             false for it forever and this would hang until timeout. */
+             are on every page, confirmed by reading `document.fonts`. */
           await p.waitForFunction(
             () =>
               document.fonts.status === 'loaded' &&
@@ -144,6 +141,27 @@ for (const page of PAGES) {
             null,
             { timeout: 15000 }
           );
+          /* Then every face THIS page renders, read off the DOM. A fixed list
+             cannot be right for every page: on 2026-10-06 the portfolio's tile
+             and section titles started using `600 Outfit`, and two of 40 fresh
+             baselines failed their own re-capture with diffs on Outfit headings
+             alone (the late-face signature above), while home and contact never
+             load that weight, so adding it to the list would hang them until
+             timeout (measured per page: home 300/500 Outfit; portfolio and the
+             project pages 500/600 Outfit and 600 Inter; contact 500 Outfit).
+             `document.fonts.load()` requests a face and resolves once it is
+             ready, and resolves at once for faces that are already loaded. */
+          await p.evaluate(async () => {
+            const needed = new Set();
+            const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+            for (let node = walker.nextNode(); node; node = walker.nextNode()) {
+              if (!node.textContent.trim() || !node.parentElement) continue;
+              const cs = getComputedStyle(node.parentElement);
+              if (cs.display === 'none' || cs.visibility === 'hidden') continue;
+              needed.add(`${cs.fontStyle} ${cs.fontWeight} 16px ${cs.fontFamily}`);
+            }
+            await Promise.all([...needed].map((font) => document.fonts.load(font)));
+          });
           /* Then wait for the DOCUMENT HEIGHT to stop moving.
 
              Fonts and images are not the only late layout shift any more.
