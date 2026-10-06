@@ -7,7 +7,7 @@ import sharp from 'sharp';
  * Integrity of the three wide `sets/set-N.webp` strips.
  *
  * These need their own gate because the visual baselines cannot cover them: the Next app renders
- * its own CSS mosaic from the individual slides (see `app/projects/SlideGrid.tsx`), so the
+ * its own CSS mosaic from the individual slides (see `app/portfolio/SlideGrid.tsx`), so the
  * `projects-mistrust` screenshots stay green no matter what the strips look like. The only
  * consumer is the legacy root page `projects/history-of-mistrust.html`, which the suite does not
  * screenshot, plus whoever the full-set artefact is shared with.
@@ -81,7 +81,7 @@ for (const n of [1, 2, 3]) {
  * 2026-10-05, after Entry 114 had fixed the same seam in the strips only), and `object-fit: cover`
  * scaled the non-square slide 21 2.3% larger than slide 22. The generator now cuts seamless tiles
  * for those slides from the strip and records every slide's region in
- * `app/projects/mistrust-tiles.json`.
+ * `app/portfolio/mistrust-tiles.json`.
  *
  * Both sizes are checked: 720px (stage and mosaic) and the 1080px `@2x` (lightbox).
  *
@@ -90,7 +90,7 @@ for (const n of [1, 2, 3]) {
  * (slide 21). The bound sits between the two.
  */
 const manifest = JSON.parse(
-  require('node:fs').readFileSync(path.join(ROOT, 'app', 'projects', 'mistrust-tiles.json'), 'utf8')
+  require('node:fs').readFileSync(path.join(ROOT, 'app', 'portfolio', 'mistrust-tiles.json'), 'utf8')
 );
 const EDGE_COLUMNS = 12;
 const EDGE_BOUND = 1;

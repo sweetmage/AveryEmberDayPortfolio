@@ -30,14 +30,31 @@
   # binaries are skipped.
   PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD = "1"
 
+# Projects and Gallery became one Portfolio page on 2026-10-05.
+# ORDER MATTERS, and the bare rules carry NO splat. Netlify takes the first
+# match, so the specific project paths come first; "/projects/" without a `*`
+# matches only the index (Netlify normalizes the trailing slash), so it can
+# never swallow a deeper old URL. Do not "simplify" these to "/projects/*".
+# Old hash links (/projects/#brand, /gallery/#filter=...) keep their hash
+# across the 301; app/portfolio/LegacyHashForwarder.tsx finishes the hop.
 [[redirects]]
   from = "/projects/brand-avery-ember-day/*"
-  to = "/projects/#brand"
+  to = "/portfolio/brand/"
   status = 301
 
 [[redirects]]
   from = "/projects/history-of-mistrust/*"
-  to = "/projects/#history-of-mistrust"
+  to = "/portfolio/history-of-mistrust/"
+  status = 301
+
+[[redirects]]
+  from = "/projects/"
+  to = "/portfolio/"
+  status = 301
+
+[[redirects]]
+  from = "/gallery/"
+  to = "/portfolio/"
   status = 301
 
 [[headers]]

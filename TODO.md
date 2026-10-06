@@ -23,14 +23,16 @@ before a push ships in the same deploy.
 
 ### Ready to build now
 
-- [ ] **Combine the Projects and Gallery pages** (user, 2026-10-05). Projects become outlined
-      thumbnail tiles at the top of one page, each linking to its own project page instead of a
-      tab, with a short description under each that reads as "this goes somewhere". The gallery
-      grid follows below. **Decided 2026-10-05:** nav item "Portfolio" at `/portfolio/` replaces
-      both, project pages at `/portfolio/<name>/`, cover + logo thumbnails, filter rail on the
-      gallery only. **Waiting on the user's two tile descriptions.** Plan:
-      [`docs/plans/2026-10-05-combine-projects-gallery.md`](docs/plans/2026-10-05-combine-projects-gallery.md).
-      Absorbs the "standalone Mistrust viewer page" item below.
+- [~] **Combine the Projects and Gallery pages** (user, 2026-10-05). **Built and committed, not pushed
+      (Entry 138).** `/portfolio/` has the tiles, then the gallery; each project has its own page; the
+      old URLs 301 to the new ones. Before release, in order:
+      1. The user approves the drafted tile copy (`TILE-COPY-PENDING` in `app/portfolio/page.tsx`)
+         and does a headed review.
+      2. Regenerate the visual baselines on SOL (needs the user's go-ahead). The page list changes,
+         and the 24 orphaned `projects-*` and `gallery-*` PNGs are deleted. This also covers the 16
+         Mistrust baselines below.
+      3. Final signoff, then one push, then `curl -sI` every old URL on the live site.
+      Plan: [`docs/plans/2026-10-05-combine-projects-gallery.md`](docs/plans/2026-10-05-combine-projects-gallery.md).
 - [ ] **Regenerate 16 visual baselines on the Windows box** (`projects` and `projects-mistrust`,
       all 4 breakpoints × 2 themes). The Mistrust mosaic intentionally changed in Entry 136
       (seamless tiles for slides 1, 2, 21, 24); a darwin before/after confined every changed pixel

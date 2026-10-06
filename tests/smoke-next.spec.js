@@ -27,39 +27,31 @@ test.describe('Next.js app smoke', () => {
     await expect(page.locator('h1')).toContainText('Avery Ember Day');
   });
 
-  test('projects page — tab switch and lightbox', async ({ page }) => {
-    await page.goto(`${BASE_URL}/projects/`, { waitUntil: 'networkidle' });
-    // Scope to the page-level tablist: the Mistrust panel now contains a second
-    // tablist (the Set 1/2/3 switcher), so a bare aria-selected query matches two.
-    const projectTabs = page.getByRole('tablist', { name: 'Projects' });
-    // Mistrust leads as of 2026-08-07 (user call). Ordering and default are
-    // asserted properly in tests/mistrust-slideshow.spec.js; this is the smoke
-    // path, which only needs the switch to work in both directions.
-    await expect(projectTabs.locator('button[aria-selected="true"]')).toContainText(
-      'History of Mistrust'
-    );
+  test('portfolio page — project tiles open their pages and come back', async ({ page }) => {
+    await page.goto(`${BASE_URL}/portfolio/`, { waitUntil: 'networkidle' });
+    const tiles = page.locator('.project-tile');
+    await expect(tiles).toHaveCount(2);
 
-    // Switch to the brand tab
-    await page.click('button[aria-controls="panel-brand"]');
-    await expect(projectTabs.locator('button[aria-selected="true"]')).toContainText('Brand');
+    // Brand: tile -> its own page -> back link -> portfolio.
+    await tiles.nth(1).click();
+    await expect(page).toHaveURL(/\/portfolio\/brand\/$/);
+    await expect(page.locator('h1')).toHaveText('Avery Ember Day Brand');
+    await page.locator('.project-back-link').click();
+    await expect(page).toHaveURL(/\/portfolio\/$/);
 
-    // Back to mistrust
-    await page.click('button[aria-controls="panel-history-of-mistrust"]');
-    await expect(projectTabs.locator('button[aria-selected="true"]')).toContainText(
-      'History of Mistrust'
-    );
-
-    // The lightbox is React-owned as of 2026-07-31: absent from the DOM until a
-    // slide is opened, unmounted again on tab switch. Deeper coverage lives in
-    // tests/mistrust-slideshow.spec.js.
-    await expect(page.locator('.lightbox-overlay')).toHaveCount(0);
+    // Mistrust: the viewer renders and the React-owned lightbox stays unmounted
+    // until a slide is opened. Deeper coverage: tests/mistrust-slideshow.spec.js.
+    await page.locator('.project-tile').first().click();
+    await expect(page).toHaveURL(/\/portfolio\/history-of-mistrust\/$/);
     await expect(page.locator('.mistrust-stage')).toBeVisible();
-
+    await expect(page.locator('.lightbox-overlay')).toHaveCount(0);
   });
 
-  test('gallery page loads without errors', async ({ page }) => {
-    await page.goto(`${BASE_URL}/gallery/`, { waitUntil: 'networkidle' });
-    await expect(page.locator('h1')).toContainText('Gallery');
+  test('portfolio page shows the gallery without errors', async ({ page }) => {
+    await page.goto(`${BASE_URL}/portfolio/`, { waitUntil: 'networkidle' });
+    await expect(page.locator('h1')).toContainText('Portfolio');
+    await expect(page.locator('#portfolio-gallery')).toHaveText('Gallery');
+    await expect(page.locator('.gallery-item').first()).toBeVisible();
   });
 
   test('contact page loads with form', async ({ page }) => {

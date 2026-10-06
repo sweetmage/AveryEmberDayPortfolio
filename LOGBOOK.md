@@ -18,6 +18,99 @@ When this logbook exceeds ~1000 lines, split it:
 
 ---
 
+## Entry 138 — 2026-10-05
+
+**Agent:** Opus 5.5 (fennel, main)
+**Cycle:** shxdowflow, the Portfolio merge (user: "start the portfolio merge")
+**Branch:** `portfoliowebsite`: committed, **not pushed**. A push is a production deploy, and it waits on
+the user's OK of the tile copy, the Windows baselines and a Final signoff.
+
+Plan: [`docs/plans/2026-10-05-combine-projects-gallery.md`](docs/plans/2026-10-05-combine-projects-gallery.md).
+
+### What changed
+
+- **One page for the work.** `/portfolio/` shows the project tiles first (Mistrust leads), then the
+  gallery with its filter rail. `/projects/` (tabs) and `/gallery/` are gone. The nav is
+  **Portfolio · Contact**, and Portfolio stays current on a project page.
+- **Each project has its own page.** `/portfolio/history-of-mistrust/` and `/portfolio/brand/`, each
+  with its own `h1`, title, description and canonical URL, plus a "← Portfolio" link. The project
+  components moved unchanged.
+- **The project tile** (`app/components/ProjectTile.tsx`) is one link per tile and reads as a link at
+  rest:
+  - a 1px `--brand-text-muted` outline, measured at 3:1 or better in both themes by the new spec;
+  - a description under the picture;
+  - a visible "View project →" label.
+  - Hover and focus switch to the house purple. No transition touches `outline`, and the arrow
+    nudge respects reduced motion.
+  - The thumbnails are plain `<img>` elements (the Mistrust cover; the blue logo on a fixed dark
+    backdrop), so `FRAME_ZONE_SELECTOR` makes each picture a bubble wall while the card stays
+    permeable.
+- **Redirects** (`netlify.toml`), specific first: the two old project splats go to their new pages,
+  then the bare `/projects/` and `/gallery/` go to `/portfolio/`, with no splat. Old hash links keep
+  their hash across the 301, and `LegacyHashForwarder` finishes the hop with `location.replace`.
+  `#filter=` scrolls to the gallery.
+- `scripts/generate-mistrust-assets.js` and `tests/mistrust-sets.spec.js` follow the manifest to
+  `app/portfolio/`.
+
+### Plan review: `oracle/opus`, FAIL, 1 round, every finding fixed in place
+
+The reviewer applied my first move list in a scratch copy and got 6 `tsc` errors: the manifest was
+missing, the retired pages stayed behind, and the generator kept the old path. Its other findings:
+
+- Two tracks wrote one page file.
+- Parallel `next build`s would clobber `out/`.
+- The outline token was about 1.3:1, against the user's explicit ask.
+- The baselines committed after the push would bill a second deploy.
+
+All of it is now in the plan's track table. The spec-URL track was done here rather than by a
+nano-agent: about 50 mechanical rewrites plus four judgment rewrites, so a helper was more overhead
+than help.
+
+### Copy
+
+The two tile descriptions were **drafted by the agent at the user's request** ("Draft them for me"),
+from each project's own intro text. That is an exception to the "user writes the first draft" rule,
+and the user's choice. `TILE-COPY-PENDING` marks them in `app/portfolio/page.tsx` until the user
+approves, and the release greps for it.
+
+### Tests that encoded the old layout
+
+- Four specs asserted the tab UI. They were rewritten for tiles and pages: smoke, the "Mistrust
+  leads" test, the bubble-zone cases, and the sticky-rail list, which lost its Projects entry.
+- `sticky-chrome` scrolled a fixed 1000px and assumed the rail sat near the top. On `/portfolio/` it
+  sits below the tiles (~1270px at 360px), so it read as "pinned" while still on screen. It now
+  scrolls 1000px past the rail's own position.
+- New: `tests/project-tiles.spec.js` (7 tests).
+
+### A real bug the move exposed: Escape could miss the lightbox
+
+`lightbox closes on Escape` failed on 3 full runs out of 3 and passed alone. Escape was handled only
+by the overlay's own `onKeyDown`, and focus moves into the overlay one animation frame after it
+opens. An Escape pressed inside that frame landed on the stage behind it and did nothing. Under the
+suite's parallel load the standalone page hit that frame reliably; a quick user could too. The
+overlay now listens for Escape on `window` while it is mounted. Before the fix the file failed 1 of
+26; after it, 26 of 26 twice in a row.
+
+### Verification
+
+- Suite by file list (everything except the visual spec): **158 passed** in 2m52s (estimate
+  ~2m55s). The two runs before the lightbox fix were 157/158, with only that test failing.
+- `node scripts/measure-content-widths.js`: every viewport shares one section edge, the
+  Portfolio title and the tiles included.
+- `npx tsc --noEmit` clean; `next build` exports `/portfolio/`, `/portfolio/history-of-mistrust/`
+  and `/portfolio/brand/`.
+- Headless screenshots at 1440 and on an iPhone 13: tiles side by side and stacked, no page errors.
+- `shxdowmap refresh --auto`: map fresh.
+
+### Still open, in order (TODO)
+
+1. The user's OK on the tile copy, and a headed review.
+2. The visual baselines, regenerated on SOL before the single push. The page list is now home,
+   portfolio, the two project pages and contact. This needs the user's go-ahead for SOL.
+3. The Final signoff, then one push and the live `curl -sI` checks of every old URL.
+
+---
+
 ## Entry 137 — 2026-10-05
 
 **Agent:** Opus 5.5 (fennel, main)

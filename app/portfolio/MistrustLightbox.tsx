@@ -134,13 +134,23 @@ function Lightbox({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [shown]);
 
+  /* Escape closes the dialog wherever focus is. The focus move above waits one
+     frame for `.active`, and an Escape pressed inside that frame used to land on
+     the stage behind the overlay and do nothing: a quick user (or the suite under
+     load, 2026-10-05) could open the lightbox and fail to close it. Listening on
+     the window while the dialog is mounted removes the race. */
+  useEffect(() => {
+    const onEscape = (e: KeyboardEvent) => {
+      if (e.key !== 'Escape') return;
+      e.preventDefault();
+      requestClose();
+    };
+    window.addEventListener('keydown', onEscape);
+    return () => window.removeEventListener('keydown', onEscape);
+  }, [requestClose]);
+
   const onKeyDown = useCallback(
     (e: React.KeyboardEvent<HTMLDivElement>) => {
-      if (e.key === 'Escape') {
-        e.preventDefault();
-        requestClose();
-        return;
-      }
       if (e.key === 'ArrowLeft') {
         e.preventDefault();
         step(index - 1);

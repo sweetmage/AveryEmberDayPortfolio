@@ -142,19 +142,19 @@ test.describe('bubble exclusion zones', () => {
     });
   }
 
-  // The Projects rail went the same way as the hero logo, for the same reason.
-  // The tabs were `.brand-btn` + `.brand-btn-primary`/`-secondary` -- all
-  // excluded -- until they were restyled to `.project-tab` (Entry 085), which
-  // dropped them out of the list. Measured before the fix: bubbles crossed the
-  // rail in 30 of 30 sampled frames at 1440px. Continuously, not transiently.
+  // Project tiles on /portfolio/ (2026-10-05). Picture-is-the-wall: the
+  // thumbnail is a plain <img>, so FRAME_ZONE_SELECTOR registers it as a zone,
+  // and bubbles must never cross it. This replaced the Projects-tabs case: the
+  // tabs went away with the merge (the tabs had once dropped out of the zone list
+  // when restyled, Entry 085; the tile picture must not repeat that).
   for (const width of [768, 1440]) {
-    test(`physics bubbles never cover the Projects tabs @ ${width}px`, async ({ page }) => {
+    test(`physics bubbles never cover the project tile pictures @ ${width}px`, async ({ page }) => {
       await page.setViewportSize({ width, height: 900 });
-      await page.goto(`${BASE_URL}/projects/`, { waitUntil: 'networkidle' });
+      await page.goto(`${BASE_URL}/portfolio/`, { waitUntil: 'networkidle' });
       await waitForEngine(page);
 
-      expect(await allRegisteredAsZones(page, '.project-tab')).toBe(true);
-      expect(await maxBubbleOverlap(page, '.project-tab')).toBe(0);
+      expect(await allRegisteredAsZones(page, '.project-tile-img')).toBe(true);
+      expect(await maxBubbleOverlap(page, '.project-tile-img')).toBe(0);
     });
   }
 
@@ -163,7 +163,7 @@ test.describe('bubble exclusion zones', () => {
   for (const width of [768, 1440]) {
     test(`physics bubbles never cover the Gallery filter bar @ ${width}px`, async ({ page }) => {
       await page.setViewportSize({ width, height: 900 });
-      await page.goto(`${BASE_URL}/gallery/`, { waitUntil: 'networkidle' });
+      await page.goto(`${BASE_URL}/portfolio/`, { waitUntil: 'networkidle' });
       await waitForEngine(page);
 
       expect(await allRegisteredAsZones(page, '.gallery-filter-bar')).toBe(true);
@@ -400,11 +400,12 @@ test.describe('no bubble parks inside a zone, from the first frame', () => {
   /* The two recorded failure cases, asserted on the same furniture the
      settled tests above assert on — this is the from-frame-0 version of them.
      Contact @1440 is the one the suite kept reporting (~1950px², a whole
-     bubble); Projects @768 is the second case found on 2026-08-07, which proved
+     bubble); Projects tabs @768 was the second case found on 2026-08-07 (now the project
+     tile pictures, since the tabs went away with the 2026-10-05 merge), which proved
      the defect was never specific to that one form or that one width. */
   const CASES = [
     { name: 'Contact form @ 1440px', path: '/contact/', width: 1440, sel: 'form[name="contact"]' },
-    { name: 'Projects tabs @ 768px', path: '/projects/', width: 768, sel: '.project-tab' },
+    { name: 'Project tile pictures @ 768px', path: '/portfolio/', width: 768, sel: '.project-tile-img' },
   ];
 
   for (const c of CASES) {
@@ -460,7 +461,7 @@ test.describe('gallery frame zones', () => {
   for (const width of [390, 768, 1440]) {
     test(`the picture is the registered wall, and the card is not @ ${width}px`, async ({ page }) => {
       await page.setViewportSize({ width, height: 900 });
-      await page.goto(`${BASE_URL}/gallery/`, { waitUntil: 'networkidle' });
+      await page.goto(`${BASE_URL}/portfolio/`, { waitUntil: 'networkidle' });
       await waitForEngine(page);
 
       const state = await page.evaluate(() => {
@@ -486,7 +487,7 @@ test.describe('gallery frame zones', () => {
 
     test(`bubbles reach the card interior @ ${width}px`, async ({ page }) => {
       await page.setViewportSize({ width, height: 900 });
-      await page.goto(`${BASE_URL}/gallery/`, { waitUntil: 'networkidle' });
+      await page.goto(`${BASE_URL}/portfolio/`, { waitUntil: 'networkidle' });
       await waitForEngine(page);
 
       // The whole point: they used to be locked out of the card entirely.
@@ -526,7 +527,7 @@ test.describe('gallery frame zones', () => {
   for (const width of [768, 1440]) {
     test(`a bubble centre never crosses into the picture @ ${width}px`, async ({ page }) => {
       await page.setViewportSize({ width, height: 900 });
-      await page.goto(`${BASE_URL}/gallery/`, { waitUntil: 'networkidle' });
+      await page.goto(`${BASE_URL}/portfolio/`, { waitUntil: 'networkidle' });
       await waitForEngine(page);
 
       const breaches = await page.evaluate(async () => {
@@ -562,7 +563,7 @@ test.describe('gallery frame zones', () => {
 
   test('mobile: the bubble layer sits behind the content', async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 });
-    await page.goto(`${BASE_URL}/gallery/`, { waitUntil: 'networkidle' });
+    await page.goto(`${BASE_URL}/portfolio/`, { waitUntil: 'networkidle' });
 
     // Behind the cards, in front of the page glow at -2. The card interior is
     // open ground now, and on a screen this small bubbles drawn over the
@@ -575,7 +576,7 @@ test.describe('gallery frame zones', () => {
 
   test('desktop keeps the bubbles in front, where the bounce is visible', async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 900 });
-    await page.goto(`${BASE_URL}/gallery/`, { waitUntil: 'networkidle' });
+    await page.goto(`${BASE_URL}/portfolio/`, { waitUntil: 'networkidle' });
 
     const z = await page.locator('.brand-bubbles-global')
       .evaluate((el) => parseInt(getComputedStyle(el).zIndex, 10));

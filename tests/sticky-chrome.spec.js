@@ -20,11 +20,11 @@ const BASE_URL = 'http://localhost:4322';
  * Plan (archived): docs/archives/plans.md, stub 2026-08-10-sticky-rail-one-column-rule
  */
 
+/* The Projects tab rail went away with the 2026-10-05 merge: projects are now
+   tiles on /portfolio/ that link to their own pages, so the gallery filter rail
+   is the one rail left, and it lives below the tiles on /portfolio/. */
 const PAGES = [
-  /* `[aria-label="Projects"]`, not just `[role="tablist"]` — the Mistrust
-     slideshow renders its own set tablist further down the same page. */
-  { name: 'projects', url: '/projects/', rail: '[role="tablist"][aria-label="Projects"]' },
-  { name: 'gallery', url: '/gallery/', rail: '.gallery-filter-bar' },
+  { name: 'portfolio', url: '/portfolio/', rail: '.gallery-filter-bar' },
 ];
 
 /* The rail's own wrapper is the sticky element, so measure the wrapper. */
@@ -38,6 +38,19 @@ const wrapperOf = (page, railSelector) =>
    necessarily started on the first poll, so two equal samples prove nothing.
    Turn the animation off for the duration instead: these are static-layout
    assertions and the easing is not under test. */
+/* Scroll 1000px PAST the rail's resting position. A fixed `scrollTo(1000)`
+   assumed the rail sat near the top of the page, which held on the old Gallery
+   page but not on /portfolio/, where the rail sits below the project tiles
+   (~1270px down at 360px): the rail was still on screen and read as "pinned".
+   Measured 2026-10-05. */
+async function scrollPastRail(page, railSelector) {
+  const railTop = await page.evaluate(
+    (sel) => document.querySelector(sel).getBoundingClientRect().top + window.scrollY,
+    railSelector
+  );
+  await scrollDown(page, Math.round(railTop) + 1000);
+}
+
 async function scrollDown(page, y = 1000) {
   await page.evaluate((to) => {
     const html = document.documentElement;
@@ -56,7 +69,7 @@ for (const p of PAGES) {
     test('below one column, nothing is pinned @ 360px', async ({ page }) => {
       await page.setViewportSize({ width: 360, height: 800 });
       await page.goto(`${BASE_URL}${p.url}`, { waitUntil: 'networkidle' });
-      await scrollDown(page);
+      await scrollPastRail(page, p.rail);
 
       const { navTop, navPosition, railTop, scrollY } = await page.evaluate((sel) => {
         const nav = document.querySelector('.brand-nav');
@@ -84,7 +97,7 @@ for (const p of PAGES) {
     test('the nav keeps its spectrum bar when it scrolls away @ 360px', async ({ page }) => {
       await page.setViewportSize({ width: 360, height: 800 });
       await page.goto(`${BASE_URL}${p.url}`, { waitUntil: 'networkidle' });
-      await scrollDown(page);
+      await scrollPastRail(page, p.rail);
 
       const { navBottom, barTop } = await page.evaluate(() => {
         const nav = document.querySelector('.brand-nav');
@@ -104,7 +117,7 @@ for (const p of PAGES) {
       test(`nav and selection stay pinned @ ${width}px`, async ({ page }) => {
         await page.setViewportSize({ width, height: 900 });
         await page.goto(`${BASE_URL}${p.url}`, { waitUntil: 'networkidle' });
-        await scrollDown(page);
+        await scrollPastRail(page, p.rail);
 
         const navHeight = await page
           .locator('.brand-nav')
@@ -157,7 +170,7 @@ for (const width of [360, 768, 1440]) {
         reducedMotion: 'reduce',
       });
       const page = await context.newPage();
-      await page.goto(`${BASE_URL}/projects/`, { waitUntil: 'networkidle' });
+      await page.goto(`${BASE_URL}/portfolio/`, { waitUntil: 'networkidle' });
       const value = await page.evaluate(() => {
         // Resolve `--brand-top-overlay` (a calc of two tokens) to real pixels.
         const probe = document.createElement('div');
@@ -183,7 +196,7 @@ for (const width of [360, 768, 1440]) {
 test('the pinned strip is only opaque where content passes under it', async ({ page }) => {
   const bg = async (width) => {
     await page.setViewportSize({ width, height: 900 });
-    await page.goto(`${BASE_URL}/gallery/`, { waitUntil: 'networkidle' });
+    await page.goto(`${BASE_URL}/portfolio/`, { waitUntil: 'networkidle' });
     return page
       .locator('.gallery-filter-bar')
       .locator('xpath=..')

@@ -13,7 +13,7 @@ import { pinnedChromeHeight } from './pinned-chrome.js';
  */
 
 const BASE_URL = 'http://localhost:4322';
-const MISTRUST = `${BASE_URL}/projects/#history-of-mistrust`;
+const MISTRUST = `${BASE_URL}/portfolio/history-of-mistrust/`;
 
 async function gotoMistrust(page) {
   await page.goto(MISTRUST, { waitUntil: 'networkidle' });
@@ -248,22 +248,19 @@ test.describe('mistrust stage height budget', () => {
 /* Mistrust leads the Projects page, and the whole viewer fits one screen.
    User calls, 2026-08-07. */
 test.describe('mistrust leads the projects page', () => {
-  test('it is the first tab and the default panel', async ({ page }) => {
+  /* Since the 2026-10-05 merge the projects are tiles on /portfolio/, each a
+     link to its own page, and Mistrust still leads. */
+  test('it is the first project tile and its page opens on the viewer', async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 900 });
-    await page.goto(`${BASE_URL}/projects/`, { waitUntil: 'networkidle' });
+    await page.goto(`${BASE_URL}/portfolio/`, { waitUntil: 'networkidle' });
 
-    const firstTab = await page.locator('.project-tab').first().textContent();
-    expect(firstTab.trim()).toBe('A History of Mistrust');
+    const firstTile = page.locator('.project-tile').first();
+    await expect(firstTile.locator('.project-tile-title')).toHaveText('A History of Mistrust');
+    await expect(firstTile).toHaveAttribute('href', '/portfolio/history-of-mistrust/');
 
-    // Landing on /projects/ with no hash must open it, not merely list it first.
-    await expect(page.locator('#panel-history-of-mistrust')).toBeVisible();
+    await firstTile.click();
+    await expect(page).toHaveURL(/\/portfolio\/history-of-mistrust\/$/);
     await expect(page.locator('.mistrust-stage')).toBeVisible();
-
-    /* DOM order has to follow the tab order too. A tabpanel that precedes its
-       own tab in the document reverses the reading and tab-through order for
-       anyone not using a mouse, while looking perfectly correct on screen. */
-    const panelsInOrder = await page.$$eval('[role="tabpanel"]', (els) => els.map((e) => e.id));
-    expect(panelsInOrder[0]).toBe('panel-history-of-mistrust');
   });
 
   /* The STAGE is not the whole viewer. Capping only the stage still left the
@@ -293,7 +290,7 @@ test.describe('mistrust leads the projects page', () => {
 
   /* The stage and the lightbox are edge-to-edge sliding tracks, so mid-swipe two
      neighbours share the screen. Slides whose plain file does not join its
-     neighbour (app/projects/mistrust-tiles.json: 1, 2, 21, 24) must be drawn from
+     neighbour (app/portfolio/mistrust-tiles.json: 1, 2, 21, 24) must be drawn from
      their seamless tiles there, as the mosaic already is. The user caught the
      stage still showing the 1|2 seam on 2026-10-05 after only the mosaic had
      been switched. The filmstrip's thumbs sit 8px apart, so it keeps the

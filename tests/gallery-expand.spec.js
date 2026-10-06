@@ -67,7 +67,7 @@ const card = (page, caption) =>
 test.describe('gallery expand-on-click', () => {
   test('aria-expanded flips and the card grows in both axes', async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 900 });
-    await page.goto(`${BASE_URL}/gallery/`, { waitUntil: 'networkidle' });
+    await page.goto(`${BASE_URL}/portfolio/`, { waitUntil: 'networkidle' });
 
     const target = card(page, 'In Danger');
     const button = toggle(page, 'In Danger');
@@ -91,7 +91,7 @@ test.describe('gallery expand-on-click', () => {
 
   test('opening a second card collapses the first', async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 900 });
-    await page.goto(`${BASE_URL}/gallery/`, { waitUntil: 'networkidle' });
+    await page.goto(`${BASE_URL}/portfolio/`, { waitUntil: 'networkidle' });
 
     const first = toggle(page, 'In Danger');
     const second = toggle(page, 'Chill');
@@ -108,7 +108,7 @@ test.describe('gallery expand-on-click', () => {
 
   test('Escape collapses the open card from anywhere on the page', async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 900 });
-    await page.goto(`${BASE_URL}/gallery/`, { waitUntil: 'networkidle' });
+    await page.goto(`${BASE_URL}/portfolio/`, { waitUntil: 'networkidle' });
 
     const button = toggle(page, 'In Danger');
     await button.click();
@@ -125,7 +125,7 @@ test.describe('gallery expand-on-click', () => {
 
   test('focus stays on the trigger through expand and collapse', async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 900 });
-    await page.goto(`${BASE_URL}/gallery/`, { waitUntil: 'networkidle' });
+    await page.goto(`${BASE_URL}/portfolio/`, { waitUntil: 'networkidle' });
 
     const button = toggle(page, 'In Danger');
 
@@ -142,7 +142,7 @@ test.describe('gallery expand-on-click', () => {
     await countViewTransitions(page);
     await page.emulateMedia({ reducedMotion: 'reduce' });
     await page.setViewportSize({ width: 1440, height: 900 });
-    await page.goto(`${BASE_URL}/gallery/`, { waitUntil: 'networkidle' });
+    await page.goto(`${BASE_URL}/portfolio/`, { waitUntil: 'networkidle' });
 
     const button = toggle(page, 'In Danger');
     await button.click();
@@ -158,7 +158,7 @@ test.describe('gallery expand-on-click', () => {
   test('with motion enabled the expand does go through a view transition', async ({ page }) => {
     await countViewTransitions(page);
     await page.setViewportSize({ width: 1440, height: 900 });
-    await page.goto(`${BASE_URL}/gallery/`, { waitUntil: 'networkidle' });
+    await page.goto(`${BASE_URL}/portfolio/`, { waitUntil: 'networkidle' });
 
     // The negative test above passes just as well if the API is never called at
     // all, so pair it with the positive case or the whole path can rot unnoticed.
@@ -169,7 +169,7 @@ test.describe('gallery expand-on-click', () => {
 
   test('filtering collapses an open card that no longer matches', async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 900 });
-    await page.goto(`${BASE_URL}/gallery/`, { waitUntil: 'networkidle' });
+    await page.goto(`${BASE_URL}/portfolio/`, { waitUntil: 'networkidle' });
 
     // "In Danger" is Digital-only, so the Traditional filter removes it.
     const button = toggle(page, 'In Danger');
@@ -186,7 +186,7 @@ test.describe('gallery expand-on-click', () => {
 
   test('filtering leaves an open card that still matches open', async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 900 });
-    await page.goto(`${BASE_URL}/gallery/`, { waitUntil: 'networkidle' });
+    await page.goto(`${BASE_URL}/portfolio/`, { waitUntil: 'networkidle' });
 
     // "Chill" is tagged Traditional AND Digital, so it survives the Digital filter.
     const button = toggle(page, 'Chill');
@@ -203,7 +203,7 @@ test.describe('gallery expand-on-click', () => {
     // Short viewport: this is where a `vh`/`dvh` or missing-nav-subtraction
     // mistake actually shows up. At 900px tall the cap rarely binds.
     await page.setViewportSize({ width: 1440, height: 720 });
-    await page.goto(`${BASE_URL}/gallery/`, { waitUntil: 'networkidle' });
+    await page.goto(`${BASE_URL}/portfolio/`, { waitUntil: 'networkidle' });
 
     await toggle(page, 'In Danger').click();
     await expect(toggle(page, 'In Danger')).toHaveAttribute('aria-expanded', 'true');
@@ -234,7 +234,7 @@ test.describe('gallery expand-on-click', () => {
   ]) {
     test(`expanded art fits the screen under the nav @ ${vp.width}x${vp.height}`, async ({ page }) => {
       await page.setViewportSize(vp);
-      await page.goto(`${BASE_URL}/gallery/`, { waitUntil: 'networkidle' });
+      await page.goto(`${BASE_URL}/portfolio/`, { waitUntil: 'networkidle' });
 
       await page.locator('.gallery-item-toggle').first().click();
       await page.waitForTimeout(500);
@@ -250,7 +250,7 @@ test.describe('gallery expand-on-click', () => {
 
   test('the art box matches the artwork ratio, collapsed and expanded', async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 900 });
-    await page.goto(`${BASE_URL}/gallery/`, { waitUntil: 'networkidle' });
+    await page.goto(`${BASE_URL}/portfolio/`, { waitUntil: 'networkidle' });
 
     /* This is the structural guarantee against the shrink-then-grow, and it is
        worth more than measuring the animation itself.
@@ -291,13 +291,20 @@ test.describe('gallery expand-on-click', () => {
 
   test('expanding a card already in view does not scroll the page', async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 900 });
-    await page.goto(`${BASE_URL}/gallery/`, { waitUntil: 'networkidle' });
+    await page.goto(`${BASE_URL}/portfolio/`, { waitUntil: 'networkidle' });
 
-    // The first row sits comfortably below the nav, so there is nothing to
-    // correct. `scrollIntoView({ block: 'nearest' })` failed exactly here: once
+    // Since 2026-10-05 the gallery sits below the project tiles on /portfolio/,
+    // so bring its first row into view first, comfortably below the nav. From
+    // there the first row needs no correction. `scrollIntoView({ block: 'nearest' })` failed exactly here: once
     // expanded the card is taller than the viewport, and 'nearest' on an
     // oversized element jumps to an edge, cutting the card's head off above the
     // nav and dumping the user in the middle of the artwork.
+    await page.evaluate(() => {
+      const html = document.documentElement;
+      html.style.scrollBehavior = 'auto';
+      const card = document.querySelector('.gallery-item');
+      window.scrollTo(0, card.getBoundingClientRect().top + window.scrollY - 200);
+    });
     const before = await page.evaluate(() => window.scrollY);
     await toggle(page, 'In Danger').click();
     await expect(toggle(page, 'In Danger')).toHaveAttribute('aria-expanded', 'true');
@@ -308,7 +315,7 @@ test.describe('gallery expand-on-click', () => {
 
   test('expanding a card low on the page brings it back into view', async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 900 });
-    await page.goto(`${BASE_URL}/gallery/`, { waitUntil: 'networkidle' });
+    await page.goto(`${BASE_URL}/portfolio/`, { waitUntil: 'networkidle' });
 
     /* Park the target near the bottom of the viewport first, which is the case
        the scroll correction exists for. Deliberately NOT the last item: the page
@@ -348,7 +355,7 @@ test.describe('gallery expand-on-click', () => {
 
   test('the companion tile does not stretch to match an expanded card', async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 900 });
-    await page.goto(`${BASE_URL}/gallery/`, { waitUntil: 'networkidle' });
+    await page.goto(`${BASE_URL}/portfolio/`, { waitUntil: 'networkidle' });
 
     const companion = card(page, 'Chill');
     const before = (await companion.boundingBox()).height;
@@ -371,7 +378,7 @@ test.describe('gallery expand-on-click', () => {
 
   test('the grid reserves no empty track under an expanded card', async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 900 });
-    await page.goto(`${BASE_URL}/gallery/`, { waitUntil: 'networkidle' });
+    await page.goto(`${BASE_URL}/portfolio/`, { waitUntil: 'networkidle' });
 
     await toggle(page, 'In Danger').click();
     await expect(toggle(page, 'In Danger')).toHaveAttribute('aria-expanded', 'true');
@@ -391,7 +398,7 @@ test.describe('gallery expand-on-click', () => {
   });
 
   test('every card carries a unique view-transition-name', async ({ page }) => {
-    await page.goto(`${BASE_URL}/gallery/`, { waitUntil: 'networkidle' });
+    await page.goto(`${BASE_URL}/portfolio/`, { waitUntil: 'networkidle' });
 
     const names = await page.$$eval('.gallery-item', (cards) =>
       cards.map((el) => el.style.viewTransitionName));
@@ -420,7 +427,7 @@ test.describe('gallery expand-on-click', () => {
 
   test('expanding the LAST card in a row keeps it on that row', async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 900 });
-    await page.goto(`${BASE_URL}/gallery/`, { waitUntil: 'networkidle' });
+    await page.goto(`${BASE_URL}/portfolio/`, { waitUntil: 'networkidle' });
 
     // 1440px is the 3-column layout; the third card is last in row one.
     const before = await rowTops(page);
@@ -445,7 +452,7 @@ test.describe('gallery expand-on-click', () => {
 
   test('the displaced card slides down rather than vanishing', async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 900 });
-    await page.goto(`${BASE_URL}/gallery/`, { waitUntil: 'networkidle' });
+    await page.goto(`${BASE_URL}/portfolio/`, { waitUntil: 'networkidle' });
 
     const count = await page.locator('.gallery-item').count();
 
@@ -465,7 +472,7 @@ test.describe('gallery expand-on-click', () => {
 
   test('expanding a NON-last card leaves its row start alone', async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 900 });
-    await page.goto(`${BASE_URL}/gallery/`, { waitUntil: 'networkidle' });
+    await page.goto(`${BASE_URL}/portfolio/`, { waitUntil: 'networkidle' });
 
     const before = await rowTops(page);
     const firstRowTop = before[0].top;
@@ -485,7 +492,7 @@ test.describe('gallery expand-on-click', () => {
 
   test('the row rule holds at the 2-column breakpoint', async ({ page }) => {
     await page.setViewportSize({ width: 900, height: 900 });
-    await page.goto(`${BASE_URL}/gallery/`, { waitUntil: 'networkidle' });
+    await page.goto(`${BASE_URL}/portfolio/`, { waitUntil: 'networkidle' });
 
     const before = await rowTops(page);
     const firstRowTop = before[0].top;
@@ -522,7 +529,7 @@ test.describe('gallery expand-on-click', () => {
   for (const index of [0, 1, 2]) {
     test(`cards move on one axis only, expanding card ${index} of a row of 3`, async ({ page }) => {
       await page.setViewportSize({ width: 1440, height: 900 });
-      await page.goto(`${BASE_URL}/gallery/`, { waitUntil: 'networkidle' });
+      await page.goto(`${BASE_URL}/portfolio/`, { waitUntil: 'networkidle' });
 
       const before = await corners(page);
       const keys = Object.keys(before);
@@ -552,7 +559,7 @@ test.describe('gallery expand-on-click', () => {
   }
 
   test('every artwork carries its own name, distinct from the cards', async ({ page }) => {
-    await page.goto(`${BASE_URL}/gallery/`, { waitUntil: 'networkidle' });
+    await page.goto(`${BASE_URL}/portfolio/`, { waitUntil: 'networkidle' });
 
     // The art is captured separately from its card so it tweens as its own
     // element instead of being flattened into the card snapshot. That only
@@ -589,7 +596,7 @@ test.describe('gallery expand-on-click', () => {
         });
       };
     });
-    await page.goto(`${BASE_URL}/gallery/#filter=digital`, { waitUntil: 'networkidle' });
+    await page.goto(`${BASE_URL}/portfolio/#filter=digital`, { waitUntil: 'networkidle' });
     await expect(page.getByRole('button', { name: 'Digital' })).toHaveAttribute('aria-pressed', 'true');
 
     await page.getByRole('button', { name: 'All' }).click();
@@ -625,7 +632,7 @@ test.describe('gallery expand-on-click', () => {
      component adds a corner keyframe: horizontal first, then vertical. */
   for (const [from, to] of [['Digital', 'All'], ['All', 'Traditional']]) {
     test(`filtering ${from} → ${to} moves no card on a diagonal`, async ({ page }) => {
-      await page.goto(`${BASE_URL}/gallery/`, { waitUntil: 'networkidle' });
+      await page.goto(`${BASE_URL}/portfolio/`, { waitUntil: 'networkidle' });
       if (from !== 'All') {
         await page.getByRole('button', { name: from }).click();
         await page.waitForTimeout(900);
@@ -662,7 +669,7 @@ test.describe('gallery expand-on-click', () => {
   }
 
   test('cards a filter removes slide one space out instead of fading in place', async ({ page }) => {
-    await page.goto(`${BASE_URL}/gallery/`, { waitUntil: 'networkidle' });
+    await page.goto(`${BASE_URL}/portfolio/`, { waitUntil: 'networkidle' });
     const result = await page.evaluate(async () => {
       const before = [...document.querySelectorAll('.gallery-item')].length;
       [...document.querySelectorAll('button')].find((b) => b.textContent.trim() === 'Traditional').click();
@@ -690,7 +697,7 @@ test.describe('gallery expand-on-click', () => {
   test('rapid filter changes raise no page error and settle with no entering state', async ({ page }) => {
     const errors = [];
     page.on('pageerror', (err) => errors.push(err.message));
-    await page.goto(`${BASE_URL}/gallery/`, { waitUntil: 'networkidle' });
+    await page.goto(`${BASE_URL}/portfolio/`, { waitUntil: 'networkidle' });
 
     /* One task, three clicks: the first two transitions are skipped by the third.
        Playwright's own click() cannot do this — it waits for the view-transition
@@ -719,14 +726,14 @@ test.describe('gallery expand-on-click', () => {
 
   test('reduced motion skips the gallery entrance state', async ({ page }) => {
     await page.emulateMedia({ reducedMotion: 'reduce' });
-    await page.goto(`${BASE_URL}/gallery/#filter=digital`, { waitUntil: 'networkidle' });
+    await page.goto(`${BASE_URL}/portfolio/#filter=digital`, { waitUntil: 'networkidle' });
     await page.getByRole('button', { name: 'All' }).click();
     await expect.poll(() => page.$$eval('.gallery-item', (cards) => cards.some((card) =>
       getComputedStyle(card).viewTransitionClass.includes('gallery-enter')))).toBe(false);
   });
 
   test('the artwork does not cross-fade during the transition', async ({ page }) => {
-    await page.goto(`${BASE_URL}/gallery/`, { waitUntil: 'networkidle' });
+    await page.goto(`${BASE_URL}/portfolio/`, { waitUntil: 'networkidle' });
 
     // Cross-fading two copies of the same picture at different scales is the
     // soft double-image that capturing it separately exists to remove. The
@@ -741,7 +748,7 @@ test.describe('gallery expand-on-click', () => {
   });
 
   test('each card contains exactly one interactive element', async ({ page }) => {
-    await page.goto(`${BASE_URL}/gallery/`, { waitUntil: 'networkidle' });
+    await page.goto(`${BASE_URL}/portfolio/`, { waitUntil: 'networkidle' });
 
     // The overlay button covers the whole card, so any control added inside the
     // card would be nested inside a button: invalid, and broken for assistive
@@ -754,7 +761,7 @@ test.describe('gallery expand-on-click', () => {
   });
 
   test('the focus ring is inset so the frame cannot clip it', async ({ page }) => {
-    await page.goto(`${BASE_URL}/gallery/`, { waitUntil: 'networkidle' });
+    await page.goto(`${BASE_URL}/portfolio/`, { waitUntil: 'networkidle' });
 
     // Asserted against the stylesheet rather than a focused element because the
     // invariant IS the rule: `.brand-frame` clips with `overflow: hidden`, so a
@@ -791,7 +798,7 @@ test.describe('gallery expand-on-click', () => {
 
   test('the gallery ARTWORK is still a registered bubble zone', async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 900 });
-    await page.goto(`${BASE_URL}/gallery/`, { waitUntil: 'networkidle' });
+    await page.goto(`${BASE_URL}/portfolio/`, { waitUntil: 'networkidle' });
     await waitForEngine(page);
 
     /* This used to assert `.gallery-item`. The card stopped being a zone on

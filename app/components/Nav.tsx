@@ -4,9 +4,9 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import BubbleLogo from './BubbleLogo';
 
+/* Projects and Gallery became one Portfolio page on 2026-10-05 (user call). */
 const navLinks = [
-  { href: '/projects/', label: 'Projects' },
-  { href: '/gallery/', label: 'Gallery' },
+  { href: '/portfolio/', label: 'Portfolio' },
   { href: '/contact/', label: 'Contact' },
 ];
 
@@ -18,6 +18,8 @@ export default function Nav() {
     const resolved = new URL(href, 'http://localhost').pathname;
     const normalizedPath = pathname.replace(/\/$/, '') || '/';
     const normalizedHref = resolved.replace(/\/$/, '') || '/';
+    // A project page (/portfolio/<project>/) is still "in" Portfolio.
+    if (normalizedHref === '/portfolio') return normalizedPath === '/portfolio' || normalizedPath.startsWith('/portfolio/');
     return normalizedPath === normalizedHref;
   };
 

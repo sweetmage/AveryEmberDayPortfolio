@@ -40,7 +40,7 @@
  * is also cut into one region per slide, splitting any shared band down the middle, and every
  * slide whose region is not simply "its own square, untouched" gets a `slides/tile-NN.webp` cut
  * from the strip and fitted to 720x720, plus a 1080x1080 `tile-NN@2x.webp`. The regions and which slides got a tile are written to
- * `app/projects/mistrust-tiles.json`, which the mosaic and `tests/mistrust-sets.spec.js` read.
+ * `app/portfolio/mistrust-tiles.json`, which the mosaic and `tests/mistrust-sets.spec.js` read.
  * The slideshow stage and the lightbox use the tiles too: both are edge-to-edge sliding tracks, so
  * two neighbours share the screen mid-swipe (the user caught the stage still showing the seam on
  * 2026-10-05, after the mosaic alone had been fixed). Only the filmstrip keeps the untouched slides,
@@ -75,7 +75,7 @@ const TILE_VARIANTS = [
   { size: TILE_SIZE, suffix: '' },
   { size: 1080, suffix: '@2x' },
 ];
-const TILE_MANIFEST = path.join(ROOT, 'app', 'projects', 'mistrust-tiles.json');
+const TILE_MANIFEST = path.join(ROOT, 'app', 'portfolio', 'mistrust-tiles.json');
 
 // --all rebuilds every output. The default rebuilds only the sources whose *content* changed
 // per git, which matters because a Figma re-export rewrites the mtime of all 30 PNGs even when

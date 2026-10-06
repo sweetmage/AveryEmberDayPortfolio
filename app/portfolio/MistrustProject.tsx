@@ -2,10 +2,10 @@ import { MistrustLightboxProvider } from './MistrustLightbox';
 import MistrustSlideshow from './MistrustSlideshow';
 import SlideGrid from './SlideGrid';
 
-/* Note: this module is already part of the CLIENT graph â€” `ProjectTabs.tsx` is
-   `'use client'` and imports it â€” so it carries no `'use client'` of its own but
-   is not server-only either. The provider/children split below is for ownership,
-   not bundle size: the lightbox mounts and unmounts with this panel. */
+/* No `'use client'` of its own: the page that renders it is a server component,
+   and the interactive parts (lightbox provider, slideshow, grid) are client
+   components imported below. The provider/children split is for ownership:
+   the lightbox mounts and unmounts with this project. */
 export default function MistrustProject() {
   return (
     <MistrustLightboxProvider>

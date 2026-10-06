@@ -52,7 +52,7 @@ test.describe('mobile form zoom', () => {
     // bar ever runs out of room.
     for (const width of [320, 360, 390, 414, 480, 640, 768]) {
       await page.setViewportSize({ width, height: 800 });
-      await page.goto(`${BASE_URL}/gallery/`, { waitUntil: 'domcontentloaded' });
+      await page.goto(`${BASE_URL}/portfolio/`, { waitUntil: 'domcontentloaded' });
 
       const box = await page.locator('#theme-toggle').evaluate((el) => {
         const r = el.getBoundingClientRect();

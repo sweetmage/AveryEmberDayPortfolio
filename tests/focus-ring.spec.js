@@ -26,7 +26,7 @@ const BASE_URL = 'http://localhost:4322';
  * Runs on `chromium` and on `webkit-mobile` (see playwright.config.js).
  */
 
-const PAGES = ['/', '/projects/', '/gallery/', '/contact/'];
+const PAGES = ['/', '/portfolio/', '/portfolio/history-of-mistrust/', '/portfolio/brand/', '/contact/'];
 
 async function tabKey(browserName) {
   return browserName === 'webkit' ? 'Alt+Tab' : 'Tab';

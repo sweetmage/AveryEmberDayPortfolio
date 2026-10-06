@@ -28,8 +28,8 @@ const WIDTHS = [768, 1024, 1440, 2560, 3440];
 const TARGETS = [
   { url: '/', label: 'About heading', sel: '#about h2', section: true },
   { url: '/', label: 'About box', sel: '.about-box' },
-  { url: '/projects/', label: 'Projects title', sel: '.brand-page-title', section: true },
-  { url: '/gallery/', label: 'Gallery title', sel: '.brand-page-title', section: true },
+  { url: '/portfolio/', label: 'Portfolio title', sel: '.brand-page-title', section: true },
+  { url: '/portfolio/', label: 'Project tiles', sel: '#portfolio-projects + ul', section: true },
   { url: '/contact/', label: 'Contact h1', sel: 'main h1', section: true },
   { url: '/contact/', label: 'Contact form', sel: 'form[name="contact"]' },
 ];

@@ -27,7 +27,7 @@ const VIEWPORTS = [
   { label: 'iPad Pro 11 landscape', width: 1194, height: 834 },
 ];
 
-const PAGES = ['/', '/projects/', '/gallery/', '/contact/'];
+const PAGES = ['/', '/portfolio/', '/portfolio/history-of-mistrust/', '/portfolio/brand/', '/contact/'];
 
 test.describe('nav fits the viewport in WebKit', () => {
   for (const vp of VIEWPORTS) {
