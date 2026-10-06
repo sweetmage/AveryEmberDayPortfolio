@@ -2,6 +2,11 @@ import { defineConfig, devices } from '@playwright/test';
 
 export default defineConfig({
   testDir: 'tests',
+  // Playwright's default pattern also collects *.test.js. tests/google-docs.test.js is a
+  // node:test unit file (run it with `npm run test:docs`); loading it under Playwright
+  // hits loadAllowList()'s process.exit(1) when the gitignored
+  // docs/sync/google-docs.json is absent, which kills the whole run.
+  testMatch: '**/*.spec.js',
   globalSetup: './tests/global-setup.js',
   fullyParallel: true,
   forbidOnly: !!process.env.CI,

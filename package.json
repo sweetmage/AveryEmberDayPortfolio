@@ -8,6 +8,7 @@
     "build:css": "tailwindcss -i app.css -o style.css --minify",
     "serve": "serve . -l 8080",
     "test": "playwright test",
+    "test:docs": "node --test tests/google-docs.test.js",
     "images:variants": "node scripts/generate-image-variants.js",
     "dev": "next dev",
     "build:next": "next build",
