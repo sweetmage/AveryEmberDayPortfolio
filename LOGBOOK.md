@@ -30,6 +30,7 @@ When this logbook exceeds ~1000 lines, split it:
 - C2 pass 2: 8 brand baselines; a stray portfolio-768-light rewrite was discarded per the stop rule; re-checks 40/40, 39+1 flaky (mistrust 360 light, semibold retry), 40/40. Commits 8231725, 38ebf6c, f4b511a; pushed to the loop branch only, no deploy.
 - Final signoff (trigger: data deletion), Codex gpt-6-luna on a frozen worktree: round 1 PASS with doc nits but voided by the launcher (truncated diff read); nits applied (plan 16 to 24 baselines, phases ticked, C2 record).
 - ? The Blue swatch caption says #9acdff; the logo files are #7eb8ff. User's call, carried in TODO.
+- Signoff round 2 (--run-id next-step-cleanup-signoff, per-file reads): PASS text, voided again; the truncation was the one-line minified style.css diff, which a fresh css:build reproduces exactly. Cap reached, so the signoff is degraded, not passed. Recorded as a blocking TODO for the release; the user decides. Round 2 nits applied.
 
 ---
 

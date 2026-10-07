@@ -29,6 +29,13 @@ before a push ships in the same deploy.
       them makes both lines span the full 1400px container, which on a two-sentence paragraph is a real
       visual change — hence a user call rather than a silent fix.
 
+- [ ] **BLOCKING the next release: the loop's Final signoff is degraded at its round cap.**
+      Branch `shxdowloop/2026-10-06/next-step-cleanup-icons-mistrust` (logo kit, numbered Mistrust
+      bibliography, plan archive, Moonlight). Both Codex rounds read **PASS** on content, but the
+      launcher voided both for truncated reads. The second truncation was the one-line minified
+      `style.css` diff, which a fresh `css:build` reproduces exactly. **User's call:** accept the
+      record in the loop plan's "Final signoff record", or allow a third round that skips
+      `style.css`. Do not push `portfoliowebsite` with this branch merged until then.
 - [ ] **The Blue logo's caption and its file disagree.** The Brand page captions the Blue swatch
       `#9acdff` (`app/portfolio/BrandProject.tsx`), but `bubbleLogo.png` and `bubbleLogo.svg` are painted
       `#7eb8ff` (sampled by the 2026-10-06 plan review). The page now offers those files as downloads,

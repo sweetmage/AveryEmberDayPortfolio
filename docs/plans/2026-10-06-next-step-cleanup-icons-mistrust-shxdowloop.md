@@ -11,7 +11,7 @@ changed since then and how the run executes.
 1. **Cleanup.** Archive the three plans that shipped Oct 4-6. Rewrite `docs/plans/README.md`. Narrow
    or close the Mistrust-viewer TODO.
 2. **Logo download kit** (user's choice at the gate: "Brand kit downloads"). Every logo card on
-   `/portfolio/brand/` gets SVG and PNG download links. That puts the orphaned format twins to use.
+   `/portfolio/brand/` gets SVG and PNG download links. That puts the orphaned files to use: four format twins (`bubbleLogo-black.png`, `bubbleLogo-white.png`, `bubbleLogo-black-notxt.svg`, `bubbleLogo-blue-notxt.svg`) plus `bubbleLogo.svg`, the Blue logo's SVG.
 3. **Numbered bibliography** on `/portfolio/history-of-mistrust/`. The slide words stay as alt text and
    captions (user's choice: "No, keep as is"), so that part of the TODO closes.
 
@@ -94,7 +94,7 @@ the user's call and gets flagged in the handoff, not changed. A CSS-counter fall
 - [x] 1.4 Track C2: 24 baselines on SOL (8 `portfolio-*` with Moonlight, 8 `portfolio-brand-*`, 8 `portfolio-mistrust-*`), in two passes
 - [x] 1.5 Focused suite + `test:docs` + `tsc` + `next build`
 - [x] 1.6 Main agent's diff read, LOGBOOK, TODO, checkpoint, push
-- [ ] 1.7 Final signoff (trigger: data deletion), then handoff
+- [~] 1.7 Final signoff (trigger: data deletion): **degraded at the round cap**, see the Final signoff record; handoff done
 
 **Parallel tracks** (work files above three, so the table is required):
 
@@ -174,7 +174,7 @@ into `portfoliowebsite` and the 15-credit release are separate user go-aheads.
 - [x] Plan review PASS, or its findings fixed
 - [x] A, B, C, C2 done; exactly 24 baselines changed
 - [x] Non-visual suite, visual gate on SOL, `test:docs`, `tsc`, `next build` green
-- [ ] Final signoff PASS, with the runtime confirmed
+- [~] Final signoff: both rounds read PASS on content (Codex `gpt-6-luna`, confirmed in the run header) but were voided for truncated reads. **The user decides before release.**
 - [x] LOGBOOK and TODO updated
 - [ ] User go-ahead to merge, then a separate go-ahead for the 15-credit release push
 
@@ -192,4 +192,13 @@ into `portfoliowebsite` and the 15-credit release are separate user go-aheads.
 
 - **Pass 1** at `edb1a17`: 24 baselines changed, and the update plus 2 re-checks went 40/40. Review of the crops found a real defect: at 1024px and 360px the kit links squeezed the Blue icon card's description onto a second line, so that strip was taller and its canvas shorter. The fix (`38ebf6c`) moved the links onto the name row. A new test checks that all strips share one height at 360/768/1024/1440. It fails 2 of 4 on the old layout (heights 103 vs 74, and 85 vs 65). The 16 Portfolio and Mistrust baselines were committed from pass 1.
 - **Pass 2** at `38ebf6c`: the 8 Brand baselines changed as expected. `portfolio-768-light` was also rewritten (Trap 7 noise). Per the stop condition it was discarded, and re-checks then ran 40/40, then 39 + 1 flaky (`portfolio-mistrust` 360 light, 603 px, passed on the semibold retry), then 40/40. The Brand page is back to its old height to within 1px. Clone and zips deleted on SOL.
+
+## Final signoff record (trigger: data deletion; cap 2 rounds)
+
+| Round | Frozen commit | Runtime | Text verdict | Launcher verdict |
+|---|---|---|---|---|
+| 1 | `f4b511a` | codex / gpt-6-luna, readonly | PASS, doc nits only | **void**: a combined diff read was truncated |
+| 2 (`--run-id next-step-cleanup-signoff`, per-file reads) | `ba8e231` | codex / gpt-6-luna, readonly | PASS, doc nits only | **void**: `git diff -- style.css` was truncated |
+
+Both rounds' nits are applied. The truncated file in round 2 is `style.css`: Tailwind output minified onto one line, so its diff is a single line too long for Codex's output limit. The main agent verified that a fresh `npm run css:build` from the committed sources reproduces it byte-for-byte (`git diff --quiet -- style.css` after the build), so it holds no hand-written change. **Under the Review Contract the signoff is still not a PASS:** the cap is reached and the verdict is void. The release push waits on the user: accept this record, or authorize a third round that excludes `style.css` and reads its source (`brand.css`, the classes in the `.tsx` files) instead.
 
