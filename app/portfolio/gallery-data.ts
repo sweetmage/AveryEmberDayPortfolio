@@ -121,4 +121,14 @@ export const galleryItems: GalleryItem[] = [
     tools: ['Adobe Photoshop', 'Chalk Pastel', 'Photography'],
     description: '',
   },
+  {
+    src: '/images/myart/Gallery/MoonlightFinal.webp',
+    alt: 'Moonlight',
+    caption: 'Moonlight',
+    width: 1200,
+    height: 800,
+    tags: ['Digital'],
+    tools: ['Procreate'],
+    description: '',
+  },
 ];

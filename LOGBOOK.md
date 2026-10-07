@@ -18,6 +18,19 @@ When this logbook exceeds ~1000 lines, split it:
 
 ---
 
+## Entry 145 - 2026-10-06
+
+**Agent:** Claude Opus 5.5 (Lunebyte, VOID), main
+**Cycle:** ad hoc
+**Task:** Add Moonlight (Procreate) to the Portfolio gallery.
+
+- Source: ArtBridge Moonlight.psd (1800x1200, landscape). Flattened composite via magick, encoded with sharp to public/images/myart/Gallery/MoonlightFinal.webp at 1200x800 q85 (36 KB), plus 480w/900w variants from generate-image-variants.js (Moonlight added to its manifest).
+- gallery-data.ts: appended Moonlight, tags Digital, tools Procreate, description empty like the rest.
+- The variant script rebuilt all 25 existing variants (checkout mtimes newer than the guard expects); those re-encodes were reverted so the diff holds only Moonlight.
+- Verification: tsc clean; static export on :4400 shows the card (12 of 12 works, 900w selected); gallery-expand + smoke-next 42/42 on chromium. Visual baselines for /portfolio/ will change (new card) and must be regenerated on SOL; not run here (win32-only baselines).
+
+---
+
 ## Entry 144 - 2026-10-06
 
 **Agent:** Claude Opus 5.5 (juniper, VOID), main
