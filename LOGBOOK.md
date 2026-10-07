@@ -18,6 +18,21 @@ When this logbook exceeds ~1000 lines, split it:
 
 ---
 
+## Entry 146 - 2026-10-06
+
+**Agent:** Claude Opus 5.5 (juniper, VOID), main
+**Cycle:** shxdowloop, Stage 1 (resume and close)
+**Task:** Finish the loop from Entry 144: baselines, full verification, Final signoff. Moonlight (Entry 145, another session's commit on this branch) ships with it at the user's choice.
+
+- Supersedes Entry 144's Left list: everything there is done here.
+- Non-visual suite 161/161 (3.3m, Mac); test:docs 8/8; tsc clean; out/ holds all 12 kit files and none of the 4 deleted; sources screenshots reviewed at 1440 light and 360 dark.
+- C2 on SOL, pass 1: 24 baselines (8 portfolio with Moonlight, 8 brand, 8 mistrust). Crop review caught a defect: the kit links wrapped the Blue icon card's description at 1024 and 360, so one label strip was taller and its canvas shorter. Fix 38ebf6c moves the links onto the name row; a new strip-height test fails 2/4 on the old layout.
+- C2 pass 2: 8 brand baselines; a stray portfolio-768-light rewrite was discarded per the stop rule; re-checks 40/40, 39+1 flaky (mistrust 360 light, semibold retry), 40/40. Commits 8231725, 38ebf6c, f4b511a; pushed to the loop branch only, no deploy.
+- Final signoff (trigger: data deletion), Codex gpt-6-luna on a frozen worktree: round 1 PASS with doc nits but voided by the launcher (truncated diff read); nits applied (plan 16 to 24 baselines, phases ticked, C2 record).
+- ? The Blue swatch caption says #9acdff; the logo files are #7eb8ff. User's call, carried in TODO.
+
+---
+
 ## Entry 145 - 2026-10-06
 
 **Agent:** Claude Opus 5.5 (Lunebyte, VOID), main

@@ -109,7 +109,7 @@ consolidated in [`docs/archives/plans.md`](docs/archives/plans.md).
   viewer TODO closed: the page exists since the Portfolio merge, and the slide words are its alt text
   and lightbox captions (the user's call: no visible transcript). The three plans shipped on Oct 4–6
   were archived. On `shxdowloop/2026-10-06/next-step-cleanup-icons-mistrust`, with Moonlight (Entry 145);
-  not merged. Entries 143, 146.
+  not merged. Entries 143, 144, 146.
 
 - **Oct 6** — **RELEASED: the Portfolio.** One page for the work at `/portfolio/` (spectrum-outlined
   project tiles, then the gallery), each project on its own page, old `/projects/` and `/gallery/`

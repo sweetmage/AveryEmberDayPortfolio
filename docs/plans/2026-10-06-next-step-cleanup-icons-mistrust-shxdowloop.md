@@ -61,7 +61,7 @@ nano-agent on Codex, with a fresh `oracle` as the fallback. Between stages, re-c
    agent rebuilds it once, at integration.
 4. **Interim commit phase added** (1.3b). It covers diff read, focused specs, `css:build`, commit and
    push, all **before** C2, so a spec failure can't force a second baseline run.
-5. **C2 restated** with `ssh sol` (the alias is lowercase; `SOL` fails host-key checks) and all 16
+5. **C2 restated** with `ssh sol` (the alias is lowercase; `SOL` fails host-key checks) and every changed
    images, per `docs/visual-gate.md:205-212`.
 6. **Stop conditions:** see "Iteration stop conditions" below.
 
@@ -76,7 +76,7 @@ the user's call and gets flagged in the handoff, not changed. A CSS-counter fall
 
 ## Iteration stop conditions
 
-- **C2 noise:** if a baseline outside the expected 16 changes, discard that file, re-run the update
+- **C2 noise:** if a baseline outside the expected set changes, discard that file, re-run the update
   once, then re-check. If it changes again, stop C2 and record a blocking TODO with the diff.
 - **Spec failure** in 1.3b: fix and re-run, at most twice per track. A third failure marks that track
   Blocked with evidence, and the other tracks continue.
@@ -91,9 +91,9 @@ the user's call and gets flagged in the handoff, not changed. A CSS-counter fall
 - [x] 1.2 Plan review, one round, `oracle`: PASS, findings applied
 - [x] 1.3 Tracks A, B, C (main agent, serial: usage gate)
 - [x] 1.3b Diff read, focused specs on the Mac, `css:build`, interim commit `8231725`, pushed
-- [ ] 1.4 Track C2: 16 baselines on SOL (8 `portfolio-brand-*`, 8 `portfolio-mistrust-*`)
-- [ ] 1.5 Focused suite + `test:docs` + `tsc` + `next build`
-- [ ] 1.6 Main agent's diff read, LOGBOOK, TODO, checkpoint, push
+- [x] 1.4 Track C2: 24 baselines on SOL (8 `portfolio-*` with Moonlight, 8 `portfolio-brand-*`, 8 `portfolio-mistrust-*`), in two passes
+- [x] 1.5 Focused suite + `test:docs` + `tsc` + `next build`
+- [x] 1.6 Main agent's diff read, LOGBOOK, TODO, checkpoint, push
 - [ ] 1.7 Final signoff (trigger: data deletion), then handoff
 
 **Parallel tracks** (work files above three, so the table is required):
@@ -104,13 +104,13 @@ the user's call and gets flagged in the handoff, not changed. A CSS-counter fall
 | B - Logo kit | `app/portfolio/BrandProject.tsx`, `brand.css` (one `.logo-download` rule block), `tests/project-tiles.spec.js` (new kit test); removes `public/images/icons/BubbleLogo/bubbleLogo_transparent.svg`, `public/images/icons/{githubicon,linkedinicon,emailicon}.svg` | `tests/focus-ring.spec.js` | none |
 | C - Bibliography | `app/portfolio/MistrustProject.tsx`, `tests/mistrust-slideshow.spec.js` | `tests/focus-ring.spec.js` | none |
 | Integration | `style.css` (`npm run css:build`) | B, C | **B and C** |
-| C2 - Baselines | 16 PNGs in `tests/visual-baseline.spec.js-snapshots/` | the pushed branch | **A, B, C, Integration committed and pushed (1.3b)** (SOL clones the pushed branch) |
+| C2 - Baselines | 24 PNGs (16 as first planned, plus 8 `portfolio-*` once Moonlight joined) in `tests/visual-baseline.spec.js-snapshots/` | the pushed branch | **A, B, C, Integration committed and pushed (1.3b)** (SOL clones the pushed branch) |
 
 **C2 commands** (target: SOL, Windows cmd via `ssh sol`, with `dangerouslyDisableSandbox`):
 `git clone --depth 1 -b <branch> <origin> %TEMP%\wt-portfolio-baselines`, then `npm ci`, then
 `npx playwright install chromium`, then `npx playwright test tests/visual-baseline.spec.js
 --update-snapshots`, then two plain re-checks. `git status --short` in the clone lists the changed
-PNGs. Zip those, `scp` the zip back, crop-review all 16, commit, and delete the clone.
+PNGs. Zip those, `scp` the zip back, crop-review every one, commit, and delete the clone.
 
 `brand.css` is written by B only. C styles through utilities in `MistrustProject.tsx`, so it does
 not touch `brand.css`. `TODO.md`, `LOGBOOK.md` and this plan are written by the main agent only.
@@ -132,7 +132,7 @@ not touch `brand.css`. `TODO.md`, `LOGBOOK.md` and this plan are written by the 
 - **C:** the sources list is an `<ol>` with visible numbers 1-82 and an unchanged column layout. All 82
   links keep the focus ring. The new assertion (`ol.sources-list > li` count 82, `list-style-type`
   decimal or a counter) fails on the old `<ul>`.
-- **C2:** exactly 16 baselines change: the 8 `portfolio-brand-*` and the 8 `portfolio-mistrust-*`.
+- **C2:** exactly 24 baselines change: the 8 `portfolio-brand-*`, the 8 `portfolio-mistrust-*`, and (after Moonlight joined) the 8 `portfolio-*`.
   Update, then two re-checks exit 0. Every changed image is cropped and reviewed. Any other
   changed baseline blocks the checkpoint.
 
@@ -142,7 +142,7 @@ not touch `brand.css`. `TODO.md`, `LOGBOOK.md` and this plan are written by the 
 |---|---|---|
 | Focused specs | `npx playwright test tests/project-tiles.spec.js tests/mistrust-slideshow.spec.js tests/focus-ring.spec.js tests/smoke-next.spec.js` (Mac; non-visual) | all pass |
 | Full non-visual suite | `npx playwright test` minus `visual-baseline.spec.js` (Mac) | all pass |
-| Visual | SOL: `--update-snapshots` then 2 re-checks | exactly 16 changed, exits 0 |
+| Visual | SOL: `--update-snapshots` then 2 re-checks | exactly 24 changed, exits 0 |
 | Docs tests / types / build | `npm run test:docs`, `npx tsc --noEmit`, `npx next build` | 8/8, clean, builds; `out/images/icons/githubicon.svg` absent; all 12 kit hrefs present in `out/` |
 
 **Helpers:** `oracle` (1.2), `builder` x3 (A, B, C), main agent (C2), nano pro on Codex (1.7).
@@ -171,11 +171,11 @@ into `portfoliowebsite` and the 15-credit release are separate user go-aheads.
 
 ## Merge readiness checklist
 
-- [ ] Plan review PASS, or its findings fixed
-- [ ] A, B, C, C2 done; exactly 16 baselines changed
-- [ ] Non-visual suite, visual gate on SOL, `test:docs`, `tsc`, `next build` green
+- [x] Plan review PASS, or its findings fixed
+- [x] A, B, C, C2 done; exactly 24 baselines changed
+- [x] Non-visual suite, visual gate on SOL, `test:docs`, `tsc`, `next build` green
 - [ ] Final signoff PASS, with the runtime confirmed
-- [ ] LOGBOOK and TODO updated
+- [x] LOGBOOK and TODO updated
 - [ ] User go-ahead to merge, then a separate go-ahead for the 15-credit release push
 
 ## Checkpoint log
@@ -183,3 +183,13 @@ into `portfoliowebsite` and the 15-credit release are separate user go-aheads.
 | Stage | Commit | Push |
 |---|---|---|
 | dry run | `055b8ae` | origin, no deploy |
+| 1a | `8231725` | origin, no deploy (interim, usage limit) |
+| Moonlight (other session) | `edb1a17` | pushed with 1b |
+| 1b | `38ebf6c` | origin, no deploy |
+| baselines | `f4b511a` | origin, no deploy |
+
+## C2 record
+
+- **Pass 1** at `edb1a17`: 24 baselines changed, and the update plus 2 re-checks went 40/40. Review of the crops found a real defect: at 1024px and 360px the kit links squeezed the Blue icon card's description onto a second line, so that strip was taller and its canvas shorter. The fix (`38ebf6c`) moved the links onto the name row. A new test checks that all strips share one height at 360/768/1024/1440. It fails 2 of 4 on the old layout (heights 103 vs 74, and 85 vs 65). The 16 Portfolio and Mistrust baselines were committed from pass 1.
+- **Pass 2** at `38ebf6c`: the 8 Brand baselines changed as expected. `portfolio-768-light` was also rewritten (Trap 7 noise). Per the stop condition it was discarded, and re-checks then ran 40/40, then 39 + 1 flaky (`portfolio-mistrust` 360 light, 603 px, passed on the semibold retry), then 40/40. The Brand page is back to its old height to within 1px. Clone and zips deleted on SOL.
+
