@@ -102,14 +102,12 @@ consolidated in [`docs/archives/plans.md`](docs/archives/plans.md).
 
 ### 2026-10
 
-- **Oct 6** — **Logo download kit, numbered Mistrust bibliography, plan archive.** Every logo card on
-  `/portfolio/brand/` links its SVG and PNG (12 files, the user's choice over deleting the orphaned
-  format twins); a duplicate SVG and the three third-party social icons were deleted. The 82 Mistrust
-  sources are an `<ol>` numbered 1–82 by a CSS counter in the existing hanging indent. The standalone
-  viewer TODO closed: the page exists since the Portfolio merge, and the slide words are its alt text
-  and lightbox captions (the user's call: no visible transcript). The three plans shipped on Oct 4–6
-  were archived. On `shxdowloop/2026-10-06/next-step-cleanup-icons-mistrust`, with Moonlight (Entry 145);
-  not merged. Entries 143, 144, 146.
+- **Oct 6** — **RELEASED: logo download kit, numbered Mistrust bibliography, Moonlight.** Every logo
+  card on `/portfolio/brand/` links its SVG and PNG; a duplicate SVG and three third-party icons were
+  deleted; the 82 Mistrust sources are numbered 1–82; the standalone-viewer TODO closed (the page
+  exists, and the slide words are its alt text and captions); five shipped plans archived. Deploy
+  `6ac5e621` from `2265cfc`, ready, 15 credits. The Final signoff was degraded at its cap and accepted
+  by the user. Entries 143, 144, 146, 147.
 
 - **Oct 6** — **RELEASED: the Portfolio.** One page for the work at `/portfolio/` (spectrum-outlined
   project tiles, then the gallery), each project on its own page, old `/projects/` and `/gallery/`

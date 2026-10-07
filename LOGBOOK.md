@@ -18,6 +18,20 @@ When this logbook exceeds ~1000 lines, split it:
 
 ---
 
+## Entry 147 - 2026-10-06
+
+**Agent:** Claude Opus 5.5 (juniper, VOID), main
+**Cycle:** release: the next-step loop
+**Task:** Accept the signoff, merge it and ship (user's words).
+
+- Signoff: degraded at its cap (two Codex rounds, PASS text, voided for truncated reads of the minified style.css); accepted by the user before release.
+- Merge: portfoliowebsite fast-forwarded 165e75e..2265cfc (the loop branch plus Moonlight, edb1a17); pushed once at the user's instruction.
+- Deploy 6ac5e6218a72f3000830bddf: state ready, not skipped, 31s build; 15 credits. Billing resets on the 7th.
+- Live checks on averyemberday.com: 5 pages 200; all 12 kit files 200; the 4 deleted files 404; 12 logo-download links; the sources list is an ol with 82 items; Moonlight card and image 200; /projects/ still 301s to /portfolio/; in a browser: no console errors, all 6 label strips 74px at 1024, 12 of 12 works.
+- This record is docs-only, so netlify.toml's ignore rule cancels its build.
+
+---
+
 ## Entry 146 - 2026-10-06
 
 **Agent:** Claude Opus 5.5 (juniper, VOID), main
