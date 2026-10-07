@@ -5,7 +5,10 @@ const primarySwatches = [
     alt: 'Blue logo with text',
     bg: '#0A0A0A',
     label: 'Blue',
-    desc: 'Dark backgrounds · #9acdff',
+    /* The logo files are painted #7eb8ff (all four Blue variants, SVG and PNG,
+       measured 2026-10-06). #9acdff is the Brand Blue palette token
+       (--brand-ir-4), a different, lighter blue, so it is not the logo's hex. */
+    desc: 'Dark backgrounds · #7eb8ff',
   },
   {
     src: '/images/icons/BubbleLogo/bubbleLogo-black.svg',

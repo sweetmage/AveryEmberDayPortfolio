@@ -29,11 +29,6 @@ before a push ships in the same deploy.
       them makes both lines span the full 1400px container, which on a two-sentence paragraph is a real
       visual change — hence a user call rather than a silent fix.
 
-- [ ] **The Blue logo's caption and its file disagree.** The Brand page captions the Blue swatch
-      `#9acdff` (`app/portfolio/BrandProject.tsx`), but `bubbleLogo.png` and `bubbleLogo.svg` are painted
-      `#7eb8ff` (sampled by the 2026-10-06 plan review). The page now offers those files as downloads,
-      so a caption that doesn't match the file is more visible than before. **User's call**: fix the
-      caption, recolour the files, or confirm `#7eb8ff` is the logo's own shade.
 - [ ] **A stray white rectangle paints under the nav in WebKit only** (~79 × 17 CSS px, left edge,
       directly below the spectrum bar, home page). Found 2026-08-09 while fixing the theme toggle
       (Entry 127); pre-existing and unrelated to it, so it was flagged rather than folded in.
