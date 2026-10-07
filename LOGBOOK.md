@@ -28,6 +28,7 @@ When this logbook exceeds ~1000 lines, split it:
 - Changed: app/portfolio/BrandProject.tsx caption; the TODO item is closed.
 - Baselines: the change is under the gate's 500 px tolerance, so a plain --update-snapshots rewrote nothing. The 8 portfolio-brand-* were force-regenerated on SOL (--update-snapshots=all, brand only); each differs only in a 36x10 px box, the hex text, which was reviewed. Re-checks 40/40 twice. project-tiles + focus-ring pass on the Mac.
 - Branch fix/2026-10-06-blue-logo-caption, pushed (no deploy). Not merged: a portfoliowebsite push is a 15-credit deploy and waits on the user.
+- User: "hold it". Ships with the next release: merge fix/2026-10-06-blue-logo-caption into portfoliowebsite (fast-forward from 88c8091) together with whatever goes out next, and do not deploy it on its own.
 
 ---
 
