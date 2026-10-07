@@ -10,8 +10,7 @@ an unticked box, it belongs in `TODO.md` too. Verify with:
 grep -rn "^\s*- \[ \]" docs/plans/
 ```
 
-As of 2026-10-06 it returns only the unticked phases of the two shxdowloop plans below while that
-run is open. The dry-run plan's boxes are never ticked: it describes a run, it does not track one.
+That returns nothing as of 2026-10-06.
 
 ---
 
@@ -20,8 +19,6 @@ run is open. The dry-run plan's boxes are never ticked: it describes a run, it d
 | Plan | Status |
 |---|---|
 | [`2026-08-01-copy-pass-and-gallery-descriptions.md`](2026-08-01-copy-pass-and-gallery-descriptions.md) | **Tracks A and C wait on the user's first draft.** Track B is done (Entry 118); the render path for `description` now exists, so the copy is data only. |
-| [`2026-10-06-next-step-cleanup-icons-mistrust-shxdowloop.md`](2026-10-06-next-step-cleanup-icons-mistrust-shxdowloop.md) | **In progress** on `shxdowloop/2026-10-06/next-step-cleanup-icons-mistrust`: this archive, the logo download kit on the Brand page, and the numbered Mistrust bibliography. |
-| [`2026-10-06-next-step-cleanup-icons-mistrust-shxdowloop-dry-run.md`](2026-10-06-next-step-cleanup-icons-mistrust-shxdowloop-dry-run.md) | The dry run for the plan above, kept for its fact base (file lists, sizes, reference greps). Archive both together once the loop merges. |
 
 ## Complete
 
@@ -31,7 +28,7 @@ text:
 
 - 2026-08-09: all 23 plans finished by then ([stubs](../archives/plans.md#consolidation-stubs-2026-08-09));
 - 2026-10-04: the two shipped on 2026-08-10 ([stubs](../archives/plans.md#consolidation-stubs-2026-10-04));
-- 2026-10-06: the three shipped in the Portfolio release, Entry 142 ([stubs](../archives/plans.md#consolidation-stubs-2026-10-06)).
+- 2026-10-06: the three shipped in the Portfolio release, Entry 142 ([stubs](../archives/plans.md#consolidation-stubs-2026-10-06)), then the next-step loop's two ([stubs](../archives/plans.md#consolidation-stubs-2026-10-06-b)).
 
 A plan is archived only once it is in git history, since the recovery path is `git show`. This
 directory holds only plans with work still open: a plan sitting here means something is unfinished.

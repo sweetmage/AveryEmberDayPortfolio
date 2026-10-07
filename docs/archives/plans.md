@@ -5,7 +5,7 @@ All completed, cancelled, and superseded implementation plans consolidated from 
 ## Table of Contents
 
 ### Retired stubs (2026-10-06)
-The three plans shipped in the 2026-10-06 Portfolio release — see [Consolidation Stubs — 2026-10-06](#consolidation-stubs-2026-10-06).
+The three plans shipped in the 2026-10-06 Portfolio release, and the two from the next-step loop that followed it — see [Consolidation Stubs — 2026-10-06](#consolidation-stubs-2026-10-06) and [its second batch](#consolidation-stubs-2026-10-06-b).
 
 ### Retired stubs (2026-10-04)
 The two plans shipped in the 2026-08-10 release — see [Consolidation Stubs — 2026-10-04](#consolidation-stubs-2026-10-04).
@@ -1936,3 +1936,21 @@ git show 7ea4215:docs/plans/2026-10-06-focus-ring-and-test-runner-shxdowloop.md
 | `docs/plans/2026-10-04-focus-ring-stagger-archive.md` | Shipped. The three "non-accent" focus rings were a Tailwind v4 `outline-color` transition, not a missing rule; the gallery filter entrance stagger; the archive of the two 2026-08-10 plans. Entries 134–135, released in Entry 142. |
 | `docs/plans/2026-10-05-combine-projects-gallery.md` | Shipped. Projects and Gallery became one `/portfolio/` page, with spectrum-outlined project tiles linking to per-project pages and 301s from the old URLs. Entries 138–139, released after a five-area fresh signoff in Entry 142. |
 | `docs/plans/2026-10-06-focus-ring-and-test-runner-shxdowloop.md` | Shipped. Every focus stop paints the 2px accent ring (the 82 Mistrust source links and the contact fields were the last), and a bare `npx playwright test` collects `*.spec.js` only. Entry 140, released in Entry 142. |
+
+
+<a id="consolidation-stubs-2026-10-06-b"></a>
+# Consolidation Stubs — 2026-10-06, second batch
+
+The next-step shxdowloop's two plans, archived in the commit that merged the loop into
+`portfoliowebsite`. Both are in history at `de66bd4`:
+
+```bash
+git show de66bd4:docs/plans/2026-10-06-next-step-cleanup-icons-mistrust-shxdowloop.md
+git show de66bd4:docs/plans/2026-10-06-next-step-cleanup-icons-mistrust-shxdowloop-dry-run.md
+```
+
+| Removed file | Outcome |
+|---|---|
+| `docs/plans/2026-10-06-next-step-cleanup-icons-mistrust-shxdowloop.md` | Shipped. Logo download kit on `/portfolio/brand/` (SVG + PNG per card), four unused files deleted, the 82 Mistrust sources numbered by a CSS counter, the first batch above archived; Moonlight rode along. Final signoff degraded at its cap (both Codex rounds PASS on content, voided for truncated reads of the minified `style.css`) and **accepted by the user** ("accept the signoff, merge it and ship"). Entries 143, 144, 146. |
+| `docs/plans/2026-10-06-next-step-cleanup-icons-mistrust-shxdowloop-dry-run.md` | The dry run for the plan above: its fact base (file lists, sizes, reference greps). Entry 143. |
+

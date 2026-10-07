@@ -31,6 +31,7 @@ When this logbook exceeds ~1000 lines, split it:
 - Final signoff (trigger: data deletion), Codex gpt-6-luna on a frozen worktree: round 1 PASS with doc nits but voided by the launcher (truncated diff read); nits applied (plan 16 to 24 baselines, phases ticked, C2 record).
 - ? The Blue swatch caption says #9acdff; the logo files are #7eb8ff. User's call, carried in TODO.
 - Signoff round 2 (--run-id next-step-cleanup-signoff, per-file reads): PASS text, voided again; the truncation was the one-line minified style.css diff, which a fresh css:build reproduces exactly. Cap reached, so the signoff is degraded, not passed. Recorded as a blocking TODO for the release; the user decides. Round 2 nits applied.
+- The user accepted the degraded signoff and approved the release ("accept the signoff, merge it and ship"). Loop plans archived (stubs 2026-10-06, second batch, recovery at de66bd4); release gate removed from TODO.
 
 ---
 
