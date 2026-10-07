@@ -29,20 +29,11 @@ before a push ships in the same deploy.
       them makes both lines span the full 1400px container, which on a two-sentence paragraph is a real
       visual change — hence a user call rather than a silent fix.
 
-- [ ] **Standalone "A History of Mistrust" viewer page** with all canonical slide content and a
-      numbered bibliography. Slides and a Sources section currently live inside the Projects tab.
-- [ ] **Ten orphaned icon files still ship, 40 KB total.** Found by the same audit that cleared the
-      6 MB of Mistrust sources (Entry 129), left alone because the payload argument is weak at this
-      size and they sit beside assets the site does use. Six are wrong-format twins of live files:
-      `bubbleLogo-black.png` / `bubbleLogo-white.png` (the `.svg` versions are what
-      `BrandProject.tsx` renders) and `bubbleLogo-black-notxt.svg` / `bubbleLogo-blue-notxt.svg`
-      (the `.png` versions are the referenced ones). The rest are `bubbleLogo.svg`,
-      `bubbleLogo_transparent.svg`, and `githubicon.svg` / `linkedinicon.svg` / `emailicon.svg`,
-      which lost their consumer when the footer moved to inline SVG.
-      **Decide the intent, not just the delete:** if the twins are meant to be a downloadable brand
-      kit, they should be linked from the Brand project page rather than sitting unreferenced; if
-      not, they go. Verify with `grep -rn` across `app/`, `index.html` and `projects/*.html` before
-      removing — the audit's first pass had a regex bug that hid every path containing a space.
+- [ ] **The Blue logo's caption and its file disagree.** The Brand page captions the Blue swatch
+      `#9acdff` (`app/portfolio/BrandProject.tsx`), but `bubbleLogo.png` and `bubbleLogo.svg` are painted
+      `#7eb8ff` (sampled by the 2026-10-06 plan review). The page now offers those files as downloads,
+      so a caption that doesn't match the file is more visible than before. **User's call**: fix the
+      caption, recolour the files, or confirm `#7eb8ff` is the logo's own shade.
 - [ ] **A stray white rectangle paints under the nav in WebKit only** (~79 × 17 CSS px, left edge,
       directly below the spectrum bar, home page). Found 2026-08-09 while fixing the theme toggle
       (Entry 127); pre-existing and unrelated to it, so it was flagged rather than folded in.
@@ -110,6 +101,15 @@ Full detail in `LOGBOOK.md` (newest-first). Plan docs live in `docs/plans/`; ear
 consolidated in [`docs/archives/plans.md`](docs/archives/plans.md).
 
 ### 2026-10
+
+- **Oct 6** — **Logo download kit, numbered Mistrust bibliography, plan archive.** Every logo card on
+  `/portfolio/brand/` links its SVG and PNG (12 files, the user's choice over deleting the orphaned
+  format twins); a duplicate SVG and the three third-party social icons were deleted. The 82 Mistrust
+  sources are an `<ol>` numbered 1–82 by a CSS counter in the existing hanging indent. The standalone
+  viewer TODO closed: the page exists since the Portfolio merge, and the slide words are its alt text
+  and lightbox captions (the user's call: no visible transcript). The three plans shipped on Oct 4–6
+  were archived. On `shxdowloop/2026-10-06/next-step-cleanup-icons-mistrust`, with Moonlight (Entry 145);
+  not merged. Entries 143, 146.
 
 - **Oct 6** — **RELEASED: the Portfolio.** One page for the work at `/portfolio/` (spectrum-outlined
   project tiles, then the gallery), each project on its own page, old `/projects/` and `/gallery/`

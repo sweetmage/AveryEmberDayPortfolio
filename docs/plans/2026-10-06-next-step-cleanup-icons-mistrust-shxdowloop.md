@@ -89,8 +89,8 @@ the user's call and gets flagged in the handoff, not changed. A CSS-counter fall
 **Phases:**
 - [x] 1.1 Explore (main agent, done in the dry run and at the gate: refs, md5 duplicates, Brand component, focus/hover contracts)
 - [x] 1.2 Plan review, one round, `oracle`: PASS, findings applied
-- [ ] 1.3 Tracks A, B, C (main agent, serial: usage gate)
-- [ ] 1.3b Diff read, focused specs on the Mac, `css:build`, interim commit `shxdowloop stage 1a: archive, logo kit, numbered bibliography`, push
+- [x] 1.3 Tracks A, B, C (main agent, serial: usage gate)
+- [x] 1.3b Diff read, focused specs on the Mac, `css:build`, interim commit `8231725`, pushed
 - [ ] 1.4 Track C2: 16 baselines on SOL (8 `portfolio-brand-*`, 8 `portfolio-mistrust-*`)
 - [ ] 1.5 Focused suite + `test:docs` + `tsc` + `next build`
 - [ ] 1.6 Main agent's diff read, LOGBOOK, TODO, checkpoint, push
@@ -146,8 +146,13 @@ not touch `brand.css`. `TODO.md`, `LOGBOOK.md` and this plan are written by the 
 | Docs tests / types / build | `npm run test:docs`, `npx tsc --noEmit`, `npx next build` | 8/8, clean, builds; `out/images/icons/githubicon.svg` absent; all 12 kit hrefs present in `out/` |
 
 **Helpers:** `oracle` (1.2), `builder` x3 (A, B, C), main agent (C2), nano pro on Codex (1.7).
-**Checkpoint:** _pending_
-**Notes:** _pending_
+**Checkpoint:** `8231725` (stage 1a, interim at the usage limit, Entry 144). Then `edb1a17` arrived: Moonlight, committed to this branch by another session (Lunebyte, Entry 145). At the resume gate the user chose "Ship it with this loop", so C2 expects **24** changed baselines: 8 `portfolio-*` (the new card), 8 `portfolio-brand-*`, 8 `portfolio-mistrust-*`.
+**Notes:**
+- Resume (usage back to 38%): the non-visual suite (10 spec files) passed **161/161** in 3.3m on the Mac, Moonlight included.
+- The `out/` build holds all 12 kit files and none of the 4 deleted ones.
+- Sources screenshots (1440 light, 360 dark) were reviewed: numbers 1-82 sit in the hang, and wrapped lines align with the text.
+- The kit was reviewed at 1440 dark and 360 dark, with its focus ring.
+- One test fix during 1.3b: the alignment spec first treated every inline fragment as a line start. It now takes the leftmost rect per line.
 
 ## Signoff triggers
 

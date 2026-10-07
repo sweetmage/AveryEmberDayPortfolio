@@ -143,4 +143,19 @@ test.describe('brand logo download kit', () => {
       expect(res.status(), k.href).toBe(200);
     }
   });
+
+  /* The first cut put the links beside the description, which wrapped
+     "Favicon, app icon" at 1024px: one taller label strip, one shorter logo
+     canvas. Every strip must match at the widths the visual gate captures. */
+  for (const width of [360, 768, 1024, 1440]) {
+    test(`logo label strips share one height @ ${width}px`, async ({ page }) => {
+      await page.setViewportSize({ width, height: 900 });
+      await page.goto(`${BASE_URL}/portfolio/brand/`, { waitUntil: 'networkidle' });
+      const heights = await page.locator('.logo-swatch-label').evaluateAll((els) =>
+        els.map((el) => Math.round(el.getBoundingClientRect().height)),
+      );
+      expect(heights).toHaveLength(6);
+      expect(new Set(heights).size, `heights: ${heights}`).toBe(1);
+    });
+  }
 });

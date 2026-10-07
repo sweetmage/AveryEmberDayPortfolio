@@ -87,24 +87,27 @@ function LogoSwatch({ swatch }: { swatch: Swatch }) {
       >
         <img src={swatch.src} alt={swatch.alt} loading="lazy" decoding="async" />
       </div>
-      <div className="logo-swatch-label brand-frame-divider flex items-center justify-between gap-3 border-t px-4 py-3 [&_span]:font-body [&_span]:text-xs [&_span]:text-text-muted [&_strong]:block [&_strong]:font-body [&_strong]:text-sm [&_strong]:font-medium [&_strong]:text-text">
-        <div className="min-w-0">
+      {/* The links share the name's row, not the description's: beside the
+          description they squeezed "Favicon, app icon" onto a second line at
+          1024px, and that one taller strip shrank its card's canvas. */}
+      <div className="logo-swatch-label brand-frame-divider border-t px-4 py-3 [&_span]:font-body [&_span]:text-xs [&_span]:text-text-muted [&_strong]:block [&_strong]:font-body [&_strong]:text-sm [&_strong]:font-medium [&_strong]:text-text">
+        <div className="flex items-baseline justify-between gap-3">
           <strong>{swatch.label}</strong>
-          <span>{swatch.desc}</span>
+          <div className="flex shrink-0 gap-3">
+            {DOWNLOAD_FORMATS.map((fmt) => (
+              <a
+                key={fmt}
+                className="logo-download"
+                href={`/images/icons/BubbleLogo/${swatch.file}.${fmt}`}
+                download
+                aria-label={`Download ${swatch.alt} as ${fmt.toUpperCase()}`}
+              >
+                {fmt.toUpperCase()}
+              </a>
+            ))}
+          </div>
         </div>
-        <div className="flex shrink-0 gap-3">
-          {DOWNLOAD_FORMATS.map((fmt) => (
-            <a
-              key={fmt}
-              className="logo-download"
-              href={`/images/icons/BubbleLogo/${swatch.file}.${fmt}`}
-              download
-              aria-label={`Download ${swatch.alt} as ${fmt.toUpperCase()}`}
-            >
-              {fmt.toUpperCase()}
-            </a>
-          ))}
-        </div>
+        <span>{swatch.desc}</span>
       </div>
     </div>
   );
