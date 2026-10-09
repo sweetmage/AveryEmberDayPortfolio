@@ -18,6 +18,23 @@ When this logbook exceeds ~1000 lines, split it:
 
 ---
 
+## Entry 149 - 2026-10-09
+
+**Agent:** Claude Opus 5.5 (lumen, VOID), main
+**Cycle:** shxdowloop, Stage 1
+**Task:** Print mockups under each gallery description; Gross on a skateboard deck; collaborate with wren on the next full push.
+**Branch:** shxdowloop/2026-10-09/print-mockups
+
+- User calls before bed: generated scenes + real art composited; show mockups now (descriptions not ready, none written); stop at the branch, no merge or deploy; wren not yet started.
+- Image route: Codex delegate rejected default model gpt-6-sol on this ChatGPT account (worked around per call with -m gpt-5.5, config untouched); first skateboard came back illustrated with trucks over the graphic; then the Codex usage limit hit (resets Oct 30). Codex's own fallback living-room was a flat drawing with a seam at x=640, discarded. Scenes are now drawn in code (scripts/generate-mockups.js), with a photo background+placement override ready for later.
+- Built: images/mockups/mockups.json (single source), generator + images:mockups script, 12 mockups + 24 variants (18-85 KB), GalleryMockup data, one panel for description+mockup with aria-controls, mockup decoded before the expand transition, .gallery-mockup capped like the art, tests/gallery-mockups.spec.js (chromium + webkit-mobile), AGENTS.md generator note.
+- Verification: tsc clean; non-visual suite 183/183 in 145s (est 200); collapsed card heights pinned to 20860ef at 360/768/1024/1440 (visual baselines capture collapsed cards only, so the 40 do not move); expanded cards reviewed at 360/1440/2560/3440 in both themes; all 12 mockups reviewed on a contact sheet; generator deterministic (sha match across runs).
+- Reviews: plan review native oracle (Opus 5.5), 1 round, PASS with 9 findings, all applied. Final signoff: no trigger met (checked auth, installers, safety rules, review contract, publishing, billing, deletion, messaging); main-agent diff read.
+- Wren: absent at every ListAgents check (preflight, stage start, stage end); handoff kept in TODO.md.
+- ? For the user: the 12 alt strings in gallery-data.ts are agent-written copy, worth a read. Photo scenes can replace the drawn ones after Oct 30 if wanted.
+
+---
+
 ## Entry 148 - 2026-10-09
 
 **Agent:** Claude Opus 5.5 (lumen, VOID), main

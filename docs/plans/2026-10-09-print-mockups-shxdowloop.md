@@ -65,7 +65,7 @@ User decisions, 2026-10-09 (structured questions before bed):
 
 ## Stage 1 - Mockups end to end
 
-**Status:** Active
+**Status:** Complete
 **Goal:** Generate scenes, composite all 12 mockups, render them in the expanded card, tested.
 One stage: there is no owner gate inside the run (the user is asleep and chose "stop at the
 branch"), so the only boundary is the stage checkpoint.
@@ -117,7 +117,7 @@ poster: Chill, Lollipop, Texas Lake Landscape; skateboard: Gross.
 - Collapsed layout unchanged: a before/after `getBoundingClientRect` of every collapsed card at
   1440 and 360 is identical (the visual gate cannot run here).
 
-**Checkpoint:** _pending_
+**Checkpoint:** `39a1b07` (pushed to the loop branch), docs `see Checkpoint log`
 
 ### Plan review (native oracle, Opus 5.5, round 1 of 1): PASS, 9 findings, all applied
 
@@ -166,13 +166,16 @@ later without code changes. Track A is folded into Track B.
 
 ## Merge readiness checklist
 
-- [ ] Stage 1 checkpoint pushed to the loop branch
-- [ ] Suite green, spec green, collapsed layout unchanged
-- [ ] Every mockup reviewed by eye
-- [ ] Wren contacted or handoff note written
+- [x] Stage 1 checkpoint pushed to the loop branch (`39a1b07`)
+- [x] Suite green (183/183), spec green on chromium and webkit-mobile, collapsed heights pinned to `20860ef`
+- [x] Every mockup reviewed by eye (contact sheet), expanded cards at 360/1440/2560/3440 both themes
+- [x] Wren absent at every check; handoff kept in `TODO.md`
 - [ ] Before merging (user, morning): the 16 contact/brand baselines on SOL from Entry 148, then one
       production push (15 credits)
 
 ## Checkpoint log
 
-_none yet_
+- `48fab5b` plan; `ac41eb0` manifest + review applied + route change; `39a1b07` Stage 1 (code,
+  12 mockups, 24 variants, spec, AGENTS.md note); docs commit after it (LOGBOOK Entry 149, TODO,
+  architecture map refresh). All pushed to `origin/shxdowloop/2026-10-09/print-mockups`.
+- Final signoff: no trigger met; main-agent diff read only.

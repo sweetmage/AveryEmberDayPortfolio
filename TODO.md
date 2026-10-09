@@ -32,10 +32,13 @@ before a push ships in the same deploy.
 
 ### In flight: print mockups (overnight shxdowloop, Oct 9)
 
-- [ ] **Print mockups under each gallery description; Gross on a skateboard deck.** Branch
+- [~] **Print mockups: built, waiting on the user's review.** Branch
       `shxdowloop/2026-10-09/print-mockups`, plan
-      [`docs/plans/2026-10-09-print-mockups-shxdowloop.md`](docs/plans/2026-10-09-print-mockups-shxdowloop.md).
-      Stops at the branch (user's call): no merge, no deploy.
+      [`docs/plans/2026-10-09-print-mockups-shxdowloop.md`](docs/plans/2026-10-09-print-mockups-shxdowloop.md),
+      Entry 149. 12 mockups in the expanded card (Gross on a skateboard deck). Scenes are drawn in
+      code because the Codex image quota ran out (resets Oct 30); photo scenes can drop in through
+      `images/mockups/mockups.json` later. **Review the 12 alt strings** in `gallery-data.ts`
+      (agent-written copy). Not merged, not deployed.
 - [ ] **Handoff to wren for the next full push.** Wren was not running at any check during the
       overnight run. The next full push is: review the mockup branch, regenerate the 16
       contact/brand baselines on SOL (Entry 148), merge into `portfoliowebsite`, one production
