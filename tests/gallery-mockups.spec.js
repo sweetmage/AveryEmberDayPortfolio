@@ -60,14 +60,24 @@ const card = (page, caption) =>
 
 test.describe('gallery print mockups', () => {
   test('declared mockups mirror the manifest', () => {
-    expect(manifest.items).toHaveLength(12);
-    expect(declared).toHaveLength(12);
+    expect(manifest.items).toHaveLength(24);
+    expect(declared).toHaveLength(24);
     for (const item of manifest.items) {
-      const entry = declared.find((d) => d.slug === item.slug);
-      expect(entry, `gallery-data.ts has a mockup for ${item.slug}`).toBeTruthy();
-      expect(entry.kind).toBe(item.kind);
+      const entry = declared.find((d) => d.slug === item.slug && d.kind === item.kind);
+      expect(entry, `gallery-data.ts has the ${item.kind} mockup for ${item.slug}`).toBeTruthy();
       const size = item.kind === 'skateboard' ? manifest.output.skateboard : manifest.output.wall;
       expect([entry.width, entry.height]).toEqual([size.width, size.height]);
+    }
+  });
+
+  test('every piece has two mockups, each a different kind in a different scene', () => {
+    const bySlug = {};
+    for (const item of manifest.items) (bySlug[item.slug] ||= []).push(item);
+    expect(Object.keys(bySlug)).toHaveLength(12);
+    for (const [slug, rows] of Object.entries(bySlug)) {
+      expect(rows, slug).toHaveLength(2);
+      expect(rows[0].kind, slug).not.toBe(rows[1].kind);
+      expect(rows[0].scene, slug).not.toBe(rows[1].scene);
     }
   });
 
@@ -93,8 +103,9 @@ test.describe('gallery print mockups', () => {
       await page.setViewportSize({ width, height: 900 });
       await page.goto(`${BASE_URL}/portfolio/`, { waitUntil: 'networkidle' });
 
-      // No mockup node may exist in a collapsed card.
+      // No mockup node, and no wrapper, may exist in a collapsed card.
       await expect(page.locator('.gallery-mockup')).toHaveCount(0);
+      await expect(page.locator('.gallery-mockups')).toHaveCount(0);
 
       const expected = BASE_COLLAPSED_HEIGHTS[width];
       for (const caption of CAPTIONS) {
@@ -105,13 +116,14 @@ test.describe('gallery print mockups', () => {
     });
   }
 
-  test('no card shows a mockup while collapsed; expanding shows exactly one', async ({ page }) => {
+  test('no card shows a mockup while collapsed; expanding shows exactly two', async ({ page }) => {
     await page.emulateMedia({ reducedMotion: 'reduce' });
     await page.setViewportSize({ width: 1440, height: 900 });
     await page.goto(`${BASE_URL}/portfolio/`, { waitUntil: 'networkidle' });
 
     for (const caption of CAPTIONS) {
       await expect(card(page, caption).locator('.gallery-mockup')).toHaveCount(0);
+      await expect(card(page, caption).locator('.gallery-mockups')).toHaveCount(0);
     }
 
     for (const caption of CAPTIONS) {
@@ -119,23 +131,24 @@ test.describe('gallery print mockups', () => {
       await button.click();
       await expect(button).toHaveAttribute('aria-expanded', 'true');
 
-      const mockup = card(page, caption).locator('.gallery-mockup');
-      await expect(mockup).toHaveCount(1);
-      await expect(page.locator('.gallery-mockup')).toHaveCount(1);
-      expect((await mockup.getAttribute('alt')).trim().length).toBeGreaterThan(0);
-      // It must stay a bare <img>: `img` is a bubble exclusion selector by tag.
-      expect(await mockup.evaluate((el) => el.tagName)).toBe('IMG');
-
-      await expect
-        .poll(() => mockup.evaluate((el) => el.complete && el.naturalWidth), { timeout: 10000 })
-        .toBeGreaterThan(0);
+      const mockups = card(page, caption).locator('.gallery-mockup');
+      await expect(mockups).toHaveCount(2);
+      await expect(page.locator('.gallery-mockup')).toHaveCount(2);
+      for (const mockup of await mockups.all()) {
+        expect((await mockup.getAttribute('alt')).trim().length).toBeGreaterThan(0);
+        // It must stay a bare <img>: `img` is a bubble exclusion selector by tag.
+        expect(await mockup.evaluate((el) => el.tagName)).toBe('IMG');
+        await expect
+          .poll(() => mockup.evaluate((el) => el.complete && el.naturalWidth), { timeout: 10000 })
+          .toBeGreaterThan(0);
+      }
 
       // aria-controls points at a real element that holds the mockup.
       const controls = await button.getAttribute('aria-controls');
       expect(controls).toBeTruthy();
       const panel = page.locator(`[id="${controls}"]`);
       await expect(panel).toHaveCount(1);
-      await expect(panel.locator('.gallery-mockup')).toHaveCount(1);
+      await expect(panel.locator('.gallery-mockup')).toHaveCount(2);
 
       await button.click();
       await expect(button).toHaveAttribute('aria-expanded', 'false');
@@ -143,15 +156,16 @@ test.describe('gallery print mockups', () => {
     }
   });
 
-  test("Gross's mockup is the skateboard", async ({ page }) => {
+  test("one of Gross's mockups is the skateboard", async ({ page }) => {
     await page.emulateMedia({ reducedMotion: 'reduce' });
     await page.setViewportSize({ width: 1440, height: 900 });
     await page.goto(`${BASE_URL}/portfolio/`, { waitUntil: 'networkidle' });
 
     await toggle(page, 'Gross').click();
-    const mockup = card(page, 'Gross').locator('.gallery-mockup');
-    await expect(mockup).toHaveCount(1);
-    expect(await mockup.getAttribute('src')).toContain('gross-skateboard');
+    const mockups = card(page, 'Gross').locator('.gallery-mockup');
+    await expect(mockups).toHaveCount(2);
+    const srcs = await mockups.evaluateAll((els) => els.map((el) => el.getAttribute('src')));
+    expect(srcs.some((src) => src.includes('gross-skateboard'))).toBe(true);
   });
 
   test('expanding with motion on leaves the mockup decoded when the transition ends', async ({ page }) => {
@@ -178,13 +192,19 @@ test.describe('gallery print mockups', () => {
 
     const state = await page.evaluate(async () => {
       if (window.__vtFinished) await window.__vtFinished.catch(() => {});
-      const img = document.querySelector('.gallery-mockup');
-      if (!img) return null;
-      await img.decode().catch(() => {});
-      return { complete: img.complete, naturalWidth: img.naturalWidth, ranTransition: window.__vtFinished !== null };
+      const imgs = [...document.querySelectorAll('.gallery-mockup')];
+      if (imgs.length === 0) return null;
+      await Promise.all(imgs.map((img) => img.decode().catch(() => {})));
+      return {
+        count: imgs.length,
+        complete: imgs.every((img) => img.complete),
+        naturalWidth: Math.min(...imgs.map((img) => img.naturalWidth)),
+        ranTransition: window.__vtFinished !== null,
+      };
     });
 
     expect(state, 'mockup is mounted after the transition').not.toBeNull();
+    expect(state.count).toBe(2);
     expect(state.ranTransition).toBe(true);
     expect(state.complete).toBe(true);
     expect(state.naturalWidth).toBeGreaterThan(0);

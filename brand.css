@@ -1736,24 +1736,52 @@ button.brand-chip:hover {
     overflow: visible;
 }
 
-/* The print mockup under an expanded card's description. Sized like the art, for
-   the same reason: the screen cap is applied to the WIDTH, converted through the
-   ratio (`--mockup-aspect`, inline from the mockup's real dimensions), because a
-   max-height percentage cannot resolve here and would let a tall skateboard
-   mockup run past one screen. Same `--art-cap` budget, so an expanded card is at
-   most about two screens. It mounts only while expanded, so collapsed cards are
-   untouched. The frame rounds, the picture does not: the image keeps the site's
-   square-image rule (`img { border-radius: 0 }`) and sits inset in the card's
-   `p-4` padding, so no radius is set here. */
+/* The two print mockups under an expanded card's description. Each is sized
+   like the art, for the same reason: the screen cap is applied to the WIDTH,
+   converted through the ratio (`--mockup-aspect`, inline from the mockup's real
+   dimensions), because a max-height percentage cannot resolve here and would let
+   a tall skateboard mockup run past its cap. They mount only while expanded, so
+   collapsed cards are untouched. The frame rounds, the picture does not: the
+   images keep the site's square-image rule (`img { border-radius: 0 }`) and sit
+   inset in the card's `p-4` padding, so no radius is set here.
+
+   Stacked below md, so each is capped at 60% of the screen: two full-screen
+   mockups under a full-screen artwork made an expanded card about three screens
+   tall on a phone. From md up they sit side by side as a justified row: each
+   grows in proportion to its own ratio (`--mockup-ratio`, a plain number, since
+   `flex-grow` cannot take `16 / 9`), which gives both the SAME height. Equal
+   columns instead left Gross's portrait deck a full column tall beside a
+   landscape print a third of its height. */
+.gallery-mockups {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1rem;
+    align-items: center;
+    margin-top: 1rem;
+}
+
 .gallery-mockup {
     --mockup-aspect: 1.5;
-    --mockup-cap: calc(100dvh - var(--brand-top-overlay));
+    --mockup-cap: calc(60dvh - var(--brand-top-overlay));
 
     display: block;
-    margin: 1rem auto 0;
+    margin: 0 auto;
     aspect-ratio: var(--mockup-aspect);
     height: auto;
     width: min(100%, calc(var(--mockup-cap) * var(--mockup-aspect)));
+}
+
+@media (min-width: 768px) {
+    .gallery-mockups {
+        display: flex;
+    }
+
+    .gallery-mockup {
+        flex: var(--mockup-ratio, 1.5) 1 0;
+        min-width: 0;
+        width: auto;
+        margin: 0;
+    }
 }
 
 /* ── Portfolio: project tiles ────────────────────────────────────────

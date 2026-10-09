@@ -27,6 +27,12 @@ const gallerySizes =
    is the safe direction of that error. */
 const expandedSizes = '92vw';
 
+/* The two print mockups sit side by side from md up, so each is drawn at about
+   half the expanded card. One constant for the <img> AND its warm-up probe: if
+   the two ever disagree, the probe decodes a rung the page never asks for and
+   the mockup pops in after the transition again. */
+const mockupSizes = '(min-width: 768px) 46vw, 92vw';
+
 /* Expanding flips `sizes` from ~46vw to 92vw, so the browser re-runs srcset
    selection and begins fetching a LARGER rung at the exact moment the view
    transition takes its "after" snapshot. The <img> then paints stale-or-blank
@@ -54,14 +60,14 @@ function warmExpandedArt(item: GalleryItem): Promise<unknown> {
   probe.src = encodeURI(item.src);
   const decodes = [probe.decode().catch(() => undefined)];
 
-  /* The mockup mounts in the same commit the transition snapshots, so left cold
-     it pops in after the animation ends. Same probe recipe, and the same shared
-     budget below: the two decodes run in parallel, not one after the other. */
-  if (item.mockup) {
+  /* The mockups mount in the same commit the transition snapshots, so left cold
+     they pop in after the animation ends. Same probe recipe, and the same shared
+     budget below: every decode runs in parallel, not one after the other. */
+  for (const mockup of item.mockups) {
     const mockupProbe = new window.Image();
-    mockupProbe.sizes = expandedSizes;
-    mockupProbe.srcset = buildSrcSet(item.mockup.src, item.mockup.width, SRCSET_VARIANTS);
-    mockupProbe.src = encodeURI(item.mockup.src);
+    mockupProbe.sizes = mockupSizes;
+    mockupProbe.srcset = buildSrcSet(mockup.src, mockup.width, SRCSET_VARIANTS);
+    mockupProbe.src = encodeURI(mockup.src);
     decodes.push(mockupProbe.decode().catch(() => undefined));
   }
 
@@ -661,7 +667,7 @@ export default function GalleryGrid({ items }: GalleryGridProps) {
             {placedItems.map(({ item, columnStart }) => {
               const isExpanded = expandedSrc === item.src;
               const hasDescription = item.description.trim().length > 0;
-              const hasPanel = hasDescription || Boolean(item.mockup);
+              const hasPanel = hasDescription || item.mockups.length > 0;
               const panelId = `gallery-desc-${indexBySrc.get(item.src)}`;
 
               return (
@@ -778,28 +784,38 @@ export default function GalleryGrid({ items }: GalleryGridProps) {
                         All 12 descriptions are '' until the user's copy pass
                         lands, and shipping placeholder prose into
                         gallery-data.ts would put a lie in the file someone
-                        eventually publishes; the mockup alone keeps the panel
+                        eventually publishes; the mockups alone keep the panel
                         alive until then. The description stays first and keeps
-                        its markup. The mockup mounts only while expanded, so a
-                        collapsed card has no extra node, margin or height. It
-                        is a bare <img> on purpose: `img` is a bubble exclusion
+                        its markup. The mockups and their wrapper mount only
+                        while expanded, so a collapsed card has no extra node,
+                        margin or height. Each is a bare <img> on purpose: `img` is a bubble exclusion
                         selector by tag, so wrapping or retagging it would drop
                         it out of the physics zones silently. */}
                     {hasPanel && (
                       <div id={panelId}>
                         {hasDescription && <p className="gallery-desc">{item.description}</p>}
-                        {isExpanded && item.mockup && (
-                          <img
-                            src={item.mockup.src}
-                            srcSet={buildSrcSet(item.mockup.src, item.mockup.width, SRCSET_VARIANTS)}
-                            sizes={expandedSizes}
-                            width={item.mockup.width}
-                            height={item.mockup.height}
-                            alt={item.mockup.alt}
-                            decoding="async"
-                            style={{ '--mockup-aspect': `${item.mockup.width} / ${item.mockup.height}` } as React.CSSProperties}
-                            className="gallery-mockup"
-                          />
+                        {isExpanded && item.mockups.length > 0 && (
+                          <div className="gallery-mockups">
+                            {item.mockups.map((mockup) => (
+                              <img
+                                key={mockup.src}
+                                src={mockup.src}
+                                srcSet={buildSrcSet(mockup.src, mockup.width, SRCSET_VARIANTS)}
+                                sizes={mockupSizes}
+                                width={mockup.width}
+                                height={mockup.height}
+                                alt={mockup.alt}
+                                decoding="async"
+                                style={
+                                  {
+                                    '--mockup-aspect': `${mockup.width} / ${mockup.height}`,
+                                    '--mockup-ratio': mockup.width / mockup.height,
+                                  } as React.CSSProperties
+                                }
+                                className="gallery-mockup"
+                              />
+                            ))}
+                          </div>
                         )}
                       </div>
                     )}
