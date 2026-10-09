@@ -74,10 +74,10 @@ branch"), so the only boundary is the stage checkpoint.
 
 | Track | Owner | Scope (files) | Depends on |
 |---|---|---|---|
-| A - scenes | main + Codex delegate | `images/mockups/scenes/*.png` (4 scenes), `images/mockups/scenes.json` placements | - |
-| B - compositor | native builder | `scripts/generate-mockups.js` (new), `scripts/generate-image-variants.js` (add Mockups to MANIFEST), `package.json` script `images:mockups` | develops against a synthetic test scene; the real run waits on A |
-| C - render | native builder | `app/portfolio/gallery-data.ts` (interface + 12 `mockup` entries), `app/portfolio/GalleryGrid.tsx` (render), `brand.css` (`.gallery-mockup`), `tests/gallery-mockups.spec.js` (new) | the output naming contract below; the file-existence test passes only after B's real run |
-| D - integrate | main | run B on A's scenes, review every mockup visually, run suite, docs | A, B, C |
+| M - manifest | main | `images/mockups/mockups.json` | - (done before B and C) |
+| B - generator | native builder | `scripts/generate-mockups.js` (new), `scripts/generate-image-variants.js` (add Mockups to MANIFEST), `package.json` script `images:mockups` | M |
+| C - render | native builder | `app/portfolio/gallery-data.ts`, `app/portfolio/GalleryGrid.tsx`, `brand.css`, `playwright.config.js`, `tests/gallery-mockups.spec.js` (new) | M; file-existence assertions go green only after D's run |
+| D - integrate | main | real generator run, `public/images/myart/Mockups/*` (12 + 24 variants), `style.css`, AGENTS.md note, docs | B, C |
 
 **Output naming contract (shared by B and C):**
 `public/images/myart/Mockups/<slug>-<kind>.webp` at 1600px on the long edge, plus `-480w` and
@@ -118,6 +118,39 @@ poster: Chill, Lollipop, Texas Lake Landscape; skateboard: Gross.
   1440 and 360 is identical (the visual gate cannot run here).
 
 **Checkpoint:** _pending_
+
+### Plan review (native oracle, Opus 5.5, round 1 of 1): PASS, 9 findings, all applied
+
+| # | Finding | Resolution |
+|---|---|---|
+| F1 | webkit-mobile `testMatch` only runs nav-safari and focus-ring | `playwright.config.js` added to Track C; the new spec joins webkit-mobile |
+| F2 | C cannot know mockup dimensions | Fixed canvas per kind in `images/mockups/mockups.json`: wall 1600x1067, skateboard 1067x1600 |
+| F3 | No single owner of slug/art/kind mapping | `images/mockups/mockups.json`, written by main before B and C start; B reads it, C mirrors it |
+| F4 | No concurrency cap | Native: 2 builders + main. Nano unused |
+| F5 | D row names no files | D owns the real generator run, the 36 output files, `style.css` (`npm run css:build`), docs |
+| F6 | "Pixel-exact" contradicts shading | Contract reworded: wall kinds place the art's own pixels, scaled, with frame/edge/shadow drawn OUTSIDE the art rectangle; the skateboard is the one stated exception (deck shading multiplied over the art, as a real print on a curved deck reads) |
+| F7 | Mockup pops in after the expand transition | `warmExpandedArt` also decodes the mockup before the transition; motion-enabled test asserts the mockup is decoded (`naturalWidth > 0`) once expanded |
+| F8 | Collapsed check incomplete | "Before" measured at base `20860ef`, all four widths (360/768/1024/1440); expanded layout screenshots at 2560 and 3440, both themes |
+| F9 | `aria-controls` never points at the mockup | Description and mockup share one panel; `aria-controls` set whenever the panel has content |
+
+Nits applied: TODO.md item and plans README index; wren handoff lives in TODO.md (AGENTS.md:10) not
+`docs/handoffs/`; spec asserts `-480w`/`-900w` variants exist; variants script never run with
+`--force`, and `git status` must show no change to existing gallery variants; alt strings follow
+AGENTS.md copy rules and are listed for the user's review; spec is serial; suite command named;
+LOGBOOK, AGENTS.md generator note and `shxdowmap refresh --auto` at wrap.
+
+### Route change: scenes drawn in code (2026-10-09 ~01:10)
+
+The Codex image delegate failed in three ways: the configured default model `gpt-6-sol` is rejected
+on this ChatGPT account (worked around per call with `-m gpt-5.5`, user config untouched); one
+skateboard scene came back as a flat illustration with trucks covering the graphic area; then the
+account hit its Codex usage limit ("try again at Oct 30th, 2026"). Codex's own fallback for the
+living room was a flat vector drawing with a visible seam at x=640, not shipped. agy is not
+installed and the billed API is not authorised. Per the imagegen skill the route is now **drawn in
+code**: minimal plastered walls (colour, fine noise texture, directional light falloff, floor
+strip) and a bare maple deck on concrete, all in `scripts/generate-mockups.js`. The generator takes
+an optional photo `background` + `placement` per scene so real photo scenes can replace any slot
+later without code changes. Track A is folded into Track B.
 
 ## Open risks
 

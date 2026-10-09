@@ -30,6 +30,17 @@ before a push ships in the same deploy.
       now"). Needs the user's go-ahead to use SOL.
 - [ ] **Watermark artwork.** User's own task.
 
+### In flight: print mockups (overnight shxdowloop, Oct 9)
+
+- [ ] **Print mockups under each gallery description; Gross on a skateboard deck.** Branch
+      `shxdowloop/2026-10-09/print-mockups`, plan
+      [`docs/plans/2026-10-09-print-mockups-shxdowloop.md`](docs/plans/2026-10-09-print-mockups-shxdowloop.md).
+      Stops at the branch (user's call): no merge, no deploy.
+- [ ] **Handoff to wren for the next full push.** Wren was not running at any check during the
+      overnight run. The next full push is: review the mockup branch, regenerate the 16
+      contact/brand baselines on SOL (Entry 148), merge into `portfoliowebsite`, one production
+      push (15 credits). All of it waits on the user's go-ahead.
+
 ### Blocked on a prerequisite
 
 - [ ] **Run the visual gate in CI.** Not blocked on a decision — that was made 2026-07-23

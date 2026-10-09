@@ -1,0 +1,28 @@
+{
+  "$comment": "Single source for print mockups: which artwork, which kind, which scene. Read by scripts/generate-mockups.js; app/portfolio/gallery-data.ts mirrors slug/kind/size. Plan: docs/plans/2026-10-09-print-mockups-shxdowloop.md",
+  "output": {
+    "dir": "public/images/myart/Mockups",
+    "wall": { "width": 1600, "height": 1067 },
+    "skateboard": { "width": 1067, "height": 1600 }
+  },
+  "scenes": {
+    "living":  { "wall": "#ece6dc", "floor": "#b9ab98", "light": "left" },
+    "studio":  { "wall": "#d9d8d4", "floor": "#c9b79c", "light": "left" },
+    "bedroom": { "wall": "#d8b9a0", "floor": "#8e6b52", "light": "right" },
+    "concrete": { "floor": "#c4c2bd" }
+  },
+  "items": [
+    { "slug": "in-danger",            "art": "public/images/myart/Gallery/SelfPortraitSeries/Self Portrait Series - In Danger - Final.webp", "kind": "canvas",     "scene": "living" },
+    { "slug": "chill",                "art": "public/images/myart/Gallery/chillFinal.webp",            "kind": "poster",     "scene": "bedroom" },
+    { "slug": "gross",                "art": "public/images/myart/Gallery/grossFinal.webp",            "kind": "skateboard", "scene": "concrete", "focusX": 0.5 },
+    { "slug": "emergence",            "art": "public/images/myart/Gallery/EmergenceFinal.webp",        "kind": "canvas",     "scene": "studio" },
+    { "slug": "faces",                "art": "public/images/myart/Gallery/FacesFinal.webp",            "kind": "framed",     "scene": "studio" },
+    { "slug": "lollipop",             "art": "public/images/myart/Gallery/lollypopFinal.webp",         "kind": "poster",     "scene": "living" },
+    { "slug": "overflow",             "art": "public/images/myart/Gallery/overflowFinal.webp",         "kind": "canvas",     "scene": "bedroom" },
+    { "slug": "stairs",               "art": "public/images/myart/Gallery/stairsFinal.webp",           "kind": "framed",     "scene": "living" },
+    { "slug": "beheaded",             "art": "public/images/myart/Gallery/beheadedFinal.webp",         "kind": "canvas",     "scene": "studio" },
+    { "slug": "shadow",               "art": "public/images/myart/Gallery/ShadowFinal.webp",           "kind": "framed",     "scene": "bedroom" },
+    { "slug": "texas-lake-landscape", "art": "public/images/myart/Gallery/txlakelandscapeFinal.webp",  "kind": "poster",     "scene": "studio" },
+    { "slug": "moonlight",            "art": "public/images/myart/Gallery/MoonlightFinal.webp",        "kind": "framed",     "scene": "living" }
+  ]
+}
