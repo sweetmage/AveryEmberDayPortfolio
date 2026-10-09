@@ -40,7 +40,7 @@ export default defineConfig({
       // thing this repo only trusts after seeing it in more than one engine.
       // Needs `npx playwright install webkit` once per machine.
       name: 'webkit-mobile',
-      testMatch: /(nav-safari|focus-ring)\.spec\.js/,
+      testMatch: /(nav-safari|focus-ring|gallery-mockups)\.spec\.js/,
       use: { ...devices['iPhone 13'] },
     },
   ],

@@ -171,6 +171,8 @@ Do NOT use these in `bash` tool calls (they are PowerShell-specific and often fa
 
 `node scripts/generate-mistrust-assets.js [--all]` — rebuild the "A History of Mistrust" webp assets (30 slides × 2 sizes + 3 set strips) into **both** `images/` and `public/`. Run after any Figma re-export of those PNGs.
 
+`npm run images:mockups` — rebuild the gallery print mockups (`public/images/myart/Mockups/<slug>-<kind>.webp` plus `-480w`/`-900w`) from `images/mockups/mockups.json`, the single source for which piece gets which kind (`canvas`, `framed`, `poster`, `skateboard`) and scene. Scenes are drawn in code and deterministic; a wall-kind mockup places the artwork's own pixels, scaled only, with frame, edge and shadow drawn outside them, while the skateboard multiplies deck shading over the art on purpose. A scene can take a photo `background` + `placement` later with no code change. `gallery-data.ts` mirrors slug, kind and size, and `tests/gallery-mockups.spec.js` fails if the two drift. Never run the variants script with `--force`.
+
 > Default mode rebuilds only sources whose **content** changed per `git status`, not mtime — a Figma re-export rewrites the mtime of all 30 PNGs even when only a few differ, and rebuilding all of them re-encodes unchanged slides with a different libwebp build, producing 60 files of byte noise that hides the real diff.
 >
 > The wide `sets/set-N.webp` strips are composed from the individual slide PNGs, **not** from the `sets/A History of Mistrust Set N.png` exports — those were verified defective on 2026-07-27 (Set 1 clipped, Set 3 containing Set 2's slides; Entry 106). Tiles are laid out at native width, not fixed 1080px slots, because slide 21 is 1056px wide.

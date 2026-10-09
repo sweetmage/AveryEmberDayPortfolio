@@ -52,9 +52,21 @@ function warmExpandedArt(item: GalleryItem): Promise<unknown> {
   probe.sizes = expandedSizes;
   probe.srcset = buildSrcSet(item.src, item.width, SRCSET_VARIANTS);
   probe.src = encodeURI(item.src);
+  const decodes = [probe.decode().catch(() => undefined)];
+
+  /* The mockup mounts in the same commit the transition snapshots, so left cold
+     it pops in after the animation ends. Same probe recipe, and the same shared
+     budget below: the two decodes run in parallel, not one after the other. */
+  if (item.mockup) {
+    const mockupProbe = new window.Image();
+    mockupProbe.sizes = expandedSizes;
+    mockupProbe.srcset = buildSrcSet(item.mockup.src, item.mockup.width, SRCSET_VARIANTS);
+    mockupProbe.src = encodeURI(item.mockup.src);
+    decodes.push(mockupProbe.decode().catch(() => undefined));
+  }
 
   return Promise.race([
-    probe.decode().catch(() => undefined),
+    Promise.all(decodes),
     new Promise((resolve) => window.setTimeout(resolve, DECODE_BUDGET_MS)),
   ]);
 }
@@ -649,6 +661,7 @@ export default function GalleryGrid({ items }: GalleryGridProps) {
             {placedItems.map(({ item, columnStart }) => {
               const isExpanded = expandedSrc === item.src;
               const hasDescription = item.description.trim().length > 0;
+              const hasPanel = hasDescription || Boolean(item.mockup);
               const panelId = `gallery-desc-${indexBySrc.get(item.src)}`;
 
               return (
@@ -693,7 +706,7 @@ export default function GalleryGrid({ items }: GalleryGridProps) {
                     type="button"
                     className="gallery-item-toggle"
                     aria-expanded={isExpanded}
-                    aria-controls={hasDescription ? panelId : undefined}
+                    aria-controls={hasPanel ? panelId : undefined}
                     aria-label={`${isExpanded ? 'Collapse' : 'Expand'} ${item.caption}`}
                     onClick={() => handleToggle(item.src)}
                   />
@@ -759,16 +772,36 @@ export default function GalleryGrid({ items }: GalleryGridProps) {
                         ))}
                       </div>
                     )}
-                    {/* Rendered only when there is copy to show. All 11
-                        descriptions are '' until the user's copy pass lands, and
-                        shipping placeholder prose into gallery-data.ts would put
-                        a lie in the file someone eventually publishes. Until
-                        then, expanding grows the art; when the copy arrives the
-                        text appears with no code change. */}
-                    {hasDescription && (
-                      <p id={panelId} className="gallery-desc">
-                        {item.description}
-                      </p>
+                    {/* One panel for everything the toggle reveals, so
+                        `aria-controls` has a single target whichever of the two
+                        exists. Rendered only when there is something to show.
+                        All 12 descriptions are '' until the user's copy pass
+                        lands, and shipping placeholder prose into
+                        gallery-data.ts would put a lie in the file someone
+                        eventually publishes; the mockup alone keeps the panel
+                        alive until then. The description stays first and keeps
+                        its markup. The mockup mounts only while expanded, so a
+                        collapsed card has no extra node, margin or height. It
+                        is a bare <img> on purpose: `img` is a bubble exclusion
+                        selector by tag, so wrapping or retagging it would drop
+                        it out of the physics zones silently. */}
+                    {hasPanel && (
+                      <div id={panelId}>
+                        {hasDescription && <p className="gallery-desc">{item.description}</p>}
+                        {isExpanded && item.mockup && (
+                          <img
+                            src={item.mockup.src}
+                            srcSet={buildSrcSet(item.mockup.src, item.mockup.width, SRCSET_VARIANTS)}
+                            sizes={expandedSizes}
+                            width={item.mockup.width}
+                            height={item.mockup.height}
+                            alt={item.mockup.alt}
+                            decoding="async"
+                            style={{ '--mockup-aspect': `${item.mockup.width} / ${item.mockup.height}` } as React.CSSProperties}
+                            className="gallery-mockup"
+                          />
+                        )}
+                      </div>
                     )}
                   </figcaption>
                 </figure>

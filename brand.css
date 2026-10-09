@@ -1736,6 +1736,26 @@ button.brand-chip:hover {
     overflow: visible;
 }
 
+/* The print mockup under an expanded card's description. Sized like the art, for
+   the same reason: the screen cap is applied to the WIDTH, converted through the
+   ratio (`--mockup-aspect`, inline from the mockup's real dimensions), because a
+   max-height percentage cannot resolve here and would let a tall skateboard
+   mockup run past one screen. Same `--art-cap` budget, so an expanded card is at
+   most about two screens. It mounts only while expanded, so collapsed cards are
+   untouched. The frame rounds, the picture does not: the image keeps the site's
+   square-image rule (`img { border-radius: 0 }`) and sits inset in the card's
+   `p-4` padding, so no radius is set here. */
+.gallery-mockup {
+    --mockup-aspect: 1.5;
+    --mockup-cap: calc(100dvh - var(--brand-top-overlay));
+
+    display: block;
+    margin: 1rem auto 0;
+    aspect-ratio: var(--mockup-aspect);
+    height: auto;
+    width: min(100%, calc(var(--mockup-cap) * var(--mockup-aspect)));
+}
+
 /* ── Portfolio: project tiles ────────────────────────────────────────
    One tile per project on /portfolio/, each a single link to the project's own
    page. The user's ask (2026-10-05) is that it reads as "this opens another page"

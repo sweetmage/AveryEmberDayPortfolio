@@ -14,6 +14,11 @@ const sharp = require('sharp');
 
 const ROOT = path.join(__dirname, '..');
 
+// Print mockups come from the same manifest generate-mockups.js reads.
+const mockups = JSON.parse(
+  fs.readFileSync(path.join(ROOT, 'images/mockups/mockups.json'), 'utf8')
+);
+
 const MANIFEST = [
   { src: 'public/images/projects/brand-thumb.jpg', widths: [480, 960] },
   { src: 'public/images/projects/mistrust-thumb.jpg', widths: [480] },
@@ -37,6 +42,10 @@ const MANIFEST = [
     'txlakelandscapeFinal.webp',
   ].map((f) => ({
     src: `public/images/myart/Gallery/${f}`,
+    widths: [480, 900],
+  })),
+  ...mockups.items.map((it) => ({
+    src: `${mockups.output.dir}/${it.slug}-${it.kind}.webp`,
     widths: [480, 900],
   })),
 ];
