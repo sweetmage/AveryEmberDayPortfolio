@@ -179,3 +179,29 @@ later without code changes. Track A is folded into Track B.
   12 mockups, 24 variants, spec, AGENTS.md note); docs commit after it (LOGBOOK Entry 149, TODO,
   architecture map refresh). All pushed to `origin/shxdowloop/2026-10-09/print-mockups`.
 - Final signoff: no trigger met; main-agent diff read only.
+
+## Stage 2 - Two mockups per piece (user, 2026-10-09: "i want each one to have 2 mockups")
+
+**Status:** Active
+**Goal:** Every gallery piece shows two mockups in its expanded card, each a different kind in a
+different scene. Gross keeps the skateboard (the user's specific ask) and adds a poster.
+
+**Approach (main agent; 6 work files, one coupled change, so no parallel tracks: every file reads
+the manifest shape this stage changes):**
+
+| Track | Owner | Scope | Depends on |
+|---|---|---|---|
+| A | main | `images/mockups/mockups.json` (one entry per mockup, so `items` holds 24 rows, two per slug; `<slug>-<kind>` stays unique because a piece's two kinds always differ) | - |
+| B | main | `scripts/generate-mockups.js` (`--only <slug>` builds both of a slug's mockups; nothing else should change), run it plus `generate-image-variants.js` (MANIFEST already derives from the manifest) | A |
+| C | main | `app/portfolio/gallery-data.ts` (`mockup?` becomes `mockups: GalleryMockup[]`, 12 new entries + alt text in the same pattern), `GalleryGrid.tsx` (render both inside one `.gallery-mockups` wrapper div; each stays a bare `<img>`; `warmExpandedArt` decodes both in the same shared budget), `brand.css` (`.gallery-mockups`: one column below 768px, two columns at md+, items centred; each image keeps the art-style width cap), `style.css` rebuild, `tests/gallery-mockups.spec.js` (24 declared, two per expanded card, Gross includes `gross-skateboard`) | A |
+
+Second mockups (first unchanged): in-danger framed/studio; chill canvas/studio; gross poster/living;
+emergence poster/bedroom; faces canvas/living; lollipop framed/bedroom; overflow framed/living;
+stairs poster/studio; beheaded poster/bedroom; shadow canvas/living; texas-lake-landscape
+canvas/bedroom; moonlight canvas/studio. Result: 6 canvas, 6 framed, 6 poster, 1 skateboard... per
+kind across 24: canvas 7, framed 7, poster 7... (counted in verification, not asserted).
+
+**Verification:** generator 24 files + 48 variants, deterministic; contact sheet of all 24 reviewed
+by eye; tsc; non-visual suite green (estimate ~150s from the last run); collapsed heights still
+match `20860ef` (the spec pins them); expanded card captures at 360/1440/2560/3440 in both themes,
+including Gross (mixed portrait deck + landscape poster in one row).
