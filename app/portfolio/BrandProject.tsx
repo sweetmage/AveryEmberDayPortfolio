@@ -5,7 +5,7 @@ const primarySwatches = [
     alt: 'Blue logo with text',
     bg: '#0A0A0A',
     label: 'Blue',
-    desc: 'Dark backgrounds · #9acdff',
+    desc: 'Dark backgrounds · #7eb8ff',
   },
   {
     src: '/images/icons/BubbleLogo/bubbleLogo-black.svg',

@@ -15,7 +15,7 @@ export default function ThanksPage() {
       <h1 className="mb-4 font-display text-[clamp(2rem,5vw,3rem)] leading-[1.1] text-text">
         Thank You
       </h1>
-      <p className="m-0 max-w-[480px] font-body text-base leading-[1.7] text-text-soft">
+      <p className="m-0 font-body text-base leading-[1.7] text-text-soft">
         Your message has been sent. I&apos;ll get back to you as soon as I can.
       </p>
       <Link

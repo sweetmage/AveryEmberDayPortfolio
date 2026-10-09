@@ -23,28 +23,11 @@ before a push ships in the same deploy.
 
 ### Ready to build now
 
-- [ ] **Two prose measure caps survived the 2026-07-31 "no measure caps" direction.**
-      `max-w-[560px]` on the Contact intro and `max-w-[480px]` on the thanks-page paragraph. The About
-      box, Contact form and `.project-desc` caps were all removed then; these two were missed. Removing
-      them makes both lines span the full 1400px container, which on a two-sentence paragraph is a real
-      visual change — hence a user call rather than a silent fix.
-
-- [ ] **The Blue logo's caption and its file disagree.** The Brand page captions the Blue swatch
-      `#9acdff` (`app/portfolio/BrandProject.tsx`), but `bubbleLogo.png` and `bubbleLogo.svg` are painted
-      `#7eb8ff` (sampled by the 2026-10-06 plan review). The page now offers those files as downloads,
-      so a caption that doesn't match the file is more visible than before. **User's call**: fix the
-      caption, recolour the files, or confirm `#7eb8ff` is the logo's own shade.
-- [ ] **A stray white rectangle paints under the nav in WebKit only** (~79 × 17 CSS px, left edge,
-      directly below the spectrum bar, home page). Found 2026-08-09 while fixing the theme toggle
-      (Entry 127); pre-existing and unrelated to it, so it was flagged rather than folded in.
-      **Do not re-derive what is already ruled out:** `elementsFromPoint` reports nothing painting
-      there, and it survives disabling the spectrum bar's `filter`, the bar entirely,
-      `.brand-page-bg`, `.brand-page-noise`, `.skip-link`, `.brand-hero-blob`, and
-      `position: sticky` on the nav (that last one does change it). Reads as a WebKit
-      compositing/tiling artifact around the sticky nav.
-      **First step is confirmation on real hardware** — the only evidence is headless Playwright
-      WebKit on Windows, which may not represent iOS Safari at all. If it does not reproduce on the
-      user's iPhone or iPad, close this.
+- [ ] **Regenerate the 16 contact and brand visual baselines on SOL before the next push.** The
+      Oct 9 caps removal moves the Contact intro's line breaks and the Blue caption text changed, so
+      `contact-*` and `portfolio-brand-*` (8 each) will fail the gate. Baselines are `chromium-win32`;
+      procedure in [`docs/visual-gate.md`](docs/visual-gate.md) (Trap 7, "Where baselines come from
+      now"). Needs the user's go-ahead to use SOL.
 - [ ] **Watermark artwork.** User's own task.
 
 ### Blocked on a prerequisite
@@ -61,9 +44,9 @@ before a push ships in the same deploy.
 - [ ] **Copy pass — remainder of Tracks A and C.** **The About box** (Entry 119, user's draft
       published verbatim) **and the Contact intro** (Entry 120, rewritten to stop duplicating the
       About's closing invitation) **are done**; 16 baselines regenerated and reviewed between them.
-      Still waiting on the user's draft for: **11 gallery descriptions** and **both project
-      summaries**. **The user writes the first draft; the agent proofreads only.**
-      `GalleryItem.description` is `''` on all 11 items and the render path now exists (Entry 118), so
+      Still waiting on the user's draft for: **12 gallery descriptions** (Moonlight, added Oct 6,
+      made it 12) and **both project summaries**. **The user writes the first draft; the agent
+      proofreads only.** `GalleryItem.description` is `''` on all 12 items and the render path now exists (Entry 118), so
       the gallery side is pure data. Still outstanding from the plan: `alt` becomes a real image
       description (the captions already became `<h3>` titles in Entry 118). Plan:
       [`docs/plans/2026-08-01-copy-pass-and-gallery-descriptions.md`](docs/plans/2026-08-01-copy-pass-and-gallery-descriptions.md).
@@ -101,6 +84,15 @@ Full detail in `LOGBOOK.md` (newest-first). Plan docs live in `docs/plans/`; ear
 consolidated in [`docs/archives/plans.md`](docs/archives/plans.md).
 
 ### 2026-10
+
+- **Oct 9** — **The last two prose measure caps are gone** (`max-w-[560px]` on the Contact intro,
+  `max-w-[480px]` on the thanks page), at the user's yes. **The Blue logo caption now reads
+  `#7eb8ff`**, the colour both `bubbleLogo` files are painted (re-sampled: 75,229 opaque PNG pixels,
+  one fill in the SVG). The palette's "Brand Blue" chip keeps `#9acdff`, since it documents the
+  `--brand-ir-4` token, not the logo. Committed locally, not pushed. Entry 148.
+- **Oct 9** — **Closed without doing: the WebKit-only white rectangle under the nav**, at the
+  user's call. Only ever seen in headless Playwright WebKit on Windows; the ruled-out list is in
+  Entry 127 if it ever comes back on real hardware.
 
 - **Oct 6** — **RELEASED: logo download kit, numbered Mistrust bibliography, Moonlight.** Every logo
   card on `/portfolio/brand/` links its SVG and PNG; a duplicate SVG and three third-party icons were

@@ -1,37 +1,17 @@
 {
   "version": "1.0",
-  "generatedAt": "2026-08-04T00:59:32.460Z",
+  "generatedAt": "2026-10-09T07:52:14.310Z",
   "source": "TODO.md",
   "tasks": [
     {
-      "id": "open-work-ready-to-build-now-gallery-expand-on-click-motion-track-b-t",
-      "title": "**Gallery expand-on-click + motion (Track B).** The largest ready piece of work, blocked on",
+      "id": "open-work-ready-to-build-now-regenerate-the-16-contact-and-brand-visu",
+      "title": "**Regenerate the 16 contact and brand visual baselines on SOL before the next push.** The",
       "description": null,
       "status": "pending",
       "priority": "normal",
       "tags": [],
       "list": "Ready to build now",
-      "sourceLine": 25
-    },
-    {
-      "id": "open-work-ready-to-build-now-standalone-a-history-of-mistrust-viewer-",
-      "title": "**Standalone \"A History of Mistrust\" viewer page** with all canonical slide content and a",
-      "description": null,
-      "status": "pending",
-      "priority": "normal",
-      "tags": [],
-      "list": "Ready to build now",
-      "sourceLine": 34
-    },
-    {
-      "id": "open-work-ready-to-build-now-public-ships-6-mb-of-unreferenced-source",
-      "title": "**`public/` ships ~6 MB of unreferenced source PNGs.** The 30 `Instagram post - N.png` files",
-      "description": null,
-      "status": "pending",
-      "priority": "normal",
-      "tags": [],
-      "list": "Ready to build now",
-      "sourceLine": 36
+      "sourceLine": 26
     },
     {
       "id": "open-work-ready-to-build-now-watermark-artwork-users-own-task",
@@ -41,7 +21,7 @@
       "priority": "normal",
       "tags": [],
       "list": "Ready to build now",
-      "sourceLine": 42
+      "sourceLine": 31
     },
     {
       "id": "open-work-blocked-on-a-prerequisite-run-the-visual-gate-in-ci-not-blocked-on",
@@ -51,17 +31,17 @@
       "priority": "normal",
       "tags": [],
       "list": "Blocked on a prerequisite",
-      "sourceLine": 59
+      "sourceLine": 35
     },
     {
-      "id": "open-work-waiting-on-the-users-draft-copy-pass-tracks-a-and-c-11-gallery-desc",
-      "title": "**Copy pass — Tracks A and C.** 11 gallery descriptions, plus rewrites of the About box,",
+      "id": "open-work-waiting-on-the-users-draft-copy-pass-remainder-of-tracks-a-and-c-th",
+      "title": "**Copy pass — remainder of Tracks A and C.** **The About box** (Entry 119, user's draft",
       "description": null,
       "status": "pending",
       "priority": "normal",
       "tags": [],
       "list": "Waiting on the user's draft",
-      "sourceLine": 68
+      "sourceLine": 44
     }
   ]
 }

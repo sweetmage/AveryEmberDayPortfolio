@@ -18,6 +18,21 @@ When this logbook exceeds ~1000 lines, split it:
 
 ---
 
+## Entry 148 - 2026-10-09
+
+**Agent:** Claude Opus 5.5 (lumen, VOID), main
+**Cycle:** shxdowflow: next-step decisions
+**Task:** Apply the user's calls on the three open decisions: 1 yes, 2 fix caption, 3 close.
+
+- Caps: removed max-w-[560px] from the Contact intro (app/contact/page.tsx:33) and max-w-[480px] from the thanks paragraph (app/contact/thanks/page.tsx:18); both now span the 1400px container.
+- Blue caption: re-sampled the files before editing. bubbleLogo.png is #7eb8ff on all 75,229 opaque pixels and bubbleLogo.svg has the one fill #7eb8ff; caption at app/portfolio/BrandProject.tsx:8 now reads #7eb8ff. The palette's Brand Blue chip keeps #9acdff because it documents --brand-ir-4 (brand.css:70), not the logo.
+- Closed without doing: the WebKit-only white rectangle under the nav, at the user's call.
+- TODO: gallery description count corrected 11 -> 12 (Moonlight); new item to regenerate the 16 contact-* and portfolio-brand-* baselines on SOL before the next push.
+- Verification: tsc clean; non-visual suite 165/165 on darwin, 167s against a 197s estimate. Visual baselines not run here (chromium-win32 only).
+- Signoff: no trigger met (checked auth, installers, safety rules, review contract, publishing, billing, deletion, messaging); main-agent diff read only. Committed locally, not pushed: a push is a 15-credit production deploy and the baselines must land first.
+
+---
+
 ## Entry 147 - 2026-10-06
 
 **Agent:** Claude Opus 5.5 (juniper, VOID), main

@@ -30,7 +30,7 @@ export default function ContactPage() {
           sentence — anyone reading About and then clicking through got it twice,
           which reads like filler. The invitation is made once, there; this page
           just says what happens next. */}
-      <p className="m-0 max-w-[560px] font-body text-base leading-[1.7] text-text-soft">
+      <p className="m-0 font-body text-base leading-[1.7] text-text-soft">
         Tell me what you&apos;re working on and I&apos;ll get back to you as soon as I
         can. If email is easier, my address is in the footer.
       </p>
