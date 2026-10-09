@@ -178,11 +178,12 @@ later without code changes. Track A is folded into Track B.
 - `48fab5b` plan; `ac41eb0` manifest + review applied + route change; `39a1b07` Stage 1 (code,
   12 mockups, 24 variants, spec, AGENTS.md note); docs commit after it (LOGBOOK Entry 149, TODO,
   architecture map refresh). All pushed to `origin/shxdowloop/2026-10-09/print-mockups`.
+- Stage 2: code commit + docs commit after `7200290` (LOGBOOK Entry 150), pushed.
 - Final signoff: no trigger met; main-agent diff read only.
 
 ## Stage 2 - Two mockups per piece (user, 2026-10-09: "i want each one to have 2 mockups")
 
-**Status:** Active
+**Status:** Complete
 **Goal:** Every gallery piece shows two mockups in its expanded card, each a different kind in a
 different scene. Gross keeps the skateboard (the user's specific ask) and adds a poster.
 
@@ -198,10 +199,40 @@ the manifest shape this stage changes):**
 Second mockups (first unchanged): in-danger framed/studio; chill canvas/studio; gross poster/living;
 emergence poster/bedroom; faces canvas/living; lollipop framed/bedroom; overflow framed/living;
 stairs poster/studio; beheaded poster/bedroom; shadow canvas/living; texas-lake-landscape
-canvas/bedroom; moonlight canvas/studio. Result: 6 canvas, 6 framed, 6 poster, 1 skateboard... per
-kind across 24: canvas 7, framed 7, poster 7... (counted in verification, not asserted).
+framed/bedroom; moonlight poster/studio (texas and moonlight moved off canvas at review N1 to
+balance the set). Result across 24: canvas 7, framed 8, poster 8, skateboard 1.
 
 **Verification:** generator 24 files + 48 variants, deterministic; contact sheet of all 24 reviewed
 by eye; tsc; non-visual suite green (estimate ~150s from the last run); collapsed heights still
 match `20860ef` (the spec pins them); expanded card captures at 360/1440/2560/3440 in both themes,
 including Gross (mixed portrait deck + landscape poster in one row).
+
+### Plan review (native oracle, Opus 5.5, round 1 of 1): PASS, 9 findings, applied
+
+- F1/F9: C's file checks ran after B's generator run; outputs named: 12 new mockups + 24 new
+  variants under `public/images/myart/Mockups/`; existing 12 + 24 byte-identical (git clean).
+- F2: kept single-owner: about 40 changed lines across tightly coupled files; a builder dispatch
+  costs more than the work. Stated here as the reason.
+- F3: the spec now asserts 24 rows, two per slug with distinct kind AND scene, and matches data to
+  manifest on slug + kind. Acceptance contract for this stage: every piece shows two mockups;
+  Gross's pair includes the skateboard.
+- F4: checkpoint, checklist and wren re-check recorded below.
+- F5: one `mockupSizes` constant (`(min-width: 768px) 46vw, 92vw`) for both the `<img>` and the
+  warm-up probe.
+- F6: the motion test asserts both mockups decoded after the transition.
+- F7: the `.gallery-mockups` wrapper mounts only while expanded; collapsed assertions cover it.
+- F8: below md each stacked mockup is capped at 60% of the screen, so a phone card is about 2.2
+  screens, not 3.
+- N3: 768 captured. N4: spec green on chromium and webkit-mobile (20/20).
+
+**Found in verification and fixed:** equal grid columns left Gross's portrait deck a full column
+tall beside a landscape poster a third its height. From md up the pair is now a justified row
+(`flex-grow` from each mockup's ratio), so both share one height (309px for Gross, 223px for
+two landscape mockups, measured).
+
+**Verification:** 24 mockups + 48 variants, existing files byte-identical; contact sheet of the
+12 new mockups reviewed; tsc clean; mockup spec 20/20 (chromium + webkit-mobile); non-visual suite
+185/185 in 172s (estimate 150); collapsed heights still match `20860ef`; expanded captures at
+360/768/1440/2560/3440 in both themes. Wren absent at the Stage 2 check.
+
+**Checkpoint:** recorded in the checkpoint log.

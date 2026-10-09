@@ -18,6 +18,22 @@ When this logbook exceeds ~1000 lines, split it:
 
 ---
 
+## Entry 150 - 2026-10-09
+
+**Agent:** Claude Opus 5.5 (lumen, VOID), main
+**Cycle:** shxdowloop, Stage 2
+**Task:** Two mockups per gallery piece (user: "i want each one to have 2 mockups").
+**Branch:** shxdowloop/2026-10-09/print-mockups
+
+- Manifest now holds two rows per piece, each a different kind in a different scene; 24 mockups (canvas 7, framed 8, poster 8, skateboard 1). Gross: skateboard deck plus a poster on a warm off-white wall. Generator needed no change; existing 12 mockups and 24 variants byte-identical.
+- Data: mockup? became mockups: GalleryMockup[] with 24 alt strings in the Stage 1 pattern. Render: both inside one .gallery-mockups wrapper that mounts only while expanded; one mockupSizes constant for the img and the warm-up probe.
+- Layout found in verification: equal columns left Gross's portrait deck a full column tall beside a landscape poster a third its height. md+ is now a justified row (flex-grow from each ratio), equal heights (Gross 309px, landscape pairs 223px). Below md they stack, capped at 60% of the screen each.
+- Verification: tsc; gallery-mockups spec 20/20 on chromium and webkit-mobile; non-visual suite 185/185 in 172s (est 150); collapsed heights still match 20860ef; expanded captures at 360/768/1440/2560/3440 both themes; new mockups reviewed on a contact sheet.
+- Reviews: plan review native oracle (Opus 5.5), 1 round, PASS, 9 findings applied (F2 kept single-owner with reason). Final signoff: no trigger met; main-agent diff read. Wren absent.
+- ? For the user: 24 alt strings to read; Gross's second mockup choice (poster) is one manifest line to change.
+
+---
+
 ## Entry 149 - 2026-10-09
 
 **Agent:** Claude Opus 5.5 (lumen, VOID), main
