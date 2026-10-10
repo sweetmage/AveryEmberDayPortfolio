@@ -10,8 +10,11 @@ How, in order of preference:
    launch config (`.claude/launch.json`: `npm run build:next && npx serve out -l 4400`), then hand
    over both:
    - `http://localhost:4400/<page>/` for this Mac;
-   - `http://<VOID tailscale IP>:4400/<page>/` for the phone or another machine on the tailnet
-     (VOID is `100.100.164.59`; `serve` binds every interface, so no extra flag is needed).
+   - `http://<this Mac's Tailscale IP>:4400/<page>/` for the phone or another machine on the
+     tailnet. The address lives in the private fleet memory (`~/.claude/memory/fleet.md`), never in
+     this repo, which is public. `serve` binds every interface, so the unreleased build is also
+     reachable from whatever LAN the Mac is on while the server runs: stop it once the review is
+     done.
    Prove both return 200 with `curl` before sending, and name the exact page and the interaction to
    try (for example "expand Gross").
 2. **A Netlify branch deploy** only with the user's yes: branch deploys are off
@@ -21,4 +24,4 @@ How, in order of preference:
 Never treat a production deploy as the review link: that is the launch itself, and it costs 15
 of 20 monthly credits.
 
-Keep the server running until the user has reviewed, and say it is running in the close.
+Keep the server running until the user has reviewed, say it is running in the close, and stop it after.

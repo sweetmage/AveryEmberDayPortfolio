@@ -10,7 +10,7 @@
     "test": "playwright test",
     "test:docs": "node --test tests/google-docs.test.js",
     "images:variants": "node scripts/generate-image-variants.js",
-    "images:mockups": "node scripts/generate-mockups.js && node scripts/generate-image-variants.js",
+    "images:mockups": "node scripts/generate-mockups.js && node scripts/generate-image-variants.js --only public/images/myart/Mockups/",
     "dev": "next dev",
     "build:next": "next build",
     "start": "next start"

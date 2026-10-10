@@ -168,45 +168,58 @@ test.describe('gallery print mockups', () => {
     expect(srcs.some((src) => src.includes('gross-skateboard'))).toBe(true);
   });
 
-  test('expanding with motion on leaves the mockup decoded when the transition ends', async ({ page }) => {
+  test('expanding with motion on paints both mockups from the first frame of the transition', async ({ page }) => {
     // Chromium's default is motion enabled; stated here because the whole point
     // is the view-transition path that reduced motion skips.
     await page.emulateMedia({ reducedMotion: 'no-preference' });
     await page.setViewportSize({ width: 1440, height: 900 });
+    /* Localhost serves a mockup in a few ms, so an unwarmed image is usually
+       ready by the time the transition ENDS, and a check there passed with the
+       warm-up deleted (proven 2026-10-09). 40ms of network latency, well under
+       the 200ms warm-up budget, makes the difference visible at the FIRST frame
+       (`ready`): warmed, both are decoded before the snapshot; cold, they are
+       still in flight. Latency comes from CDP, NOT `page.route`: routing turns
+       off the HTTP cache for the routed requests, so the real <img> refetched
+       what the warm-up had just loaded and the test failed on correct code. */
+    test.skip(test.info().project.name !== 'chromium', 'CDP network emulation is Chromium-only');
     await page.addInitScript(() => {
-      window.__vtFinished = null;
+      window.__vtAtReady = null;
       const original = document.startViewTransition;
       if (typeof original === 'function') {
         document.startViewTransition = function (callback) {
           const transition = original.call(this, callback);
-          window.__vtFinished = transition.finished;
+          window.__vtAtReady = transition.ready
+            .then(() =>
+              [...document.querySelectorAll('.gallery-mockup')].map((img) => ({
+                complete: img.complete,
+                naturalWidth: img.naturalWidth,
+              })),
+            )
+            .catch(() => 'ready-rejected');
           return transition;
         };
       }
     });
     await page.goto(`${BASE_URL}/portfolio/`, { waitUntil: 'networkidle' });
+    const cdp = await page.context().newCDPSession(page);
+    await cdp.send('Network.enable');
+    await cdp.send('Network.emulateNetworkConditions', {
+      offline: false,
+      latency: 40,
+      downloadThroughput: -1,
+      uploadThroughput: -1,
+    });
 
     const button = toggle(page, 'Gross');
     await button.click();
     await expect(button).toHaveAttribute('aria-expanded', 'true');
 
-    const state = await page.evaluate(async () => {
-      if (window.__vtFinished) await window.__vtFinished.catch(() => {});
-      const imgs = [...document.querySelectorAll('.gallery-mockup')];
-      if (imgs.length === 0) return null;
-      await Promise.all(imgs.map((img) => img.decode().catch(() => {})));
-      return {
-        count: imgs.length,
-        complete: imgs.every((img) => img.complete),
-        naturalWidth: Math.min(...imgs.map((img) => img.naturalWidth)),
-        ranTransition: window.__vtFinished !== null,
-      };
-    });
-
-    expect(state, 'mockup is mounted after the transition').not.toBeNull();
-    expect(state.count).toBe(2);
-    expect(state.ranTransition).toBe(true);
-    expect(state.complete).toBe(true);
-    expect(state.naturalWidth).toBeGreaterThan(0);
+    const atReady = await page.evaluate(() => window.__vtAtReady);
+    expect(atReady, 'the expand ran a view transition').not.toBeNull();
+    expect(atReady).toHaveLength(2);
+    for (const img of atReady) {
+      expect(img.complete).toBe(true);
+      expect(img.naturalWidth).toBeGreaterThan(0);
+    }
   });
 });

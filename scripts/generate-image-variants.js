@@ -52,11 +52,20 @@ const MANIFEST = [
 
 const force = process.argv.includes('--force');
 
+/* `--only <path prefix>` limits the run to matching sources. The mtime skip
+   below cannot tell a fresh checkout (every file the same age) from a stale
+   variant, so an unscoped run there re-encodes every gallery rung, and a
+   different libwebp build writes different bytes for unchanged art.
+   `images:mockups` scopes itself to the mockups this way. */
+const onlyIdx = process.argv.indexOf('--only');
+const only = onlyIdx >= 0 ? process.argv[onlyIdx + 1] : null;
+
 async function main() {
   let generated = 0;
   let skipped = 0;
 
   for (const { src, widths } of MANIFEST) {
+    if (only && !src.startsWith(only)) continue;
     const srcPath = path.join(ROOT, src);
     if (!fs.existsSync(srcPath)) {
       console.error(`MISSING SOURCE: ${src}`);

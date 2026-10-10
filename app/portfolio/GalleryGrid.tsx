@@ -787,8 +787,8 @@ export default function GalleryGrid({ items }: GalleryGridProps) {
                         eventually publishes; the mockups alone keep the panel
                         alive until then. The description stays first and keeps
                         its markup. The mockups and their wrapper mount only
-                        while expanded, so a collapsed card has no extra node,
-                        margin or height. Each is a bare <img> on purpose: `img` is a bubble exclusion
+                        while expanded; collapsed, the panel is an empty div
+                        with no margin or height, so the layout is unchanged. Each is a bare <img> on purpose: `img` is a bubble exclusion
                         selector by tag, so wrapping or retagging it would drop
                         it out of the physics zones silently. */}
                     {hasPanel && (

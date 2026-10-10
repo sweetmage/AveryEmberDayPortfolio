@@ -18,7 +18,7 @@ That returns nothing as of 2026-10-06.
 
 | Plan | Status |
 |---|---|
-| [`2026-10-09-print-mockups-shxdowloop.md`](2026-10-09-print-mockups-shxdowloop.md) | **Built on `shxdowloop/2026-10-09/print-mockups`, awaiting the user's review and merge.** A print mockup per gallery piece, under the description slot; Gross on a skateboard deck. Not merged. |
+| [`2026-10-09-print-mockups-shxdowloop.md`](2026-10-09-print-mockups-shxdowloop.md) | **Released from `shxdowloop/2026-10-09/print-mockups`.** Archive at the next sweep. Two print mockups per gallery piece (24), under the description slot; Gross on a skateboard deck. Released 2026-10-09. |
 | [`2026-08-01-copy-pass-and-gallery-descriptions.md`](2026-08-01-copy-pass-and-gallery-descriptions.md) | **Tracks A and C wait on the user's first draft.** Track B is done (Entry 118); the render path for `description` now exists, so the copy is data only. |
 
 ## Complete

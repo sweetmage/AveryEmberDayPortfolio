@@ -134,6 +134,7 @@ There is no server. Everything is a build step or browser runtime.
 | `npm run build:next` | `next build` -> static export into `out/`. |
 | `npm run css:build` | Tailwind CLI, `app.css` -> `style.css` (minified). Legacy site only. Commit the rebuilt file. |
 | `npm test` | Playwright: 171 tests as of 2026-08-10 (40 visual baselines + 32 gallery-expand + 25 Mistrust slideshow + 22 bubble + 21 webkit-mobile nav + 18 sticky-chrome + 6 set-strip + 4 smoke-next + 3 mobile-zoom). Verify with `--list`; this number goes stale. |
+| `npm run images:mockups` | Rebuild the 24 gallery print mockups from `images/mockups/mockups.json` (`scripts/generate-mockups.js`, scenes drawn in code) plus their `-480w`/`-900w` rungs, scoped with `--only` so no other variant is re-encoded. |
 | `npm run serve` | `serve . -l 8080` - **legacy root site only**, not the Next app. |
 
 **Build ordering trap:** `distDir` is `out`, so `build:next` deletes and recreates
@@ -171,7 +172,7 @@ No database, no ORM, no migrations. "Data" is TypeScript literals and image tree
 
 | Store | Location | Shape |
 |---|---|---|
-| Gallery items | [`app/portfolio/gallery-data.ts`](../app/portfolio/gallery-data.ts) | `GalleryItem[]` = `{ src, alt, caption, width, height, tags, tools, description }`. `tags` (Digital/Traditional) drive the filter and render `sr-only`; `tools` is the visible middot-separated line; `description` is `''` on every item and awaits the user's copy pass. The render path for it **exists** as of Entry 118 - `GalleryGrid` shows it clamped to one line on a collapsed card and in full on an expanded one, but only when the string is non-empty, so filling these in needs no code change. |
+| Gallery items | [`app/portfolio/gallery-data.ts`](../app/portfolio/gallery-data.ts) | `GalleryItem[]` = `{ src, alt, caption, width, height, tags, tools, description, mockups }`. `mockups` holds two print mockups per piece (`GalleryMockup`: src, size, alt, kind), mirrored from `images/mockups/mockups.json` and shown only in an expanded card, after the description. `tags` (Digital/Traditional) drive the filter and render `sr-only`; `tools` is the visible middot-separated line; `description` is `''` on every item and awaits the user's copy pass. The render path for it **exists** as of Entry 118 - `GalleryGrid` shows it clamped to one line on a collapsed card and in full on an expanded one, but only when the string is non-empty, so filling these in needs no code change. |
 | Project case studies | [`app/portfolio/BrandProject.tsx`](../app/portfolio/BrandProject.tsx), [`MistrustProject.tsx`](../app/portfolio/MistrustProject.tsx) | JSX, not data. No tag system on this page. |
 | Slide captions | `SLIDE_ALT` in [`app/portfolio/mistrustSlides.ts`](../app/portfolio/mistrustSlides.ts) | 30-entry array. Feeds both `<img alt>` and lightbox captions. Set title cards must land on indices 1 / 11 / 21 for the `Math.ceil(n / 10)` set math. Twelve entries were found misordered against the artwork in Entry 106 - verify against the images, not the order. |
 | Mistrust set strips | [`scripts/generate-mistrust-assets.js`](../scripts/generate-mistrust-assets.js) | Composes `set-N.webp` taking **pixels from the slide PNGs** and **geometry from the Figma `Set N.png` exports**, because slides 1 and 2 share a 19px band that naive cumulative-width layout draws twice (Entry 114). Guarded by width/height assertions and `tests/mistrust-sets.spec.js`. |
@@ -252,6 +253,7 @@ One Playwright suite, five kinds of test, **90 total**:
 | Smoke | `smoke-next.spec.js`, `smoke-interaction.spec.js` | Each route loads without console errors; tab switch and lightbox work. |
 | Visual gate | `visual-baseline.spec.js` | 40 snapshots = 5 pages x 4 breakpoints (360/768/1024/1440) x 2 themes. A real compare gate, not capture-only. |
 | Bubble engine | `bubbles-exclusion.spec.js` | 10 specs. Motion-enabled - the visual gate runs under `prefers-reduced-motion`, where the engine creates nothing. **Contains the suite's one known flake:** Contact form @ 1440px, ~1 run in 3 (Entry 118). |
+| Gallery mockups | `gallery-mockups.spec.js` | Two mockups per piece, files and sizes against the manifest, collapsed heights pinned to `20860ef`, and both mockups decoded at the expand transition's first frame (CDP latency, chromium; it fails with the warm-up removed). Also runs on webkit-mobile. |
 | Gallery expand | `gallery-expand.spec.js` | 17 specs. The other motion-enabled file. Covers the expand interaction, which the visual gate cannot see at all: it only ever captures the collapsed grid, under reduced motion. |
 | Set strips | `mistrust-sets.spec.js` | Holds the committed `set-N.webp` to its Figma export. Covers a blind spot: the app renders its own CSS mosaic from individual slides, so a broken strip is invisible to every other test. |
 
