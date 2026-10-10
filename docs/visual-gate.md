@@ -207,7 +207,10 @@ how every page renders in the gate, so **never drop one without regenerating all
 
 1. Shallow-clone the branch from the Mac into `%TEMP%\wt-portfolio-baselines`.
 2. `npm ci` and `npx playwright install chromium`.
-3. `--update-snapshots`, then **two** re-checks.
+3. `--update-snapshots=all`, then **two** re-checks. **Not** the bare flag: since Playwright 1.50
+   it means `changed`, which rewrites only captures that FAIL, and a change under the 500px floor
+   passes. On 2026-10-09 the footer's new Home link moved every page by 186-196px at md+, so the
+   bare flag left 26 baselines showing a footer without it while all 40 re-checks went green.
 4. Zip and `scp` the images back to the Mac, review every one, and commit.
 
 Before trusting a new machine or a reinstall, compare the pre-change commit first. All untouched
