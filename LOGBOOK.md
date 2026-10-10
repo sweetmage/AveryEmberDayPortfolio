@@ -18,6 +18,20 @@ When this logbook exceeds ~1000 lines, split it:
 
 ---
 
+## Entry 154 - 2026-10-09
+
+**Agent:** Claude Haiku 5.5 (quill, VOID), main agent
+**Cycle:** watermark overlay
+**Task:** Logo watermark pattern overlay, rendered on SOL
+
+- Source: images/icons/BubbleLogo/bubbleLogo-blue-notxt.png (the Blue mark, no text). Delegated to SOL: new Photoshop job creative-hub/sol/adobe/ps-watermark.ps1 (opacity baked in via merge-down). Run 20261009-180433-18774, 8%.
+- Output recompressed losslessly with a zlib level-9 re-encode (642 KB to 11 KB, same alpha: max 20/255, 57717 nonzero px). Installed at public/images/patterns/bubble-watermark.png.
+- Site: fixed layer .brand-page-watermark in brand.css (tile 200px, repeat), rendered in app/layout.tsx after the noise layer. Verified in the Next dev server (portfolio-next, port 3000) in dark and light themes: layer z -1, asset 200, no console errors, no horizontal overflow.
+- Not pushed: portfoliowebsite pushes deploy to production. Visual-gate baselines (40) will now differ and need a SOL regeneration before any release.
+- TODO: watermark item removed from Ready; Oct 9 Done bullet added. .claude/launch.json gains a portfolio-next config.
+
+---
+
 ## Entry 153 - 2026-10-09
 
 **Agent:** Claude Haiku 5.5 (quill, VOID), main agent

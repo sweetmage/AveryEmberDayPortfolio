@@ -23,8 +23,7 @@ before a push ships in the same deploy.
 
 ### Ready to build now
 
-- [ ] **Watermark artwork.** User's own task.
-
+_Nothing agent-ready. The watermark artwork is done locally (Oct 9 below), pending a push._
 
 ### Blocked on a prerequisite
 
@@ -81,6 +80,12 @@ consolidated in [`docs/archives/plans.md`](docs/archives/plans.md).
 
 ### 2026-10
 
+- **Oct 9** — **Logo watermark overlay, built and verified locally (not pushed).** The Blue logo
+  mark (`bubbleLogo-blue-notxt.png`) was faded to 8% opacity on SOL by a new Photoshop job,
+  `creative-hub/sol/adobe/ps-watermark.ps1`, then recompressed losslessly (642 KB to 11 KB).
+  It tiles on every page as a fixed layer under the content (`.brand-page-watermark` in
+  `brand.css`, rendered in `app/layout.tsx`). Checked in both themes in the Next dev server.
+  Pushing it deploys to production, so it waits for the user's go-ahead.
 - **Oct 9** — **RELEASED: print mockups, footer Home link, the last prose caps, the Blue caption.**
   Every gallery piece shows two print mockups in its expanded card (24 in all, scenes drawn in code;
   Gross on a skateboard deck plus a poster). Footer gains Home. All 40 baselines regenerated on SOL
