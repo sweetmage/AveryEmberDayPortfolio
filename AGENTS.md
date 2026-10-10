@@ -16,6 +16,15 @@ This is the canonical agent-facing source of truth for the `portfoliowebsite` re
 | `docs/archives/plans.md` | Completed/cancelled plan archive |
 | `docs/checkpoints/*.md` | Known-good restore points: deployed SHA, verified state, rollback steps |
 
+## Agent memories
+
+Repo-scoped standing rules live in `.agents/memories/`, one file per rule. Read the one whose
+trigger matches the task.
+
+| File | Read when |
+|---|---|
+| [`.agents/memories/review-links.md`](.agents/memories/review-links.md) | The user's review is needed before any launch: always hand them a browser link (local export server, Tailscale address for the phone) |
+
 ## Branch Policy
 
 **All changes must be committed to the `portfoliowebsite` branch.** Do not commit to `main` or `master` without explicit user direction.
