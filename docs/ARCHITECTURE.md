@@ -1,4 +1,4 @@
-<!-- shxdowmap: built=2026-10-09T08:16:14Z fingerprint=96d7ceaec6fbdc81573f814767d1a46a48c3ae11 handle=vesper -->
+<!-- shxdowmap: built=2026-10-10T00:55:34Z fingerprint=06ddcb16d12b225129c3bc8ccf975430dd930943 handle=vesper -->
 # Avery Ember Day Portfolio - Architecture
 
 > Source-of-truth map for agents. Prefer this over re-reading the tree.

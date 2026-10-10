@@ -18,6 +18,19 @@ When this logbook exceeds ~1000 lines, split it:
 
 ---
 
+## Entry 153 - 2026-10-09
+
+**Agent:** Claude Haiku 5.5 (quill, VOID), main agent
+**Cycle:** shxdowflow: next step
+**Task:** Refresh stale docs/ARCHITECTURE.md map
+
+- shxdowmap status read STALE (structural drift vs baseline); ran shxdowmap refresh --auto, which regenerated module-map, key-files, dependencies; status now fresh; baseline 06ddcb16.
+- Scope: docs-only. No app code, no TODO change, no push, no deploy.
+- Verification: shxdowmap status fresh; git status shows only docs/ARCHITECTURE.md and LOGBOOK.md.
+- Proposal approved by Avery in chat (Approve).
+
+---
+
 ## Entry 152 - 2026-10-09
 
 **Agent:** Claude Opus 5.5 (lumen, VOID), main
