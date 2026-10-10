@@ -29,6 +29,7 @@ When this logbook exceeds ~1000 lines, split it:
 - Advisory findings fixed before push (76b4448): motion test was vacuous (decode() before assert); now checks both mockups at transition ready under 40ms CDP latency, 8/8 pass, 5/5 fail with warm-up removed. page.route was tried first and rejected: it disables the HTTP cache, so the real img refetched and correct code failed (a probe-holding 'fix' built on that misreading was reverted). images:mockups scoped with --only. Tailscale IP removed from the public repo. Comment/ARCHITECTURE/plan drift; US spelling in alts.
 - Release: portfoliowebsite fast-forwarded 88c8091..76b4448 (12 commits), pushed once. Netlify deploy 6ac98a58 ready, not skipped, 30s, 15 credits. Live: 6 pages 200, 72/72 mockup files 200, footer Home, contact cap gone, Blue caption #7eb8ff, /projects/ 301; Gross expands with both mockups painted at 390 and 1440, zero console errors.
 - Suite before push: 184 passed + 1 skipped in 165s (est 175). Review server on :4400 stopped after release. Wren never appeared.
+- User reviewed the 24 mockup alt strings in gallery-data.ts (2026-10-09): approved as written.
 
 ---
 
