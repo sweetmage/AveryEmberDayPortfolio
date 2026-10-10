@@ -1,18 +1,8 @@
 {
   "version": "1.0",
-  "generatedAt": "2026-10-09T07:52:14.310Z",
+  "generatedAt": "2026-10-10T00:45:59.098Z",
   "source": "TODO.md",
   "tasks": [
-    {
-      "id": "open-work-ready-to-build-now-regenerate-the-16-contact-and-brand-visu",
-      "title": "**Regenerate the 16 contact and brand visual baselines on SOL before the next push.** The",
-      "description": null,
-      "status": "pending",
-      "priority": "normal",
-      "tags": [],
-      "list": "Ready to build now",
-      "sourceLine": 26
-    },
     {
       "id": "open-work-ready-to-build-now-watermark-artwork-users-own-task",
       "title": "**Watermark artwork.** User's own task.",
@@ -21,7 +11,7 @@
       "priority": "normal",
       "tags": [],
       "list": "Ready to build now",
-      "sourceLine": 31
+      "sourceLine": 26
     },
     {
       "id": "open-work-blocked-on-a-prerequisite-run-the-visual-gate-in-ci-not-blocked-on",
@@ -31,7 +21,7 @@
       "priority": "normal",
       "tags": [],
       "list": "Blocked on a prerequisite",
-      "sourceLine": 35
+      "sourceLine": 31
     },
     {
       "id": "open-work-waiting-on-the-users-draft-copy-pass-remainder-of-tracks-a-and-c-th",
@@ -41,7 +31,7 @@
       "priority": "normal",
       "tags": [],
       "list": "Waiting on the user's draft",
-      "sourceLine": 44
+      "sourceLine": 40
     }
   ]
 }

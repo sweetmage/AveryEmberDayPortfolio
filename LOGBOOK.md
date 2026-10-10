@@ -18,6 +18,20 @@ When this logbook exceeds ~1000 lines, split it:
 
 ---
 
+## Entry 152 - 2026-10-09
+
+**Agent:** Claude Opus 5.5 (lumen, VOID), main
+**Cycle:** release: print mockups + footer Home
+**Task:** Use SOL for the baselines, then merge and deploy (user).
+
+- SOL: first run died on PS 5.1 treating git's stderr as fatal under Stop (fixed to Continue + exit codes). Second run: 40/40 then two 40/40 re-checks, but bare --update-snapshots (= changed) rewrote only failing captures, so 26 kept a footer without Home (186-196px diff, under the 500px floor). Third run with =all: all 40 rewritten, 40/40 twice; committed 1e8a6fd; docs/visual-gate.md now says =all.
+- Final signoff: degraded. OpenCode (opencode/deepseek-v4-pro), the only authenticated off-Claude route, failed in 16s with 'Insufficient account funds' (round lost to the route); Codex out of quota until Oct 30; free rows not allowed. Nano wrapper needed Python 3.11+: installed uv + CPython 3.12 user-level and used NANO_AGENTS_PYTHON_BIN. User accepted degraded after a fresh-context native oracle (Opus 5.5) advisory review: PASS.
+- Advisory findings fixed before push (76b4448): motion test was vacuous (decode() before assert); now checks both mockups at transition ready under 40ms CDP latency, 8/8 pass, 5/5 fail with warm-up removed. page.route was tried first and rejected: it disables the HTTP cache, so the real img refetched and correct code failed (a probe-holding 'fix' built on that misreading was reverted). images:mockups scoped with --only. Tailscale IP removed from the public repo. Comment/ARCHITECTURE/plan drift; US spelling in alts.
+- Release: portfoliowebsite fast-forwarded 88c8091..76b4448 (12 commits), pushed once. Netlify deploy 6ac98a58 ready, not skipped, 30s, 15 credits. Live: 6 pages 200, 72/72 mockup files 200, footer Home, contact cap gone, Blue caption #7eb8ff, /projects/ 301; Gross expands with both mockups painted at 390 and 1440, zero console errors.
+- Suite before push: 184 passed + 1 skipped in 165s (est 175). Review server on :4400 stopped after release. Wren never appeared.
+
+---
+
 ## Entry 151 - 2026-10-09
 
 **Agent:** Claude Opus 5.5 (lumen, VOID), main

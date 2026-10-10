@@ -23,26 +23,8 @@ before a push ships in the same deploy.
 
 ### Ready to build now
 
-- [ ] **Regenerate all 40 visual baselines on SOL before the next push.** The Oct 9 caps removal
-      and Blue caption change moved the 16 `contact-*` and `portfolio-brand-*` captures, and the
-      footer's new Home link (Entry 151) is on every page, so every capture moves. Baselines are
-      `chromium-win32`; procedure in [`docs/visual-gate.md`](docs/visual-gate.md) (Trap 7, "Where
-      baselines come from now"). Needs the user's go-ahead to use SOL.
 - [ ] **Watermark artwork.** User's own task.
 
-### In flight: print mockups (overnight shxdowloop, Oct 9)
-
-- [~] **Print mockups: built, waiting on the user's review.** Branch
-      `shxdowloop/2026-10-09/print-mockups`, plan
-      [`docs/plans/2026-10-09-print-mockups-shxdowloop.md`](docs/plans/2026-10-09-print-mockups-shxdowloop.md),
-      Entries 149-150. Two mockups per piece in the expanded card, 24 in all (Gross: skateboard deck plus a poster). Scenes are drawn in
-      code because the Codex image quota ran out (resets Oct 30); photo scenes can drop in through
-      `images/mockups/mockups.json` later. **Review the 24 alt strings** in `gallery-data.ts`
-      (agent-written copy). Not merged, not deployed.
-- [ ] **Handoff to wren for the next full push.** Wren was not running at any check during the
-      overnight run. The next full push is: review the mockup branch, regenerate all 40
-      baselines on SOL (Entries 148, 151), merge into `portfoliowebsite`, one production
-      push (15 credits). All of it waits on the user's go-ahead.
 
 ### Blocked on a prerequisite
 
@@ -99,11 +81,19 @@ consolidated in [`docs/archives/plans.md`](docs/archives/plans.md).
 
 ### 2026-10
 
+- **Oct 9** — **RELEASED: print mockups, footer Home link, the last prose caps, the Blue caption.**
+  Every gallery piece shows two print mockups in its expanded card (24 in all, scenes drawn in code;
+  Gross on a skateboard deck plus a poster). Footer gains Home. All 40 baselines regenerated on SOL
+  with `--update-snapshots=all`. Deploy `6ac98a58` from `76b4448`, ready, 15 credits; live: 6 pages
+  200, all 72 mockup files 200, Gross expands with both mockups at 390 and 1440, no console errors.
+  Final signoff **degraded** (OpenCode out of funds, Codex out of quota until Oct 30), accepted by
+  the user after a fresh-context Claude review PASSed; its findings were fixed before the push.
+  Wren never appeared, so there was no handoff. Entries 148-152.
 - **Oct 9** — **The last two prose measure caps are gone** (`max-w-[560px]` on the Contact intro,
   `max-w-[480px]` on the thanks page), at the user's yes. **The Blue logo caption now reads
   `#7eb8ff`**, the colour both `bubbleLogo` files are painted (re-sampled: 75,229 opaque PNG pixels,
   one fill in the SVG). The palette's "Brand Blue" chip keeps `#9acdff`, since it documents the
-  `--brand-ir-4` token, not the logo. Committed locally, not pushed. Entry 148.
+  `--brand-ir-4` token, not the logo. Released Oct 9 (see above). Entry 148.
 - **Oct 9** — **Closed without doing: the WebKit-only white rectangle under the nav**, at the
   user's call. Only ever seen in headless Playwright WebKit on Windows; the ruled-out list is in
   Entry 127 if it ever comes back on real hardware.
