@@ -23,11 +23,11 @@ before a push ships in the same deploy.
 
 ### Ready to build now
 
-- [ ] **Regenerate the 16 contact and brand visual baselines on SOL before the next push.** The
-      Oct 9 caps removal moves the Contact intro's line breaks and the Blue caption text changed, so
-      `contact-*` and `portfolio-brand-*` (8 each) will fail the gate. Baselines are `chromium-win32`;
-      procedure in [`docs/visual-gate.md`](docs/visual-gate.md) (Trap 7, "Where baselines come from
-      now"). Needs the user's go-ahead to use SOL.
+- [ ] **Regenerate all 40 visual baselines on SOL before the next push.** The Oct 9 caps removal
+      and Blue caption change moved the 16 `contact-*` and `portfolio-brand-*` captures, and the
+      footer's new Home link (Entry 151) is on every page, so every capture moves. Baselines are
+      `chromium-win32`; procedure in [`docs/visual-gate.md`](docs/visual-gate.md) (Trap 7, "Where
+      baselines come from now"). Needs the user's go-ahead to use SOL.
 - [ ] **Watermark artwork.** User's own task.
 
 ### In flight: print mockups (overnight shxdowloop, Oct 9)
@@ -40,8 +40,8 @@ before a push ships in the same deploy.
       `images/mockups/mockups.json` later. **Review the 24 alt strings** in `gallery-data.ts`
       (agent-written copy). Not merged, not deployed.
 - [ ] **Handoff to wren for the next full push.** Wren was not running at any check during the
-      overnight run. The next full push is: review the mockup branch, regenerate the 16
-      contact/brand baselines on SOL (Entry 148), merge into `portfoliowebsite`, one production
+      overnight run. The next full push is: review the mockup branch, regenerate all 40
+      baselines on SOL (Entries 148, 151), merge into `portfoliowebsite`, one production
       push (15 credits). All of it waits on the user's go-ahead.
 
 ### Blocked on a prerequisite

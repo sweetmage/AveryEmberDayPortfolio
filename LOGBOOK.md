@@ -18,6 +18,18 @@ When this logbook exceeds ~1000 lines, split it:
 
 ---
 
+## Entry 151 - 2026-10-09
+
+**Agent:** Claude Opus 5.5 (lumen, VOID), main
+**Cycle:** shxdowflow: footer Home link
+**Task:** Add a Home link to the footer (user).
+
+- app/components/Footer.tsx: Home (/) first in .brand-footer-links, matching the nav order. One file, so no track table.
+- Verification: tsc; non-visual suite 185/185 in 171s (est 170); footer checked at 360/768/1440 in both themes on the export server (one row everywhere; clicking Home lands on /).
+- Every page renders the footer, so all 40 chromium-win32 baselines move; TODO's SOL item widened from 16 to 40. Signoff: no trigger met; main-agent diff read. On the mockups branch, so it ships in the same push.
+
+---
+
 ## Entry 150 - 2026-10-09
 
 **Agent:** Claude Opus 5.5 (lumen, VOID), main

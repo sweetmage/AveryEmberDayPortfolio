@@ -9,6 +9,9 @@ export default function Footer() {
           <span className="brand-footer-credit">&copy; 2026 Avery Ember Day</span>
           <ul className="brand-footer-links">
             <li>
+              <Link href="/">Home</Link>
+            </li>
+            <li>
               <Link href="/portfolio/">Portfolio</Link>
             </li>
             <li>
