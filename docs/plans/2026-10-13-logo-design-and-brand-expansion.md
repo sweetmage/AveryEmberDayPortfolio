@@ -271,3 +271,5 @@ The user, looking at the mockups, asked for:
    - Tools: Procreate, Adobe InDesign, Adobe Photoshop.
 
 Rebuilt with the same pipeline (`prepare`, three SOL traces, `finish`, `crop_svg.py`), checked on dark and light backdrops, saved over the provisional files in `ArtBridge/SECTION 6 Logo Design/`. Still provisional: the user's corrected linework has not arrived.
+
+**Tile layout (user, 2026-10-13):** the three project tiles sit in one row from 768px up (one column on phones). Tile and 16:9 picture width follow the viewport width, up to the 1400px content cap; the title and description stay one size, so only the text box grows. Measured in mockup 1: tiles 230px at an 800px window, 363px at 1200px, 451px at 1700px (the cap), all in one row. The real grid in `app/portfolio/page.tsx` is `md:grid-cols-2` today, so building this means `md:grid-cols-3`.

@@ -35,3 +35,7 @@ body { margin: 0; background: var(--brand-bg); color: var(--brand-text); font-fa
 
 .mk-sec { font-family: var(--brand-font-heading); font-size: 1.25rem; font-weight: 600; margin: 2.5rem 0 1rem; border: none; padding: 0; text-align: left; text-transform: none; letter-spacing: normal; color: var(--brand-text); }
 .mk-sec::after { content: none; }
+
+/* Mockup 1: three project tiles in one row from 768px. Tile and picture width follow the viewport (fr columns, 16:9 picture) up to the 1400px content cap; text stays one size. */
+.mk-tiles { display: grid; gap: 1.5rem; grid-template-columns: 1fr; padding: 0; margin: 0; }
+@media (min-width: 768px) { .mk-tiles { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
