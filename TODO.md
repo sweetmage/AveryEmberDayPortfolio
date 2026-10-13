@@ -31,13 +31,13 @@ before a push ships in the same deploy.
       the moment. Not merged and still open: `fix/2026-10-06-blue-logo-caption` (conflicts in binary
       baseline PNGs, regenerate them), `origin/develop` and `origin/shxdowloop/2026-08-14/mistrust-reexport`
       (stale, conflicting; likely retire). Plan: none; see Entry 155.
-- [ ] **Logo Design section: vectorize the Phoenix logo and the White Rose logos.** Source is a PSD
-      in the iCloud `ArtBridge` folder with color and black-and-white layer groups; the green on the
-      B&W roses becomes white. Save the SVGs, **stop for the user's visual check**, then add them
-      under a new Projects-tab section titled **SECTION 6 Logo Design** ("done for a WGAW-registered
-      animated series pitch"), with the user's per-logo descriptions verbatim. **Blocked on questions:**
-      where "SECTION 6" lives, what "4 versions" of the rose means, and where the rose PSD is (none
-      found within three folders of ArtBridge). Plan:
+- [ ] **Logo Design: vectorize the Phoenix logo (1 SVG) and the White Rose logo (4 SVGs).** Source:
+      `White Rose Logo.psd` in iCloud `ArtBridge/Procreate to PSD/`, color and B&W layer groups; the
+      green on the B&W roses becomes white. Save the SVGs, **stop for the user's visual check**,
+      then add a **new project tile** (decided 2026-10-13) titled **SECTION 6 Logo Design**
+      ("done for a WGAW-registered animated series pitch") with the user's per-logo descriptions
+      verbatim. Open: the tile's exact title, its thumbnail, whether the Phoenix source in ArtBridge
+      is final, and whether "SECTION 6" shows as visible text. Plan:
       [`docs/plans/2026-10-13-logo-design-and-brand-expansion.md`](docs/plans/2026-10-13-logo-design-and-brand-expansion.md) (Track A).
 - [ ] **Add the tools used to each project.** A History of Mistrust: made entirely in Figma. AED
       Brand: logo made in InDesign; the site's build details (Next.js 15 static export, React 19,

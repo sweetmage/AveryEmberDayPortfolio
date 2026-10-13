@@ -21,27 +21,26 @@ so batch these tracks into as few pushes as possible).
 
 ### Deliverables
 
-Five logos, vectorized:
+Five SVGs (answered by the user 2026-10-13):
 
-1. **The Phoenix Logo** (one version).
-2. **White Rose**, four versions. Two renderings each of two versions: **color**, then
-   **black and white**. "4 versions" is recorded as the user wrote it; confirm whether that means
-   four distinct rose logos each in color + B&W (8 SVGs) or two logos in two renderings (4 SVGs).
-   See *Open questions*.
+1. **The Phoenix Logo**, one SVG.
+2. **White Rose**, four SVGs: two logos, each in two renderings. The first rendering is **color**,
+   the second is **black and white**. (An earlier draft of the brief said "4 versions"; the user
+   confirmed 4 SVGs, so this is not 8.)
 
 ### Source
 
-A PSD in the user's iCloud **ArtBridge** folder
-(`~/Library/Mobile Documents/com~apple~CloudDocs/ArtBridge/`). The two renderings (color and B&W)
-are saved as **layer groups** inside that one PSD.
+The PSD is **`White Rose Logo.psd`** in
+`~/Library/Mobile Documents/com~apple~CloudDocs/ArtBridge/Procreate to PSD/` (found 2026-10-13, 4.7 MB,
+saved Oct 10). The color and B&W renderings are **layer groups** inside it. The layer tree has not
+been read yet; read it first and confirm which group is which.
 
-Found on 2026-10-13: `PhoenixSymbol.png`, `PhoenixSymbol-1.png`, `-2`, `-3` and
-`SVG/PhoenixSymbol.svg`. No White Rose PSD turned up within three folder levels. **Locate the rose
-PSD with the user before starting.**
+The Phoenix source is in the ArtBridge root: `PhoenixSymbol.png`, `PhoenixSymbol-1.png`, `-2`, `-3`,
+and `SVG/PhoenixSymbol.svg`. Confirm which is final (open question 3).
 
 ### Steps
 
-1. Locate the PSD; read its layer-group tree (names, which group is color, which is B&W).
+1. Read the PSD's layer-group tree (names, which group is color, which is B&W).
 2. **Recolor for B&W:** in the B&W rose groups the **green must become white**. The user asked for
    this explicitly; do it in the source group, not in the vector afterwards, so the PSD and the
    SVG agree.
@@ -56,8 +55,12 @@ PSD with the user before starting.**
 
 ### Site: "SECTION 6 Logo Design"
 
-Add a new section titled exactly **SECTION 6 Logo Design** to the **Projects** tab. Its
-description (the user's draft, to be published verbatim):
+Add a **new project tile** to the Projects tab (a third tile, after A History of Mistrust and the
+Avery Ember Day Brand), decided by the user 2026-10-13. Each project tile has its own page under
+`/portfolio/`, so this adds a project page for it. The section is titled exactly
+**SECTION 6 Logo Design**. The tile's own name: the user said "its called white rose logo" in answer
+to a different question (the PSD name); confirm whether the tile is titled "SECTION 6 Logo Design",
+"White Rose Logo", or both. Its description (the user's draft, to be published verbatim):
 
 > Done for a WGAW-registered animated series pitch.
 
@@ -84,13 +87,14 @@ SVG and PNG download links). Needs real `alt` text per logo, written with the us
 
 ### Open questions (ask before building)
 
-1. **Where does "SECTION 6" live?** The Projects tab today has two project tiles, each with its own
-   page; the Brand page's sections (Description, Logo Variants, Brand Palette, Type System) carry no
-   numbers. Nothing in the code is numbered, so "6" does not match an existing scheme. Is this a
-   third project tile, a section on the Brand page, or a new numbered scheme across the site?
-2. **Four rose versions:** see above.
-3. **The rose PSD location.**
-4. Should the Phoenix PNG/SVG already in ArtBridge be redone, or is it final?
+Answered 2026-10-13: where SECTION 6 lives (a new project tile), how many rose SVGs (4), and the rose
+PSD (`White Rose Logo.psd`). Still open:
+
+1. **Tile title:** "SECTION 6 Logo Design", "White Rose Logo", or both (see above).
+2. **The tile's thumbnail:** which logo, and on which background.
+3. **The Phoenix source:** are the PNGs and `SVG/PhoenixSymbol.svg` in ArtBridge final, or redone?
+4. **The numbering:** the Projects tab has no visible section numbers today. Does "SECTION 6"
+   appear as visible text on the tile or page, or is it a label only the user uses?
 
 ---
 

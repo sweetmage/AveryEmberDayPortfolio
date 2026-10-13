@@ -32,6 +32,7 @@ When this logbook exceeds ~1000 lines, split it:
 - Docs: new docs/plans/2026-10-13-logo-design-and-brand-expansion.md (Track A logo vectorization into SECTION 6 Logo Design, B tools per project, C Brand page business card, voice/tone and one more section, D watermark removal); TODO.md gains 7 open items and a Done bullet; docs/plans/README.md index row.
 - Verification: dev server (portfolio-next) served all 12 gallery 900w files byte-identical to disk, no console errors; no .brand-page-watermark element or watermark background on any element after removal. Eyeballed chill, Moonlight, Emergence. NOT run: Playwright suite or visual gate (baselines for the gallery will differ and need a SOL regeneration with --update-snapshots=all).
 - Open: user's go-ahead to push (15-credit deploy); where SECTION 6 lives, what '4 rose versions' means, and the rose PSD location; whether the Brand row lists the site's own frameworks.
+- Decisions from the user: SECTION 6 is a new project tile; the White Rose set is 4 SVGs (two logos, color and B&W); source PSD found at ArtBridge/Procreate to PSD/White Rose Logo.psd. Plan and TODO updated; still open: tile title, thumbnail, Phoenix source final?, visible numbering.
 
 ---
 
