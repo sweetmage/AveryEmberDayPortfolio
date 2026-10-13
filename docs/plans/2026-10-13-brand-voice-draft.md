@@ -1,49 +1,46 @@
-# Brand voice and tone: third draft for the user to edit
+# Brand voice and tone: front-facing draft for the user to edit
 
-**Written:** 2026-10-13. Rewritten after the user's note on the first draft: too many "I" statements, no "this, not this" comparisons, same content. The style follows how published brand voice guides are written (Mailchimp, Monzo, Atlassian, Slack): a short named trait, then a few plain sentences in the imperative or the third person, then a real example.
-**Third pass (user, 2026-10-13):** "avoid saying things the brand is not, and focus instead on what the brand is." Removed the skip list, every "no" and "not", and "skip em dashes". Every line now says what the voice is or does.
+**Written:** 2026-10-13. Fourth pass, after the user asked for plain English with less jargon and descriptive, vibe-based adjectives for tone. Earlier passes removed the "I" statements, the "this, not this" comparisons, the "what the brand is not" lines and every reference to the longer bio. The standing rules are saved in [`.agents/memories/brand-voice.md`](../../.agents/memories/brand-voice.md).
 **Status:** agent's draft, the user's to edit. Not on the site yet.
 
 ---
 
 ## Brand Voice and Tone
 
-Avery Ember Day writes like a collaborator who listens first. The language is plain, the welcome is warm, and there is a little wonder in the corner of the page.
+Avery Ember Day sounds friendly, clear, and a little curious. Think of a good conversation over coffee with someone who really listens.
 
-### Plainspoken
-Lead with what it is, then add one detail. Keep sentences short and let verbs do the work.
+### Clear and down to earth
+Say what it is first, then add one detail. Short sentences and everyday words keep things easy to follow.
 *"A 30-slide Instagram series on why some communities struggle to trust doctors."*
 
-### Warm and listening
-Listen first. Invite once, speak to the reader directly, and say what happens next.
+### Warm and attentive
+Listening comes first. A friendly welcome, a direct question, and a clear next step make people feel at home.
 *"Tell me what you're working on and I'll get back to you as soon as I can."*
 
-### Dry, with a little wonder
-A light touch of humor and curiosity, one wink a page at most. Heavy subjects get a straight face.
+### Quietly playful
+A small smile, a touch of curiosity, and one little joke a page at most. Serious topics get a calm, caring voice.
 *"Brewing coffee and conversation alongside my pursuit of my true passions."*
 
-### Tone by context
-Same voice everywhere, with the dial turned to fit the page.
-
-| Where | Tone |
+### How it feels on each page
+| Where | The feel |
 |---|---|
-| About | Warm and personal, one wink allowed |
-| Project pages | Matter-of-fact and informative |
-| Heavy subjects, like A History of Mistrust | Sober, factual, humane |
-| Contact | Friendly, specific, short |
-| Gallery titles | Blunt, with a little play |
-| Alt text | Literal and plain |
+| About | Friendly, personal, a little playful |
+| Project pages | Clear, calm, informative |
+| Heavy topics, like A History of Mistrust | Grounded, careful, kind |
+| Contact | Welcoming, helpful, brief |
+| Gallery titles | Bold, simple, a bit cheeky |
+| Image descriptions | Simple and exact |
 
-### Words to use
-Systems, reusable, built to last, character, mood, craft, clean, clear, accessible, listening, the brief. Everyday words that name the thing itself and say what it does: use, build, make, listen, reach out.
+### Words that fit
+Systems, reusable, built to last, character, mood, craft, clean, clear, accessible, listening, the brief. Everyday words like use, build, make, listen, and reach out.
 
-### Mechanics
-Write in the first person singular, with contractions. Use commas and colons for pauses. Keep exclamation marks to one a page. Use US spelling. Use one title: Brand & Visual Designer.
+### Writing habits
+Speak in the first person, with contractions. Use commas and colons for pauses. Keep exclamation marks to one a page. Use US spelling. Use one title: Brand & Visual Designer.
 
 ---
 
 ## Notes for the editor (not for the page)
 
-- **What changed this pass:** the "Words to skip" list is gone, because a list of what to avoid says what the brand is not. The plain-language idea moved into *Words to use* as a positive: everyday words that name the thing itself. "With no wink" became a plain description of the tone, and "skip em dashes" became "use commas and colons for pauses".
-- **Earlier pass:** no "this, not this" comparisons, almost no "I", the style of Mailchimp, Monzo, Atlassian and Slack.
-- **Examples:** all three lines are from the live site: the Mistrust tile, the Contact page and the About box.
+- **What changed this pass:** the copywriting terms are gone. "Imperative", "matter-of-fact", "sober", "humane", "tone by context", "the dial" and "mechanics" became everyday words and a plain heading, "How it feels on each page". Trait names are now vibe words: clear and down to earth, warm and attentive, quietly playful. Each tone row is three adjectives you could picture.
+- **Same rules as before:** no "I" statements in the guide's own sentences, no "this, not this", every line says what the voice is or does, and all three examples are live-site lines.
+- **Open choices you may want to change:** the coffee-conversation opening (it echoes your About box), "a bit cheeky" for gallery titles, and "grounded, careful, kind" for Mistrust.

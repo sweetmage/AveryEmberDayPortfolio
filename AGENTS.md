@@ -24,6 +24,7 @@ trigger matches the task.
 | File | Read when |
 |---|---|
 | [`.agents/memories/review-links.md`](.agents/memories/review-links.md) | The user's review is needed before any launch: always hand them a browser link (local export server, Tailscale address for the phone) |
+| [`.agents/memories/brand-voice.md`](.agents/memories/brand-voice.md) | Writing or proofreading any words on the site: the agreed voice (three traits, tone by place, word list) and the user's style rules (few "I" statements, no "this, not this", say what the brand is, plain English, no longer-bio) |
 
 ## Branch Policy
 
