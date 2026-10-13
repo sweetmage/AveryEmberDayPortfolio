@@ -46,7 +46,7 @@ before a push ships in the same deploy.
       it later. Then: rerun `scripts/logo-traces.py` and the SOL trace, show the user, get the visual
       check, and only then add the new project tile titled **SECTION 6 Logo Design** ("SECTION 6" is the
       animated series title; the Phoenix is the title-card image; "done for a WGAW-registered animated
-      series pitch"), with the user's per-logo descriptions verbatim and real alt text. Full handoff,
+      series pitch"), with the short descriptions the user asked for (Oct 13) and real alt text. Full handoff,
       decisions and commands:
       [`docs/plans/2026-10-13-logo-design-and-brand-expansion.md`](docs/plans/2026-10-13-logo-design-and-brand-expansion.md) (Track A, *HANDOFF*).
 - [ ] **Add the tools used to each project.** A History of Mistrust: made entirely in Figma. AED

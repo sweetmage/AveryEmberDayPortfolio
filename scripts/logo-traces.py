@@ -5,7 +5,7 @@ docs/plans/2026-10-13-logo-design-and-brand-expansion.md, Track A.
 Illustrator Image Trace runs on SOL between the two steps (creative-hub/scripts/sol-run.sh).
 
     prepare  PSD + Phoenix PNG -> trace-ready PNGs in OUT/{color,bw,phoenix}/
-    finish   traced SVGs       -> named SVGs in OUT: B&W roses de-magentaed with white petals, Phoenix filled
+    finish   traced SVGs       -> named SVGs in OUT: B&W roses de-magentaed with white petals, Phoenix filled (vivid red)
 
 Run with uv so the deps stay out of the repo:
 
@@ -28,7 +28,7 @@ import sys
 from pathlib import Path
 
 MAGENTA = (255, 0, 255)       # backdrop for the B&W roses; deleted after the trace
-PHOENIX_FILL = "#610000"      # the Phoenix art's own colour (median of its opaque pixels)
+PHOENIX_FILL = "#E4101E"      # vivid red (user, 2026-10-13); the art itself is dark red #610000 and is traced as black
 # PSD group -> short name. rose1 is the open rose, "New group" the bud.
 GROUPS = {"rose1": "open", "New group": "bud"}
 # output name for each traced file
@@ -36,6 +36,60 @@ NAMES = {
     "rose-open-color": "white-rose-1-color", "rose-open-bw": "white-rose-1-bw",
     "rose-bud-color": "white-rose-2-color", "rose-bud-bw": "white-rose-2-bw",
 }
+
+
+GREEN = "If Colored"          # the PSD's name for the leaf-green layers
+FILL_GREY = (226, 227, 223)   # the PSD's petal and leaf fill (#E2E3DF); `finish` makes it white in the B&W files
+GREEN_HALO = 25               # px: how far past the leaf's green the outline is rebuilt (2048 px canvas)
+
+
+def stack(layers, white_green):
+    """Composite a group's layers bottom to top.
+
+    A green leaf layer sitting ABOVE the layer that holds the outlines covers them: the green layer's
+    own black rim is wobbly and lies over the clean outline (user, 2026-10-13). For each such layer the
+    green goes under the outlines instead: inside the leaf's neighbourhood the result is the outline ink
+    (taken from the layers below) over the green over the fill grey. The green layer's own black rim is
+    dropped. `white_green` makes the green white for the B&W versions.
+    """
+    import numpy as np
+    from PIL import Image, ImageFilter
+
+    acc = Image.new("RGBA", layers[0].size, (0, 0, 0, 0))
+    for layer in layers:
+        im = layer.composite().convert("RGBA")
+        if layer.name != GREEN or acc.getbbox() is None:
+            if layer.name == GREEN and white_green:   # green at the very bottom (the bud): nothing to cover
+                px = np.array(im).astype(float)
+                t = np.clip((px[..., :3].max(axis=2) - 10) / 40, 0, 1)
+                px[..., :3] = (t * 255)[..., None]
+                im = Image.fromarray(px.astype("uint8"), "RGBA")
+            acc.alpha_composite(im)
+            continue
+        base = np.array(acc).astype(float)
+        g = np.array(im).astype(float)
+        # green keeps its pixels; its black rim (max channel near 0) goes transparent
+        keep = np.clip((g[..., :3].max(axis=2) - 8) / 24, 0, 1)
+        g[..., 3] *= keep
+        if white_green:
+            g[..., :3] = 255
+        lum = base[..., :3].mean(axis=2)
+        ink = np.clip((FILL_GREY[0] - lum) / FILL_GREY[0], 0, 1) * (base[..., 3] / 255)   # black fraction of the pixel
+        # the region to rebuild: the green's footprint, grown by GREEN_HALO
+        foot = Image.fromarray((g[..., 3] > 0).astype("uint8") * 255).filter(ImageFilter.MaxFilter(GREEN_HALO * 2 + 1))
+        region = np.array(foot) > 0
+        grey = np.zeros_like(base)
+        grey[..., :3] = FILL_GREY
+        grey[..., 3] = base[..., 3]
+        under = Image.fromarray(grey.astype("uint8"), "RGBA")
+        under.alpha_composite(Image.fromarray(g.astype("uint8"), "RGBA"))
+        blackpx = np.zeros_like(base)
+        blackpx[..., 3] = ink * 255
+        under.alpha_composite(Image.fromarray(blackpx.astype("uint8"), "RGBA"))
+        out = base.copy()
+        out[region] = np.array(under).astype(float)[region]
+        acc = Image.fromarray(out.astype("uint8"), "RGBA")
+    return acc
 
 
 def prepare(a):
@@ -49,19 +103,9 @@ def prepare(a):
     psd = PSDImage.open(a.psd)
     groups = {g.name: g for g in psd if g.is_group()}
     for gname, tag in GROUPS.items():
-        color = Image.new("RGBA", psd.size, (0, 0, 0, 0))
-        bw = Image.new("RGBA", psd.size, (0, 0, 0, 0))
-        for layer in groups[gname]:          # psd-tools lists bottom first
-            if not layer.visible:
-                continue
-            im = layer.composite().convert("RGBA")
-            color.alpha_composite(im)
-            if layer.name == "If Colored":   # the green layers: any non-black pixel becomes white
-                px = np.array(im).astype(float)
-                t = np.clip((px[..., :3].max(axis=2) - 10) / 40, 0, 1)
-                px[..., :3] = (t * 255)[..., None]
-                im = Image.fromarray(px.astype("uint8"), "RGBA")
-            bw.alpha_composite(im)
+        layers = [l for l in groups[gname] if l.visible]     # psd-tools lists bottom first
+        color = stack(layers, white_green=False)
+        bw = stack(layers, white_green=True)
         color.save(out / "color" / f"rose-{tag}-color.png")
         # B&W on a solid magenta canvas with a hard alpha edge: the bud's stem outline has gaps, so on
         # white its white fill merges with the canvas and is stripped with it.

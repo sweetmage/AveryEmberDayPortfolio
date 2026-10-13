@@ -19,6 +19,18 @@ When this logbook exceeds ~1000 lines, split it:
 
 ---
 
+## Entry 157 - 2026-10-13
+
+**Agent:** Claude Sonnet 5.5 (ember-quill, VOID), main agent
+**Cycle:** shxdowloop overnight plans: user's four logo changes
+**Task:** Phoenix vivid red, Phoenix tile close-up, rose leaf green under the linework, short descriptions with tools.
+
+- scripts/logo-traces.py: PHOENIX_FILL is now #E4101E; new stack() rebuilds the open rose's leaves as outline ink over green over fill grey and drops the green layers' own rim, so the order is fixed before vectorizing. The bud (green already at the bottom) came out byte-identical. Re-traced on SOL (color and B&W roses 6 Colors, Phoenix Black and White Logo), cropped, checked on dark, mid and light backdrops, saved over the provisional files in ArtBridge/SECTION 6 Logo Design/ (v1 kept in the session scratchpad).
+- Mockups updated: Phoenix tile is a 16:9 close-up of the top 36% of the art (phoenix-thumb.svg) on the dark backdrop; page 2 has the short rewrites and a Tools row (Procreate, Adobe InDesign, Adobe Photoshop). Copy rewritten at the user's explicit request, so the verbatim rule is lifted for these strings only.
+- Docs: logo plan has an Update 2026-10-13 (later) section; the overnight plan and TODO match. All five mockup pages are still pending the user's approval.
+
+---
+
 ## Entry 156 - 2026-10-13
 
 **Agent:** Claude Sonnet 5.5 (ember-quill, VOID), main agent

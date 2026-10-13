@@ -253,3 +253,21 @@ unrelated; they stay.
 5. Re-baseline the visual gate **once, last**, on SOL, after all copy and layout are final
    (re-baselining earlier wastes the review pass).
 6. One batched push, with the user's go-ahead in the moment.
+
+
+---
+
+## Update 2026-10-13 (later): the user's four changes
+
+The user, looking at the mockups, asked for:
+
+1. **Phoenix recolored to a vivid red.** `PHOENIX_FILL` in `scripts/logo-traces.py` is now `#E4101E` (was the art's own `#610000`). This supersedes the earlier "Phoenix keeps its own dark red" decision. Red on `#0A0A0A` reads fine, so the dark-tile workaround is dropped.
+2. **Phoenix tile close-up.** The tile thumbnail is the top of the Phoenix (top 36% of the art, 16:9, centered), so the head is in frame. Mockup asset: `phoenix-thumb.svg`. The real site needs a cropped raster or SVG made the same way.
+3. **Rose leaf order.** In the open rose (PSD group `rose1`) the two green `If Colored` layers sat above the layer holding the clean outlines, so the green layers' own black rims covered the outline and the trace came out wobbly. `stack()` in `scripts/logo-traces.py` now rebuilds the leaf area as outline ink over green over fill grey, and drops the green layers' own rim. Done before vectorizing, as asked. The bud group already had green at the bottom, so its files came out byte-identical to the first pass.
+4. **Short descriptions, with tools.** The user asked for the descriptions to be rewritten short and informative, and for the tools (Procreate, InDesign, Photoshop) to be listed on this project the way the other two projects list theirs. This is an explicit grant to rewrite; it replaces "published verbatim" for this tile and these logos.
+   - Tile and project: "Logo design for SECTION 6, an animated series pitch registered with the WGAW."
+   - Phoenix: "A stencil symbol for the series' revolutionaries, sprayed onto armor, flags and walls to honor the Phoenix, who assassinated their dictator."
+   - White Rose: "The logo of a morally ambiguous owner of a large scientific research corporation."
+   - Tools: Procreate, Adobe InDesign, Adobe Photoshop.
+
+Rebuilt with the same pipeline (`prepare`, three SOL traces, `finish`, `crop_svg.py`), checked on dark and light backdrops, saved over the provisional files in `ArtBridge/SECTION 6 Logo Design/`. Still provisional: the user's corrected linework has not arrived.

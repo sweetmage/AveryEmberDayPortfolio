@@ -51,9 +51,9 @@ Five SVGs exist and are provisional: the Phoenix and four White Rose files (open
 
 - **Waiting on me:** the corrected art. Which logo and which lines I have not said, and the agent will not guess. It asks when the art lands.
 - **When it lands:** rerun `scripts/logo-traces.py`, trace on SOL, render every file on a dark and a light backdrop and look, save over the provisional files in `ArtBridge/SECTION 6 Logo Design/`, show me. The fix goes in the source art. No hand-edited paths.
-- **Site, after I approve mockups 1 and 2:** third project tile after Brand, titled exactly **SECTION 6 Logo Design**, the Phoenix as the title card, description "Done for a WGAW-registered animated series pitch." My per-logo descriptions go in character for character. Real alt text is written with me.
-- **What the mockups already caught:** the Phoenix is `#610000` and nearly disappears on the site's `#0A0A0A` tile, so the tile sits on the light off-white instead. The black and white roses have white petals and dark outlines, so each needs a mid-tone backdrop where both read.
-- **Proofreading flags, not fixes:** "opression" and "coorporation"; lower-case sentence starts; no closing period on the Phoenix text.
+- **Site, after I approve mockups 1 and 2:** third project tile after Brand, titled exactly **SECTION 6 Logo Design**, the Phoenix (top-of-art close-up) as the title card, description "Logo design for SECTION 6, an animated series pitch registered with the WGAW." The per-logo descriptions are the short rewrites you asked for. Real alt text is written with me.
+- **Your four changes (later on Oct 13):** the Phoenix is now vivid red (`#E4101E`) and reads fine on the dark tile; the tile picture is a close-up of the top of the Phoenix; the open rose's leaf green now sits under the black linework (fixed in the source layers before tracing); the descriptions are rewritten short, with Procreate, InDesign and Photoshop listed as tools. Details: the logo plan's *Update 2026-10-13 (later)*. The black and white roses have white petals and dark outlines, so each needs a mid-tone backdrop where both read.
+- **Copy:** rewritten short at your request, with the typos gone. Tools row: Procreate, InDesign, Photoshop.
 
 ### B. Tools used, per project (decided, waiting on a look)
 
@@ -124,7 +124,7 @@ then open <http://localhost:3478/docs/plans/2026-10-13-overnight-plans/mockups/i
 
 **Answer, one line each:**
 1. Mockup 1 to 5: approve, approve with changes, or reject.
-2. Phoenix tile on the light backdrop, yes or no?
+2. Phoenix tile on the dark backdrop (default now) or the light one?
 3. Rose card labels: what do you want them called?
 4. Brand row tools: which of Photoshop, Illustrator, JavaScript stay?
 5. Card: email, Google Voice number, size, print or digital, QR style.
