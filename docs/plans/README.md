@@ -19,7 +19,7 @@ That returns nothing as of 2026-10-06.
 | Plan | Status |
 |---|---|
 | [`2026-10-09-print-mockups-shxdowloop.md`](2026-10-09-print-mockups-shxdowloop.md) | **Released from `shxdowloop/2026-10-09/print-mockups`.** Archive at the next sweep. Two print mockups per gallery piece (24), under the description slot; Gross on a skateboard deck. Released 2026-10-09. |
-| [`2026-10-13-logo-design-and-brand-expansion.md`](2026-10-13-logo-design-and-brand-expansion.md) | **Not started; Track D (page watermark removal) done.** Track A: vectorize the Phoenix (1) and White Rose (4) logos into a new "SECTION 6 Logo Design" project tile. Track B: tools used per project. Track C: Brand page business card, voice/tone, one more section. Waiting on the user's answers and drafts. |
+| [`2026-10-13-logo-design-and-brand-expansion.md`](2026-10-13-logo-design-and-brand-expansion.md) | **Not started; Track D (page watermark removal) done.** Track A: vectorize the Phoenix (1) and White Rose (4) logos into a new "SECTION 6 Logo Design" project tile. Track B: tools used per project. Track C: Brand page business card, voice/tone, one more section. Track A SVGs are made and waiting on the user's visual check; the rest waits on the user's answers and drafts. |
 | [`2026-08-01-copy-pass-and-gallery-descriptions.md`](2026-08-01-copy-pass-and-gallery-descriptions.md) | **Tracks A and C wait on the user's first draft.** Track B is done (Entry 118); the render path for `description` now exists, so the copy is data only. |
 
 ## Complete

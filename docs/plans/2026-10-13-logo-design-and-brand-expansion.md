@@ -1,7 +1,7 @@
 # Logo Design section, project tools, and brand page expansion
 
 **Written:** 2026-10-13, from the user's brief in chat.
-**Status:** not started. Every open box here is mirrored in [`../../TODO.md`](../../TODO.md).
+**Status:** Track A SVGs made and waiting on the user's visual check; the rest not started. Every open box here is mirrored in [`../../TODO.md`](../../TODO.md).
 **Branch:** none yet. Work on a `shxdowloop` or feature branch off `portfoliowebsite`; nothing
 here ships until the user says so (a push to `portfoliowebsite` is a 15-credit production deploy,
 so batch these tracks into as few pushes as possible).
@@ -57,10 +57,8 @@ and `SVG/PhoenixSymbol.svg`. Confirm which is final (open question 3).
 
 Add a **new project tile** to the Projects tab (a third tile, after A History of Mistrust and the
 Avery Ember Day Brand), decided by the user 2026-10-13. Each project tile has its own page under
-`/portfolio/`, so this adds a project page for it. The section is titled exactly
-**SECTION 6 Logo Design**. The tile's own name: the user said "its called white rose logo" in answer
-to a different question (the PSD name); confirm whether the tile is titled "SECTION 6 Logo Design",
-"White Rose Logo", or both. Its description (the user's draft, to be published verbatim):
+`/portfolio/`, so this adds a project page for it. The tile is titled exactly
+**SECTION 6 Logo Design** ("SECTION 6" is the series title) and its image is the Phoenix symbol. Its description (the user's draft, to be published verbatim):
 
 > Done for a WGAW-registered animated series pitch.
 
@@ -85,16 +83,49 @@ Phoenix text. "WGAW" is the Writers Guild of America West.
 Each logo card should reuse the existing logo-card pattern on the Brand page (swatch image, label,
 SVG and PNG download links). Needs real `alt` text per logo, written with the user.
 
-### Open questions (ask before building)
+### Decisions (user, 2026-10-13)
 
-Answered 2026-10-13: where SECTION 6 lives (a new project tile), how many rose SVGs (4), and the rose
-PSD (`White Rose Logo.psd`). Still open:
+- The tile is titled **"SECTION 6 Logo Design"**. "SECTION 6" is the **animated series title**, so it
+  shows as visible text on the tile and page.
+- The **Phoenix symbol is the title-card image** of the tile.
+- The Phoenix is **redone** from the ArtBridge PNG, not reused from the old `SVG/` file.
+- Rose logo 1 is the open rose (PSD group `rose1`), rose logo 2 is the bud (`New group`).
 
-1. **Tile title:** "SECTION 6 Logo Design", "White Rose Logo", or both (see above).
-2. **The tile's thumbnail:** which logo, and on which background.
-3. **The Phoenix source:** are the PNGs and `SVG/PhoenixSymbol.svg` in ArtBridge final, or redone?
-4. **The numbering:** the Projects tab has no visible section numbers today. Does "SECTION 6"
-   appear as visible text on the tile or page, or is it a label only the user uses?
+### Progress: vectorizing done, waiting on the visual check
+
+Saved 2026-10-13 to `~/Library/Mobile Documents/com~apple~CloudDocs/ArtBridge/SECTION 6 Logo Design/`:
+
+| File | Source | Result |
+|---|---|---|
+| `phoenix-logo.svg` | `ArtBridge/PhoenixSymbol.png` | 47 paths, one fill `#610000` (the art's own dark red), transparent |
+| `white-rose-1-color.svg` / `-1-bw.svg` | PSD group `rose1` | 24 / 16 paths |
+| `white-rose-2-color.svg` / `-2-bw.svg` | PSD group `New group` | 53 / 101 paths |
+
+How they were made (so it can be repeated):
+
+1. **PSD to PNG** with `psd-tools`: the groups were composited layer by layer (checked against the PSD's
+   own group composite: max difference 2 of 255 on white). The B&W versions replace every non-black pixel
+   of the layers named `If Colored` with white, so the green becomes white and the black outlines stay.
+2. **Trace on SOL** (Illustrator Image Trace), with `creative-hub/scripts/sol-run.sh ... vectorize`
+   and the art repo's `cash/scripts/trace.ps1` (the copy in the vectorize skill lacks `-NoCrop`, which the
+   template needs). `6 Colors` for the color roses and the B&W roses, `Black and White Logo` for the Phoenix
+   (traced as black, filled `#610000` afterwards).
+3. **The B&W roses were traced on a magenta backdrop.** On transparent/white, the bud's stem outline has gaps,
+   so its white fill merged with the white canvas and was removed with it (the first pass left a hollow stem).
+   The magenta canvas path is deleted afterwards; the white stem and leaf fills stay.
+4. **Background and crop:** the Illustrator canvas path was stripped and the viewBox cropped with
+   `cash/scripts/crop_svg.py --pad 20`. All five are transparent.
+
+Notes for the visual check:
+
+- The B&W petals stay light grey (`#E2E3DF` / `#E5E2E1`) because that is the PSD's own petal fill. Only
+  the green became white (leaves and stem, `#FEFEFE`). Say if the petals should be pure white too.
+- The color roses keep two greens (`#003B0D`, `#004F11`) for leaf veins.
+- `white-rose-2-bw.svg` has 101 paths because the petal fill traced as many small pieces; it renders correctly
+  but would be worth merging if the file size matters.
+
+Open questions: none for Track A. Next: the user's visual check of the five files; then copy the approved SVGs
+(plus PNG fallbacks) into `public/images/`, add the project tile and page, write alts with the user.
 
 ---
 
