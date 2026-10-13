@@ -23,15 +23,22 @@ before a push ships in the same deploy.
 
 ### Ready to build now
 
+- [ ] **Approve the overnight mockups, then answer the open questions.** Branch `shxdowloop/2026-10-13/overnight-plans`
+      holds a master plan and five static mockups (nothing is built into the site). Open
+      [`mockups/index.html`](docs/plans/2026-10-13-overnight-plans/mockups/index.html) (serve command and the full
+      question and upload list: *Morning checklist* in
+      [`the plan`](docs/plans/2026-10-13-overnight-plans-shxdowloop.md)). Each page needs a yes, changes, or no from the
+      user; only then does its real build start. Also needs the corrected logo art, the card's email and number, and
+      the drafts listed there.
 - [ ] **Unmerged branches and baselines after the Oct 13 release.** `portfoliowebsite` is at `dd205ae`
       (Entry 155); the four merged branches were deleted on the user's yes (see Entry 155). Still
       unmerged: the Blue caption fix `fix/2026-10-06-blue-logo-caption` (local and origin, conflicts in
       binary baseline PNGs; regenerate them). `origin/develop` (`ffa7438`) and
       `origin/shxdowloop/2026-08-14/mistrust-reexport` (`287c46b`) were **retired on origin 2026-10-13** at
       the user's call; their SHAs are in Entry 155 if a commit is ever wanted back. Local
-      `portfoliowebsite` still points at the old `e1be888` line and `shxdowloop/2026-10-10/portfolio-reconcile`
-      lives in the main checkout; both are contained in `origin/portfoliowebsite` and can be reset
-      to it. The 40 visual baselines need a SOL regeneration (`--update-snapshots=all`) because the
+      `portfoliowebsite` was fast-forwarded to origin on 2026-10-13 by another session;
+      `shxdowloop/2026-10-10/portfolio-reconcile` still lives in the main checkout (`a8036ab`) and is
+      contained in `origin/portfoliowebsite`, so it can be reset or deleted on the user's yes. The 40 visual baselines need a SOL regeneration (`--update-snapshots=all`) because the
       gallery art changed.
 - [ ] **Logo Design: WAITING ON THE USER'S CORRECTED ART.** The Phoenix and the four White Rose SVGs
       were vectorized 2026-10-13 (iCloud `ArtBridge/SECTION 6 Logo Design/`, provisional). The user

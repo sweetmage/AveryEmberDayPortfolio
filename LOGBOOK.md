@@ -19,6 +19,21 @@ When this logbook exceeds ~1000 lines, split it:
 
 ---
 
+## Entry 156 - 2026-10-13
+
+**Agent:** Claude Sonnet 5.5 (ember-quill, VOID), main agent
+**Cycle:** shxdowloop overnight plans draft
+**Task:** Draft every open plan for the user's morning review and build visual mockups for approval; no real UI built.
+
+- Branch: shxdowloop/2026-10-13/overnight-plans, cut from origin/portfoliowebsite (8bf209f). The starting worktree was 3 docs commits behind; its upstream was unset because switch -c from a remote ref had made it track production. Pushed only as a named branch (Netlify allowed_branches is portfoliowebsite only).
+- Added docs/plans/2026-10-13-overnight-plans-shxdowloop.md (master plan in the user's voice: tracks A to E, stages, morning checklist with every question and upload) and five static mockups with an index under docs/plans/2026-10-13-overnight-plans/mockups/, linked to the real brand.css. All five pages are pending; none approved.
+- Mockups caught two design problems early: the Phoenix (#610000) disappears on the #0A0A0A tile backdrop, and the B&W roses need a mid-tone backdrop. The business card QR is real (segno, v4, level H, 4-module quiet zone) but not yet scanned by a phone.
+- Fresh-context oracle review: FAIL on three findings (index URL broken by serve clean-URL redirect; card back not border-box so front and back differed; branch housekeeping claim contradicted by the reflog), all fixed with no second round, plus the nits. Card re-measured 1.750 at 1440 and 390 wide, no overflow. serve.json added (cleanUrls off plus a rewrite so slash-less URLs also work in the in-app browser).
+- Local portfoliowebsite was fast-forwarded to origin at 01:52 by something other than this loop; TODO corrected. My own blunder: a broad pkill -f serve while chasing a duplicate listener may have stopped other serve processes; nothing on disk was affected.
+- Not done, by design: no real UI, no SOL baselines, no push to portfoliowebsite, no site copy written. Waiting on the user: approval of 5 mockups, corrected logo art, card email and number, Brand row tools, the extra section topic, and the copy drafts.
+
+---
+
 ## Entry 155 - 2026-10-13
 
 **Agent:** Claude Sonnet 5.5 (Quillfeather, VOID), main agent

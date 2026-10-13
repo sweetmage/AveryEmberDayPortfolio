@@ -1,0 +1,9 @@
+{
+  "cleanUrls": false,
+  "rewrites": [
+    {
+      "source": "/docs/plans/2026-10-13-overnight-plans/mockups/:page(\\d\\d-[a-z0-9-]+)",
+      "destination": "/docs/plans/2026-10-13-overnight-plans/mockups/:page.html"
+    }
+  ]
+}
