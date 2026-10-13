@@ -83,7 +83,7 @@ Fewest stages the real gates allow. The user gate is the only forcing reason, an
 
 ### Stage 1: Draft and mockups (this run)
 
-**Status:** Active
+**Status:** Complete
 **Goal:** The plan and every mockup, ready to judge.
 **Forcing reason for the boundary after it:** my approval of each page, tomorrow. That is a human gate.
 **Phases:**
@@ -92,7 +92,7 @@ Fewest stages the real gates allow. The user gate is the only forcing reason, an
 - [x] 1.3 Build 5 mockup pages plus an index, linked to the real `brand.css`, with light and dark toggles
 - [x] 1.4 Look at every page in the browser, then re-measure the card fix at 1440 and 390 (see the matrix)
 - [x] 1.5 Fresh-context plan review (`oracle`, one round): FAIL on three findings (index URL under `serve`'s clean-URL redirect, card box-sizing, branch-housekeeping claim), all fixed without a second round, plus the nits
-- [ ] 1.6 Reconcile `TODO.md`, `docs/plans/README.md`, `LOGBOOK.md`
+- [x] 1.6 Reconcile `TODO.md`, `docs/plans/README.md`, `LOGBOOK.md`
 
 **Parallel tracks:** three files or fewer per concern, scopes disjoint (plan, mockups, bookkeeping). Done by the main agent in sequence. They are small enough that dispatch would have cost more than it saved.
 **Verification:** each mockup loaded over HTTP and screenshotted; `git add -A` first, then `git diff --cached --check` and `git diff --cached --stat` (plain `git diff` cannot see untracked files); no real app file touched (the stat lists only `docs/`, `TODO.md`, `LOGBOOK.md`).
@@ -142,7 +142,7 @@ One native `oracle`, one round, on this plan and the mockups. A FAIL's findings 
 
 | Stage | Commit | Push |
 |---|---|---|
-| 1 | filled in at commit | `origin/shxdowloop/2026-10-13/overnight-plans` only |
+| 1 | `c864f0e` | pushed to `origin/shxdowloop/2026-10-13/overnight-plans` only |
 
 ## Verification matrix
 
