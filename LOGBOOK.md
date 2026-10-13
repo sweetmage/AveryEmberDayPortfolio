@@ -34,6 +34,7 @@ When this logbook exceeds ~1000 lines, split it:
 - Open: user's go-ahead to push (15-credit deploy); where SECTION 6 lives, what '4 rose versions' means, and the rose PSD location; whether the Brand row lists the site's own frameworks.
 - Decisions from the user: SECTION 6 is a new project tile; the White Rose set is 4 SVGs (two logos, color and B&W); source PSD found at ArtBridge/Procreate to PSD/White Rose Logo.psd. Plan and TODO updated; still open: tile title, thumbnail, Phoenix source final?, visible numbering.
 - Track A vectorizing: Phoenix (redone) and 4 White Rose SVGs (open rose + bud, color + B&W; green to white) saved to iCloud ArtBridge/SECTION 6 Logo Design/. PSD composited with psd-tools (matches the PSD's own composite, max diff 2); traced on SOL via creative-hub sol-run.sh vectorize with cash/scripts/trace.ps1 (the vectorize skill's copy lacks -NoCrop); canvas stripped and viewBox cropped with crop_svg.py. First B&W bud pass lost its stem fill (open outline merged the white fill with the canvas); retraced on a magenta backdrop and deleted that path. Checked by rendering all five on dark and light. Awaiting the user's visual check; nothing added to the site. Decisions: tile 'SECTION 6 Logo Design' (series title), Phoenix on the title card.
+- At the user's request the two B&W rose SVGs now have pure white petals: every light fill (#E1-#E7 greys, #FBFBFB, #FEFEFE) set to #FFFFFF; each file is now black outline plus white only. Checked on dark and pink backdrops. Color versions unchanged.
 
 ---
 

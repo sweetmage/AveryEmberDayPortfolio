@@ -118,8 +118,7 @@ How they were made (so it can be repeated):
 
 Notes for the visual check:
 
-- The B&W petals stay light grey (`#E2E3DF` / `#E5E2E1`) because that is the PSD's own petal fill. Only
-  the green became white (leaves and stem, `#FEFEFE`). Say if the petals should be pure white too.
+- **Petals are pure white in the B&W versions** (user's call, 2026-10-13). The PSD's petal fill is light grey (`#E2E3DF` / `#E5E2E1`); after the trace every light fill in the two B&W SVGs was set to `#FFFFFF`, so each B&W file now has exactly two fills: near-black outlines and white. The color versions keep the PSD's grey petals.
 - The color roses keep two greens (`#003B0D`, `#004F11`) for leaf veins.
 - `white-rose-2-bw.svg` has 101 paths because the petal fill traced as many small pieces; it renders correctly
   but would be worth merging if the file size matters.
