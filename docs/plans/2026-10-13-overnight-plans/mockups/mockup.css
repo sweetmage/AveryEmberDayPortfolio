@@ -12,7 +12,7 @@ body { margin: 0; background: var(--brand-bg); color: var(--brand-text); font-fa
 .mk-note strong { color: var(--brand-text); }
 .mk-ask { border-left-color: var(--brand-gold); }
 .mk-h { font-family: var(--brand-font-heading); font-weight: 600; font-size: 1.5rem; margin: 2.5rem 0 1rem; }
-.mk-grid { display: grid; gap: 1.5rem; grid-template-columns: 1fr; }
+.mk-grid { display: grid; gap: 1.5rem; grid-template-columns: minmax(0, 1fr); }
 @media (min-width: 768px) { .mk-grid.two { grid-template-columns: 1fr 1fr; } .mk-grid.three { grid-template-columns: repeat(3, 1fr); } }
 .mk-tile { list-style: none; margin: 0; padding: 0; }
 .mk-proj-title { font-family: var(--brand-font-heading); font-size: clamp(2rem, 5vw, 3rem); font-weight: 700; margin: 0 0 .5rem; }
@@ -37,5 +37,5 @@ body { margin: 0; background: var(--brand-bg); color: var(--brand-text); font-fa
 .mk-sec::after { content: none; }
 
 /* Mockup 1: three project tiles in one row from 768px. Tile and picture width follow the viewport (fr columns, 16:9 picture) up to the 1400px content cap; text stays one size. */
-.mk-tiles { display: grid; gap: 1.5rem; grid-template-columns: 1fr; padding: 0; margin: 0; }
+.mk-tiles { display: grid; gap: 1.5rem; grid-template-columns: minmax(0, 1fr); padding: 0; margin: 0; }
 @media (min-width: 768px) { .mk-tiles { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
