@@ -19,6 +19,22 @@ When this logbook exceeds ~1000 lines, split it:
 
 ---
 
+## Entry 155 - 2026-10-13
+
+**Agent:** Claude Sonnet 5.5 (Quillfeather, VOID), main agent
+**Cycle:** branch reconcile + gallery watermark fix
+**Task:** Reconcile branches against portfoliowebsite, ship the gallery watermarks from public/, remove the page-wide watermark, plan the logo and brand work.
+
+- Branches: local portfoliowebsite (3 ahead) had diverged from origin (3 different commits); claude/reconcile-branches-main-e85f39 already merges both and fast-forwards onto origin/portfoliowebsite. Merged and deletable: shxdowloop/2026-10-06/next-step-cleanup-icons-mistrust, shxdowloop/2026-10-09/print-mockups, claude/bold-cannon-wznaig, backup/portfoliowebsite-2026-10-10. Unmerged, conflicting on trial merge, left alone: fix/2026-10-06-blue-logo-caption (binary baseline PNGs), origin/develop (63 behind), origin/shxdowloop/2026-08-14/mistrust-reexport (63 behind). Nothing pushed or deleted.
+- Finding: live gallery was unwatermarked after the Oct 10 deploy (1bcecc5, Netlify ready). The swap and e481c13 only touched root images/, which Next does not publish (/images/watermarked/... 404); live chillFinal.webp and lollypopFinal.webp matched the pre-swap bytes. Checked with curl + shasum against git blobs.
+- Changed (ce81a48): all 12 gallery artworks re-composited with sharp from the e1be888 originals (white mark, 27% width, 2.7% margin, bottom-right; Moonlight new at 18%) and written to public/images/myart/Gallery/ (full, 900w, 480w via scripts/generate-image-variants.js --force --only), images/watermarked/Gallery/ and images/myart/Gallery/. The earlier composites had 5-6px light lines along the mark's right and bottom edges (324px long = 27% of width); sharp's render of the SVG has none. The compositing script is not in the repo (/private/tmp/rewm.js, discarded).
+- Changed (uncommitted at entry time): removed the page-wide .brand-page-watermark layer from app/layout.tsx and brand.css and deleted public/images/patterns/bubble-watermark.png, at the user's report that the site background was covered in watermarks (Entry 154 overlay). Restorable from a8036ab.
+- Docs: new docs/plans/2026-10-13-logo-design-and-brand-expansion.md (Track A logo vectorization into SECTION 6 Logo Design, B tools per project, C Brand page business card, voice/tone and one more section, D watermark removal); TODO.md gains 7 open items and a Done bullet; docs/plans/README.md index row.
+- Verification: dev server (portfolio-next) served all 12 gallery 900w files byte-identical to disk, no console errors; no .brand-page-watermark element or watermark background on any element after removal. Eyeballed chill, Moonlight, Emergence. NOT run: Playwright suite or visual gate (baselines for the gallery will differ and need a SOL regeneration with --update-snapshots=all).
+- Open: user's go-ahead to push (15-credit deploy); where SECTION 6 lives, what '4 rose versions' means, and the rose PSD location; whether the Brand row lists the site's own frameworks.
+
+---
+
 ## Entry 154 - 2026-10-09
 
 **Agent:** Claude Haiku 5.5 (quill, VOID), main agent

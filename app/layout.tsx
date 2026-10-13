@@ -42,7 +42,6 @@ export default function RootLayout({
         <SkipLink />
         <div className="brand-page-bg" aria-hidden="true" />
         <div className="brand-page-noise" aria-hidden="true" />
-        <div className="brand-page-watermark" aria-hidden="true" />
         <Nav />
         {children}
         <Footer />

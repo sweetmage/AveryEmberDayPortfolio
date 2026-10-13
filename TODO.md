@@ -23,7 +23,31 @@ before a push ships in the same deploy.
 
 ### Ready to build now
 
-_Nothing agent-ready. The watermark artwork is done locally (Oct 9 below), pending a push._
+- [ ] **Push the reconcile branch.** `claude/reconcile-branches-main-e85f39` (`shxdowloop/2026-10-10/portfolio-reconcile`)
+      merges the local and remote `portfoliowebsite` histories and carries the gallery watermark fix
+      (`ce81a48`, published from `public/`; the first swap only touched root `images/`, so the live
+      gallery was unwatermarked) and the removal of the page-wide watermark layer. Fast-forward
+      `origin/portfoliowebsite` to it = one 15-credit production deploy; needs the user's go-ahead in
+      the moment. Not merged and still open: `fix/2026-10-06-blue-logo-caption` (conflicts in binary
+      baseline PNGs, regenerate them), `origin/develop` and `origin/shxdowloop/2026-08-14/mistrust-reexport`
+      (stale, conflicting; likely retire). Plan: none; see Entry 155.
+- [ ] **Logo Design section: vectorize the Phoenix logo and the White Rose logos.** Source is a PSD
+      in the iCloud `ArtBridge` folder with color and black-and-white layer groups; the green on the
+      B&W roses becomes white. Save the SVGs, **stop for the user's visual check**, then add them
+      under a new Projects-tab section titled **SECTION 6 Logo Design** ("done for a WGAW-registered
+      animated series pitch"), with the user's per-logo descriptions verbatim. **Blocked on questions:**
+      where "SECTION 6" lives, what "4 versions" of the rose means, and where the rose PSD is (none
+      found within three folders of ArtBridge). Plan:
+      [`docs/plans/2026-10-13-logo-design-and-brand-expansion.md`](docs/plans/2026-10-13-logo-design-and-brand-expansion.md) (Track A).
+- [ ] **Add the tools used to each project.** A History of Mistrust: made entirely in Figma. AED
+      Brand: logo made in InDesign; the site's build details (Next.js 15 static export, React 19,
+      TypeScript, Tailwind v4 plus `brand.css`, sharp, Playwright, Netlify) are written up in the plan.
+      Confirm whether the Brand row also lists the site's own frameworks. Plan: Track B.
+- [ ] **Brand page: business card.** Design in InDesign: logo, a small stylized QR code to the
+      portfolio site, email, Google Voice professional number, a sleek fun design from the website's
+      brand CSS. Needs the email, the number, the card size, and a scan test. Plan: Track C.
+- [ ] **Brand page: brand voice and tone section.** User drafts, agent proofreads. Plan: Track C.
+- [ ] **Brand page: one more new section with a header.** Topic and title not yet given. Plan: Track C.
 
 ### Blocked on a prerequisite
 
@@ -80,7 +104,17 @@ consolidated in [`docs/archives/plans.md`](docs/archives/plans.md).
 
 ### 2026-10
 
-- **Oct 9** — **Logo watermark overlay, built and verified locally (not pushed).** The Blue logo
+- **Oct 13** — **Page-wide watermark removed; gallery watermarks actually published.** The user saw
+  the whole background covered in watermarks: the Entry 154 overlay (`.brand-page-watermark`)
+  tiled the Blue mark over every page. The layer, its CSS rule and the PNG are gone (restore from
+  `a8036ab`). Separately, the gallery watermark swap of Oct 10 only touched root `images/`, which Next
+  does not publish, so the live gallery still served unwatermarked art (checked by byte hash; the
+  Netlify deploy itself was `ready`). The 12 artworks, including a new Moonlight, were re-composited
+  from the originals with sharp (the earlier files had thin light lines along the mark's right and
+  bottom edges) and shipped from `public/images/myart/Gallery/` with regenerated 480w and 900w
+  sizes. Local, **not pushed**. Entry 155.
+
+- **Oct 9** — **Logo watermark overlay, built and verified locally (not pushed). Removed Oct 13, see above.** The Blue logo
   mark (`bubbleLogo-blue-notxt.png`) was faded to 8% opacity on SOL by a new Photoshop job,
   `creative-hub/sol/adobe/ps-watermark.ps1`, then recompressed losslessly (642 KB to 11 KB).
   It tiles on every page as a fixed layer under the content (`.brand-page-watermark` in

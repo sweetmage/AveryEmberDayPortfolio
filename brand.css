@@ -407,19 +407,6 @@
     -webkit-mask-image: linear-gradient(180deg, rgba(0,0,0,0.48), transparent 82%);
 }
 
-/* ── Logo watermark pattern ──────────────────────────────────────────
-   The tile is the logo mark at 8% opacity, baked in by SOL (ps-watermark), so the
-   overlay stays barely there on both themes without a CSS opacity to tune. */
-.brand-page-watermark {
-    position: fixed;
-    inset: 0;
-    pointer-events: none;
-    z-index: -1;
-    background-image: url('/images/patterns/bubble-watermark.png');
-    background-size: 200px 200px;
-    background-repeat: repeat;
-}
-
 /* ── Hero bubble layer ───────────────────────────────────────────── */
 .brand-hero-blobs {
     position: absolute;
