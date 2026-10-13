@@ -23,14 +23,13 @@ before a push ships in the same deploy.
 
 ### Ready to build now
 
-- [ ] **Push the reconcile branch.** `claude/reconcile-branches-main-e85f39` (`shxdowloop/2026-10-10/portfolio-reconcile`)
-      merges the local and remote `portfoliowebsite` histories and carries the gallery watermark fix
-      (`ce81a48`, published from `public/`; the first swap only touched root `images/`, so the live
-      gallery was unwatermarked) and the removal of the page-wide watermark layer. Fast-forward
-      `origin/portfoliowebsite` to it = one 15-credit production deploy; needs the user's go-ahead in
-      the moment. Not merged and still open: `fix/2026-10-06-blue-logo-caption` (conflicts in binary
-      baseline PNGs, regenerate them), `origin/develop` and `origin/shxdowloop/2026-08-14/mistrust-reexport`
-      (stale, conflicting; likely retire). Plan: none; see Entry 155.
+- [ ] **Branch cleanup after the Oct 13 release.** `portfoliowebsite` was fast-forwarded to `dd205ae` and
+      deployed (Entry 155). Delete the merged branches (`shxdowloop/2026-10-06/next-step-cleanup-icons-mistrust`,
+      `shxdowloop/2026-10-09/print-mockups`, `claude/bold-cannon-wznaig`, `backup/portfoliowebsite-2026-10-10`,
+      local and origin) **only at the user's yes**. Still unmerged and conflicting, user's call: the Blue
+      caption fix `fix/2026-10-06-blue-logo-caption` (regenerate its baseline PNGs), `origin/develop`
+      and `origin/shxdowloop/2026-08-14/mistrust-reexport` (stale; likely retire). The 40 visual baselines
+      still need a SOL regeneration (`--update-snapshots=all`) because the gallery art changed.
 - [ ] **Logo Design: WAITING ON THE USER'S CORRECTED ART.** The Phoenix and the four White Rose SVGs
       were vectorized 2026-10-13 (iCloud `ArtBridge/SECTION 6 Logo Design/`, provisional). The user
       called them almost perfect but found **a mistake in the linework of the art** and will re-upload
@@ -113,7 +112,7 @@ consolidated in [`docs/archives/plans.md`](docs/archives/plans.md).
   Netlify deploy itself was `ready`). The 12 artworks, including a new Moonlight, were re-composited
   from the originals with sharp (the earlier files had thin light lines along the mark's right and
   bottom edges) and shipped from `public/images/myart/Gallery/` with regenerated 480w and 900w
-  sizes. Local, **not pushed**. Entry 155.
+  sizes. **RELEASED Oct 13**: deploy `dd205ae` ready; all 36 gallery files byte-identical to git on the live site, 5 pages 200, old watermark PNG 404. Entry 155.
 
 - **Oct 9** — **Logo watermark overlay, built and verified locally (not pushed). Removed Oct 13, see above.** The Blue logo
   mark (`bubbleLogo-blue-notxt.png`) was faded to 8% opacity on SOL by a new Photoshop job,
