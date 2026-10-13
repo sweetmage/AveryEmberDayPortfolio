@@ -69,12 +69,13 @@ test.describe('portfolio project tiles', () => {
   test('each tile is one link to its project page, with a description and a label', async ({ page }) => {
     await page.goto(`${BASE_URL}/portfolio/`, { waitUntil: 'networkidle' });
     const tiles = page.locator('.project-tile');
-    await expect(tiles).toHaveCount(2);
+    await expect(tiles).toHaveCount(3);
     expect(await tiles.evaluateAll((els) => els.map((e) => e.getAttribute('href')))).toEqual([
       '/portfolio/history-of-mistrust/',
       '/portfolio/brand/',
+      '/portfolio/section-6-logo-design/',
     ]);
-    for (let i = 0; i < 2; i += 1) {
+    for (let i = 0; i < 3; i += 1) {
       const tile = tiles.nth(i);
       // One interactive element per card: nothing focusable nested in the link.
       await expect(tile.locator('a, button, [tabindex]')).toHaveCount(0);
@@ -85,17 +86,19 @@ test.describe('portfolio project tiles', () => {
     }
   });
 
-  test('tiles sit side by side from 768px and stack below', async ({ page }) => {
+  test('the three tiles sit in one row from 768px and stack below', async ({ page }) => {
     const tops = async (width) => {
       await page.setViewportSize({ width, height: 900 });
       await page.goto(`${BASE_URL}/portfolio/`, { waitUntil: 'networkidle' });
       return page.locator('.project-tile').evaluateAll((els) => els.map((e) => Math.round(e.getBoundingClientRect().top)));
     };
     // At the breakpoint itself, and one pixel under it.
-    const [a, b] = await tops(768);
+    const [a, b, c3] = await tops(768);
     expect(a).toBe(b);
-    const [c, d] = await tops(767);
+    expect(b).toBe(c3);
+    const [c, d, e3] = await tops(767);
     expect(d).toBeGreaterThan(c);
+    expect(e3).toBeGreaterThan(d);
   });
 
   test('old project hash links land on the project page', async ({ page }) => {
@@ -158,4 +161,41 @@ test.describe('brand logo download kit', () => {
       expect(new Set(heights).size, `heights: ${heights}`).toBe(1);
     });
   }
+});
+
+test.describe('SECTION 6 Logo Design page', () => {
+  /* Added 2026-10-13 from the user's approved mockups. Five logos, each with an
+     SVG and a PNG that exist, real alt text, and no sideways scroll on a 320px
+     phone (the tile grid blew out to 564px once, on a bare `1fr` column). */
+  test('five logo cards, each with an SVG and a PNG that exist and real alt text', async ({ page, request }) => {
+    await page.goto(`${BASE_URL}/portfolio/section-6-logo-design/`, { waitUntil: 'networkidle' });
+    await expect(page.locator('h1')).toHaveText('SECTION 6 Logo Design');
+    const links = page.locator('.logo-swatch a.logo-download');
+    await expect(links).toHaveCount(10);
+    for (const href of await links.evaluateAll((as) => as.map((a) => a.getAttribute('href')))) {
+      expect((await request.get(`${BASE_URL}${href}`)).status(), href).toBe(200);
+    }
+    const alts = await page.locator('.logo-swatch img').evaluateAll((els) => els.map((e) => e.getAttribute('alt')));
+    expect(alts).toHaveLength(5);
+    for (const alt of alts) expect(alt.length).toBeGreaterThan(20);
+    await expect(page.getByRole('heading', { name: 'Tools' })).toBeVisible();
+    await expect(page.locator('ul li', { hasText: 'Procreate' })).toBeVisible();
+  });
+
+  for (const path of ['/portfolio/', '/portfolio/section-6-logo-design/']) {
+    test(`no sideways scroll at 320px on ${path}`, async ({ page }) => {
+      await page.setViewportSize({ width: 320, height: 800 });
+      await page.goto(`${BASE_URL}${path}`, { waitUntil: 'networkidle' });
+      const { sw, cw } = await page.evaluate(() => ({
+        sw: document.documentElement.scrollWidth,
+        cw: document.documentElement.clientWidth,
+      }));
+      expect(sw).toBeLessThanOrEqual(cw);
+    });
+  }
+
+  test('the Brand Assets section stays hidden until it is launched', async ({ page }) => {
+    await page.goto(`${BASE_URL}/portfolio/brand/`, { waitUntil: 'networkidle' });
+    await expect(page.getByRole('heading', { name: 'Brand Assets' })).toHaveCount(0);
+  });
 });

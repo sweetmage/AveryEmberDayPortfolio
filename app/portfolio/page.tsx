@@ -50,6 +50,17 @@ const projects = [
     fit: 'contain' as const,
     backdrop: '#0A0A0A',
   },
+  /* Third project, added 2026-10-13 from the user's approved mockups. The picture
+     is a 16:9 close-up of the Phoenix's head (the thumb SVG's viewBox is the crop,
+     so `cover` shows all of it); the description is the user's short rewrite. */
+  {
+    href: '/portfolio/section-6-logo-design/',
+    title: 'SECTION 6 Logo Design',
+    description: 'Logo design for SECTION 6, an animated series pitch registered with the WGAW.',
+    thumb: '/images/section-6/phoenix-thumb.svg',
+    thumbAlt: 'Close-up of the red Phoenix logo from SECTION 6',
+    backdrop: '#0A0A0A',
+  },
 ];
 
 /* One page for all the work (user, 2026-10-05): project tiles that each open
@@ -68,7 +79,7 @@ export default function PortfolioPage() {
         <h2 id="portfolio-projects" className="portfolio-section-title">
           Projects
         </h2>
-        <ul className="grid grid-cols-1 gap-6 md:grid-cols-2">
+        <ul className="grid grid-cols-1 gap-6 md:grid-cols-3">
           {projects.map((p) => (
             <ProjectTile key={p.href} {...p} />
           ))}

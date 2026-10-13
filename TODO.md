@@ -23,13 +23,18 @@ before a push ships in the same deploy.
 
 ### Ready to build now
 
-- [ ] **Approve the overnight mockups, then answer the open questions.** Branch `shxdowloop/2026-10-13/overnight-plans`
-      holds a master plan and five static mockups (nothing is built into the site). Open
-      [`mockups/index.html`](docs/plans/2026-10-13-overnight-plans/mockups/index.html) (serve command and the full
-      question and upload list: *Morning checklist* in
-      [`the plan`](docs/plans/2026-10-13-overnight-plans-shxdowloop.md)). Each page needs its own yes, changes, or no from the
-      user (the Oct 13 "looks goo" was general, not per page); only then does its real build start. Also needs the corrected logo art, the card's email and number, and
-      the drafts listed there.
+- [ ] **Brand voice and tone: the user drafts it, and it must be done BEFORE the push** (user,
+      2026-10-13). The research and recommendation are in
+      [`docs/plans/2026-10-13-brand-voice-recommendation.md`](docs/plans/2026-10-13-brand-voice-recommendation.md):
+      one screen, three traits, a word list; five questions at the end. The user writes the first draft,
+      the agent proofreads only, then it goes on the Brand page after *Type System*.
+- [ ] **Push the loop branch to `portfoliowebsite`** (one 15-credit production deploy), only after the voice
+      section is finished and the user says go. Before it: regenerate the visual baselines on SOL **once**
+      (`--update-snapshots=all`; the portfolio page changed to three tiles and the new SECTION 6 page adds 8
+      baselines, so 48 in all), and get the user's review link (`.agents/memories/review-links.md`).
+      Branch `shxdowloop/2026-10-13/overnight-plans` (pushed to its own branch only).
+- [ ] **Alt text for the five SECTION 6 logos is a first draft.** Written by the agent in
+      `app/portfolio/Section6Project.tsx`; the user wanted real alt text written with them. Review it.
 - [ ] **Unmerged branches and baselines after the Oct 13 release.** `portfoliowebsite` is at `dd205ae`
       (Entry 155); the four merged branches were deleted on the user's yes (see Entry 155). Still
       unmerged: the Blue caption fix `fix/2026-10-06-blue-logo-caption` (local and origin, conflicts in
@@ -40,24 +45,14 @@ before a push ships in the same deploy.
       `shxdowloop/2026-10-10/portfolio-reconcile` still lives in the main checkout (`a8036ab`) and is
       contained in `origin/portfoliowebsite`, so it can be reset or deleted on the user's yes. The 40 visual baselines need a SOL regeneration (`--update-snapshots=all`) because the
       gallery art changed.
-- [ ] **Logo Design: WAITING ON THE USER'S CORRECTED ART.** The Phoenix and the four White Rose SVGs
-      were vectorized 2026-10-13 (iCloud `ArtBridge/SECTION 6 Logo Design/`, provisional). The user
-      called them almost perfect but found **a mistake in the linework of the art** and will re-upload
-      it later. Then: rerun `scripts/logo-traces.py` and the SOL trace, show the user, get the visual
-      check, and only then add the new project tile titled **SECTION 6 Logo Design** ("SECTION 6" is the
-      animated series title; the Phoenix is the title-card image; "done for a WGAW-registered animated
-      series pitch"), with the short descriptions the user asked for (Oct 13) and real alt text. Full handoff,
-      decisions and commands:
-      [`docs/plans/2026-10-13-logo-design-and-brand-expansion.md`](docs/plans/2026-10-13-logo-design-and-brand-expansion.md) (Track A, *HANDOFF*).
-- [ ] **Add the tools used to each project.** A History of Mistrust: made entirely in Figma. AED
-      Brand: logo made in InDesign; the site's build details (Next.js 15 static export, React 19,
-      TypeScript, Tailwind v4 plus `brand.css`, sharp, Playwright, Netlify) are written up in the plan.
-      Confirm whether the Brand row also lists the site's own frameworks. Plan: Track B.
-- [ ] **Brand page: business card.** Design in InDesign: logo, a small stylized QR code to the
-      portfolio site, email, Google Voice professional number, a sleek fun design from the website's
-      brand CSS. Needs the email, the number, the card size, and a scan test. Plan: Track C.
-- [ ] **Brand page: brand voice and tone section.** User drafts, agent proofreads. Plan: Track C.
-- [ ] **Brand page: one more new section with a header.** Topic and title not yet given. Plan: Track C.
+- [ ] **Add the tools used to the other two projects.** Mockup 3 is still **pending** the user's answer. The
+      SECTION 6 page already has its Tools row (Procreate, Adobe InDesign, Adobe Photoshop). Mistrust: Figma.
+      Brand: InDesign for the logo, plus the site's own stack if the user agrees (and which of Photoshop,
+      Illustrator, JavaScript stay). Plan: Track B.
+- [ ] **Brand Assets (hidden).** Built behind `SHOW_BRAND_ASSETS = false` in `app/portfolio/BrandProject.tsx`: a
+      business card and a website banner, each as design plus mockup. The user will make the pieces later;
+      fill in each `design` and `mockup` and flip the flag to launch. The card mockup 4 was **not approved**;
+      the user will design the card themself. Plan: Track C.
 
 ### Blocked on a prerequisite
 
@@ -113,6 +108,12 @@ Full detail in `LOGBOOK.md` (newest-first). Plan docs live in `docs/plans/`; ear
 consolidated in [`docs/archives/plans.md`](docs/archives/plans.md).
 
 ### 2026-10
+
+- **Oct 13** — **SECTION 6 Logo Design built (not pushed to production).** Third project tile and its page
+  `/portfolio/section-6-logo-design/` (Phoenix in vivid red `#E4101E`, four White Rose SVGs and PNGs, Tools row,
+  short copy), three tiles in one row from 768px with no sideways scroll at 320px; the open rose's leaves were
+  rebuilt so the green sits under the linework; Brand Assets section built and hidden. Branch
+  `shxdowloop/2026-10-13/overnight-plans`, own branch only. Entries 156 to 158.
 
 - **Oct 13** — **Page-wide watermark removed; gallery watermarks actually published.** The user saw
   the whole background covered in watermarks: the Entry 154 overlay (`.brand-page-watermark`)

@@ -113,6 +113,61 @@ function LogoSwatch({ swatch }: { swatch: Swatch }) {
   );
 }
 
+/* Brand Assets: the business card and the website banner, each shown as the design
+   and as a mockup. HIDDEN for now (user, 2026-10-13): the user will make the pieces
+   later, so nothing here renders until `SHOW_BRAND_ASSETS` is true. To launch it, fill
+   in each piece's `design` and `mockup` (src, alt, width, height), then flip the flag.
+   A piece with no image renders no figure, so it can go live one piece at a time. */
+const SHOW_BRAND_ASSETS = false;
+
+interface AssetImage {
+  src: string;
+  alt: string;
+  width: number;
+  height: number;
+}
+
+interface BrandAsset {
+  title: string;
+  design: AssetImage | null;
+  mockup: AssetImage | null;
+}
+
+const brandAssets: BrandAsset[] = [
+  { title: 'Business Card', design: null, mockup: null },
+  { title: 'Website Banner', design: null, mockup: null },
+];
+
+function BrandAssets() {
+  return (
+    <section className="project-section px-6 pb-12">
+      <h4 className="section-title mb-5 border-none p-0 text-left font-heading text-xl font-semibold normal-case tracking-normal text-text">
+        Brand Assets
+      </h4>
+      {brandAssets.map((asset) => (
+        <div key={asset.title} className="mb-8 last:mb-0">
+          <h5 className="mb-3 font-heading text-sm font-medium uppercase tracking-[0.08em] text-text-muted">
+            {asset.title}
+          </h5>
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+            {[
+              { label: 'Design', image: asset.design },
+              { label: 'Mockup', image: asset.mockup },
+            ].map(({ label, image }) =>
+              image ? (
+                <figure key={label} className="brand-frame m-0 p-3 [&_img]:block [&_img]:h-auto [&_img]:w-full">
+                  <img src={image.src} alt={image.alt} width={image.width} height={image.height} loading="lazy" decoding="async" />
+                  <figcaption className="mt-2 font-body text-xs text-text-muted">{label}</figcaption>
+                </figure>
+              ) : null,
+            )}
+          </div>
+        </div>
+      ))}
+    </section>
+  );
+}
+
 export default function BrandProject() {
   return (
     <>
@@ -220,6 +275,8 @@ export default function BrandProject() {
           </div>
         </div>
       </section>
+
+      {SHOW_BRAND_ASSETS && <BrandAssets />}
     </>
   );
 }

@@ -275,3 +275,14 @@ Rebuilt with the same pipeline (`prepare`, three SOL traces, `finish`, `crop_svg
 **Tile layout (user, 2026-10-13):** the three project tiles sit in one row from 768px up (one column on phones). Tile and 16:9 picture width follow the viewport width, up to the 1400px content cap; the title and description stay one size, so only the text box grows. Measured in mockup 1: tiles 230px at an 800px window, 363px at 1200px, 451px at 1700px (the cap), all in one row. The real grid in `app/portfolio/page.tsx` is `md:grid-cols-2` today, so building this means `md:grid-cols-3`.
 
 **No side scrolling (user, 2026-10-13):** every grid column in the new tiles must be `minmax(0, 1fr)`, never a bare `1fr`. A bare `1fr` has a min-content floor, and at 320px the single tile column blew out to 540px (page 564px wide). With `minmax(0, 1fr)` the page is exactly the viewport wide at 320, 390, 767 and 768px, and tiles are 272, 342, 719 and 219px. The same applies to the real `app/portfolio/page.tsx` grid when it becomes `md:grid-cols-3`: use `grid-cols-[minmax(0,1fr)] md:grid-cols-[repeat(3,minmax(0,1fr))]` or check that Tailwind's `grid-cols-3` (which is already `minmax(0, 1fr)`) is used, and measure `scrollWidth` at 320px.
+
+
+## Update 2026-10-13 (evening): approvals and the build
+
+The user approved mockups 1 and 2 ("approve section 6 tile, section 6 projects page"), did not approve the business card, and said the rose logo "looks good, it is fixed", so **no corrected art is pending** and Track A's handoff above is closed. The SECTION 6 tile and page are now built:
+
+- `app/portfolio/page.tsx`: third tile, `md:grid-cols-3`; `app/portfolio/Section6Project.tsx` and `app/portfolio/section-6-logo-design/page.tsx`: the page; assets in `public/images/section-6/` (five SVGs with PNGs, plus `phoenix-thumb.svg`, the tile crop).
+- Tests: tile count 3 and one row from 768px; new SECTION 6 page tests (five logos, 10 download links that exist, real alt text, no sideways scroll at 320px); the visual gate lists the new page. Baselines are not regenerated yet (once, last, on SOL).
+- **Brand Assets** (the extra Brand-page section, decided by the user): a business card and a website banner, each as design plus mockup, made later by the user. Built hidden behind `SHOW_BRAND_ASSETS = false` in `BrandProject.tsx`. Replaces Track C's business-card item; the user will design the card themself.
+- **Brand voice and tone** must be finished before the push. Research and recommendation: [`2026-10-13-brand-voice-recommendation.md`](2026-10-13-brand-voice-recommendation.md).
+- The alt text for the five logos is the agent's first draft, for the user to review.

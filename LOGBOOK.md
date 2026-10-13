@@ -19,6 +19,19 @@ When this logbook exceeds ~1000 lines, split it:
 
 ---
 
+## Entry 158 - 2026-10-13
+
+**Agent:** Claude Sonnet 5.5 (ember-quill, VOID), main agent
+**Cycle:** shxdowloop overnight plans: build the approved pages
+**Task:** Build the approved SECTION 6 tile and page, add the hidden Brand Assets section, research brand voice and tone.
+
+- User approved mockups 1 and 2, did not approve the business card (mockup 4), named the extra Brand section Brand Assets (hidden for now), and said the rose logo is fixed. Brand voice and tone must be finished before any push to portfoliowebsite.
+- Built: SECTION 6 tile (third tile, three-across grid from 768px) and /portfolio/section-6-logo-design/ (Section6Project.tsx, assets in public/images/section-6/ with PNG twins and phoenix-thumb.svg), BrandAssets behind SHOW_BRAND_ASSETS=false (absent from out/ HTML, tested). Tests: project-tiles and smoke-next updated to 3 tiles, new SECTION 6 tests, 32 chromium tests green on a fresh export build; visual gate lists the new page, baselines NOT regenerated (one SOL pass, last).
+- Research: 9 sources on what brands put in voice and tone sections (Mailchimp, Monzo, Atlassian, Slack, template and freelancer guides) plus an analysis of the live copy. Recommendation in docs/plans/2026-10-13-brand-voice-recommendation.md: one screen, three traits (plainspoken, warm and listening, dry with a little wonder), tone table, use and avoid word list. The user drafts, the agent proofreads.
+- Open: the user's voice and tone draft, review of the agent's first-draft logo alt text, mockup 3 (Tools on Brand and Mistrust), SOL baseline regeneration, then the user's go-ahead to push.
+
+---
+
 ## Entry 157 - 2026-10-13
 
 **Agent:** Claude Sonnet 5.5 (ember-quill, VOID), main agent

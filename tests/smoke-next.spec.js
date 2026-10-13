@@ -30,7 +30,7 @@ test.describe('Next.js app smoke', () => {
   test('portfolio page — project tiles open their pages and come back', async ({ page }) => {
     await page.goto(`${BASE_URL}/portfolio/`, { waitUntil: 'networkidle' });
     const tiles = page.locator('.project-tile');
-    await expect(tiles).toHaveCount(2);
+    await expect(tiles).toHaveCount(3);
 
     // Brand: tile -> its own page -> back link -> portfolio.
     await tiles.nth(1).click();

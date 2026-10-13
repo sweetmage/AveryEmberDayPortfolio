@@ -34,12 +34,13 @@ test.use({
    contact, which never showed the noise, keep strict single-attempt grading. */
 
 /* Projects and Gallery merged into /portfolio/ on 2026-10-05, and each
-   project got its own page. Still 5 captures x 4 widths x 2 themes = 40. */
+   project got its own page. Now 6 captures x 4 widths x 2 themes = 48 (SECTION 6 added 2026-10-13; its 8 baselines and the changed portfolio ones need a SOL regeneration). */
 const PAGES = [
   { name: 'index', url: '/' },
   { name: 'portfolio', url: '/portfolio/', semibold: true },
   { name: 'portfolio-mistrust', url: '/portfolio/history-of-mistrust/', semibold: true },
   { name: 'portfolio-brand', url: '/portfolio/brand/', semibold: true },
+  { name: 'portfolio-section-6', url: '/portfolio/section-6-logo-design/', semibold: true },
   { name: 'contact', url: '/contact/' },
 ];
 

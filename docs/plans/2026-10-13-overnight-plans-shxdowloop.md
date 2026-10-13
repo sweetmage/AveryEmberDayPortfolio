@@ -31,11 +31,13 @@ Offer answered 2026-10-13, verbatim: "Yes, mockups overnight, approve tomorrow (
 
 | # | Mockup | Status | Your answer (record verbatim) |
 |---|---|---|---|
-| 1 | The SECTION 6 tile on `/portfolio/` | **Pending** | |
-| 2 | The SECTION 6 project page | **Pending** | |
-| 3 | Tools rows on both project pages | **Pending** | |
-| 4 | Business card, front and back, real QR | **Pending** | |
-| 5 | Brand voice and tone, plus the one more section | **Pending** | |
+| 1 | The SECTION 6 tile on `/portfolio/` | **Approved**, 2026-10-13. Built. | "approve section 6 tile" |
+| 2 | The SECTION 6 project page | **Approved**, 2026-10-13. Built. | "approve ... section 6 projects page" |
+| 3 | Tools rows on both project pages | **Pending** (only the SECTION 6 page's Tools row, which is part of mockup 2, is built) | |
+| 4 | Business card, front and back, real QR | **Not approved**, 2026-10-13. The user will design it and show it under Brand Assets. | "do not approve business card" |
+| 5 | Brand voice and tone, plus the one more section | **Partly decided.** The extra section is **Brand Assets**, hidden for now (built, switched off). Voice and tone is waiting on the user's draft; research in `2026-10-13-brand-voice-recommendation.md`. | "the additional section will be brand assets ... the section should remain hidden on the main site for now" |
+
+User's full answer, verbatim: "approve section 6 tile, section 6 projects page, do not approve business card, the additional section will be brand assets where i will display a business card design and mockup and a website banner design and mockup. i will make these later, the section should remain hidden on the main site for now. on brand voice and tone, do research on what other brands include in sections like this and analyze my current website. then, report back with a recommendation about what to write in this section and what words to use. this section i would like to finish before pushing these changes. also, the rose logo looks good, it is fixed."
 
 **2026-10-13, after the four logo changes, the tile fixes and the small-screen check, the user said, verbatim: "looks goo. finish with the loop".** That is a general thumbs-up, not a yes to each page, so all five stay **Pending** until each gets its own answer. Only a yes from me approves a page. The loop never approves one. Every page stays pending until I answer.
 
