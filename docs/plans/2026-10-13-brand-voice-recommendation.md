@@ -39,13 +39,13 @@ For a one-person brand, drop the parts built for teams: channel-by-channel rules
 
 ## 2. What your site sounds like now
 
-Read from the live copy: the About box, Contact and thanks pages, both project tiles and descriptions, the Mistrust slide text, the 12 gallery titles, the hero, the type specimen, and your longer bio (`about_me.md`).
+Read from the live copy: the About box, Contact and thanks pages, both project tiles and descriptions, the Mistrust slide text, the 12 gallery titles, the hero, the type specimen.
 
 **What is already consistent**
 
 - **Plain on facts.** The Mistrust slides state a fact, then a number or a date: the Tuskegee study, "Black people represent only 12% of the population but bear 38% of new diagnoses". No hype. The tiles do the same: "A 30-slide Instagram series on why some communities struggle to trust doctors."
-- **Warm and invitational, once.** Contact: "Tell me what you're working on and I'll get back to you as soon as I can." The Mistrust series ends: "let's start that conversation together." Your longer bio: "Every project starts with listening... I design with empathy and I deliver with precision."
-- **A dry, wondering streak that only shows in your own words.** "I woke up in a world that was falling apart at the seams, with a crayon in my hand." Coffee, cozy games, "brewing coffee and conversation". The gallery titles are blunt one-or-two-word names (Gross, Chill, Beheaded, Lollipop). The display type is a handwriting face (Sriracha) over a neon spectrum on near-black, so the look is playful and a little nocturnal.
+- **Warm and invitational, once.** Contact: "Tell me what you're working on and I'll get back to you as soon as I can." The Mistrust series ends: "let's start that conversation together." 
+- **A dry, wondering streak.** "Brewing coffee and conversation alongside my pursuit of my true passions." The gallery titles are blunt one-or-two-word names (Gross, Chill, Beheaded, Lollipop). The display type is a handwriting face (Sriracha) over a neon spectrum on near-black, so the look is playful and a little nocturnal.
 - **Mechanics you already follow:** first person "I" and "my" (never "we"); contractions in the About and Contact copy; no em dashes in your prose (they appear only in page titles, citations and type-specimen labels); exclamation marks are rare, two on the whole site (the About closing and the last Mistrust slide), never more than one per page; US spelling; Title Case section headings; sentences average about 16 words in the About box and 12 on the tiles.
 
 **Where it drifts**
@@ -72,7 +72,7 @@ A person, a reader, a feeling. Seed for you to rewrite in your own words:
 |---|---|---|---|
 | Plainspoken | Stiff or abstract | Say what it is first, then one detail. Prefer a verb to an abstract noun. Most sentences under 20 words. | "A 30-slide Instagram series on why some communities struggle to trust doctors." |
 | Warm, and listens first | Salesy or pleading | Invite once, in the first person, and say "you" at least once. No "feel free to". | "Tell me what you're working on and I'll get back to you as soon as I can." |
-| Dry, with a little wonder | Cute or loud | At most one wink per page. None on heavy subjects. No exclamation marks, with one allowed per page. | "I woke up in a world that was falling apart at the seams, with a crayon in my hand." |
+| Dry, with a little wonder | Cute or loud | At most one wink per page. None on heavy subjects. No exclamation marks, with one allowed per page. | "Brewing coffee and conversation alongside my pursuit of my true passions." |
 
 ### 3c. Tone table (voice stays; the dial moves)
 

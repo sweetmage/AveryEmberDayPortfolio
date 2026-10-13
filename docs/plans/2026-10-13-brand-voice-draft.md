@@ -15,12 +15,12 @@ Lead with what it is, then add one detail. Keep sentences short and let verbs do
 *"A 30-slide Instagram series on why some communities struggle to trust doctors."*
 
 ### Warm and listening
-Listen first. Invite once, and speak to the reader directly. Every project starts with a conversation.
+Listen first. Invite once, speak to the reader directly, and say what happens next.
 *"Tell me what you're working on and I'll get back to you as soon as I can."*
 
 ### Dry, with a little wonder
 A light touch of humor and curiosity, one wink a page at most. Heavy subjects get a straight face.
-*"I woke up in a world that was falling apart at the seams, with a crayon in my hand."*
+*"Brewing coffee and conversation alongside my pursuit of my true passions."*
 
 ### Tone by context
 Same voice everywhere, with the dial turned to fit the page.
@@ -46,4 +46,4 @@ Write in the first person singular, with contractions. Use commas and colons for
 
 - **What changed this pass:** the "Words to skip" list is gone, because a list of what to avoid says what the brand is not. The plain-language idea moved into *Words to use* as a positive: everyday words that name the thing itself. "With no wink" became a plain description of the tone, and "skip em dashes" became "use commas and colons for pauses".
 - **Earlier pass:** no "this, not this" comparisons, almost no "I", the style of Mailchimp, Monzo, Atlassian and Slack.
-- **Examples:** the "crayon" line is from `about_me.md`, not the live About box. Swap it for a line that is already live if you want.
+- **Examples:** all three lines are from the live site: the Mistrust tile, the Contact page and the About box.
