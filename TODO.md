@@ -25,9 +25,10 @@ before a push ships in the same deploy.
 
 - [ ] **Unmerged branches and baselines after the Oct 13 release.** `portfoliowebsite` is at `dd205ae`
       (Entry 155); the four merged branches were deleted on the user's yes (see Entry 155). Still
-      unmerged and conflicting, the user's call: the Blue caption fix `fix/2026-10-06-blue-logo-caption`
-      (local and origin; regenerate its baseline PNGs), `origin/develop` and
-      `origin/shxdowloop/2026-08-14/mistrust-reexport` (stale; likely retire). Local
+      unmerged: the Blue caption fix `fix/2026-10-06-blue-logo-caption` (local and origin, conflicts in
+      binary baseline PNGs; regenerate them). `origin/develop` (`ffa7438`) and
+      `origin/shxdowloop/2026-08-14/mistrust-reexport` (`287c46b`) were **retired on origin 2026-10-13** at
+      the user's call; their SHAs are in Entry 155 if a commit is ever wanted back. Local
       `portfoliowebsite` still points at the old `e1be888` line and `shxdowloop/2026-10-10/portfolio-reconcile`
       lives in the main checkout; both are contained in `origin/portfoliowebsite` and can be reset
       to it. The 40 visual baselines need a SOL regeneration (`--update-snapshots=all`) because the
