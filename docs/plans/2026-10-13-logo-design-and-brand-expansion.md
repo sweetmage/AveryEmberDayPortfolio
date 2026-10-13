@@ -1,7 +1,7 @@
 # Logo Design section, project tools, and brand page expansion
 
 **Written:** 2026-10-13, from the user's brief in chat.
-**Status:** Track A SVGs made and waiting on the user's visual check; the rest not started. Every open box here is mirrored in [`../../TODO.md`](../../TODO.md).
+**Status:** Track A is **paused for the user's corrected linework**; the rest not started. Every open box here is mirrored in [`../../TODO.md`](../../TODO.md).
 **Branch:** none yet. Work on a `shxdowloop` or feature branch off `portfoliowebsite`; nothing
 here ships until the user says so (a push to `portfoliowebsite` is a 15-credit production deploy,
 so batch these tracks into as few pushes as possible).
@@ -91,7 +91,47 @@ SVG and PNG download links). Needs real `alt` text per logo, written with the us
 - The Phoenix is **redone** from the ArtBridge PNG, not reused from the old `SVG/` file.
 - Rose logo 1 is the open rose (PSD group `rose1`), rose logo 2 is the bud (`New group`).
 
-### Progress: vectorizing done, waiting on the visual check
+### HANDOFF (2026-10-13): paused until the user re-uploads the art
+
+The user checked the five SVGs, called them "almost perfect", and found **a mistake in the linework of the
+art** (not in the trace). They will **re-upload corrected art later**; nothing more happens on Track A until
+then, and nothing from it is on the site. The SVGs currently in
+`ArtBridge/SECTION 6 Logo Design/` are **provisional and will be replaced**.
+
+**Not told to the agent:** which logo or which lines. Ask when the art arrives, and do not guess from the
+files. The fix is in the source (the PSD layers or the Phoenix PNG), so rerun the pipeline below on the new
+source; do not hand-edit the SVG paths.
+
+**When the corrected art arrives:**
+
+1. Find it. The user says "re-upload"; check `ArtBridge/` (PSD in `Procreate to PSD/`, Phoenix PNG in the root)
+   for newer files than 2026-10-13 and confirm which are final.
+2. If it is the rose PSD, read its layer groups again (`psd-tools`); the group names were `rose1` (open rose) and
+   `New group` (bud), and the green layers are the ones named `If Colored`. If the structure changed, update
+   `GROUPS` in `scripts/logo-traces.py`.
+3. Rebuild with **`scripts/logo-traces.py`** (committed; `prepare`, trace on SOL, `finish`, then the art repo's
+   `crop_svg.py --strip-bg --pad 20`). The exact commands and presets are in the script's docstring. Verified
+   2026-10-13: `prepare` reproduces the PNGs that went into the SOL runs byte for byte.
+4. Trace on SOL with `~/Repos/creative-hub/scripts/sol-run.sh --upload DIR --fetch DIR vectorize Preset="..."`
+   (SOL Adobe jobs that only write new files need no approval, per `creative-hub/hub/policy.md`). Use
+   `~/Repos/cash/scripts/trace.ps1` as the job's `tools\trace.ps1`: the vectorize skill's copy has no `-NoCrop`
+   and the template fails with "A parameter cannot be found that matches parameter name 'NoCrop'".
+5. **Render every file on a dark and a light backdrop and look** (the structural checks passed even when the first
+   B&W bud had a hollow stem). Save to `ArtBridge/SECTION 6 Logo Design/`, overwriting the provisional files.
+6. Show the user; wait for the visual check. Only then do the site work below.
+
+**Decisions already made (do not re-ask):** the tile is "SECTION 6 Logo Design" ("SECTION 6" is the animated
+series title, visible text); the Phoenix is the title-card image; Phoenix redone, not reused; four rose SVGs (two
+logos, color and B&W); **B&W petals are pure white**; green becomes white in the B&W versions; Phoenix keeps its
+own dark red `#610000`.
+
+**Site work, after approval:** copy the five SVGs and PNG fallbacks into `public/images/` (a new folder for the
+series logos); add the third project tile and its page (see the existing tiles in `app/portfolio/page.tsx`);
+description "Done for a WGAW-registered animated series pitch."; the user's per-logo descriptions verbatim
+(proofreading flags in *Site*, above); real alt text written with the user; then the batched baseline regeneration
+on SOL and one push.
+
+### Progress log: the first pass (provisional)
 
 Saved 2026-10-13 to `~/Library/Mobile Documents/com~apple~CloudDocs/ArtBridge/SECTION 6 Logo Design/`:
 
