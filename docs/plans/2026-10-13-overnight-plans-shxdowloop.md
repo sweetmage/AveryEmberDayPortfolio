@@ -37,7 +37,7 @@ Offer answered 2026-10-13, verbatim: "Yes, mockups overnight, approve tomorrow (
 | 4 | Business card, front and back, real QR | **Pending** | |
 | 5 | Brand voice and tone, plus the one more section | **Pending** | |
 
-Only a yes from me approves a page. The loop never approves one. Every page stays pending until I answer.
+**2026-10-13, after the four logo changes, the tile fixes and the small-screen check, the user said, verbatim: "looks goo. finish with the loop".** That is a general thumbs-up, not a yes to each page, so all five stay **Pending** until each gets its own answer. Only a yes from me approves a page. The loop never approves one. Every page stays pending until I answer.
 
 ## Helper routing
 
@@ -83,7 +83,7 @@ Fewest stages the real gates allow. The user gate is the only forcing reason, an
 
 ### Stage 1: Draft and mockups (this run)
 
-**Status:** Complete
+**Status:** Complete (loop closed 2026-10-13)
 **Goal:** The plan and every mockup, ready to judge.
 **Forcing reason for the boundary after it:** my approval of each page, tomorrow. That is a human gate.
 **Phases:**
@@ -143,6 +143,7 @@ One native `oracle`, one round, on this plan and the mockups. A FAIL's findings 
 | Stage | Commit | Push |
 |---|---|---|
 | 1 | `c864f0e` | pushed to `origin/shxdowloop/2026-10-13/overnight-plans` only |
+| 1, user's changes (Phoenix red and crop, rose leaf order, short copy, three-across tiles, no side scroll) | `795fbaf`, `260b98c`, `3d14205` and the commits before them | same branch only |
 
 ## Verification matrix
 

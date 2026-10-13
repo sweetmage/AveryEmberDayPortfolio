@@ -27,8 +27,8 @@ before a push ships in the same deploy.
       holds a master plan and five static mockups (nothing is built into the site). Open
       [`mockups/index.html`](docs/plans/2026-10-13-overnight-plans/mockups/index.html) (serve command and the full
       question and upload list: *Morning checklist* in
-      [`the plan`](docs/plans/2026-10-13-overnight-plans-shxdowloop.md)). Each page needs a yes, changes, or no from the
-      user; only then does its real build start. Also needs the corrected logo art, the card's email and number, and
+      [`the plan`](docs/plans/2026-10-13-overnight-plans-shxdowloop.md)). Each page needs its own yes, changes, or no from the
+      user (the Oct 13 "looks goo" was general, not per page); only then does its real build start. Also needs the corrected logo art, the card's email and number, and
       the drafts listed there.
 - [ ] **Unmerged branches and baselines after the Oct 13 release.** `portfoliowebsite` is at `dd205ae`
       (Entry 155); the four merged branches were deleted on the user's yes (see Entry 155). Still
