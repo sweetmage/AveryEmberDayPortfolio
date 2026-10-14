@@ -31,6 +31,19 @@ export default function MistrustProject() {
         </p>
       </section>
 
+      {/* Tools: the same pill row the SECTION 6 page has (user, 2026-10-14). The whole
+          project is made in Figma; the pill says so, with no sentence under it. */}
+      <section className="project-section px-6 pb-12">
+        <h4 className="section-title mb-5 border-none p-0 text-left font-heading text-xl font-semibold normal-case tracking-normal text-text">
+          Tools
+        </h4>
+        <ul className="m-0 flex list-none flex-wrap gap-2 p-0">
+          <li className="rounded-full border border-line bg-surface-2 px-3 py-1 font-body text-sm text-text">
+            Figma
+          </li>
+        </ul>
+      </section>
+
       {/* Per-set slideshows */}
       <section className="project-section px-6 pb-12">
         <h4 className="section-title mb-5 border-none p-0 text-left font-heading text-xl font-semibold normal-case tracking-normal text-text">

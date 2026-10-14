@@ -41,10 +41,11 @@ before a push ships in the same deploy.
       `portfoliowebsite` was fast-forwarded to origin on 2026-10-13 by another session;
       `shxdowloop/2026-10-10/portfolio-reconcile` still lives in the main checkout (`a8036ab`) and is
       contained in `origin/portfoliowebsite`, so it can be reset or deleted on the user's yes. The visual baselines were regenerated on SOL 2026-10-14 (48).
-- [ ] **Add the tools used to the other two projects.** Mockup 3 is still **pending** the user's answer. The
-      SECTION 6 page already has its Tools row (Procreate, Adobe InDesign, Adobe Photoshop). Mistrust: Figma.
-      Brand: InDesign for the logo, plus the site's own stack if the user agrees (and which of Photoshop,
-      Illustrator, JavaScript stay). Plan: Track B.
+- [ ] **Tools rows on the Brand and Mistrust pages: built, waiting on the user's yes** (2026-10-14). Mistrust shows
+      one pill, Figma, with no sentence under it (the user removed "Made entirely in Figma"). Brand shows Design
+      (Adobe InDesign) and This website (Next.js 15, React 19, TypeScript, Tailwind CSS v4, brand.css, sharp,
+      Playwright, Netlify), pills only. Still to confirm: whether Photoshop, Illustrator and JavaScript stay on the
+      Brand row. On the loop branch only; the Brand and Mistrust baselines (16) need a SOL regeneration before any deploy.
 - [ ] **Brand Assets (hidden).** Built behind `SHOW_BRAND_ASSETS = false` in `app/portfolio/BrandProject.tsx`: a
       business card and a website banner, each as design plus mockup. The user will make the pieces later;
       fill in each `design` and `mockup` and flip the flag to launch. The card mockup 4 was **not approved**;

@@ -113,6 +113,14 @@ function LogoSwatch({ swatch }: { swatch: Swatch }) {
   );
 }
 
+const brandTools = [
+  { label: 'Design', tools: ['Adobe InDesign'] },
+  {
+    label: 'This website',
+    tools: ['Next.js 15', 'React 19', 'TypeScript', 'Tailwind CSS v4', 'brand.css', 'sharp', 'Playwright', 'Netlify'],
+  },
+];
+
 /* Brand Voice and Tone: the agent's DRAFT for the user to edit (2026-10-13), shown on
    the page so the user can judge it in place. Written to the user's rules, saved in
    .agents/memories/brand-voice.md: plain English, vibe-based adjectives, few "I"
@@ -301,6 +309,33 @@ export default function BrandProject() {
           applications. Built to work across dark and light contexts with a
           consistent voice.
         </p>
+      </section>
+
+      {/* Tools: the same pill row the SECTION 6 and Mistrust pages have (user, 2026-10-14).
+          Two groups: what the identity was made in, and what the website is built with.
+          Pills only, no sentence under them. The tool list comes from mockup 3 and is
+          still the agent's draft for the user to confirm (docs/plans/2026-10-13-overnight-plans/). */}
+      <section className="project-section px-6 pb-12">
+        <h4 className="section-title mb-5 border-none p-0 text-left font-heading text-xl font-semibold normal-case tracking-normal text-text">
+          Tools
+        </h4>
+        {brandTools.map((group) => (
+          <div key={group.label} className="mb-6 last:mb-0">
+            <h5 className="mb-3 font-heading text-sm font-medium uppercase tracking-[0.08em] text-text-muted">
+              {group.label}
+            </h5>
+            <ul className="m-0 flex list-none flex-wrap gap-2 p-0">
+              {group.tools.map((tool) => (
+                <li
+                  key={tool}
+                  className="rounded-full border border-line bg-surface-2 px-3 py-1 font-body text-sm text-text"
+                >
+                  {tool}
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))}
       </section>
 
       {/* Logo Variants */}
