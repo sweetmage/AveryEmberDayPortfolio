@@ -191,15 +191,14 @@ function BrandVoice() {
       <h5 className="mb-3 font-heading text-sm font-medium uppercase tracking-[0.08em] text-text-muted">
         How it feels on each page
       </h5>
-      <dl className="brand-frame mb-8 grid grid-cols-1 gap-x-6 p-5 md:grid-cols-[minmax(0,1fr)_minmax(0,2fr)]">
+      <dl className="brand-frame mb-8 p-5">
         {voiceFeel.map((row) => (
-          <div key={row.where} className="contents">
-            <dt className="brand-frame-divider border-b py-3 font-body text-sm font-medium text-text md:last-of-type:border-b-0">
-              {row.where}
-            </dt>
-            <dd className="brand-frame-divider m-0 border-b pb-3 font-body text-base text-text-soft md:py-3 md:last-of-type:border-b-0">
-              {row.feel}
-            </dd>
+          <div
+            key={row.where}
+            className="brand-frame-divider grid grid-cols-1 gap-1 border-b py-3 first:pt-0 last:border-b-0 last:pb-0 md:grid-cols-[minmax(0,1fr)_minmax(0,2fr)] md:gap-x-6"
+          >
+            <dt className="font-body text-sm font-medium text-text">{row.where}</dt>
+            <dd className="m-0 font-body text-base text-text-soft">{row.feel}</dd>
           </div>
         ))}
       </dl>

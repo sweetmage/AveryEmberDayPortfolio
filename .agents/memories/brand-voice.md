@@ -14,7 +14,7 @@ Three traits, all kept by the user:
 | Warm and listening | Listen first. Invite once, speak to the reader directly, say what happens next. | "Tell me what you're working on and I'll get back to you as soon as I can." |
 | Dry, with a little wonder (quietly playful) | A small smile and some curiosity, one wink a page at most. Heavy subjects get a calm, caring voice. | "Brewing coffee and conversation alongside my pursuit of my true passions." |
 
-Tone by place: About is friendly and personal. Project pages are clear and calm. Heavy topics like A History of Mistrust are grounded, careful and kind, with no wink. Contact is welcoming and brief. Gallery titles are bold and simple. Alt text is plain and exact.
+Tone by place: About is friendly and personal. Project pages are clear and calm. Heavy topics like A History of Mistrust are grounded, careful and kind. Contact is welcoming and brief. Gallery titles are bold and simple. Alt text is plain and exact.
 
 Words that fit: systems, reusable, built to last, character, mood, craft, clean, clear, accessible, listening, the brief; everyday verbs like use, build, make, listen, reach out.
 

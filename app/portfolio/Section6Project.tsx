@@ -26,7 +26,7 @@ const phoenix: Logo = {
   alt: 'Red stencil-style phoenix with raised wings, a ring of flame-shaped feathers around its head and a long tail flowing down',
   bg: '#0A0A0A',
   label: 'Phoenix',
-  desc: 'Dark or light backgrounds · #E4101E',
+  desc: 'Dark backgrounds · #E4101E',
 };
 
 const roses: Logo[] = [

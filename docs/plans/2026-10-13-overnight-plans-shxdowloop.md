@@ -33,7 +33,7 @@ Offer answered 2026-10-13, verbatim: "Yes, mockups overnight, approve tomorrow (
 |---|---|---|---|
 | 1 | The SECTION 6 tile on `/portfolio/` | **Approved**, 2026-10-13. Built. | "approve section 6 tile" |
 | 2 | The SECTION 6 project page | **Approved**, 2026-10-13. Built. | "approve ... section 6 projects page" |
-| 3 | Tools rows on both project pages | **Pending** (only the SECTION 6 page's Tools row, which is part of mockup 2, is built) | |
+| 3 | Tools rows on both project pages | **Pending** (only the SECTION 6 page's Tools row, which is part of mockup 2, is built and live) | |
 | 4 | Business card, front and back, real QR | **Not approved**, 2026-10-13. The user will design it and show it under Brand Assets. | "do not approve business card" |
 | 5 | Brand voice and tone, plus the one more section | **Voice and tone APPROVED 2026-10-14** (user: "remove \"use US spelling. use one title: Brand & Visual Designer\" from the page, then approve"), built on the Brand page. Extra section: **Brand Assets**, built hidden. Earlier note: **Partly decided.** The extra section is **Brand Assets**, hidden for now (built, switched off). Voice and tone is waiting on the user's draft; research in `2026-10-13-brand-voice-recommendation.md`. | "the additional section will be brand assets ... the section should remain hidden on the main site for now" |
 
@@ -49,7 +49,7 @@ Native `oracle` for the one plan review. The main agent did the writing and the 
 
 ### A. SECTION 6 Logo Design (paused on me)
 
-Five SVGs exist and are provisional: the Phoenix and four White Rose files (open rose and bud, each in color and black and white). I looked at them and they are almost perfect. There is a mistake in the linework of the **art**, not the trace. I said I would re-upload.
+Five SVGs exist (provisional when this was written; the user later said the rose is fixed): the Phoenix and four White Rose files (open rose and bud, each in color and black and white). I looked at them and they are almost perfect. There is a mistake in the linework of the **art**, not the trace. I said I would re-upload.
 
 - **Waiting on me:** the corrected art. Which logo and which lines I have not said, and the agent will not guess. It asks when the art lands.
 - **When it lands:** rerun `scripts/logo-traces.py`, trace on SOL, render every file on a dark and a light backdrop and look, save over the provisional files in `ArtBridge/SECTION 6 Logo Design/`, show me. The fix goes in the source art. No hand-edited paths.
@@ -102,17 +102,17 @@ Fewest stages the real gates allow. The user gate is the only forcing reason, an
 
 ### Stage 2: Build, after approval (tomorrow, with me)
 
-**Status:** Pending
+**Status:** Complete for everything approved (2026-10-14); mockup 3 still pending
 **Goal:** Build each page I approved, and only those.
 **Forcing reason:** each page needs my yes first, and the corrected art needs my upload.
 **Phases:**
-- [ ] 2.1 SECTION 6 tile and page: needs the corrected art, mockups 1 and 2, my alt text
-- [ ] 2.2 Tools rows: needs mockup 3 and my paragraph
-- [ ] 2.3 Business card in InDesign: needs mockup 4, email, number, size
-- [ ] 2.4 Brand voice and the extra section: needs mockup 5, my draft, a topic
-- [ ] 2.5 Copy pass data: needs my drafts
-- [ ] 2.6 Regenerate the 40 baselines on SOL **once**, last, with `--update-snapshots=all`
-- [ ] 2.7 One batched push to `portfoliowebsite`, only with my go-ahead in the moment (one production deploy: 15 of the 300 monthly credits, 1 of the 20 deploys they buy)
+- [x] 2.1 SECTION 6 tile and page (mockups 1 and 2 approved; the user said the rose is fixed; the alt text is the agent's first draft, still for the user to review)
+- [ ] 2.2 Tools rows on Brand and Mistrust: needs mockup 3 (SECTION 6's own Tools row is built)
+- [x] 2.3 Business card: not approved; the user will design it and show it under Brand Assets (built, hidden)
+- [x] 2.4 Brand voice and tone approved and built; the extra section is Brand Assets, built hidden
+- [ ] 2.5 Copy pass data (12 gallery descriptions, both project summaries): still needs the user's drafts
+- [x] 2.6 Regenerate the baselines on SOL with `--update-snapshots=all` (48, two clean re-checks)
+- [x] 2.7 One batched push to `portfoliowebsite`, only with my go-ahead in the moment (one production deploy: 15 of the 300 monthly credits, 1 of the 20 deploys they buy)
 
 ## Morning checklist
 
@@ -166,4 +166,4 @@ One native `oracle`, one round, on this plan and the mockups. A FAIL's findings 
 
 ## Merge readiness
 
-Not for merge. This branch is a plan and a set of drafts. It merges into `portfoliowebsite` only with Stage 2 done, my approvals recorded above, baselines regenerated, and my explicit go-ahead.
+Released 2026-10-14 at the user's "deploy": regenerated baselines (48, two clean re-checks on SOL), 147 non-visual tests green, fresh-context final signoff PASS, then one fast-forward push to `portfoliowebsite`. Open items are in `TODO.md`.

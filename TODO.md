@@ -24,10 +24,7 @@ before a push ships in the same deploy.
 ### Ready to build now
 
 - [x] **Brand voice and tone: approved 2026-10-14** and live on the Brand page on the loop branch (`BrandVoice` in `app/portfolio/BrandProject.tsx`, after *Type System*). The user removed "Use US spelling. Use one title: Brand & Visual Designer." before approving. Draft and rules: `docs/plans/2026-10-13-brand-voice-draft.md`, `.agents/memories/brand-voice.md`.
-- [ ] **Push the loop branch to `portfoliowebsite`** (one 15-credit production deploy). The voice section is finished (user's condition met); only the baseline regeneration and the user's go-ahead remain. Before it: regenerate the visual baselines on SOL **once**
-      (`--update-snapshots=all`; the portfolio page changed to three tiles and the new SECTION 6 page adds 8
-      baselines, so 48 in all), and get the user's review link (`.agents/memories/review-links.md`).
-      Branch `shxdowloop/2026-10-13/overnight-plans` (pushed to its own branch only).
+- [x] **Push the loop branch to `portfoliowebsite`** (one 15-credit production deploy): done 2026-10-14 at the user's "deploy". Baselines regenerated on SOL (48), 147 non-visual tests green, final signoff PASS.
 - [ ] **Alt text for the five SECTION 6 logos is a first draft.** Written by the agent in
       `app/portfolio/Section6Project.tsx`; the user wanted real alt text written with them. Review it.
 - [ ] **Unmerged branches and baselines after the Oct 13 release.** `portfoliowebsite` is at `dd205ae`
@@ -38,8 +35,7 @@ before a push ships in the same deploy.
       the user's call; their SHAs are in Entry 155 if a commit is ever wanted back. Local
       `portfoliowebsite` was fast-forwarded to origin on 2026-10-13 by another session;
       `shxdowloop/2026-10-10/portfolio-reconcile` still lives in the main checkout (`a8036ab`) and is
-      contained in `origin/portfoliowebsite`, so it can be reset or deleted on the user's yes. The 40 visual baselines need a SOL regeneration (`--update-snapshots=all`) because the
-      gallery art changed.
+      contained in `origin/portfoliowebsite`, so it can be reset or deleted on the user's yes. The visual baselines were regenerated on SOL 2026-10-14 (48).
 - [ ] **Add the tools used to the other two projects.** Mockup 3 is still **pending** the user's answer. The
       SECTION 6 page already has its Tools row (Procreate, Adobe InDesign, Adobe Photoshop). Mistrust: Figma.
       Brand: InDesign for the logo, plus the site's own stack if the user agrees (and which of Photoshop,
