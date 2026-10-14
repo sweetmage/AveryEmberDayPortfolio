@@ -27,12 +27,6 @@ before a push ships in the same deploy.
 - [x] **Push the loop branch to `portfoliowebsite`** (one 15-credit production deploy): done 2026-10-14 at the user's "deploy". Baselines regenerated on SOL (48), 147 non-visual tests green, final signoff PASS.
 - [ ] **Alt text for the five SECTION 6 logos is a first draft.** Written by the agent in
       `app/portfolio/Section6Project.tsx`; the user wanted real alt text written with them. Review it.
-- [ ] **One leftover branch (2026-10-14).** Deleted on the user's yes, locally and on origin: `claude/overnight-loop-plans-draft-231f11`,
-      `claude/reconcile-branches-main-e85f39` (local only) and `fix/2026-10-06-blue-logo-caption` (its fix shipped Oct 9 in
-      `20860ef`; tip `2399776` if a commit is ever wanted back). Local `portfoliowebsite` was fast-forwarded to origin
-      (`0bfb3cc`). Still there: `shxdowloop/2026-10-10/portfolio-reconcile` (merged, no origin copy), checked out in the
-      main checkout, so Git refuses to delete it until that checkout switches branch; and the loop branch
-      `shxdowloop/2026-10-13/overnight-plans` (merged, on origin).
 - [ ] **Brand Assets (hidden).** Built behind `SHOW_BRAND_ASSETS = false` in `app/portfolio/BrandProject.tsx`: a
       business card and a website banner, each as design plus mockup. The user will make the pieces later;
       fill in each `design` and `mockup` and flip the flag to launch. The card mockup 4 was **not approved**;
@@ -98,6 +92,10 @@ consolidated in [`docs/archives/plans.md`](docs/archives/plans.md).
   Adobe Creative Suite paragraph above the website pills; the Brand logo cards' alt text names the bubble logo and its
   color. Brand, Mistrust and SECTION 6 baselines regenerated on SOL (48 passed, three full re-checks), fresh-context
   final signoff PASS, all in one push: `portfoliowebsite` `5c72a0a..68deb9b` (8 commits), Netlify deploy `6acfe595` ready, 15 credits. JavaScript was dropped from the Brand tools. Entries 162 to 164.
+  **Branch cleanup, same day, on the user's yes:** deleted `claude/overnight-loop-plans-draft-231f11`,
+  `claude/reconcile-branches-main-e85f39`, `fix/2026-10-06-blue-logo-caption` (local and origin; its fix shipped Oct 9 in
+  `20860ef`; tip `2399776`), `shxdowloop/2026-10-10/portfolio-reconcile` (tip `a8036ab`) and the loop branch
+  `shxdowloop/2026-10-13/overnight-plans` (all of it is in `portfoliowebsite`). Only `portfoliowebsite` remains, local and origin.
 
 - **Oct 14** — **RELEASED: SECTION 6 Logo Design, three-across project tiles, Brand Voice and Tone.**
   Fast-forwarded `portfoliowebsite` `8bf209f..54177bf` (22 commits), Netlify deploy `6acfd688` ready, 15 credits.
