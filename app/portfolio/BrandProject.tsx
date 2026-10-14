@@ -114,7 +114,7 @@ function LogoSwatch({ swatch }: { swatch: Swatch }) {
 }
 
 const brandTools = [
-  { label: 'Design', tools: ['Adobe InDesign'] },
+  { label: 'Design', tools: ['Adobe InDesign', 'Adobe Photoshop', 'Adobe Illustrator'] },
   {
     label: 'This website',
     tools: ['Next.js 15', 'React 19', 'TypeScript', 'Tailwind CSS v4', 'brand.css', 'sharp', 'Playwright', 'Netlify'],
