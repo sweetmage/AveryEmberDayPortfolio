@@ -23,6 +23,11 @@ before a push ships in the same deploy.
 
 ### Ready to build now
 
+- [ ] **Deploy the White Rose 2x2 layout** (user, 2026-10-14). Built and tested on `shxdowloop/2026-10-13/overnight-plans`
+      (`Section6Project.tsx`): two by two from 768px in the user's order (open rose black and white, open rose color,
+      bud black and white, bud color), one column below. The 8 SECTION 6 baselines are regenerated on SOL (three
+      full re-checks, no hard failures). **Not deployed**: one production deploy costs 15 credits, so it waits for
+      the user's go-ahead, ideally batched with other changes.
 - [x] **Brand voice and tone: approved 2026-10-14** and live on the Brand page on the loop branch (`BrandVoice` in `app/portfolio/BrandProject.tsx`, after *Type System*). The user removed "Use US spelling. Use one title: Brand & Visual Designer." before approving. Draft and rules: `docs/plans/2026-10-13-brand-voice-draft.md`, `.agents/memories/brand-voice.md`.
 - [x] **Push the loop branch to `portfoliowebsite`** (one 15-credit production deploy): done 2026-10-14 at the user's "deploy". Baselines regenerated on SOL (48), 147 non-visual tests green, final signoff PASS.
 - [ ] **Alt text for the five SECTION 6 logos is a first draft.** Written by the agent in

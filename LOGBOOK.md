@@ -19,6 +19,17 @@ When this logbook exceeds ~1000 lines, split it:
 
 ---
 
+## Entry 162 - 2026-10-14
+
+**Agent:** Claude Sonnet 5.5 (ember-quill, VOID), main agent
+**Cycle:** shxdowloop overnight plans: follow-up
+**Task:** White Rose logos two by two, in the user's order.
+
+- Section6Project.tsx: roses reordered (open B&W, open color, bud B&W, bud color) and laid out grid-cols-1 md:grid-cols-2. New tests: order of the four labels, 2x2 at 1440, one column at 767. 21 chromium tests green.
+- SOL: the first full regeneration hit Trap 7 noise on the Portfolio page at 768 dark (a page this change did not touch, 1170 px, both attempts). Restored the committed baselines on SOL and regenerated only the 8 SECTION 6 ones; three full re-checks, 0 hard failures (1 to 2 flaky each, passing on retry). Not deployed: costs 15 credits, waits for the user's go-ahead.
+
+---
+
 ## Entry 161 - 2026-10-14
 
 **Agent:** Claude Sonnet 5.5 (ember-quill, VOID), main agent
