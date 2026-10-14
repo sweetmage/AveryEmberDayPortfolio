@@ -19,6 +19,18 @@ When this logbook exceeds ~1000 lines, split it:
 
 ---
 
+## Entry 160 - 2026-10-14
+
+**Agent:** Claude Sonnet 5.5 (ember-quill, VOID), main agent
+**Cycle:** shxdowloop overnight plans: release
+**Task:** Release the loop branch to production at the user's 'deploy' (2026-10-14).
+
+- Gates before the push: 147 non-visual chromium tests green on a fresh export build; visual baselines regenerated on SOL with --update-snapshots=all and two clean re-checks (48 each), run twice (the second after the final-signoff fixes); 24 untouched pages byte-identical, the changed or new ones (portfolio, brand, SECTION 6) reviewed by eye.
+- Final signoff: a fresh-context oracle read the full diff and returned PASS (typecheck, next build, 147 chromium tests, webkit-mobile 41 of 42 with 1 skipped; hidden Brand Assets absent from every exported file). Applied: voice table dividers rebuilt as per-row groups (the old last-of-type selector removed every divider at md and up), Phoenix card label now says Dark backgrounds, docs and memory wording synced.
+- Not done, and live as drafts: the logo alt text is the agent's first draft (user review still open); mockup 3 (Tools on Brand and Mistrust) still pending; 12 gallery descriptions and both project summaries still need the user's drafts.
+
+---
+
 ## Entry 159 - 2026-10-14
 
 **Agent:** Claude Sonnet 5.5 (ember-quill, VOID), main agent
