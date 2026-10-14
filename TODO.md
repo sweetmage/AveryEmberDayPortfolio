@@ -27,14 +27,12 @@ before a push ships in the same deploy.
 - [x] **Push the loop branch to `portfoliowebsite`** (one 15-credit production deploy): done 2026-10-14 at the user's "deploy". Baselines regenerated on SOL (48), 147 non-visual tests green, final signoff PASS.
 - [ ] **Alt text for the five SECTION 6 logos is a first draft.** Written by the agent in
       `app/portfolio/Section6Project.tsx`; the user wanted real alt text written with them. Review it.
-- [ ] **Leftover branches (2026-10-14).** Deleted locally on the user's yes: `claude/overnight-loop-plans-draft-231f11`
-      and `claude/reconcile-branches-main-e85f39` (both merged into `portfoliowebsite`, no origin copy). Kept, but
-      **superseded**: `fix/2026-10-06-blue-logo-caption` (its Blue caption fix reached production on Oct 9 in `20860ef`, so
-      its 3 commits are obsolete; safe to delete locally and on origin on the user's yes); the loop branch `shxdowloop/2026-10-13/overnight-plans` (merged, in
-      use as this worktree's branch, also on origin); local `portfoliowebsite` (merged, 32 commits behind origin,
-      fast-forward it with `git fetch && git branch -f portfoliowebsite origin/portfoliowebsite` from a checkout where it
-      is not current); and `shxdowloop/2026-10-10/portfolio-reconcile` (merged, no origin copy), which is checked out in
-      the main checkout, so Git refuses to delete it until that checkout switches branch.
+- [ ] **One leftover branch (2026-10-14).** Deleted on the user's yes, locally and on origin: `claude/overnight-loop-plans-draft-231f11`,
+      `claude/reconcile-branches-main-e85f39` (local only) and `fix/2026-10-06-blue-logo-caption` (its fix shipped Oct 9 in
+      `20860ef`; tip `2399776` if a commit is ever wanted back). Local `portfoliowebsite` was fast-forwarded to origin
+      (`0bfb3cc`). Still there: `shxdowloop/2026-10-10/portfolio-reconcile` (merged, no origin copy), checked out in the
+      main checkout, so Git refuses to delete it until that checkout switches branch; and the loop branch
+      `shxdowloop/2026-10-13/overnight-plans` (merged, on origin).
 - [ ] **Brand Assets (hidden).** Built behind `SHOW_BRAND_ASSETS = false` in `app/portfolio/BrandProject.tsx`: a
       business card and a website banner, each as design plus mockup. The user will make the pieces later;
       fill in each `design` and `mockup` and flip the flag to launch. The card mockup 4 was **not approved**;
