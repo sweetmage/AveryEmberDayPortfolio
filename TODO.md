@@ -28,9 +28,9 @@ before a push ships in the same deploy.
 - [ ] **Alt text for the five SECTION 6 logos is a first draft.** Written by the agent in
       `app/portfolio/Section6Project.tsx`; the user wanted real alt text written with them. Review it.
 - [ ] **Leftover branches (2026-10-14).** Deleted locally on the user's yes: `claude/overnight-loop-plans-draft-231f11`
-      and `claude/reconcile-branches-main-e85f39` (both merged into `portfoliowebsite`, no origin copy). Kept: the
-      Blue caption fix `fix/2026-10-06-blue-logo-caption` (3 commits not in production, conflicts in binary baseline
-      PNGs, regenerate them; local equals origin); the loop branch `shxdowloop/2026-10-13/overnight-plans` (merged, in
+      and `claude/reconcile-branches-main-e85f39` (both merged into `portfoliowebsite`, no origin copy). Kept, but
+      **superseded**: `fix/2026-10-06-blue-logo-caption` (its Blue caption fix reached production on Oct 9 in `20860ef`, so
+      its 3 commits are obsolete; safe to delete locally and on origin on the user's yes); the loop branch `shxdowloop/2026-10-13/overnight-plans` (merged, in
       use as this worktree's branch, also on origin); local `portfoliowebsite` (merged, 32 commits behind origin,
       fast-forward it with `git fetch && git branch -f portfoliowebsite origin/portfoliowebsite` from a checkout where it
       is not current); and `shxdowloop/2026-10-10/portfolio-reconcile` (merged, no origin copy), which is checked out in
