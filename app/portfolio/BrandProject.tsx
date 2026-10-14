@@ -113,6 +113,120 @@ function LogoSwatch({ swatch }: { swatch: Swatch }) {
   );
 }
 
+/* Brand Voice and Tone: the agent's DRAFT for the user to edit (2026-10-13), shown on
+   the page so the user can judge it in place. Written to the user's rules, saved in
+   .agents/memories/brand-voice.md: plain English, vibe-based adjectives, few "I"
+   statements, no "this, not this" comparisons, only what the brand is, only lines that
+   are live on the site as examples. The text lives here as data so editing it is a
+   one-place change; draft source: docs/plans/2026-10-13-brand-voice-draft.md. */
+const voiceIntro =
+  'Avery Ember Day sounds friendly, clear, and a little curious. Think of a good conversation over coffee with someone who really listens.';
+
+const voiceTraits = [
+  {
+    name: 'Clear and down to earth',
+    text: 'Say what it is first, then add one detail. Short sentences and everyday words keep things easy to follow.',
+    example: 'A 30-slide Instagram series on why some communities struggle to trust doctors.',
+  },
+  {
+    name: 'Warm and attentive',
+    text: 'Listening comes first. A friendly welcome, a direct question, and a clear next step make people feel at home.',
+    example: "Tell me what you're working on and I'll get back to you as soon as I can.",
+  },
+  {
+    name: 'Quietly playful',
+    text: 'A small smile, a touch of curiosity, and one little joke a page at most. Serious topics get a calm, caring voice.',
+    example: 'Brewing coffee and conversation alongside my pursuit of my true passions.',
+  },
+];
+
+const voiceFeel = [
+  { where: 'About', feel: 'Friendly, personal, a little playful' },
+  { where: 'Project pages', feel: 'Clear, calm, informative' },
+  { where: 'Heavy topics, like A History of Mistrust', feel: 'Grounded, careful, kind' },
+  { where: 'Contact', feel: 'Welcoming, helpful, brief' },
+  { where: 'Gallery titles', feel: 'Bold, simple, a bit cheeky' },
+  { where: 'Image descriptions', feel: 'Simple and exact' },
+];
+
+const voiceWords = [
+  'systems',
+  'reusable',
+  'built to last',
+  'character',
+  'mood',
+  'craft',
+  'clean',
+  'clear',
+  'accessible',
+  'listening',
+  'the brief',
+];
+
+const voiceWordsNote = 'Everyday words like use, build, make, listen, and reach out.';
+
+const voiceHabits =
+  'Speak in the first person, with contractions. Use commas and colons for pauses. Keep exclamation marks to one a page. Use US spelling. Use one title: Brand & Visual Designer.';
+
+function BrandVoice() {
+  return (
+    <section className="project-section px-6 pb-12">
+      <h4 className="section-title mb-5 border-none p-0 text-left font-heading text-xl font-semibold normal-case tracking-normal text-text">
+        Brand Voice and Tone
+      </h4>
+      <p className="project-desc mb-8">{voiceIntro}</p>
+
+      <div className="mb-8 grid grid-cols-1 gap-4 md:grid-cols-3">
+        {voiceTraits.map((trait) => (
+          <div key={trait.name} className="brand-frame flex flex-col gap-3 p-5">
+            <h5 className="m-0 font-heading text-lg font-semibold text-text">{trait.name}</h5>
+            <p className="m-0 font-body text-base leading-relaxed text-text-soft">{trait.text}</p>
+            <p className="m-0 mt-auto border-l-2 border-accent pl-3 font-body text-sm italic leading-relaxed text-text-muted">
+              &ldquo;{trait.example}&rdquo;
+            </p>
+          </div>
+        ))}
+      </div>
+
+      <h5 className="mb-3 font-heading text-sm font-medium uppercase tracking-[0.08em] text-text-muted">
+        How it feels on each page
+      </h5>
+      <dl className="brand-frame mb-8 grid grid-cols-1 gap-x-6 p-5 md:grid-cols-[minmax(0,1fr)_minmax(0,2fr)]">
+        {voiceFeel.map((row) => (
+          <div key={row.where} className="contents">
+            <dt className="brand-frame-divider border-b py-3 font-body text-sm font-medium text-text md:last-of-type:border-b-0">
+              {row.where}
+            </dt>
+            <dd className="brand-frame-divider m-0 border-b pb-3 font-body text-base text-text-soft md:py-3 md:last-of-type:border-b-0">
+              {row.feel}
+            </dd>
+          </div>
+        ))}
+      </dl>
+
+      <h5 className="mb-3 font-heading text-sm font-medium uppercase tracking-[0.08em] text-text-muted">
+        Words that fit
+      </h5>
+      <ul className="m-0 mb-3 flex list-none flex-wrap gap-2 p-0">
+        {voiceWords.map((word) => (
+          <li
+            key={word}
+            className="rounded-full border border-line bg-surface-2 px-3 py-1 font-body text-sm text-text"
+          >
+            {word}
+          </li>
+        ))}
+      </ul>
+      <p className="m-0 mb-8 font-body text-base text-text-soft">{voiceWordsNote}</p>
+
+      <h5 className="mb-3 font-heading text-sm font-medium uppercase tracking-[0.08em] text-text-muted">
+        Writing habits
+      </h5>
+      <p className="m-0 font-body text-base leading-relaxed text-text-soft">{voiceHabits}</p>
+    </section>
+  );
+}
+
 /* Brand Assets: the business card and the website banner, each shown as the design
    and as a mockup. HIDDEN for now (user, 2026-10-13): the user will make the pieces
    later, so nothing here renders until `SHOW_BRAND_ASSETS` is true. To launch it, fill
@@ -275,6 +389,8 @@ export default function BrandProject() {
           </div>
         </div>
       </section>
+
+      <BrandVoice />
 
       {SHOW_BRAND_ASSETS && <BrandAssets />}
     </>
