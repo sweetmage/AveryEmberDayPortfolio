@@ -178,8 +178,39 @@ test.describe('SECTION 6 Logo Design page', () => {
     const alts = await page.locator('.logo-swatch img').evaluateAll((els) => els.map((e) => e.getAttribute('alt')));
     expect(alts).toHaveLength(5);
     for (const alt of alts) expect(alt.length).toBeGreaterThan(20);
+    // The four roses read left to right, top to bottom: open B&W, open color, bud B&W, bud color.
+    const labels = await page.locator('.logo-swatch strong').allTextContents();
+    expect(labels.slice(1)).toEqual([
+      'White Rose 1, black and white',
+      'White Rose 1, color',
+      'White Rose 2, black and white',
+      'White Rose 2, color',
+    ]);
     await expect(page.getByRole('heading', { name: 'Tools' })).toBeVisible();
     await expect(page.locator('ul li', { hasText: 'Procreate' })).toBeVisible();
+  });
+
+  test('the four White Rose logos sit two by two from 768px and in one column below', async ({ page }) => {
+    const rects = async (width) => {
+      await page.setViewportSize({ width, height: 900 });
+      await page.goto(`${BASE_URL}/portfolio/section-6-logo-design/`, { waitUntil: 'networkidle' });
+      return page.locator('.logo-swatch').evaluateAll((els) =>
+        els.slice(1).map((e) => {
+          const r = e.getBoundingClientRect();
+          return { left: Math.round(r.left), top: Math.round(r.top + window.scrollY) };
+        }),
+      );
+    };
+    const [a, b, c, d] = await rects(1440);
+    expect(a.top).toBe(b.top);
+    expect(c.top).toBe(d.top);
+    expect(c.top).toBeGreaterThan(a.top);
+    expect(b.left).toBeGreaterThan(a.left);
+    expect(c.left).toBe(a.left);
+    expect(d.left).toBe(b.left);
+    const col = await rects(767);
+    expect(new Set(col.map((r) => r.left)).size).toBe(1);
+    expect(col[1].top).toBeGreaterThan(col[0].top);
   });
 
   for (const path of ['/portfolio/', '/portfolio/section-6-logo-design/']) {

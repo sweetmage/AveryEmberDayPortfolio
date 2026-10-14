@@ -31,13 +31,6 @@ const phoenix: Logo = {
 
 const roses: Logo[] = [
   {
-    file: 'white-rose-1-color',
-    alt: 'Open white rose with black outlines and two dark green serrated leaves',
-    bg: '#1a1a1a',
-    label: 'White Rose 1, color',
-    desc: 'The open rose · Dark backgrounds',
-  },
-  {
     file: 'white-rose-1-bw',
     alt: 'Open white rose with black outlines and two white serrated leaves, in black and white',
     bg: '#6a6a66',
@@ -45,11 +38,11 @@ const roses: Logo[] = [
     desc: 'The open rose · Mid-tone backgrounds',
   },
   {
-    file: 'white-rose-2-color',
-    alt: 'White rose bud with black outlines on a short stem with a dark green leaf',
+    file: 'white-rose-1-color',
+    alt: 'Open white rose with black outlines and two dark green serrated leaves',
     bg: '#1a1a1a',
-    label: 'White Rose 2, color',
-    desc: 'The bud · Dark backgrounds',
+    label: 'White Rose 1, color',
+    desc: 'The open rose · Dark backgrounds',
   },
   {
     file: 'white-rose-2-bw',
@@ -57,6 +50,13 @@ const roses: Logo[] = [
     bg: '#6a6a66',
     label: 'White Rose 2, black and white',
     desc: 'The bud · Mid-tone backgrounds',
+  },
+  {
+    file: 'white-rose-2-color',
+    alt: 'White rose bud with black outlines on a short stem with a dark green leaf',
+    bg: '#1a1a1a',
+    label: 'White Rose 2, color',
+    desc: 'The bud · Dark backgrounds',
   },
 ];
 
@@ -100,6 +100,11 @@ function LogoCard({ logo }: { logo: Logo }) {
    (272px of content width). */
 const GRID =
   'logo-grid grid grid-cols-[repeat(auto-fill,minmax(min(280px,100%),1fr))] gap-4';
+
+/* The four White Rose logos sit two by two from 768px, in reading order: open rose
+   black and white, open rose color, bud black and white, bud color (user, 2026-10-14).
+   One column below that. `grid-cols-N` is minmax(0, 1fr), so it cannot overflow. */
+const ROSE_GRID = 'logo-grid grid grid-cols-1 gap-4 md:grid-cols-2';
 
 export default function Section6Project() {
   return (
@@ -155,7 +160,7 @@ export default function Section6Project() {
         <p className="project-desc mb-6">
           The logo of a morally ambiguous owner of a large scientific research corporation.
         </p>
-        <div className={GRID}>
+        <div className={ROSE_GRID}>
           {roses.map((logo) => (
             <LogoCard key={logo.file} logo={logo} />
           ))}
