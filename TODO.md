@@ -42,7 +42,7 @@ before a push ships in the same deploy.
       `shxdowloop/2026-10-10/portfolio-reconcile` still lives in the main checkout (`a8036ab`) and is
       contained in `origin/portfoliowebsite`, so it can be reset or deleted on the user's yes. The visual baselines were regenerated on SOL 2026-10-14 (48).
 - [ ] **Tools rows on the Brand and Mistrust pages: built, waiting on the user's yes** (2026-10-14). Mistrust shows
-      one pill, Figma, with no sentence under it (the user removed "Made entirely in Figma"). Brand says "The logo was made in Adobe Creative Suite." (user's wording, 2026-10-14, since several Adobe apps were used) and This website (Next.js 15, React 19, TypeScript, Tailwind CSS v4, brand.css, sharp,
+      one pill, Figma, with no sentence under it (the user removed "Made entirely in Figma"). Brand keeps the user's paragraph ("The logo was made in Adobe Creative Suite. The site is a static export from Next.js...", user's wording 2026-10-14; the gate count reads 48 now, not 40) above the website pills, and This website (Next.js 15, React 19, TypeScript, Tailwind CSS v4, brand.css, sharp,
       Playwright, Netlify), pills only.  Still to confirm: JavaScript (it was on the old Brand row). On the loop branch only; the Brand and Mistrust baselines (16) need a SOL regeneration before any deploy.
 - [ ] **Brand Assets (hidden).** Built behind `SHOW_BRAND_ASSETS = false` in `app/portfolio/BrandProject.tsx`: a
       business card and a website banner, each as design plus mockup. The user will make the pieces later;

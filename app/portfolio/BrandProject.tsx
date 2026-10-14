@@ -114,7 +114,7 @@ function LogoSwatch({ swatch }: { swatch: Swatch }) {
 }
 
 const brandTools = [
-  { label: 'Design', text: 'The logo was made in Adobe Creative Suite.', tools: [] as string[] },
+  { label: 'Design', text: 'The logo was made in Adobe Creative Suite. The site is a static export from Next.js, so it ships as plain HTML, CSS and JS with no server. Tailwind and a hand-written brand stylesheet handle the look, sharp makes the responsive image sizes, Playwright runs a 48-screenshot visual regression gate, and Netlify hosts it.', tools: [] as string[] },
   {
     label: 'This website',
     text: '',
