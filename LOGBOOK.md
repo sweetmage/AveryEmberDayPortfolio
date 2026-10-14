@@ -19,6 +19,18 @@ When this logbook exceeds ~1000 lines, split it:
 
 ---
 
+## Entry 161 - 2026-10-14
+
+**Agent:** Claude Sonnet 5.5 (ember-quill, VOID), main agent
+**Cycle:** shxdowloop overnight plans: released
+**Task:** Record the production release of the loop branch.
+
+- Released at the user's 'deploy' (2026-10-14): fast-forwarded origin/portfoliowebsite 8bf209f..54177bf (22 commits), one push. Netlify deploy 6acfd688 ready for 54177bf (15 credits).
+- Live checks: /, /portfolio/, /portfolio/brand/, /portfolio/history-of-mistrust/, /portfolio/section-6-logo-design/, /contact/ all 200; all 11 new files under /images/section-6/ 200; the Portfolio page shows three tiles with all pictures loaded and no sideways scroll; the SECTION 6 page shows five logos (lazy-loaded, all load on scroll) and 10 downloads; the Brand page has Brand Voice and Tone, has no Brand Assets text and no US-spelling line; no console errors.
+- Still open: review of the agent's first-draft logo alt text, mockup 3 (Tools on Brand and Mistrust), the 12 gallery descriptions and both project summaries (user drafts), Brand Assets pieces (user will make), the stale local branches (reset or delete on the user's yes).
+
+---
+
 ## Entry 160 - 2026-10-14
 
 **Agent:** Claude Sonnet 5.5 (ember-quill, VOID), main agent

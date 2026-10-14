@@ -100,6 +100,14 @@ consolidated in [`docs/archives/plans.md`](docs/archives/plans.md).
 
 ### 2026-10
 
+- **Oct 14** — **RELEASED: SECTION 6 Logo Design, three-across project tiles, Brand Voice and Tone.**
+  Fast-forwarded `portfoliowebsite` `8bf209f..54177bf` (22 commits), Netlify deploy `6acfd688` ready, 15 credits.
+  Third project tile and page `/portfolio/section-6-logo-design/` (Phoenix in vivid red, four White Rose logos with
+  SVG and PNG downloads, Tools row); tiles in one row from 768px, no sideways scroll at 320px; the approved Brand
+  Voice and Tone section on the Brand page; Brand Assets built and hidden (`SHOW_BRAND_ASSETS = false`). Gates:
+  baselines regenerated on SOL (48, two clean re-checks), 147 non-visual tests green, fresh-context final signoff
+  PASS. The logo alt text is the agent's first draft. Entries 156 to 161.
+
 - **Oct 13** — **SECTION 6 Logo Design built (not pushed to production).** Third project tile and its page
   `/portfolio/section-6-logo-design/` (Phoenix in vivid red `#E4101E`, four White Rose SVGs and PNGs, Tools row,
   short copy), three tiles in one row from 768px with no sideways scroll at 320px; the open rose's leaves were
