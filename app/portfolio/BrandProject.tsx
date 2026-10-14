@@ -2,7 +2,7 @@ const primarySwatches = [
   {
     src: '/images/icons/BubbleLogo/bubbleLogo.png',
     file: 'bubbleLogo',
-    alt: 'Blue logo with text',
+    alt: 'Blue bubble logo with the initials A E D',
     bg: '#0A0A0A',
     label: 'Blue',
     desc: 'Dark backgrounds · #7eb8ff',
@@ -10,7 +10,7 @@ const primarySwatches = [
   {
     src: '/images/icons/BubbleLogo/bubbleLogo-black.svg',
     file: 'bubbleLogo-black',
-    alt: 'Black logo with text',
+    alt: 'Black bubble logo with the initials A E D',
     bg: '#F2F0EC',
     label: 'Black',
     desc: 'Light backgrounds · #000000',
@@ -18,7 +18,7 @@ const primarySwatches = [
   {
     src: '/images/icons/BubbleLogo/bubbleLogo-white.svg',
     file: 'bubbleLogo-white',
-    alt: 'White logo with text',
+    alt: 'White bubble logo with the initials A E D',
     bg: '#1a1a1a',
     label: 'White',
     desc: 'Dark backgrounds · #ffffff',
@@ -29,7 +29,7 @@ const iconMarkSwatches = [
   {
     src: '/images/icons/BubbleLogo/bubbleLogo-blue-notxt.png',
     file: 'bubbleLogo-blue-notxt',
-    alt: 'Blue icon mark',
+    alt: 'Blue bubble logo',
     bg: '#0A0A0A',
     label: 'Blue',
     desc: 'Dark backgrounds · Favicon, app icon',
@@ -37,7 +37,7 @@ const iconMarkSwatches = [
   {
     src: '/images/icons/BubbleLogo/bubbleLogo-black-notxt.png',
     file: 'bubbleLogo-black-notxt',
-    alt: 'Black icon mark',
+    alt: 'Black bubble logo',
     bg: '#F2F0EC',
     label: 'Black',
     desc: 'Light backgrounds · Small use',
@@ -45,7 +45,7 @@ const iconMarkSwatches = [
   {
     src: '/images/icons/BubbleLogo/bubbleLogo-white-notxt.png',
     file: 'bubbleLogo-white-notxt',
-    alt: 'White icon mark',
+    alt: 'White bubble logo',
     bg: '#1a1a1a',
     label: 'White',
     desc: 'Dark backgrounds · Small use',
