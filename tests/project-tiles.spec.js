@@ -230,3 +230,36 @@ test.describe('SECTION 6 Logo Design page', () => {
     await expect(page.getByRole('heading', { name: 'Brand Assets' })).toHaveCount(0);
   });
 });
+
+test.describe('Tools rows and Brand logo alt text', () => {
+  /* Added 2026-10-14 from the release signoff: the visual gate was the only thing that
+     would notice these going missing. */
+  test('Mistrust shows a Tools row with one Figma pill and no sentence', async ({ page }) => {
+    await page.goto(`${BASE_URL}/portfolio/history-of-mistrust/`, { waitUntil: 'networkidle' });
+    const section = page.locator('section', { has: page.getByRole('heading', { name: 'Tools' }) });
+    await expect(section.locator('li')).toHaveText(['Figma']);
+    await expect(section.locator('p')).toHaveCount(0);
+  });
+
+  test('Brand shows the Creative Suite paragraph and the website pills', async ({ page }) => {
+    await page.goto(`${BASE_URL}/portfolio/brand/`, { waitUntil: 'networkidle' });
+    const section = page.locator('section', { has: page.getByRole('heading', { name: 'Tools' }) });
+    await expect(section.locator('p')).toContainText('The logo was made in Adobe Creative Suite.');
+    await expect(section.getByRole('heading', { name: 'This website' })).toBeVisible();
+    await expect(section.locator('li')).toHaveCount(8);
+    await expect(section.locator('li').first()).toHaveText('Next.js 15');
+  });
+
+  test('Brand logo cards name the bubble logo and its color', async ({ page }) => {
+    await page.goto(`${BASE_URL}/portfolio/brand/`, { waitUntil: 'networkidle' });
+    const alts = await page.locator('.logo-swatch img').evaluateAll((els) => els.map((e) => e.getAttribute('alt')));
+    expect(alts).toEqual([
+      'Blue bubble logo with the initials A E D',
+      'Black bubble logo with the initials A E D',
+      'White bubble logo with the initials A E D',
+      'Blue bubble logo',
+      'Black bubble logo',
+      'White bubble logo',
+    ]);
+  });
+});

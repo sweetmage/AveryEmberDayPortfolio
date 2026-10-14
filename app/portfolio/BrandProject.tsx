@@ -113,13 +113,18 @@ function LogoSwatch({ swatch }: { swatch: Swatch }) {
   );
 }
 
-const brandTools = [
-  { label: 'Design', text: 'The logo was made in Adobe Creative Suite. The site is a static export from Next.js, so it ships as plain HTML, CSS and JS with no server. Tailwind and a hand-written brand stylesheet handle the look, sharp makes the responsive image sizes, Playwright runs a 48-screenshot visual regression gate, and Netlify hosts it.', tools: [] as string[] },
-  {
-    label: 'This website',
-    text: '',
-    tools: ['Next.js 15', 'React 19', 'TypeScript', 'Tailwind CSS v4', 'brand.css', 'sharp', 'Playwright', 'Netlify'],
-  },
+const brandToolsIntro =
+  'The logo was made in Adobe Creative Suite. The site is a static export from Next.js, so it ships as plain HTML, CSS and JS with no server. Tailwind and a hand-written brand stylesheet handle the look, sharp makes the responsive image sizes, Playwright runs a 48-screenshot visual regression gate, and Netlify hosts it.';
+
+const brandWebsiteTools = [
+  'Next.js 15',
+  'React 19',
+  'TypeScript',
+  'Tailwind CSS v4',
+  'brand.css',
+  'sharp',
+  'Playwright',
+  'Netlify',
 ];
 
 /* Brand Voice and Tone: the agent's DRAFT for the user to edit (2026-10-13), shown on
@@ -312,37 +317,29 @@ export default function BrandProject() {
         </p>
       </section>
 
-      {/* Tools: the same pill row the SECTION 6 and Mistrust pages have (user, 2026-10-14).
-          Two groups: what the identity was made in, and what the website is built with.
-          Pills only, no sentence under them. The tool list comes from mockup 3 and is
-          still the agent's draft for the user to confirm (docs/plans/2026-10-13-overnight-plans/). */}
+      {/* Tools (user, 2026-10-14): the user's own paragraph about how the logo and the site were
+          made, then pills for what the website is built with. The first sentence says Adobe
+          Creative Suite because several Adobe apps were used. The gate count is 48 on purpose. */}
       <section className="project-section px-6 pb-12">
         <h4 className="section-title mb-5 border-none p-0 text-left font-heading text-xl font-semibold normal-case tracking-normal text-text">
           Tools
         </h4>
-        {brandTools.map((group) =>
-          group.text ? (
-            <p key={group.label} className="project-desc mb-6">
-              {group.text}
-            </p>
-          ) : (
-            <div key={group.label} className="mb-6 last:mb-0">
-              <h5 className="mb-3 font-heading text-sm font-medium uppercase tracking-[0.08em] text-text-muted">
-                {group.label}
-              </h5>
-              <ul className="m-0 flex list-none flex-wrap gap-2 p-0">
-                {group.tools.map((tool) => (
-                  <li
-                    key={tool}
-                    className="rounded-full border border-line bg-surface-2 px-3 py-1 font-body text-sm text-text"
-                  >
-                    {tool}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ),
-        )}
+        <p className="project-desc mb-6">{brandToolsIntro}</p>
+        <div>
+          <h5 className="mb-3 font-heading text-sm font-medium uppercase tracking-[0.08em] text-text-muted">
+            This website
+          </h5>
+          <ul className="m-0 flex list-none flex-wrap gap-2 p-0">
+            {brandWebsiteTools.map((tool) => (
+              <li
+                key={tool}
+                className="rounded-full border border-line bg-surface-2 px-3 py-1 font-body text-sm text-text"
+              >
+                {tool}
+              </li>
+            ))}
+          </ul>
+        </div>
       </section>
 
       {/* Logo Variants */}

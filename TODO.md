@@ -23,11 +23,6 @@ before a push ships in the same deploy.
 
 ### Ready to build now
 
-- [ ] **Deploy the White Rose 2x2 layout** (user, 2026-10-14). Built and tested on `shxdowloop/2026-10-13/overnight-plans`
-      (`Section6Project.tsx`): two by two from 768px in the user's order (open rose black and white, open rose color,
-      bud black and white, bud color), one column below. The 8 SECTION 6 baselines are regenerated on SOL (three
-      full re-checks, no hard failures). **Not deployed**: one production deploy costs 15 credits, so it waits for
-      the user's go-ahead, ideally batched with other changes.
 - [x] **Brand voice and tone: approved 2026-10-14** and live on the Brand page on the loop branch (`BrandVoice` in `app/portfolio/BrandProject.tsx`, after *Type System*). The user removed "Use US spelling. Use one title: Brand & Visual Designer." before approving. Draft and rules: `docs/plans/2026-10-13-brand-voice-draft.md`, `.agents/memories/brand-voice.md`.
 - [x] **Push the loop branch to `portfoliowebsite`** (one 15-credit production deploy): done 2026-10-14 at the user's "deploy". Baselines regenerated on SOL (48), 147 non-visual tests green, final signoff PASS.
 - [ ] **Alt text for the five SECTION 6 logos is a first draft.** Written by the agent in
@@ -41,9 +36,6 @@ before a push ships in the same deploy.
       `portfoliowebsite` was fast-forwarded to origin on 2026-10-13 by another session;
       `shxdowloop/2026-10-10/portfolio-reconcile` still lives in the main checkout (`a8036ab`) and is
       contained in `origin/portfoliowebsite`, so it can be reset or deleted on the user's yes. The visual baselines were regenerated on SOL 2026-10-14 (48).
-- [ ] **Tools rows on the Brand and Mistrust pages: built, waiting on the user's yes** (2026-10-14). Mistrust shows
-      one pill, Figma, with no sentence under it (the user removed "Made entirely in Figma"). Brand keeps the user's paragraph ("The logo was made in Adobe Creative Suite. The site is a static export from Next.js...", user's wording 2026-10-14; the gate count reads 48 now, not 40) above the website pills, and This website (Next.js 15, React 19, TypeScript, Tailwind CSS v4, brand.css, sharp,
-      Playwright, Netlify), pills only.  Still to confirm: JavaScript (it was on the old Brand row). On the loop branch only; the Brand and Mistrust baselines (16) need a SOL regeneration before any deploy.
 - [ ] **Brand Assets (hidden).** Built behind `SHOW_BRAND_ASSETS = false` in `app/portfolio/BrandProject.tsx`: a
       business card and a website banner, each as design plus mockup. The user will make the pieces later;
       fill in each `design` and `mockup` and flip the flag to launch. The card mockup 4 was **not approved**;
@@ -103,6 +95,12 @@ Full detail in `LOGBOOK.md` (newest-first). Plan docs live in `docs/plans/`; ear
 consolidated in [`docs/archives/plans.md`](docs/archives/plans.md).
 
 ### 2026-10
+
+- **Oct 14** — **RELEASED (second push): White Rose 2x2, Tools rows, Brand alt text.** The four White Rose logos sit
+  two by two from 768px in the user's order; Mistrust has a Tools row with one Figma pill; Brand has the user's
+  Adobe Creative Suite paragraph above the website pills; the Brand logo cards' alt text names the bubble logo and its
+  color. Brand, Mistrust and SECTION 6 baselines regenerated on SOL (48 passed, three full re-checks), fresh-context
+  final signoff PASS, all in one push. JavaScript was dropped from the Brand tools. Entries 162 to 163.
 
 - **Oct 14** — **RELEASED: SECTION 6 Logo Design, three-across project tiles, Brand Voice and Tone.**
   Fast-forwarded `portfoliowebsite` `8bf209f..54177bf` (22 commits), Netlify deploy `6acfd688` ready, 15 credits.

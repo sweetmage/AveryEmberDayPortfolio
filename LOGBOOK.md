@@ -19,6 +19,17 @@ When this logbook exceeds ~1000 lines, split it:
 
 ---
 
+## Entry 163 - 2026-10-14
+
+**Agent:** Claude Sonnet 5.5 (ember-quill, VOID), main agent
+**Cycle:** shxdowloop overnight plans: second release
+**Task:** Release the White Rose 2x2, Tools rows and Brand alt text together, at the user's 'approve changes and push all together' (2026-10-14).
+
+- Built since the first release: White Rose logos two by two from 768px (open B&W, open color, bud B&W, bud color); Tools row on Mistrust (one Figma pill, no sentence); Brand Tools is the user's paragraph (Adobe Creative Suite, 48-screenshot gate) above the website pills; Brand logo alt text 'Blue/Black/White bubble logo with the initials A E D' and 'Blue/Black/White bubble logo'. JavaScript dropped from the Brand tools.
+- Gates: second fresh-context final signoff PASS (typecheck, 148 non-visual chromium tests); its follow-ups applied (stale comment, dead data removed, three new tests for the Tools rows and alt text, plan and mockup wording, TODO and logbook sync). Baselines: a subset regeneration left brand @ 1440 light failing the full-suite re-check (same 1793 px on both attempts, passed alone), so the full 48 were regenerated and only the changed pages kept; three full re-checks, 48 passed each.
+
+---
+
 ## Entry 162 - 2026-10-14
 
 **Agent:** Claude Sonnet 5.5 (ember-quill, VOID), main agent
