@@ -4,7 +4,7 @@
 
 **Standing rule (user): the user writes the first draft, the agent proofreads.** The exception is when the user asks for a draft, as they did for the voice section on 2026-10-13. Then write it, and treat every line as theirs to change.
 
-## The voice, as agreed 2026-10-13
+## The voice, approved by the user 2026-10-14 ("remove ... from the page, then approve")
 
 Three traits, all kept by the user:
 
@@ -18,7 +18,7 @@ Tone by place: About is friendly and personal. Project pages are clear and calm.
 
 Words that fit: systems, reusable, built to last, character, mood, craft, clean, clear, accessible, listening, the brief; everyday verbs like use, build, make, listen, reach out.
 
-Writing habits: first person singular with contractions; commas and colons for pauses (no em dashes in prose); at most one exclamation mark a page; US spelling; one job title, "Brand & Visual Designer".
+Writing habits (as published on the Brand page): first person singular with contractions; commas and colons for pauses (no em dashes in prose); at most one exclamation mark a page. The user removed "use US spelling" and "use one title: Brand & Visual Designer" from the page on 2026-10-14; they are not published rules.
 
 ## How the user wants this written (their corrections, 2026-10-13)
 

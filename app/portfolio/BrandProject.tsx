@@ -166,7 +166,7 @@ const voiceWords = [
 const voiceWordsNote = 'Everyday words like use, build, make, listen, and reach out.';
 
 const voiceHabits =
-  'Speak in the first person, with contractions. Use commas and colons for pauses. Keep exclamation marks to one a page. Use US spelling. Use one title: Brand & Visual Designer.';
+  'Speak in the first person, with contractions. Use commas and colons for pauses. Keep exclamation marks to one a page.';
 
 function BrandVoice() {
   return (

@@ -19,6 +19,18 @@ When this logbook exceeds ~1000 lines, split it:
 
 ---
 
+## Entry 159 - 2026-10-14
+
+**Agent:** Claude Sonnet 5.5 (ember-quill, VOID), main agent
+**Cycle:** shxdowloop overnight plans: brand voice approved
+**Task:** Put the brand voice and tone section on the Brand page, take out two lines, record the user's approval.
+
+- Drafted and revised over five passes at the user's notes: fewer I statements, no this-not-that comparisons, only what the brand is, plain English with vibe adjectives, no use of the longer bio. Saved the rules to .agents/memories/brand-voice.md (indexed in AGENTS.md). Research in docs/plans/2026-10-13-brand-voice-recommendation.md.
+- Built as BrandVoice in app/portfolio/BrandProject.tsx after Type System (text kept as data). User removed 'Use US spelling. Use one title: Brand & Visual Designer.' from the page, then approved (2026-10-14). Checked in the browser: 320px no sideways scroll, the page no longer contains either line.
+- Open before the production push: SOL baseline regeneration (portfolio, Brand, new SECTION 6 page), review of the agent's first-draft logo alt text, mockup 3 (Tools on Brand and Mistrust), and the user's go-ahead (one 15-credit deploy). Not pushed to portfoliowebsite.
+
+---
+
 ## Entry 158 - 2026-10-13
 
 **Agent:** Claude Sonnet 5.5 (ember-quill, VOID), main agent

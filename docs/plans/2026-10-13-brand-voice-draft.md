@@ -1,7 +1,7 @@
 # Brand voice and tone: front-facing draft for the user to edit
 
 **Written:** 2026-10-13. Fourth pass, after the user asked for plain English with less jargon and descriptive, vibe-based adjectives for tone. Earlier passes removed the "I" statements, the "this, not this" comparisons, the "what the brand is not" lines and every reference to the longer bio. The standing rules are saved in [`.agents/memories/brand-voice.md`](../../.agents/memories/brand-voice.md).
-**Status:** agent's draft, the user's to edit. Not on the site yet.
+**Status:** **APPROVED by the user 2026-10-14** after removing "Use US spelling. Use one title: Brand & Visual Designer." Live on the Brand page on the loop branch; not deployed.
 
 ---
 
@@ -35,7 +35,7 @@ A small smile, a touch of curiosity, and one little joke a page at most. Serious
 Systems, reusable, built to last, character, mood, craft, clean, clear, accessible, listening, the brief. Everyday words like use, build, make, listen, and reach out.
 
 ### Writing habits
-Speak in the first person, with contractions. Use commas and colons for pauses. Keep exclamation marks to one a page. Use US spelling. Use one title: Brand & Visual Designer.
+Speak in the first person, with contractions. Use commas and colons for pauses. Keep exclamation marks to one a page.
 
 ---
 
