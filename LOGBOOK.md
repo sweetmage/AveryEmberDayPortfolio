@@ -19,6 +19,18 @@ When this logbook exceeds ~1000 lines, split it:
 
 ---
 
+## Entry 164 - 2026-10-14
+
+**Agent:** Claude Sonnet 5.5 (ember-quill, VOID), main agent
+**Cycle:** shxdowloop overnight plans: second release shipped
+**Task:** Record the second production release.
+
+- Fast-forwarded origin/portfoliowebsite 5c72a0a..68deb9b (8 commits) in one push; Netlify deploy 6acfe595 ready for 68deb9b (15 credits). Before it: final code re-checked on SOL against the committed baselines, three runs, 48 passed each.
+- Live checks: all six pages 200; Brand has the Adobe Creative Suite paragraph, the 48-screenshot wording, the new bubble-logo alt text and no Brand Assets text; Mistrust has the Figma pill and not the old sentence; SECTION 6 cards in the order Phoenix, Rose 1 B&W, Rose 1 color, Rose 2 B&W, Rose 2 color; all five logos load; no console errors.
+- Still open: 12 gallery descriptions and both project summaries (user drafts); Brand Assets pieces (user will make); stale local branches (reset or delete on the user's yes).
+
+---
+
 ## Entry 163 - 2026-10-14
 
 **Agent:** Claude Sonnet 5.5 (ember-quill, VOID), main agent

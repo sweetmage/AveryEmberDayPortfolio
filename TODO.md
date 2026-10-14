@@ -100,7 +100,7 @@ consolidated in [`docs/archives/plans.md`](docs/archives/plans.md).
   two by two from 768px in the user's order; Mistrust has a Tools row with one Figma pill; Brand has the user's
   Adobe Creative Suite paragraph above the website pills; the Brand logo cards' alt text names the bubble logo and its
   color. Brand, Mistrust and SECTION 6 baselines regenerated on SOL (48 passed, three full re-checks), fresh-context
-  final signoff PASS, all in one push. JavaScript was dropped from the Brand tools. Entries 162 to 163.
+  final signoff PASS, all in one push: `portfoliowebsite` `5c72a0a..68deb9b` (8 commits), Netlify deploy `6acfe595` ready, 15 credits. JavaScript was dropped from the Brand tools. Entries 162 to 164.
 
 - **Oct 14** — **RELEASED: SECTION 6 Logo Design, three-across project tiles, Brand Voice and Tone.**
   Fast-forwarded `portfoliowebsite` `8bf209f..54177bf` (22 commits), Netlify deploy `6acfd688` ready, 15 credits.
