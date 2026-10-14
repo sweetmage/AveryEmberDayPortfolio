@@ -114,9 +114,10 @@ function LogoSwatch({ swatch }: { swatch: Swatch }) {
 }
 
 const brandTools = [
-  { label: 'Design', tools: ['Adobe InDesign', 'Adobe Photoshop', 'Adobe Illustrator'] },
+  { label: 'Design', text: 'The logo was made in Adobe Creative Suite.', tools: [] as string[] },
   {
     label: 'This website',
+    text: '',
     tools: ['Next.js 15', 'React 19', 'TypeScript', 'Tailwind CSS v4', 'brand.css', 'sharp', 'Playwright', 'Netlify'],
   },
 ];
@@ -319,23 +320,29 @@ export default function BrandProject() {
         <h4 className="section-title mb-5 border-none p-0 text-left font-heading text-xl font-semibold normal-case tracking-normal text-text">
           Tools
         </h4>
-        {brandTools.map((group) => (
-          <div key={group.label} className="mb-6 last:mb-0">
-            <h5 className="mb-3 font-heading text-sm font-medium uppercase tracking-[0.08em] text-text-muted">
-              {group.label}
-            </h5>
-            <ul className="m-0 flex list-none flex-wrap gap-2 p-0">
-              {group.tools.map((tool) => (
-                <li
-                  key={tool}
-                  className="rounded-full border border-line bg-surface-2 px-3 py-1 font-body text-sm text-text"
-                >
-                  {tool}
-                </li>
-              ))}
-            </ul>
-          </div>
-        ))}
+        {brandTools.map((group) =>
+          group.text ? (
+            <p key={group.label} className="project-desc mb-6">
+              {group.text}
+            </p>
+          ) : (
+            <div key={group.label} className="mb-6 last:mb-0">
+              <h5 className="mb-3 font-heading text-sm font-medium uppercase tracking-[0.08em] text-text-muted">
+                {group.label}
+              </h5>
+              <ul className="m-0 flex list-none flex-wrap gap-2 p-0">
+                {group.tools.map((tool) => (
+                  <li
+                    key={tool}
+                    className="rounded-full border border-line bg-surface-2 px-3 py-1 font-body text-sm text-text"
+                  >
+                    {tool}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ),
+        )}
       </section>
 
       {/* Logo Variants */}
