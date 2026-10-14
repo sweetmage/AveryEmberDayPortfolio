@@ -27,15 +27,14 @@ before a push ships in the same deploy.
 - [x] **Push the loop branch to `portfoliowebsite`** (one 15-credit production deploy): done 2026-10-14 at the user's "deploy". Baselines regenerated on SOL (48), 147 non-visual tests green, final signoff PASS.
 - [ ] **Alt text for the five SECTION 6 logos is a first draft.** Written by the agent in
       `app/portfolio/Section6Project.tsx`; the user wanted real alt text written with them. Review it.
-- [ ] **Unmerged branches and baselines after the Oct 13 release.** `portfoliowebsite` is at `dd205ae`
-      (Entry 155); the four merged branches were deleted on the user's yes (see Entry 155). Still
-      unmerged: the Blue caption fix `fix/2026-10-06-blue-logo-caption` (local and origin, conflicts in
-      binary baseline PNGs; regenerate them). `origin/develop` (`ffa7438`) and
-      `origin/shxdowloop/2026-08-14/mistrust-reexport` (`287c46b`) were **retired on origin 2026-10-13** at
-      the user's call; their SHAs are in Entry 155 if a commit is ever wanted back. Local
-      `portfoliowebsite` was fast-forwarded to origin on 2026-10-13 by another session;
-      `shxdowloop/2026-10-10/portfolio-reconcile` still lives in the main checkout (`a8036ab`) and is
-      contained in `origin/portfoliowebsite`, so it can be reset or deleted on the user's yes. The visual baselines were regenerated on SOL 2026-10-14 (48).
+- [ ] **Leftover branches (2026-10-14).** Deleted locally on the user's yes: `claude/overnight-loop-plans-draft-231f11`
+      and `claude/reconcile-branches-main-e85f39` (both merged into `portfoliowebsite`, no origin copy). Kept: the
+      Blue caption fix `fix/2026-10-06-blue-logo-caption` (3 commits not in production, conflicts in binary baseline
+      PNGs, regenerate them; local equals origin); the loop branch `shxdowloop/2026-10-13/overnight-plans` (merged, in
+      use as this worktree's branch, also on origin); local `portfoliowebsite` (merged, 32 commits behind origin,
+      fast-forward it with `git fetch && git branch -f portfoliowebsite origin/portfoliowebsite` from a checkout where it
+      is not current); and `shxdowloop/2026-10-10/portfolio-reconcile` (merged, no origin copy), which is checked out in
+      the main checkout, so Git refuses to delete it until that checkout switches branch.
 - [ ] **Brand Assets (hidden).** Built behind `SHOW_BRAND_ASSETS = false` in `app/portfolio/BrandProject.tsx`: a
       business card and a website banner, each as design plus mockup. The user will make the pieces later;
       fill in each `design` and `mockup` and flip the flag to launch. The card mockup 4 was **not approved**;
