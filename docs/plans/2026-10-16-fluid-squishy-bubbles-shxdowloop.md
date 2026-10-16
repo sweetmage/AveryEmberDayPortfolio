@@ -47,8 +47,9 @@ list is unchanged, the two engine copies stay byte-identical.
 ## UI and UX mockup record
 
 - Offer: "Feel lab first? I recommend yes" - answer: "yes proceed".
-- Page: `docs/mockups/bubble-feel-lab.html` (Stage 0). Approval: **pending** until the user answers.
-  Engine changes (Stage 2) do not start until the page is approved.
+- Page: `docs/mockups/bubble-feel-lab.html` (Stage 0). Approval, 2026-10-16, verbatim:
+  "Approve (Recommended)" (option text: "Build the engine with the lab's default settings.").
+  Stage 2 ports the lab's proposed model with its `DEFAULTS` unchanged.
 
 ## Helper routing
 
@@ -62,7 +63,7 @@ list is unchanged, the two engine copies stay byte-identical.
 
 ### Stage 0 - Feel lab mockup
 
-**Status:** Built, awaiting approval. Soak in the lab: proposed model 0px² overlap with
+**Status:** Complete, approved by the user. Soak in the lab: proposed model 0px² overlap with
 protected content over 1500 frames with throws and scrolls; today's engine 916px² in the same run.
 **Goal:** A standalone page with the old model and the new model side by side, plus tuning sliders,
 for the user to approve the feel before the engine changes.
@@ -86,7 +87,7 @@ measurements, and the "before" must be captured on unchanged engine code.
 
 ### Stage 2 - Engine rework
 
-**Status:** Pending (blocked on Stage 0 approval)
+**Status:** Active (Plan review next)
 **Goal:** Implement the nine changes in the approved plan and meet the pass marks.
 **Phases:**
 - [ ] 2.1 Page-space global layer (absolute, sized to the document, `overflow: clip`), zones in
@@ -142,7 +143,7 @@ A real bounce also exceeds 4px/frame^2 by design, so a raw snap count would pena
 
 | Stage | Commit | Push |
 |---|---|---|
-| - | - | - |
+| 1 | 70985ab | pushed |
 
 ## Open risks
 
@@ -153,7 +154,7 @@ A real bounce also exceeds 4px/frame^2 by design, so a raw snap count would pena
 
 ## Merge readiness checklist
 
-- [ ] Feel lab approved by the user
+- [x] Feel lab approved by the user
 - [ ] Pass marks met, evidence in artifacts
 - [ ] Full suite green on chromium and webkit-mobile
 - [ ] Engine copies identical
