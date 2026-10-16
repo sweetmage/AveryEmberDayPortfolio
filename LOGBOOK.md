@@ -19,6 +19,18 @@ When this logbook exceeds ~1000 lines, split it:
 
 ---
 
+## Entry 165 - 2026-10-16
+
+**Agent:** Claude Opus 5.5 (main agent, SOL)
+**Cycle:** shxdowloop, Stages 0-1 (fluid squishy bubbles)
+**Task:** Make the bubbles fluid and squishy, remove scroll jitter, improve pointer response. Branch `shxdowloop/2026-10-16/fluid-squishy-bubbles`; plan `docs/plans/2026-10-16-fluid-squishy-bubbles-shxdowloop.md`.
+
+- Stage 0: feel lab `docs/mockups/bubble-feel-lab.html` (today's engine ported beside the proposed jelly model, live sliders). Proposed model held 0px² overlap with protected content over a 1500-frame soak with throws and scrolls; today's engine 916px². Awaiting the user's approval before any engine change.
+- Stage 1: new `tests/bubbles-motion.spec.js` probe, baseline on the unchanged engine: global bubbles lag a 300px scroll by the full 300px until the engine's next frame (the jitter), 49.5 layout reads per scroll event, 2.0x speed at 120Hz against 60Hz, p99 page-space jerk 0.51px. html is `scroll-behavior: smooth`, so probes scroll with `behavior: 'instant'`.
+- Route: main agent only; shxdowTracker missing, so no native helpers. Logbook skill missing; entry written by hand.
+
+---
+
 ## Entry 164 - 2026-10-14
 
 **Agent:** Claude Sonnet 5.5 (ember-quill, VOID), main agent

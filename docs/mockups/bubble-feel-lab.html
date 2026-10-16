@@ -1,0 +1,542 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bubble feel lab - today vs proposed</title>
+<style>
+  :root { --bg:#0A0A0A; --soft:#141414; --ink:#ecebe6; --dim:#9a988f; --line:rgba(255,255,255,.10); --gold:#f5b96a; }
+  * { box-sizing: border-box; }
+  html, body { margin:0; background:var(--bg); color:var(--ink); font:15px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif; }
+  header { padding:16px 20px 8px; display:flex; flex-wrap:wrap; gap:12px 24px; align-items:baseline; }
+  header h1 { font-size:18px; margin:0; font-weight:600; }
+  header p { margin:0; color:var(--dim); font-size:13px; max-width:820px; }
+  .bar { display:flex; flex-wrap:wrap; gap:10px 18px; align-items:center; padding:0 20px 10px; font-size:13px; }
+  .bar button { background:var(--soft); color:var(--ink); border:1px solid var(--line); border-radius:8px; padding:6px 12px; font:inherit; cursor:pointer; }
+  .bar button:hover { border-color:rgba(255,255,255,.3); }
+  .bar label { display:flex; gap:6px; align-items:center; color:var(--dim); }
+  main { display:grid; grid-template-columns:1fr 1fr; gap:14px; padding:0 20px; }
+  @media (max-width: 900px) { main { grid-template-columns:1fr; } }
+  .panel { position:relative; border:1px solid var(--line); border-radius:14px; overflow:hidden; background:var(--bg); }
+  .panel h2 { position:absolute; z-index:5; top:10px; left:12px; margin:0; font-size:12px; letter-spacing:.08em; text-transform:uppercase;
+              background:rgba(10,10,10,.75); padding:4px 10px; border-radius:999px; border:1px solid var(--line); pointer-events:none; }
+  .panel.new h2 { color:var(--gold); }
+  .scroller { height:calc(100vh - 330px); min-height:360px; overflow-y:auto; position:relative; overscroll-behavior:contain; }
+  .content { position:relative; padding:56px 28px 40px; }
+  .content h3 { font-size:28px; margin:8px 0 6px; font-weight:650; }
+  .content p { color:var(--dim); margin:0 0 18px; max-width:46ch; }
+  .grid { display:grid; grid-template-columns:repeat(2, 1fr); gap:28px 22px; margin:30px 0; }
+  .card { border:1px solid var(--line); border-radius:12px; padding:12px; background:rgba(128,128,128,.06); }
+  .art { aspect-ratio:3/4; border-radius:6px; }
+  .card h4 { margin:10px 0 2px; font-size:14px; }
+  .card span { font-size:12px; color:var(--dim); }
+  .form { border:1px solid var(--line); border-radius:12px; padding:18px; margin-top:30px; height:260px; background:rgba(128,128,128,.06); }
+  .spacer { height:140px; }
+  /* Bubble layers */
+  .overlay { position:absolute; inset:0; pointer-events:none; overflow:hidden; z-index:2; }
+  .layer { position:absolute; left:0; top:0; width:100%; pointer-events:none; overflow:clip; z-index:2; }
+  .bubble { position:absolute; left:0; top:0; border-radius:50%; will-change:transform;
+    box-shadow: 0 0 0 .5px rgba(255,255,255,.45), 0 0 4px .5px rgba(255,255,255,.28), 0 4px 12px -1px rgba(178,127,245,.35), 0 8px 20px -2px rgba(178,127,245,.20); }
+  .bubble::before { content:""; position:absolute; inset:0; border-radius:50%; mix-blend-mode:screen;
+    background: radial-gradient(ellipse at 36% 30%, rgba(178,127,245,.42) 0%, transparent 55%), radial-gradient(ellipse at 70% 67%, rgba(0,245,255,.26) 0%, transparent 48%); }
+  .bubble::after { content:""; position:absolute; inset:0; border-radius:50%;
+    background: radial-gradient(ellipse 55% 25% at 28% 8%, rgba(255,255,255,.60) 0%, rgba(255,255,255,.10) 55%, transparent 80%); }
+  .bubble[data-color="gold"] { box-shadow: 0 0 0 .5px rgba(255,255,255,.45), 0 0 4px .5px rgba(255,255,255,.28), 0 4px 12px -1px rgba(242,173,91,.35), 0 8px 20px -2px rgba(242,173,91,.20); }
+  .bubble[data-color="gold"]::before { background: radial-gradient(ellipse at 36% 30%, rgba(242,173,91,.40) 0%, transparent 55%), radial-gradient(ellipse at 68% 66%, rgba(199,125,255,.26) 0%, transparent 48%); }
+  .bubble[data-color="cyan"] { box-shadow: 0 0 0 .5px rgba(255,255,255,.45), 0 0 4px .5px rgba(255,255,255,.28), 0 4px 12px -1px rgba(0,245,255,.35), 0 8px 20px -2px rgba(0,245,255,.20); }
+  .bubble[data-color="cyan"]::before { background: radial-gradient(ellipse at 36% 30%, rgba(0,245,255,.42) 0%, transparent 55%), radial-gradient(ellipse at 72% 65%, rgba(126,184,255,.28) 0%, transparent 48%); }
+  /* Tuning */
+  .tune { margin:14px 20px 24px; border:1px solid var(--line); border-radius:14px; padding:14px 16px; }
+  .tune h2 { margin:0 0 10px; font-size:13px; color:var(--gold); letter-spacing:.06em; text-transform:uppercase; }
+  .sliders { display:grid; grid-template-columns:repeat(auto-fill, minmax(230px, 1fr)); gap:8px 22px; }
+  .sliders label { display:grid; grid-template-columns:1fr auto; font-size:12.5px; color:var(--dim); }
+  .sliders input { grid-column:1 / -1; width:100%; accent-color:var(--gold); }
+  .sliders output { color:var(--ink); font-variant-numeric:tabular-nums; }
+  #settingsOut { margin-top:10px; font:12px ui-monospace, monospace; color:var(--dim); white-space:pre-wrap; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Bubble feel lab</h1>
+  <p>Left is today's engine, ported as-is. Right is the proposed model. Scroll each panel with a wheel or trackpad, flick the cursor through the bubbles, and watch the bounces against the cards and text. Tune the right panel with the sliders below; "Copy settings" puts your values on the clipboard.</p>
+</header>
+<div class="bar">
+  <label><input type="checkbox" id="linked" checked> Link scrolling</label>
+  <button id="auto">Auto-scroll demo</button>
+  <button id="reset">Reset bubbles</button>
+  <button id="burst">Throw bubbles</button>
+  <span id="fps" style="color:var(--dim)"></span>
+</div>
+<main>
+  <section class="panel old"><h2>Today</h2><div class="scroller" id="oldScroller"></div></section>
+  <section class="panel new"><h2>Proposed</h2><div class="scroller" id="newScroller"></div></section>
+</main>
+<section class="tune">
+  <h2>Proposed model tuning</h2>
+  <div class="sliders" id="sliders"></div>
+  <div class="bar" style="padding:10px 0 0"><button id="copy">Copy settings</button><button id="defaults">Restore defaults</button></div>
+  <div id="settingsOut"></div>
+</section>
+
+<template id="page">
+  <div class="content">
+    <h3 class="z">Avery Ember Day</h3>
+    <p class="z">Brand, illustration and motion. Bubbles drift behind and around everything on this page and must never sit on the words.</p>
+    <div class="grid">
+      <div class="card"><div class="art zf" style="background:linear-gradient(160deg,#3b1d63,#0e5a66)"></div><h4 class="z">History of Mistrust</h4><span>Series, 2025</span></div>
+      <div class="card"><div class="art zf" style="background:linear-gradient(200deg,#6b3a0e,#3b1d63)"></div><h4 class="z">Bubble mark</h4><span>Identity</span></div>
+      <div class="card"><div class="art zf" style="background:linear-gradient(140deg,#0e5a66,#141414)"></div><h4 class="z">Gross</h4><span>Poster</span></div>
+      <div class="card"><div class="art zf" style="background:linear-gradient(120deg,#2a2a2a,#6b3a0e)"></div><h4 class="z">Night shift</h4><span>Illustration</span></div>
+    </div>
+    <h3 class="z">About</h3>
+    <p class="z">The bubbles are the brand's motion signature. They should feel like soap film in water: soft, a little wobbly, quick to react, never nervous.</p>
+    <div class="spacer"></div>
+    <div class="grid">
+      <div class="card"><div class="art zf" style="background:linear-gradient(160deg,#0e5a66,#3b1d63)"></div><h4 class="z">Set strip</h4><span>Slides</span></div>
+      <div class="card"><div class="art zf" style="background:linear-gradient(30deg,#3b1d63,#6b3a0e)"></div><h4 class="z">Mosaic</h4><span>Gallery</span></div>
+    </div>
+    <h3 class="z">Contact</h3>
+    <p class="z">Say hello. The form below is protected furniture too.</p>
+    <div class="form z"></div>
+    <div class="spacer"></div>
+  </div>
+</template>
+
+<script>
+'use strict';
+const COLORS = ['purple', 'gold', 'purple', 'cyan', 'gold', 'purple', 'cyan', 'gold', 'purple', 'cyan'];
+const SIZES = [
+  // [radius, kind]  seven small "global" bubbles and three large "hero" bubbles
+  [12,'s'],[20,'s'],[26,'s'],[15,'s'],[24,'s'],[18,'s'],[28,'s'],[48,'l'],[62,'l'],[74,'l']
+];
+const PAD = 24;
+
+function build(scroller) {
+  scroller.appendChild(document.getElementById('page').content.cloneNode(true));
+  return scroller.querySelector('.content');
+}
+function measureZones(content) {
+  const c = content.getBoundingClientRect();
+  const zs = [];
+  for (const el of content.querySelectorAll('.z, .zf')) {
+    const r = el.getBoundingClientRect();
+    const frame = el.classList.contains('zf');
+    // Page space: relative to the scrolled content, so the value never changes with scroll.
+    const box = { left: r.left - c.left, top: r.top - c.top, right: r.right - c.left, bottom: r.bottom - c.top };
+    zs.push(frame ? { ...box, frame: true, inner: box }
+                  : { left: box.left - PAD, top: box.top - PAD, right: box.right + PAD, bottom: box.bottom + PAD, inner: box });
+  }
+  return zs;
+}
+
+/* ───────────── TODAY: faithful compact port of public/scripts/bubbles.js @ 9f9f960 ─────────────
+   Layer pinned over the viewport, bubbles kept in page space and moved back by scrollTop each
+   frame; zones re-measured on every scroll event; per-frame integration; snap-and-overdamp squish. */
+class OldWorld {
+  constructor(scroller) {
+    this.scroller = scroller;
+    this.content = build(scroller);
+    this.overlay = document.createElement('div');
+    this.overlay.className = 'overlay';
+    scroller.parentElement.appendChild(this.overlay);
+    this.mouse = { x: -9999, y: -9999 };
+    scroller.addEventListener('mousemove', e => {
+      const r = scroller.getBoundingClientRect();
+      this.mouse.x = e.clientX - r.left; this.mouse.y = e.clientY - r.top; // viewport-of-panel space
+    });
+    scroller.addEventListener('mouseleave', () => { this.mouse.x = this.mouse.y = -9999; });
+    this.zonesView = [];
+    const remeasure = () => { // viewport-relative, like the real tracker
+      const st = scroller.scrollTop;
+      this.zonesView = measureZones(this.content).map(z => ({ ...z, top: z.top - st, bottom: z.bottom - st }));
+    };
+    this.remeasure = remeasure;
+    scroller.addEventListener('scroll', remeasure, { passive: true }); // every scroll event
+    setInterval(remeasure, 250);
+    this.reset();
+  }
+  reset() {
+    this.overlay.innerHTML = '';
+    this.remeasure();
+    const W = this.content.clientWidth, Hh = this.content.scrollHeight;
+    this.bounds = { width: W, height: Hh };
+    this.bubbles = SIZES.map(([r], i) => {
+      const el = document.createElement('div');
+      el.className = 'bubble'; el.dataset.color = COLORS[i];
+      el.style.width = el.style.height = r * 2 + 'px';
+      this.overlay.appendChild(el);
+      return { el, r, x: r + 40 + Math.random() * (W - 2 * r - 80), y: r + 40 + Math.random() * (Hh - 2 * r - 80),
+               vx: (Math.random() - .5) * 1.5, vy: (Math.random() - .5) * 1.5, sx: 1, sy: 1, svx: 0, svy: 0 };
+    });
+    this.lastScroll = this.scroller.scrollTop;
+  }
+  squish(b, ang) { const c = Math.cos(ang), s = Math.sin(ang); b.sx = 1 - .26 * Math.abs(c); b.sy = 1 + .26 * .6 * Math.abs(s); b.svx = b.svy = 0; }
+  burst() { for (const b of this.bubbles) { b.vx += (Math.random() - .5) * 8; b.vy += (Math.random() - .5) * 8; } }
+  frame() {
+    const st = this.scroller.scrollTop;
+    const d = Math.max(-40, Math.min(40, st - this.lastScroll)); this.lastScroll = st;
+    if (d) for (const b of this.bubbles) { b.vy += d * .02; b.vx += (Math.random() - .5) * Math.abs(d) * .01; }
+    const m = { x: this.mouse.x, y: this.mouse.y + st };
+    const zones = this.zonesView.map(z => ({ ...z, top: z.top + st, bottom: z.bottom + st }));
+    for (const b of this.bubbles) {
+      b.vx += (Math.random() - .5) * .02; b.vy += (Math.random() - .5) * .02;
+      const sp = Math.hypot(b.vx, b.vy);
+      if (sp < .4) { const a = Math.random() * 6.283; b.vx += Math.cos(a) * .12; b.vy += Math.sin(a) * .12; }
+      const dx = b.x - m.x, dy = b.y - m.y, dist = Math.hypot(dx, dy);
+      if (dist < 180 && dist > 1) { const f = .35 * (1 - dist / 180); b.vx += dx / dist * f; b.vy += dy / dist * f; }
+      b.x += b.vx; b.y += b.vy;
+    }
+    const B = this.bubbles;
+    for (let i = 0; i < B.length; i++) for (let j = i + 1; j < B.length; j++) {
+      const a = B[i], b = B[j], dx = b.x - a.x, dy = b.y - a.y, dist = Math.hypot(dx, dy), md = a.r + b.r;
+      if (dist < md && dist > .1) {
+        const o = (md - dist) / 2, nx = dx / dist, ny = dy / dist;
+        a.x -= nx * o; a.y -= ny * o; b.x += nx * o; b.y += ny * o;
+        const v1 = a.vx * nx + a.vy * ny, v2 = b.vx * nx + b.vy * ny, k = .85;
+        a.vx += (v2 - v1) * k * nx; a.vy += (v2 - v1) * k * ny; b.vx += (v1 - v2) * k * nx; b.vy += (v1 - v2) * k * ny;
+        const ang = Math.atan2(ny, nx); this.squish(a, ang); this.squish(b, ang + Math.PI);
+      }
+    }
+    const W = this.bounds.width, Hh = this.bounds.height;
+    for (const b of B) {
+      let hit = false, ax = 0;
+      if (b.x - b.r < 0) { b.x = b.r; b.vx = Math.abs(b.vx); hit = true; ax = 0; } else if (b.x + b.r > W) { b.x = W - b.r; b.vx = -Math.abs(b.vx); hit = true; ax = Math.PI; }
+      if (b.y - b.r < 0) { b.y = b.r; b.vy = Math.abs(b.vy); hit = true; ax = Math.PI / 2; } else if (b.y + b.r > Hh) { b.y = Hh - b.r; b.vy = -Math.abs(b.vy); hit = true; ax = -Math.PI / 2; }
+      if (hit) this.squish(b, ax);
+      for (const z of zones) {
+        const cx = Math.max(z.left, Math.min(b.x, z.right)), cy = Math.max(z.top, Math.min(b.y, z.bottom));
+        const dx = b.x - cx, dy = b.y - cy, dist = Math.hypot(dx, dy);
+        if (dist < b.r && dist > .1) {
+          const o = b.r - dist, nx = dx / dist, ny = dy / dist; b.x += nx * o; b.y += ny * o;
+          const dot = b.vx * nx + b.vy * ny; b.vx -= 2 * dot * nx; b.vy -= 2 * dot * ny; this.squish(b, Math.atan2(ny, nx));
+        } else if (dist <= .1) {
+          const dl = b.x - z.left, dr = z.right - b.x, dt = b.y - z.top, db = z.bottom - b.y, mm = Math.min(dl, dr, dt, db);
+          const step = z.frame ? mm + b.r : 8;
+          if (mm === dl) { b.x -= step; b.vx = -Math.max(Math.abs(b.vx), .4); } else if (mm === dr) { b.x += step; b.vx = Math.max(Math.abs(b.vx), .4); }
+          else if (mm === dt) { b.y -= step; b.vy = -Math.max(Math.abs(b.vy), .4); } else { b.y += step; b.vy = Math.max(Math.abs(b.vy), .4); }
+        }
+      }
+      const sp = Math.hypot(b.vx, b.vy); if (sp > 3) { b.vx = b.vx / sp * 3; b.vy = b.vy / sp * 3; }
+      b.vx *= .985; b.vy *= .985;
+      b.svx += (1 - b.sx) * .12; b.svy += (1 - b.sy) * .12; b.sx += b.svx; b.sy += b.svy; b.svx *= .82; b.svy *= .82;
+      if (Math.abs(b.sx - 1) < .003 && Math.abs(b.sy - 1) < .003) { b.sx = b.sy = 1; b.svx = b.svy = 0; }
+      b.el.style.transform = `translate(${(b.x - b.r).toFixed(1)}px, ${(b.y - b.r - st).toFixed(1)}px) scale(${b.sx.toFixed(3)}, ${b.sy.toFixed(3)})`;
+    }
+  }
+}
+
+/* ───────────── PROPOSED ─────────────
+   Layer lives INSIDE the scrolled content (page space), so the browser scrolls bubbles and
+   content together. Fixed 120Hz substeps with interpolated rendering. Squish is a traceless
+   deformation tensor on an underdamped spring, rendered area-preserving as one matrix(). */
+const DEFAULTS = {
+  wobbleHz: 3.2, jelly: 0.26, squish: 0.20, stretch: 0.07, maxDeform: 0.22,
+  cushion: 14, bounce: 0.72, push: 1300, drag: 5, lean: 0.09, sway: 0.35, drift: 18, cruise: 70
+};
+const P = { ...DEFAULTS };
+const SLIDERS = [
+  ['wobbleHz', 'Wobble speed (Hz)', 1.5, 6, .1],
+  ['jelly', 'Jelly damping (lower = wobblier)', .08, 1, .01],
+  ['squish', 'Squish on impact', 0, .35, .01],
+  ['stretch', 'Stretch with speed', 0, .2, .005],
+  ['maxDeform', 'Max deformation', .05, .35, .01],
+  ['cushion', 'Cushion depth (px)', 4, 22, 1],
+  ['bounce', 'Bounciness', .2, .95, .01],
+  ['push', 'Cursor push', 0, 2600, 50],
+  ['drag', 'Cursor flick carry', 0, 12, .1],
+  ['lean', 'Lean away from cursor', 0, .25, .005],
+  ['sway', 'Scroll sway', 0, 1, .01],
+  ['drift', 'Drift currents', 0, 60, 1],
+  ['cruise', 'Cruise speed (px/s)', 20, 200, 1]
+];
+const STEP = 1 / 120;
+const BULGE_PX = 14;   // deformation never pushes an edge more than this beyond the radius
+const HARD_MARGIN = 4; // closest the deformed box may come to protected content (px)
+
+class Jelly {
+  constructor(layer, r, color, W, Hh) {
+    this.el = document.createElement('div');
+    this.el.className = 'bubble'; this.el.dataset.color = color;
+    this.el.style.width = this.el.style.height = r * 2 + 'px';
+    layer.appendChild(this.el);
+    this.r = r;
+    this.x = r + 40 + Math.random() * (W - 2 * r - 80);
+    this.y = r + 40 + Math.random() * (Hh - 2 * r - 80);
+    this.vx = (Math.random() - .5) * 90; this.vy = (Math.random() - .5) * 90;
+    this.a = 0; this.b = 0; this.va = 0; this.vb = 0;   // deformation tensor [[a,b],[b,-a]] and its rate
+    this.ta = 0; this.tb = 0;                            // spring target (lean + speed stretch)
+    this.px = this.x; this.py = this.y; this.pa = 0; this.pb = 0;
+    this.ph = Array.from({ length: 4 }, () => Math.random() * 6.283);
+    this.w = [0.31, 0.47, 0.37, 0.53].map(w => w * (0.7 + Math.random() * 0.6));
+  }
+  // Velocity impulse into the deformation spring: compress along n by an amount set by impact speed.
+  impact(nx, ny, dv) {
+    if (dv <= 0) return;
+    const omega = 2 * Math.PI * P.wobbleHz;
+    const e = -P.squish * omega * Math.min(dv, 900) / 300;
+    this.va += e * (2 * nx * nx - 1);
+    this.vb += e * (2 * nx * ny);
+  }
+  matrix(a, b) {
+    const m2 = a * a + b * b, s = 1 / Math.sqrt(Math.max(1e-3, 1 - m2));
+    return [(1 + a) * s, b * s, b * s, (1 - a) * s];
+  }
+  halfExtents() {
+    const [m00, m01, m10, m11] = this.matrix(this.a, this.b);
+    return [this.r * (Math.abs(m00) + Math.abs(m01)), this.r * (Math.abs(m10) + Math.abs(m11))];
+  }
+}
+
+class NewWorld {
+  constructor(scroller) {
+    this.scroller = scroller;
+    this.content = build(scroller);
+    this.layer = document.createElement('div');
+    this.layer.className = 'layer';
+    this.content.appendChild(this.layer);
+    this.ptr = { active: false, cx: 0, cy: 0, vx: 0, vy: 0, t: 0 };
+    const onMove = e => {
+      const evs = e.getCoalescedEvents ? e.getCoalescedEvents() : [e];
+      for (const ev of (evs.length ? evs : [e])) {
+        const t = ev.timeStamp / 1000, dt = t - this.ptr.t;
+        if (this.ptr.active && dt > 0 && dt < .1) {
+          const k = Math.min(1, dt * 30);
+          this.ptr.vx += ((ev.clientX - this.ptr.cx) / dt - this.ptr.vx) * k;
+          this.ptr.vy += ((ev.clientY - this.ptr.cy) / dt - this.ptr.vy) * k;
+        }
+        this.ptr.cx = ev.clientX; this.ptr.cy = ev.clientY; this.ptr.t = t; this.ptr.active = true;
+      }
+    };
+    const off = () => { this.ptr.active = false; this.ptr.vx = this.ptr.vy = 0; };
+    scroller.addEventListener('pointermove', onMove, { passive: true });
+    scroller.addEventListener('pointerleave', off);
+    scroller.addEventListener('pointercancel', off);
+    scroller.addEventListener('pointerup', e => { if (e.pointerType !== 'mouse') off(); });
+    window.addEventListener('blur', off);
+    this.sv = 0; this.lastST = scroller.scrollTop; this.t = 0; this.acc = 0; this.last = 0;
+    this.remeasure = () => { this.zones = measureZones(this.content); this.syncSize(); };
+    new ResizeObserver(this.remeasure).observe(this.content);
+    setInterval(this.remeasure, 500); // layout drift only; scroll never triggers a read
+    this.reset();
+  }
+  syncSize() {
+    // Measured from the content box, never from scrollHeight: the layer itself must not feed its own size.
+    this.W = this.content.clientWidth;
+    this.H = this.content.offsetHeight;
+    this.layer.style.height = this.H + 'px';
+  }
+  reset() {
+    this.layer.innerHTML = '';
+    this.remeasure();
+    this.bubbles = SIZES.map(([r], i) => new Jelly(this.layer, r, COLORS[i], this.W, this.H));
+  }
+  burst() { for (const b of this.bubbles) { b.vx += (Math.random() - .5) * 700; b.vy += (Math.random() - .5) * 700; } }
+
+  frame(now) {
+    const st = this.scroller.scrollTop;
+    const dtF = this.last ? Math.min(.1, (now - this.last) / 1000) : STEP;
+    this.last = now;
+    const raw = (st - this.lastST) / Math.max(dtF, 1e-3); this.lastST = st;
+    this.sv += (raw - this.sv) * (1 - Math.exp(-dtF * 8));
+    // Pointer position in page space, computed without a layout read.
+    if (!this.sRect) this.sRect = this.scroller.getBoundingClientRect();
+    const pagePtr = this.ptr.active ? { x: this.ptr.cx - this.sRect.left - this.content.offsetLeft, y: this.ptr.cy - this.sRect.top + st } : null;
+    if (performance.now() / 1000 - this.ptr.t > .05) { const k = Math.exp(-dtF * 12); this.ptr.vx *= k; this.ptr.vy *= k; }
+    this.acc += dtF;
+    let n = 0;
+    while (this.acc >= STEP && n < 12) {
+      for (const b of this.bubbles) { b.px = b.x; b.py = b.y; b.pa = b.a; b.pb = b.b; }
+      this.step(STEP, pagePtr);
+      this.acc -= STEP; n++;
+    }
+    if (n === 12) this.acc = 0;
+    const al = this.acc / STEP;
+    for (const b of this.bubbles) {
+      const x = b.px + (b.x - b.px) * al, y = b.py + (b.y - b.py) * al;
+      const [m00, m01, m10, m11] = b.matrix(b.pa + (b.a - b.pa) * al, b.pb + (b.b - b.pb) * al);
+      b.el.style.transform = `translate3d(${(x - b.r).toFixed(2)}px, ${(y - b.r).toFixed(2)}px, 0) matrix(${m00.toFixed(4)}, ${m10.toFixed(4)}, ${m01.toFixed(4)}, ${m11.toFixed(4)}, 0, 0)`;
+    }
+  }
+
+  step(h, ptr) {
+    this.t += h;
+    const t = this.t, B = this.bubbles;
+    const omega = 2 * Math.PI * P.wobbleHz, zeta = P.jelly;
+    const kCush = (180 / P.cushion) ** 2;          // stops a cruising bubble within the cushion depth
+    const cCush = 2 * 0.55 * Math.sqrt(kCush);
+    const swayA = Math.max(-500, Math.min(500, this.sv * P.sway));
+    for (const b of B) {
+      let ax = P.drift * (Math.sin(b.w[0] * t + b.ph[0]) + .6 * Math.sin(b.w[1] * t * 1.7 + b.ph[1]));
+      let ay = P.drift * (Math.cos(b.w[2] * t + b.ph[2]) + .6 * Math.sin(b.w[3] * t * 1.3 + b.ph[3]));
+      ay += swayA;
+      const sp = Math.hypot(b.vx, b.vy);
+      // Speed governor: gentle push up to a minimum, extra drag above cruise. No random kicks.
+      if (sp < P.cruise * .35) { const ux = sp > 1 ? b.vx / sp : Math.cos(b.ph[0]), uy = sp > 1 ? b.vy / sp : Math.sin(b.ph[0]); ax += ux * 30; ay += uy * 30; }
+      const over = Math.max(0, sp - P.cruise) / Math.max(sp, 1);
+      ax -= b.vx * over * 2.2; ay -= b.vy * over * 2.2;
+      b.ta = 0; b.tb = 0;
+      if (ptr) {
+        const R = 190, dx = b.x - ptr.x, dy = b.y - ptr.y, d = Math.hypot(dx, dy);
+        if (d < R + b.r && d > 1) {
+          const f = 1 - Math.max(0, d - b.r * .5) / (R + b.r * .5), f2 = f * f, nx = dx / d, ny = dy / d;
+          ax += nx * P.push * f2; ay += ny * P.push * f2;
+          ax += (this.ptr.vx - b.vx) * P.drag * f2; ay += (this.ptr.vy - b.vy) * P.drag * f2;
+          const e = -P.lean * f2; b.ta += e * (2 * nx * nx - 1); b.tb += e * (2 * nx * ny);
+        }
+      }
+      if (sp > 1) { const e = P.stretch * Math.min(sp / 300, 2), ux = b.vx / sp, uy = b.vy / sp; b.ta += e * (2 * ux * ux - 1); b.tb += e * (2 * ux * uy); }
+      b.vx += ax * h; b.vy += ay * h;
+      const s2 = Math.hypot(b.vx, b.vy); if (s2 > 1100) { b.vx *= 1100 / s2; b.vy *= 1100 / s2; }
+      const damp = Math.exp(-.35 * h); b.vx *= damp; b.vy *= damp;
+      b.x += b.vx * h; b.y += b.vy * h;
+    }
+    // Bubble pairs: soft spring contact, so clusters jostle instead of clicking.
+    for (let i = 0; i < B.length; i++) for (let j = i + 1; j < B.length; j++) {
+      const a = B[i], b = B[j], dx = b.x - a.x, dy = b.y - a.y, d = Math.hypot(dx, dy), md = a.r + b.r;
+      if (d < md && d > .1) {
+        const nx = dx / d, ny = dy / d, o = md - d;
+        const vn = (b.vx - a.vx) * nx + (b.vy - a.vy) * ny;
+        const k = 420, c = 2 * (1 - P.bounce) * Math.sqrt(2 * k);
+        const accel = k * o - (vn < 0 ? c * vn : 0);
+        const dv = accel * h * .5;
+        a.vx -= nx * dv; a.vy -= ny * dv; b.vx += nx * dv; b.vy += ny * dv;
+        const lim = Math.min(a.r, b.r) * .3;
+        if (o > lim) { const p = (o - lim) * .5; a.x -= nx * p; a.y -= ny * p; b.x += nx * p; b.y += ny * p; }
+        if (vn < 0) { a.impact(nx, ny, -vn * h * 14); b.impact(nx, ny, -vn * h * 14); }
+      }
+    }
+    for (const b of B) {
+      // Walls of the page.
+      if (b.x - b.r < 0) { const dv = Math.max(0, -b.vx); b.x = b.r; b.vx = dv * P.bounce; b.impact(1, 0, dv); }
+      else if (b.x + b.r > this.W) { const dv = Math.max(0, b.vx); b.x = this.W - b.r; b.vx = -dv * P.bounce; b.impact(1, 0, dv); }
+      if (b.y - b.r < 0) { const dv = Math.max(0, -b.vy); b.y = b.r; b.vy = dv * P.bounce; b.impact(0, 1, dv); }
+      else if (b.y + b.r > this.H) { const dv = Math.max(0, b.vy); b.y = this.H - b.r; b.vy = -dv * P.bounce; b.impact(0, 1, dv); }
+      for (const z of this.zones) {
+        const cx = Math.max(z.left, Math.min(b.x, z.right)), cy = Math.max(z.top, Math.min(b.y, z.bottom));
+        let dx = b.x - cx, dy = b.y - cy, d = Math.hypot(dx, dy), nx, ny, depth;
+        if (d > .01) { if (d >= b.r) continue; nx = dx / d; ny = dy / d; depth = b.r - d; }
+        else { // centre inside: nearest edge
+          const dl = b.x - z.left, dr = z.right - b.x, dt = b.y - z.top, db = z.bottom - b.y, m = Math.min(dl, dr, dt, db);
+          [nx, ny] = m === dl ? [-1, 0] : m === dr ? [1, 0] : m === dt ? [0, -1] : [0, 1];
+          depth = b.r + m;
+        }
+        const vn = b.vx * nx + b.vy * ny;
+        if (z.frame) { // the picture is the wall: hard, tangent
+          b.x += nx * depth; b.y += ny * depth;
+          if (vn < 0) { b.vx -= (1 + P.bounce) * vn * nx; b.vy -= (1 + P.bounce) * vn * ny; b.impact(nx, ny, -vn); }
+        } else {       // padded zone: decelerate inside the invisible buffer
+          const accel = kCush * depth - cCush * Math.min(0, vn);
+          const dv = accel * h;
+          b.vx += nx * dv; b.vy += ny * dv;
+          if (vn < 0) b.impact(nx, ny, Math.min(dv, -vn) * 1.0);
+        }
+      }
+      // Deformation spring toward its target, then cap by size so a large bubble never bulges far.
+      // Runs BEFORE the hard guarantee, so the guarantee checks the shape that will be drawn.
+      const fa = -omega * omega * (b.a - b.ta) - 2 * zeta * omega * b.va;
+      const fb = -omega * omega * (b.b - b.tb) - 2 * zeta * omega * b.vb;
+      b.va += fa * h; b.vb += fb * h; b.a += b.va * h; b.b += b.vb * h;
+      // sqrt((1+m)/(1-m)) - 1 <= BULGE_PX / r  =>  m <= (q^2 - 1) / (q^2 + 1), q = 1 + BULGE_PX / r
+      const q = 1 + BULGE_PX / b.r, mCap = Math.min(P.maxDeform, (q * q - 1) / (q * q + 1));
+      const mag = Math.hypot(b.a, b.b);
+      if (mag > mCap) { const s = mCap / mag; b.a *= s; b.b *= s; b.va *= .5; b.vb *= .5; }
+      // Hard guarantee: the deformed box never comes within HARD_MARGIN of protected content.
+      let pushed = 0;
+      for (let pass = 0; pass < 3; pass++) {
+        let any = false;
+        for (const z of this.zones) {
+          if (z.frame) continue;
+          const [hx, hy] = b.halfExtents(), I = z.inner, m = HARD_MARGIN;
+          const ox = Math.min(b.x + hx, I.right + m) - Math.max(b.x - hx, I.left - m);
+          const oy = Math.min(b.y + hy, I.bottom + m) - Math.max(b.y - hy, I.top - m);
+          if (ox > 0 && oy > 0) {
+            any = true; pushed = Math.max(pushed, Math.min(ox, oy));
+            if (ox < oy) { const s = b.x < (I.left + I.right) / 2 ? -1 : 1; b.x += s * ox; if (b.vx * s < 0) { b.impact(1, 0, Math.abs(b.vx)); b.vx = -b.vx * .4; } }
+            else { const s = b.y < (I.top + I.bottom) / 2 ? -1 : 1; b.y += s * oy; if (b.vy * s < 0) { b.impact(0, 1, Math.abs(b.vy)); b.vy = -b.vy * .4; } }
+          }
+        }
+        if (!any) break;
+      }
+      // Wedge rescue: a bubble the guarantee keeps having to shove, without ever getting clear,
+      // has no legal spot here (too big for the gap between a picture and its caption).
+      b.wedge = pushed > 1 ? (b.wedge || 0) + 1 : 0;
+      if (b.wedge > 24) { this.relocate(b); b.wedge = 0; }
+    }
+  }
+
+  relocate(b) {
+    for (let i = 0; i < 60; i++) {
+      const x = b.r + 40 + Math.random() * (this.W - 2 * b.r - 80), y = b.r + 40 + Math.random() * (this.H - 2 * b.r - 80);
+      const pad = b.r + BULGE_PX + HARD_MARGIN;
+      if (this.zones.some(z => x > z.left - pad && x < z.right + pad && y > z.top - pad && y < z.bottom + pad)) continue;
+      b.x = b.px = x; b.y = b.py = y; b.vx = (Math.random() - .5) * 60; b.vy = (Math.random() - .5) * 60;
+      b.a = b.b = b.va = b.vb = b.pa = b.pb = 0;
+      b.el.style.transition = 'none'; b.el.style.opacity = '0'; void b.el.offsetWidth;
+      b.el.style.transition = 'opacity 300ms ease'; b.el.style.opacity = '';
+      return;
+    }
+  }
+}
+
+// ───────────── wiring ─────────────
+const oldW = new OldWorld(document.getElementById('oldScroller'));
+const newW = new NewWorld(document.getElementById('newScroller'));
+let frames = 0, fpsT = performance.now();
+function loop(now) {
+  oldW.frame(); newW.frame(now);
+  frames++; if (now - fpsT > 1000) { document.getElementById('fps').textContent = `${frames} fps`; frames = 0; fpsT = now; }
+  requestAnimationFrame(loop);
+}
+requestAnimationFrame(loop);
+
+const linked = document.getElementById('linked');
+let syncing = null;
+for (const [a, b] of [[oldW.scroller, newW.scroller], [newW.scroller, oldW.scroller]]) {
+  a.addEventListener('scroll', () => {
+    if (!linked.checked || syncing === b) return;
+    syncing = a; b.scrollTop = a.scrollTop; requestAnimationFrame(() => { syncing = null; });
+  }, { passive: true });
+}
+window.addEventListener('resize', () => { newW.sRect = null; oldW.reset(); newW.remeasure(); });
+
+let autoTimer = null;
+document.getElementById('auto').onclick = (e) => {
+  if (autoTimer) { clearInterval(autoTimer); autoTimer = null; e.target.textContent = 'Auto-scroll demo'; return; }
+  e.target.textContent = 'Stop auto-scroll';
+  const linkedWas = linked.checked; linked.checked = false; // drive both with the browser's own smooth scroll
+  let dir = 1;
+  const go = () => {
+    for (const s of [oldW.scroller, newW.scroller]) {
+      const max = s.scrollHeight - s.clientHeight;
+      if (s.scrollTop >= max - 5) dir = -1; else if (s.scrollTop <= 5) dir = 1;
+    }
+    for (const s of [oldW.scroller, newW.scroller]) s.scrollBy({ top: dir * 420, behavior: 'smooth' });
+  };
+  go(); autoTimer = setInterval(go, 900);
+  e.target.addEventListener('click', () => { linked.checked = linkedWas; }, { once: true });
+};
+document.getElementById('reset').onclick = () => { oldW.reset(); newW.reset(); };
+document.getElementById('burst').onclick = () => { oldW.burst(); newW.burst(); };
+
+const sl = document.getElementById('sliders');
+function renderSliders() {
+  sl.innerHTML = '';
+  for (const [key, label, min, max, step] of SLIDERS) {
+    const l = document.createElement('label');
+    l.innerHTML = `<span>${label}</span><output>${P[key]}</output><input type="range" min="${min}" max="${max}" step="${step}" value="${P[key]}">`;
+    const inp = l.querySelector('input'), out = l.querySelector('output');
+    inp.oninput = () => { P[key] = parseFloat(inp.value); out.textContent = inp.value; };
+    sl.appendChild(l);
+  }
+}
+renderSliders();
+document.getElementById('defaults').onclick = () => { Object.assign(P, DEFAULTS); renderSliders(); };
+document.getElementById('copy').onclick = async () => {
+  const txt = JSON.stringify(P, null, 1);
+  document.getElementById('settingsOut').textContent = txt;
+  try { await navigator.clipboard.writeText(txt); } catch {}
+};
+window.__lab = { oldW, newW, P };
+</script>
+</body>
+</html>
