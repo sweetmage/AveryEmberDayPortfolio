@@ -29,7 +29,7 @@ When this logbook exceeds ~1000 lines, split it:
 - Measured, before -> after: scroll lag 300px -> 0; layout reads per scroll event 50 -> 0.3; jerk p99 2.90 -> under 0.4; 120Hz/60Hz speed ratio 2.00 -> 1.0001; engine cost 0.13 -> 0.20ms per frame.
 - Found and fixed by instrumenting: on Contact @1440 the relocation search demanded the full soft padding and found no free point, so wedged bubbles stayed on the form. Relocation now tests the hard rule and fires at once; 0 overlapping frames in 6x600 frames after.
 - Pre-existing, recorded in TODO: two WebKit specs fail on SOL at 9f9f960 too; the gallery filter-diagonal tests' fixed 60ms wait races a 55-79ms view-transition start with or without the engine.
-- Plan review: OpenCode (Codex at usage limit), PASS, findings applied. Route: main agent only (tracker missing).
+- Plan review: OpenCode (Codex at usage limit), PASS, findings applied. Final signoff: OpenCode `gpt-6-luna` over 9f9f960..8dacf4e, PASS; nits applied (counts, wording, a pointer flick / squish / touch release / hero-blob test). Route: main agent only (tracker missing).
 
 ---
 

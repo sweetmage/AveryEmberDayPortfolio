@@ -252,14 +252,14 @@ The anti-grep shortcut - open these first, by task:
 
 ## Testing Model
 
-One Playwright suite, five kinds of test, **90 total**:
+One Playwright suite, **251 tests in 13 `*.spec.js` files** (`--list`, 2026-10-16; recount, it goes stale):
 
 | Kind | File | What it proves |
 |---|---|---|
 | Smoke | `smoke-next.spec.js`, `smoke-interaction.spec.js` | Each route loads without console errors; tab switch and lightbox work. |
 | Visual gate | `visual-baseline.spec.js` | 40 snapshots = 5 pages x 4 breakpoints (360/768/1024/1440) x 2 themes. A real compare gate, not capture-only. |
 | Bubble engine | `bubbles-exclusion.spec.js` | Motion-enabled - the visual gate runs under `prefers-reduced-motion`, where the engine creates nothing. Zones, zero overlap, parked-bubble runs, the picture-is-the-wall rule. The Contact @ 1440px flake was fixed in Entry 131. |
-| Bubble motion | `bubbles-motion.spec.js` | Scroll lockstep (also on webkit-mobile), layout reads per scroll event, time-based jerk while scrolling, and 60Hz vs 120Hz travel. Thresholds come from the old engine's measured baseline in `docs/plans/fluid-squishy-bubbles/artifacts/`. Set `BUBBLE_PROBE_OUT` to write the numbers. |
+| Bubble motion | `bubbles-motion.spec.js` | Scroll lockstep (also on webkit-mobile), layout reads per scroll event, time-based jerk while scrolling, 60Hz vs 120Hz travel, and pointer flick, squish, touch release and hero-blob motion. Thresholds come from the old engine's measured baseline in `docs/plans/fluid-squishy-bubbles/artifacts/`. Set `BUBBLE_PROBE_OUT` to write the numbers. |
 | Gallery mockups | `gallery-mockups.spec.js` | Two mockups per piece, files and sizes against the manifest, collapsed heights pinned to `20860ef`, and both mockups decoded at the expand transition's first frame (CDP latency, chromium; it fails with the warm-up removed). Also runs on webkit-mobile. |
 | Gallery expand | `gallery-expand.spec.js` | 17 specs. The other motion-enabled file. Covers the expand interaction, which the visual gate cannot see at all: it only ever captures the collapsed grid, under reduced motion. |
 | Set strips | `mistrust-sets.spec.js` | Holds the committed `set-N.webp` to its Figma export. Covers a blind spot: the app renders its own CSS mosaic from individual slides, so a broken strip is invisible to every other test. |

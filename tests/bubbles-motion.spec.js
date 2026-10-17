@@ -240,3 +240,53 @@ test('the same simulated second covers the same ground at 60Hz and 120Hz', async
   expect(at120 / at60).toBeGreaterThanOrEqual(0.95);
   expect(at120 / at60).toBeLessThanOrEqual(1.05);
 });
+
+/* Responsiveness, which the approved feel depends on (feel lab, 2026-10-16): a flick of the pointer
+   carries a bubble along and deforms it, a lifted finger stops pushing (the old tracker kept the
+   last touch point repelling forever), and the hero blobs still move and render through the
+   deformation matrix. */
+test('a pointer flick carries and squishes a bubble; a lifted finger stops pushing', async ({ page }, testInfo) => {
+  test.skip(testInfo.project.name !== 'chromium', 'synthetic pointer sweep, chromium only');
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.goto(`${BASE_URL}/`, { waitUntil: 'networkidle' });
+  await waitForEngine(page, 60);
+
+  const r = await page.evaluate(async () => {
+    const e = window.__bubbleEngine;
+    const frame = () => new Promise((res) => requestAnimationFrame(() => res()));
+    const b = e.globalLayer.bubbles.filter((x) => !x._parked).sort((p, q) => q.radius - p.radius)[0];
+    const speed0 = Math.hypot(b.vx, b.vy);
+    let peakAlong = -Infinity, peakDeform = 0;
+    // Sweep left to right through the bubble's centre at ~1200px/s (20px per frame at 60fps).
+    for (let i = 0; i < 14; i++) {
+      const cx = b.x - 140 + i * 20, cy = b.y - window.scrollY;
+      window.dispatchEvent(new PointerEvent('pointermove', { clientX: cx, clientY: cy, pointerType: 'mouse' }));
+      await frame();
+      peakAlong = Math.max(peakAlong, b.vx);
+      peakDeform = Math.max(peakDeform, Math.hypot(b.a, b.b));
+    }
+    const activeDuring = e.pointer.active;
+    window.dispatchEvent(new TouchEvent('touchstart', { touches: [new Touch({ identifier: 1, target: document.body, clientX: 10, clientY: 10 })] }));
+    const activeOnTouch = e.pointer.active;
+    window.dispatchEvent(new TouchEvent('touchend', { touches: [] }));
+
+    // Hero blobs: still moving, rendered through the deformation matrix.
+    const blobs = e.heroBlobLayer.blobs;
+    const before = blobs.map((x) => [x.x, x.y]);
+    for (let i = 0; i < 60; i++) await frame();
+    const moved = blobs.filter((x, k) => Math.hypot(x.x - before[k][0], x.y - before[k][1]) > 1).length;
+    return {
+      speed0, peakAlong, peakDeform, activeDuring, activeOnTouch, activeAfterLift: e.pointer.active,
+      blobs: blobs.length, blobsMoved: moved, blobMatrix: blobs.every((x) => x.el.style.transform.includes('matrix(')),
+    };
+  });
+
+  expect(r.activeDuring).toBe(true);
+  expect(r.peakAlong, 'the flick did not carry the bubble along').toBeGreaterThan(150);
+  expect(r.peakDeform, 'the bubble did not deform under the flick').toBeGreaterThan(0.03);
+  expect(r.activeOnTouch).toBe(true);
+  expect(r.activeAfterLift, 'a lifted finger kept pushing').toBe(false);
+  expect(r.blobs).toBeGreaterThan(0);
+  expect(r.blobsMoved).toBeGreaterThan(0);
+  expect(r.blobMatrix).toBe(true);
+});

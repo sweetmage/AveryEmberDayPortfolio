@@ -88,7 +88,7 @@ measurements, and the "before" must be captured on unchanged engine code.
 
 ### Stage 2 - Engine rework
 
-**Status:** Complete (pending Final signoff). Plan review PASS (OpenCode, `opencode-go/deepseek-v4.1-flash`, frozen 50504e9;
+**Status:** Complete. Final signoff PASS (OpenCode, `opencode-go/gpt-6-luna`, frozen 8dacf4e, base 9f9f960, round 1 of 2); its three nits applied in the follow-up commit (architecture test count, layer-height wording, an automated pointer/squish/touch/hero-blob test). Plan review PASS (OpenCode, `opencode-go/deepseek-v4.1-flash`, frozen 50504e9;
 Codex was at its usage limit). Its eight findings and the nits are applied below.
 **Goal:** Port the approved lab model into the site engine and meet the pass marks.
 **Forcing reason for the boundary:** reviewer check (milestone Final signoff) and the owner gate
@@ -107,7 +107,7 @@ The nine changes, as approved in chat on 2026-10-16:
 9. Hero blobs get the fixed-rate clock, drift currents and jelly squish.
 
 **Phases:**
-- [x] 2.1 Page-space global layer (absolute, sized from the body's own height so it cannot feed
+- [x] 2.1 Page-space global layer (absolute, sized from `<html>`'s box height so it cannot feed
   its own size, `overflow: clip`), zones in page space with fixed/sticky chrome re-read in
   viewport space each frame, no rect reads in scroll handlers, `ResizeObserver` plus the existing
   250ms periodic refresh.
@@ -220,7 +220,8 @@ Verification:
 |---|---|---|
 | 0 + 1 | 70985ab (lab, probe, baseline) | pushed |
 | 0 approval | 50504e9 | pushed |
-| 2 | (this commit) | pushed |
+| 2 | 8dacf4e | pushed |
+| signoff nits | (this commit) | pushed |
 
 ## Open risks
 
@@ -235,5 +236,5 @@ Verification:
 - [x] Pass marks met, evidence in artifacts
 - [x] Full suite green on chromium and webkit-mobile, except two WebKit specs that fail at the base commit too
 - [x] Engine copies identical
-- [ ] Final signoff PASS
+- [x] Final signoff PASS
 - [ ] User reviewed via local link; production push is a separate yes
