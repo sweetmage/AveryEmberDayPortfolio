@@ -9,14 +9,23 @@ const BASE_URL = 'http://localhost:4322';
  * Motion quality of the bubble engine: does it move WITH the page, stay smooth while the page
  * scrolls, and run at the same speed on every display?
  *
- * Written first as a probe (shxdowloop 2026-10-16, Stage 1) and run against the unchanged engine
+ * Written first as a probe (shxdowloop 2026-10-16, Stage 1) and run against the previous engine
  * at 9f9f960 to record the "before" numbers in
- * docs/plans/fluid-squishy-bubbles/artifacts/baseline.json. Set BUBBLE_PROBE_OUT to a file path to
- * write the measurements for the current engine.
+ * docs/plans/fluid-squishy-bubbles/artifacts/baseline.json; the thresholds below come from that
+ * baseline and the plan's pass marks. Set BUBBLE_PROBE_OUT to a file path to write the
+ * measurements for the current engine (chromium project only).
+ *
+ *   measure                                   before (9f9f960)   required now
+ *   lag behind a 300px scroll, engine paused        300px             <= 0.5px
+ *   layout reads per scroll event                    49.5              <= 1
+ *   page-space jerk p99 while scrolling              0.51px            <= 1.0px
+ *   travel per simulated second, 120Hz / 60Hz        2.00              0.95 to 1.05
  *
  * Every measurement reads the DOM (`.brand-bubbles-global .brand-bubble`), not engine internals,
- * so the same probe measures both engines. The only engine handles used are the ones the old and
- * new engines share: `running`, `rAF`, and `destroy()`.
+ * so the same probe measures both engines. Engine handles used: `running` and `rAF` (pause), and
+ * `_last`, the timestamp of the engine's last frame, which the frame-rate test continues from. That
+ * test replaces requestAnimationFrame with a synthetic clock, so the engine's clock must be the
+ * timestamp it is handed, never performance.now().
  *
  * Why "the engine is paused" is the lag measurement: the browser scrolls the page on its
  * compositor thread before the main thread runs the next animation frame. Whatever the screen
@@ -25,9 +34,9 @@ const BASE_URL = 'http://localhost:4322';
  */
 
 const probe = {};
-test.afterAll(() => {
+test.afterAll(({}, testInfo) => {
   const out = process.env.BUBBLE_PROBE_OUT;
-  if (!out) return;
+  if (!out || testInfo.project.name !== 'chromium') return;
   fs.mkdirSync(path.dirname(out), { recursive: true });
   fs.writeFileSync(out, JSON.stringify(probe, null, 2) + '\n');
 });
@@ -49,10 +58,16 @@ async function waitForEngine(page, settleFrames = 120) {
   }, settleFrames);
 }
 
-test('global bubbles move with the page before the engine runs a frame', async ({ page }) => {
-  await page.setViewportSize({ width: 1440, height: 900 });
+/* Runs in BOTH projects: on webkit-mobile (iPhone 13) as well, because the page-space layer is a
+   layout change and AGENTS.md is explicit that a WebKit layout bug does not reproduce in Chromium. */
+test('global bubbles move with the page before the engine runs a frame', async ({ page }, testInfo) => {
+  if (testInfo.project.name === 'chromium') await page.setViewportSize({ width: 1440, height: 900 });
   await page.goto(`${BASE_URL}/portfolio/`, { waitUntil: 'networkidle' });
-  await waitForEngine(page);
+  /* Playwright's WebKit on Windows renders this page at ~4fps with EITHER engine (measured
+     2026-10-16: 4fps for 9f9f960 and for this engine, 62fps with reduced motion, so it is the
+     software renderer, not the physics). A 120-frame settle would take 30s there; this test pauses
+     the engine before measuring, so a few frames are enough. */
+  await waitForEngine(page, testInfo.project.name === 'chromium' ? 120 : 3);
 
   const r = await page.evaluate(() => {
     const e = window.__bubbleEngine;
@@ -70,9 +85,17 @@ test('global bubbles move with the page before the engine runs a frame', async (
   });
   probe.scrollLockstep = r;
   expect(r.scrolled).toBeGreaterThan(250);
+  expect(r.meanLagPx, 'bubbles stayed put on screen while the page scrolled under them').toBeLessThanOrEqual(0.5);
+  // The layer must not stretch the page it lives on.
+  const stretch = await page.evaluate(() => {
+    const layer = document.querySelector('.brand-bubbles-global');
+    return { layer: parseFloat(layer.style.height), doc: document.documentElement.scrollHeight };
+  });
+  expect(stretch.layer).toBeLessThanOrEqual(stretch.doc + 1);
 });
 
-test('layout reads caused by scroll events', async ({ page }) => {
+test('layout reads caused by scroll events', async ({ page }, testInfo) => {
+  test.skip(testInfo.project.name !== 'chromium', 'engine-cost measurement, chromium only');
   await page.addInitScript(() => {
     const orig = Element.prototype.getBoundingClientRect;
     window.__gbcr = 0;
@@ -100,9 +123,11 @@ test('layout reads caused by scroll events', async ({ page }) => {
   });
   probe.layoutReads = r;
   expect(r.scrollEvents).toBeGreaterThan(30);
+  expect(r.readsPerScrollEvent).toBeLessThanOrEqual(1);
 });
 
-test('content-relative smoothness while the page scrolls', async ({ page }) => {
+test('content-relative smoothness while the page scrolls', async ({ page }, testInfo) => {
+  test.skip(testInfo.project.name !== 'chromium', 'engine-cost measurement, chromium only');
   await page.setViewportSize({ width: 1440, height: 900 });
   await page.goto(`${BASE_URL}/portfolio/`, { waitUntil: 'networkidle' });
   await waitForEngine(page);
@@ -111,9 +136,19 @@ test('content-relative smoothness while the page scrolls', async ({ page }) => {
     const frame = () => new Promise((res) => requestAnimationFrame((t) => res(t)));
     const els = [...document.querySelectorAll('.brand-bubbles-global .brand-bubble')];
     const tracks = els.map(() => []);
+    /* Long animation frames CAUSED BY THE ENGINE: frames over 50ms in which the engine's own script
+       ran for 50ms or more itself: a real long task. A bare count also picks up frames starved by
+       whatever else the machine is doing (a --repeat-each run under full load logged one with the
+       engine idle in it), which is not what the pass mark is about. */
     let long = 0;
     try {
-      new PerformanceObserver((l) => { long += l.getEntries().length; }).observe({ type: 'long-animation-frame', buffered: false });
+      new PerformanceObserver((l) => {
+        for (const entry of l.getEntries()) {
+          const mine = (entry.scripts || []).filter((s) => (s.sourceURL || '').includes('bubbles.js'))
+            .reduce((sum, s) => sum + s.duration, 0);
+          if (mine >= 50) long++;
+        }
+      }).observe({ type: 'long-animation-frame', buffered: false });
     } catch { /* not supported: reported as -1 below */ long = -1; }
     const N = 180;
     for (let i = 0; i < N; i++) {
@@ -125,13 +160,20 @@ test('content-relative smoothness while the page scrolls', async ({ page }) => {
         tracks[k].push({ t, x: b.left + b.width / 2, y: b.top + b.height / 2 + window.scrollY, o: parseFloat(getComputedStyle(el).opacity) });
       });
     }
-    // Second difference of page-space position, per frame: an abrupt change of velocity.
+    /* Change of page-space velocity between consecutive frames, using the real frame timestamps,
+       expressed in px/frame^2 at 60fps: |v2 - v1| / 60 with v in px/s. At a steady 60fps this is
+       exactly the plain second difference of position. It has to be time-based: under load frames
+       arrive unevenly, and a bubble that correctly travels further in a longer frame is not a
+       jerk (the first full-suite run of the per-frame version read 2.06 for that reason). */
     const jerks = [];
     for (const tr of tracks) {
       for (let i = 2; i < tr.length; i++) {
         if (tr[i].o < 0.95 || tr[i - 1].o < 0.95 || tr[i - 2].o < 0.95) continue; // relocation fades
-        const ax = tr[i].x - 2 * tr[i - 1].x + tr[i - 2].x, ay = tr[i].y - 2 * tr[i - 1].y + tr[i - 2].y;
-        jerks.push(Math.hypot(ax, ay));
+        const d1 = (tr[i - 1].t - tr[i - 2].t) / 1000, d2 = (tr[i].t - tr[i - 1].t) / 1000;
+        if (!(d1 > 0 && d2 > 0)) continue;
+        const ax = (tr[i].x - tr[i - 1].x) / d2 - (tr[i - 1].x - tr[i - 2].x) / d1;
+        const ay = (tr[i].y - tr[i - 1].y) / d2 - (tr[i - 1].y - tr[i - 2].y) / d1;
+        jerks.push(Math.hypot(ax, ay) / 60);
       }
     }
     jerks.sort((a, b) => a - b);
@@ -141,31 +183,38 @@ test('content-relative smoothness while the page scrolls', async ({ page }) => {
   });
   probe.scrollSmoothness = r;
   expect(r.samples).toBeGreaterThan(100);
+  expect(r.p99).toBeLessThanOrEqual(1.0);
+  if (r.longAnimationFrames >= 0) expect(r.longAnimationFrames).toBe(0);
 });
 
 /**
  * Same seeded page, animation frames driven at 60Hz and at 120Hz with synthetic timestamps.
  * A frame-rate-independent engine covers the same ground per simulated second either way.
+ *
+ * The synthetic clock is installed BEFORE the page loads, so the engine never sees a real frame and
+ * both runs start from the same seeded state. (Taking the clock over after a few real frames made
+ * the two runs start from different states under load: 0.93 and 1.08 in a --repeat-each run.)
+ * The engine's first frame comes from its constructor; every later frame comes from `tick()`.
  */
+const SYNTHETIC_RAF = `(() => {
+  let queue = [];
+  window.requestAnimationFrame = (cb) => { queue.push(cb); return queue.length; };
+  window.cancelAnimationFrame = () => {};
+  window.__tickFrame = (t) => { const q = queue; queue = []; for (const cb of q) cb(t); };
+})();`;
+
 async function travelPerSecond(browser, hz) {
   const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 } });
   const page = await ctx.newPage();
   await page.addInitScript(SEED_RANDOM);
+  await page.addInitScript(SYNTHETIC_RAF);
   await page.goto(`${BASE_URL}/portfolio/`, { waitUntil: 'networkidle' });
-  await waitForEngine(page, 30);
+  // Polled on a timer: the page's own requestAnimationFrame is the synthetic one now.
+  await page.waitForFunction(() => typeof window.__bubbleEngine !== 'undefined', null, { timeout: 15000, polling: 100 });
   const r = await page.evaluate(async (hz) => {
     const e = window.__bubbleEngine;
-    e.running = false;
-    if (e.rAF) cancelAnimationFrame(e.rAF);
-    await new Promise((res) => setTimeout(res, 50));
-    // Take over the frame clock: queued callbacks run only when we tick.
-    let queue = [];
-    window.requestAnimationFrame = (cb) => { queue.push(cb); return queue.length; };
-    window.cancelAnimationFrame = () => {};
-    let t = performance.now();
-    const tick = () => { t += 1000 / hz; const q = queue; queue = []; for (const cb of q) cb(t); };
-    e.running = true;
-    e._loop(t);
+    let t = e._last;
+    const tick = () => { t += 1000 / hz; window.__tickFrame(t); };
     const els = [...document.querySelectorAll('.brand-bubbles-global .brand-bubble')];
     const pos = () => els.map((el) => { const b = el.getBoundingClientRect(); return [b.left + b.width / 2, b.top + b.height / 2]; });
     let p = pos(), dist = 0;
@@ -182,9 +231,12 @@ async function travelPerSecond(browser, hz) {
   return r;
 }
 
-test('the same simulated second covers the same ground at 60Hz and 120Hz', async ({ browser }) => {
+test('the same simulated second covers the same ground at 60Hz and 120Hz', async ({ browser }, testInfo) => {
+  test.skip(testInfo.project.name !== 'chromium', 'engine-cost measurement, chromium only');
   const at60 = await travelPerSecond(browser, 60);
   const at120 = await travelPerSecond(browser, 120);
   probe.frameRate = { pxPerSecondAt60: at60, pxPerSecondAt120: at120, ratio120to60: at120 / at60 };
   expect(at60).toBeGreaterThan(0);
+  expect(at120 / at60).toBeGreaterThanOrEqual(0.95);
+  expect(at120 / at60).toBeLessThanOrEqual(1.05);
 });

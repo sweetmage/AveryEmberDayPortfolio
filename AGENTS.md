@@ -99,7 +99,7 @@ Do NOT use these in `bash` tool calls (they are PowerShell-specific and often fa
 
 `npm run serve` — serves the repo root on :8080 (**legacy static site only** — not the Next.js app)
 
-`npm test` / `npx playwright test` — smoke tests + a **compare-based** visual regression gate, plus bubble-engine coverage, gallery expand coverage, Mistrust set-strip and mosaic checks, project tiles, focus rings and the WebKit nav guard (**198 tests in 11 `*.spec.js` files**, counted by `--list` on 2026-10-06). **Re-run `--list` rather than trusting this number** — it has read 73, 90, 131, 151, 171, 184 and 190, and was stale every time. Playwright collects **`*.spec.js` only** (`testMatch` in `playwright.config.js`, 2026-10-06). `tests/google-docs.test.js` is a `node:test` unit file: run it with **`npm run test:docs`**, which skips the three file-dependent `resolveDoc` cases (the enforcement cases always run) when the user-owned, gitignored `docs/sync/google-docs.json` is absent. Before that change, a bare run died at collection on any checkout without that file. A bare run now works everywhere, but **it is only green on Windows**: the 40 visual baselines are `chromium-win32`, so on any other host the visual spec fails and writes untracked platform PNGs (a second run then compares against those and goes green, so **delete any non-`win32` PNG it leaves** in `tests/visual-baseline.spec.js-snapshots/`). Elsewhere, pass the spec files without `visual-baseline.spec.js`, and regenerate baselines on SOL (`docs/visual-gate.md`, Trap 7).
+`npm test` / `npx playwright test` — smoke tests + a **compare-based** visual regression gate, plus bubble-engine coverage (zones, and since 2026-10-16 motion: scroll lockstep, layout reads, jerk, frame-rate independence), gallery expand coverage, Mistrust set-strip and mosaic checks, project tiles, focus rings and the WebKit nav guard (**249 tests in 13 `*.spec.js` files**, counted by `--list` on 2026-10-16). **Re-run `--list` rather than trusting this number** — it has read 73, 90, 131, 151, 171, 184, 190 and 198, and was stale every time. Playwright collects **`*.spec.js` only** (`testMatch` in `playwright.config.js`, 2026-10-06). `tests/google-docs.test.js` is a `node:test` unit file: run it with **`npm run test:docs`**, which skips the three file-dependent `resolveDoc` cases (the enforcement cases always run) when the user-owned, gitignored `docs/sync/google-docs.json` is absent. Before that change, a bare run died at collection on any checkout without that file. A bare run now works everywhere, but **it is only green on Windows**: the 40 visual baselines are `chromium-win32`, so on any other host the visual spec fails and writes untracked platform PNGs (a second run then compares against those and goes green, so **delete any non-`win32` PNG it leaves** in `tests/visual-baseline.spec.js-snapshots/`). Elsewhere, pass the spec files without `visual-baseline.spec.js`, and regenerate baselines on SOL (`docs/visual-gate.md`, Trap 7).
 
 > **The suite tests the Next.js app and nothing else.** `tests/smoke-interaction.spec.js` and the
 > repo-root `webServer` on :4321 that existed only to feed it were both deleted 2026-08-09 (Entry
@@ -149,6 +149,24 @@ Do NOT use these in `bash` tool calls (they are PowerShell-specific and often fa
 >
 > **If a bubble assertion ever goes red again: measure before theorising, and do not raise a
 > tolerance.** Three times now the cause has been somewhere other than the obvious suspect. Twice the cause was somewhere else entirely (Entries 090, 115).
+
+> **The bubble engine is PAGE-SPACE and TIME-BASED (rebuilt 2026-10-16, LOGBOOK Entry 166).**
+> `.brand-bubbles-global` is `position: absolute` and as tall as the document, so the browser scrolls
+> bubbles with the content. **Do not put it back to `position: fixed`:** a fixed layer has to be moved
+> back by `-scrollY` every frame, and the compositor scrolls first, so bubbles lag each scroll by its
+> full distance and then snap — that was the jitter. The layer's height is read from `<html>`'s box,
+> never `scrollHeight` (which the layer itself would stretch). Zones are stored in page coordinates and
+> refreshed on a 250ms timer and on resize, never per scroll event; only elements inside fixed or sticky
+> chrome are re-read each frame. The physics clock is the timestamp handed to `_loop(t)`, never
+> `performance.now()`, so the engine runs the same speed at 60Hz and 120Hz and tests can drive it.
+> `tests/bubbles-motion.spec.js` guards all four of those with numbers measured against the old engine
+> (`docs/plans/fluid-squishy-bubbles/artifacts/`). The hard guarantee is that the deformed bubble's
+> box stays 4px clear of every padded zone's ELEMENT; the 24px padding is now a soft cushion.
+>
+> **Playwright's WebKit on Windows renders the site at ~4fps with the bubbles on, with the old engine
+> and the new one alike** (62fps under reduced motion), so a WebKit test that waits on many animation
+> frames will time out on SOL. Two WebKit specs, `focus-ring.spec.js:124` and
+> `gallery-mockups.spec.js:119`, fail on SOL at the base commit `9f9f960` as well (checked 2026-10-16).
 
 > **The two motion-enabled specs are the only coverage for anything that moves.** `bubbles-exclusion.spec.js`
 > and `gallery-expand.spec.js` both run `test.describe.configure({ mode: 'serial' })`, and both must keep
@@ -249,7 +267,7 @@ In Node.js scripts, load with `import 'dotenv/config'` (or `require('dotenv').co
 - CSS pipeline: `app.css` → compiled `style.css` (the only stylesheet pages link). `brand.css` (tokens, keyframes, component visuals) is imported into the `components` cascade layer so utilities can override it — **never re-add a separate `brand.css` <link>**
 - `src/css/tailwind-preset.css` bridges `--brand-*` tokens to Tailwind theme names (`text-text`, `bg-surface-1`, `border-line`, `text-accent`, …); `src/css/site.css` holds only reset, base typography, logo theme-swaps, and `#return-to-top`
 - `dark:` variant is keyed to `[data-theme="dark"]` (set by the inline head script + theme toggle), not `prefers-color-scheme`
-- Physics engine: `scripts/bubbles.js` (DOM-based). Exclusion zones come from `DEFAULT_EXCLUSIONS` (includes the semantic `.bubble-exclude` marker class), `HOME_EXCLUSIONS` (index-only), and per-page `data-exclusions` on `.brand-bubbles-global`. Scrolling stirs the global-layer bubbles (`SCROLL_STIR`). `window.__bubbleEngine` is exposed for testing
+- Physics engine: `scripts/bubbles.js` (DOM-based). Exclusion zones come from `DEFAULT_EXCLUSIONS` (includes the semantic `.bubble-exclude` marker class), `HOME_EXCLUSIONS` (index-only), and per-page `data-exclusions` on `.brand-bubbles-global`. Physics runs at a fixed 120Hz on the rAF timestamp with interpolated rendering; squish is an oriented, area-preserving deformation spring; scrolling sways bubbles through a smoothed scroll velocity; a moving pointer carries bubbles with it. Tuning lives in one `TUNING` block (the approved feel-lab defaults, `docs/mockups/bubble-feel-lab.html`). `window.__bubbleEngine` is exposed for testing
 - **Two bubble systems, two avoidance rules.** The `.brand-bubble` physics layers honour the full exclusion list. The five `.brand-hero-blob` shapes are the hero's ambient colour wash and deliberately do **not** — they roam the whole hero. Their one constraint is `heroContentRects()`: the logo plus the *Range-measured glyph extents* of `.hero-name`/`.hero-sub`, which steer blobs off the hero copy via a soft force (`BLOB_ZONE_PUSH`). Measure the ink, not the element box — those headings are full-width blocks with centred text, so their boxes span the hero and excluding them would evict blobs from the entire band
 - `scripts/bubbles.js` is **duplicated** to `public/scripts/bubbles.js`, which is the copy the Next export actually serves. Edit the former and copy it to the latter, or the built site silently keeps the old behaviour
 - Nav: **Home / Portfolio / Contact** since 2026-10-05, when Projects and Gallery merged into one `/portfolio/` page whose project tiles link to `/portfolio/history-of-mistrust/` and `/portfolio/brand/` (the old URLs 301 there; see `netlify.toml`). Before that: **Home / Projects / Gallery / Contact** (nav restructure 2026-07-14, Entry 075 — no submenu, Hire Me CTA, or hamburger). Contact was re-enabled in nav + footer 2026-07-27 (Entry 106); the Netlify Forms toggle is still off, so the form renders but does not capture submissions. **The nav had no spare horizontal room at 360px with four labels** — fitting the fourth took the *lower* bound of every nav clamp (link padding 6px, logo 7px, gap 2px) plus a 44px cap on `#theme-toggle` below 480px. A fifth label does not fit without a drawer. Re-measure at 360px before adding one
@@ -382,9 +400,9 @@ full padded zone at every width.
   per-selector loop used to push a rect for each. Harmless while every zone was the full padded rect;
   fatal once one element can yield two *different* rects, because the later pass silently restores
   the padded one.
-- **Frame zones eject in one step** rather than the 8px/frame glide. The glide is right for a padded
-  zone (it plays out inside the buffer, where nothing is drawn); on a frame zone it plays out on top
-  of the artwork.
+- **Frame zones are hard and tangent; padded zones are a cushion.** A bubble decelerates inside a
+  padded zone's 24px buffer, where nothing is drawn; against a picture there is no buffer, so contact
+  is an immediate bounce off the visible edge.
 - **At 390px a bubble centre CAN enter the picture, and that is geometry.** The card is 342px holding
   a 308px picture, so the open band is ~17px a side — narrower than a 28px bubble, which cannot pass
   without overlapping. Same impossibility as the Contact form at 768px. The centre-never-crosses spec
@@ -394,10 +412,17 @@ full padded zone at every width.
 > paragraph and the Contact form overlap by 8px at 1440px; the Projects page registers 81 zones at
 > 768px. Any change to zone geometry, `ZONE_PADDING`, or the escape logic has to hold up where two
 > zones intersect, because there the "push the bubble to the nearest free edge" instinct has no free
-> edge to push to. That is what `NO_PROGRESS_FRAMES` is for (Entry 131).
+> edge to push to. That is what the wedge rescue is for. Since the 2026-10-16 rebuild a step that
+> cannot produce a legal position relocates the bubble AT ONCE (no grace period: a 200ms grace was
+> enough to fail Contact @1440 in a full run), as do `WEDGE_STEPS` of opposing corrections or
+> `SHOVE_STEPS` of continuous shoving. Relocation spots are tested against the hard rule itself
+> (`_isLegal`), preferring spots outside the soft padding; a bubble with no legal spot anywhere
+> stays hidden and retries every 0.5s. Contact @1440 is almost entirely zone: a free-space test that
+> demanded the full padding found nothing there, so bubbles stayed wedged (measured 2026-10-16).
+> This replaced `NO_PROGRESS_FRAMES` (Entry 131).
 
 > **Testing bubbles: two traps, both hit on 2026-08-07.**
-> **Bubble coordinates are DOCUMENT-space** — `render(scrollY)` subtracts the scroll on the way out.
+> **Bubble coordinates are DOCUMENT-space** — the global layer is the document itself.
 > Comparing `bubble.x/y` against raw `getBoundingClientRect()` values is nonsense the moment the page
 > is scrolled; lift the rects by `window.scrollY` first. A bubble reported at `y: 1836` in a 900px
 > viewport is the tell.

@@ -1,9 +1,27 @@
 /**
- * Bubble Physics Engine — Interactive floating bubbles with squish physics
- * Two layers: global (fixed, full-page) and hero (absolute, inside #hero)
- * Bubbles bounce off viewport edges, DOM elements, and each other.
- * Mouse pushes bubbles away gently.
- * Soft-body squish on collision — compresses on impact, smoothly rounds back out.
+ * Bubble Physics Engine — soft, jelly-like floating bubbles.
+ *
+ * Three layers: global (page-space, the whole document), hero (inside #hero) and the large hero
+ * blobs. Bubbles drift on smooth currents, cushion against protected content, bounce off pictures,
+ * collide softly with each other, react to the pointer with momentum, and squish on impact with an
+ * oriented, area-preserving wobble.
+ *
+ * Rebuilt 2026-10-16 (shxdowloop "fluid squishy bubbles", feel approved by the user in
+ * docs/mockups/bubble-feel-lab.html). What changed and why, measured by
+ * tests/bubbles-motion.spec.js against the previous engine:
+ *
+ *   - The global layer used to be `position: fixed` and was moved back by `-scrollY` every frame.
+ *     The browser scrolls on its compositor thread before the next animation frame, so bubbles
+ *     lagged every scroll by its full distance and then snapped: the jitter. The layer now lives in
+ *     page space (absolute, as tall as the document), so the browser scrolls bubbles and content
+ *     together. Lag behind a 300px scroll went from 300px to 0.
+ *   - Zones were re-measured on every scroll event (~50 layout reads per event). They are now
+ *     stored in page coordinates, which do not change when the page scrolls, and refreshed on a
+ *     timer and on layout change. Only fixed/sticky chrome is re-read per frame.
+ *   - Integration was per frame, so 120Hz displays ran twice as fast. Physics now runs at a fixed
+ *     120Hz with interpolated rendering, in px and seconds.
+ *   - Squish snapped to a deformed scale and recovered overdamped, axis-aligned only. It is now a
+ *     deformation tensor on an underdamped spring, driven by impact speed, rendered as one matrix.
  */
 
 (function () {
@@ -14,59 +32,79 @@
     return;
   }
 
+  // ── Tuning: the approved feel-lab defaults (2026-10-16) ─────────
+  const TUNING = Object.freeze({
+    wobbleHz:  3.2,  // deformation spring frequency
+    jelly:     0.26, // deformation damping ratio (lower = wobblier)
+    squish:    0.20, // peak squash for a 300px/s impact
+    stretch:   0.07, // elongation along the path at 300px/s
+    maxDeform: 0.22, // cap on deformation magnitude
+    cushion:   14,   // px a cruising bubble sinks into a zone's padding before it turns
+    bounce:    0.72, // restitution
+    push:      1300, // pointer repulsion, px/s^2 at contact
+    drag:      5,    // how strongly a moving pointer carries bubbles with it, 1/s
+    lean:      0.09, // bubbles flatten on the side facing the pointer
+    sway:      0.35, // scroll velocity -> acceleration, so bubbles trail a scroll like water
+    drift:     18,   // drift current strength, px/s^2
+    cruise:    70    // px/s; faster than this is gently braked
+  });
+
   // ── Physics constants ───────────────────────────────────────────
-  const REPEL_RADIUS    = 180;
-  const REPEL_FORCE     = 0.35;
-  const DAMPING         = 0.985;
-  const DRIFT_JITTER    = 0.02;
-  const SPRING_K        = 0.12;
-  const SPRING_DAMP     = 0.82;
-  const SQUISH_AMOUNT   = 0.26; // max deformation on impact
-  const RESTITUTION     = 0.7;  // bubble-bubble bounce energy retained (1 = fully elastic)
-  const MIN_SPEED       = 0.4;
-  const MAX_SPEED       = 3.0;  // slower top speed for floatier feel
-  const DRIFT_KICK      = 0.12;
-  const ZONE_PADDING    = 24;   // px buffer around exclusion zones
-  /* Frames a bubble may sit inside a zone WITHOUT getting any closer to the
-     edge before it is treated as wedged and respawned. Not an elapsed-time
-     budget: the deliberate escape glide makes progress every single frame, so
-     it never reaches 1 here however long it runs. Only a genuine deadlock —
-     two overlapping zones with no legal position between them — stalls. */
-  const NO_PROGRESS_FRAMES = 20;
+  const STEP          = 1 / 120; // fixed physics step, seconds
+  const MAX_SUBSTEPS  = 12;      // per animation frame; beyond this, time is dropped, not owed
+  const MAX_FRAME_DT  = 0.1;     // s; a long stall never integrates as one giant step
+  const MAX_SPEED     = 1100;    // px/s hard ceiling (a hard flick)
+  const BASE_DRAG     = 0.35;    // 1/s
+  const POINTER_RADIUS = 190;    // px
+  const ZONE_PADDING  = 24;      // px buffer around protected zones (the cushion lives in here)
+  /* The hard guarantee: the deformed bubble's BOX — exactly what getBoundingClientRect reports, and
+     what the exclusion specs measure — never comes closer than this to a padded zone's element.
+     The 24px padding is a soft cushion, not the guarantee. */
+  const HARD_MARGIN   = 4;
+  const BULGE_PX      = 14;      // deformation never pushes an edge further than this past the radius
+  const PUSH_EPSILON  = 0.5;     // px; smaller position corrections are resting contact, not shoves
+  /* Wedge rescue. Zones on this site overlap (Contact @1440: the intro paragraph's zone and the
+     form's padded zone leave an 8px band, narrower than any bubble), so a bubble can be caught with
+     no legal position. A step whose corrections cannot reach a legal position relocates the bubble
+     immediately (zero overlap is the contract, so there is no grace period). Slower wedges show up
+     as corrections in OPPOSING directions; a healthy escape always pushes the same way. WEDGE_STEPS
+     (200ms) of contested shoves, or SHOVE_STEPS (2s) of any continuous shoving, relocates too. */
+  const WEDGE_STEPS   = 24;
+  const SHOVE_STEPS   = 240;
+  const ZONE_REFRESH_MS = 250;   // periodic zone refresh (layout shifts, lazy images, font reflow)
 
   /* ── The picture is the wall ────────────────────────────────────
      User call, 2026-08-08: bubbles bounce off THE IMAGE, at every screen size.
 
-     Two consequences, both load-bearing:
+     1. `.gallery-item` is deliberately NOT an exclusion selector. A card zone is a wall around the
+        picture, so bubbles would rebound off the card's outer edge and never reach the artwork.
+        Bubbles cross the card's border, padding and caption band freely and stop at the picture.
+        (The caption's own `h3`/`p` keep their normal padded zones, so text is still protected.)
+     2. These zones carry NO padding and are hard and tangent: the wall is the visible edge of the
+        artwork. Contact shows up as a graze, so these surfaces are asserted on the bubble CENTRE
+        never crossing the edge, not on zero overlap.
 
-     1. `.gallery-item` is deliberately NOT an exclusion selector any more. A
-        card zone is a wall around the picture, so bubbles would rebound off the
-        card's outer edge and never reach the artwork — the frame would be doing
-        the bouncing, which is the thing this replaces. Bubbles now cross the
-        card's border, padding and caption band freely and stop at the picture.
-        (The caption's own `h3`/`p` keep their normal padded zones, so text is
-        still protected. That is legibility, not layout.)
-
-     2. These zones carry NO padding, so the wall is the visible edge of the
-        artwork rather than an invisible boundary 24px outside it. Contact
-        therefore shows up as a graze — the resolver stops the circle tangent to
-        the rect — which is why these surfaces can never be asserted at a hard
-        zero overlap the way the padded zones are. The invariant that means
-        "bounced" is that the bubble's CENTRE never crosses the edge.
-
-     This also replaces the 60%-of-the-card core that stood here for a day: the
-     picture IS the smaller centred shape that request was reaching for
-     (308x411 inside a 342x502 card at 390px), so one rule now serves both and
-     there is no breakpoint in the physics at all.
-
-     Everything else — nav, footer, headings, body copy, the Projects rail, the
-     Contact form — keeps its full ZONE_PADDING zone at every width. */
+     Everything else — nav, footer, headings, body copy, the project tiles, the Contact form —
+     keeps its full ZONE_PADDING zone at every width. */
   const FRAME_ZONE_SELECTOR = 'img, .mistrust-stage';
-  const BLOB_ZONE_PUSH  = 0.06; // hero-blob steering force away from hero content
-  const ZONE_THROTTLE   = 250;  // ms between rect queries
-  const SCROLL_STIR     = 0.02; // velocity imparted per px of scroll delta
-  const SCROLL_STIR_MAX = 40;   // px of scroll delta considered per frame
-  const SQUISH_EPSILON  = 0.003; // snap to rest when this close to 1.0
+
+  // ── Hero blobs (large, slow; soft steering only) ────────────────
+  const BLOB = Object.freeze({
+    drift: 6,           // px/s^2
+    minSpeed: 12,       // px/s
+    minSpeedAccel: 20,  // px/s^2
+    cruise: 48,         // px/s; the old 0.8px/frame ceiling, now a soft brake
+    maxSpeed: 160,      // px/s
+    drag: 0.36,         // 1/s (0.994 per 60Hz frame)
+    repelRadius: 240,
+    repel: 720,         // px/s^2 (0.2 px/frame^2)
+    zonePush: 216,      // px/s^2 (BLOB_ZONE_PUSH 0.06 px/frame^2), soft steering off the hero copy
+    bounce: 0.8,
+    wobbleHz: 2.2,
+    jelly: 0.3,
+    squish: 0.10,       // peak squash for a 48px/s impact
+    maxDeform: 0.14
+  });
 
   // ── Viewport scaling ────────────────────────────────────────────
   function getViewportScale() {
@@ -75,14 +113,6 @@
   }
 
   // ── Color sets (match existing CSS nth-child order) ─────────────
-  // CSS nth-child mapping (1-indexed):
-  //   child 1 → default purple
-  //   child 2 → 3n+2 → gold
-  //   child 3 → 3n  → purple
-  //   child 4 → 3n+1 → cyan
-  //   child 5 → 3n+2 → gold
-  //   child 6 → 3n  → purple
-  //   etc.
   function getColorSet(i) {
     const c = i + 1; // 1-indexed
     if (c % 3 === 2) return 'gold';
@@ -91,6 +121,10 @@
   }
 
   // ── Default exclusion selectors ─────────────────────────────────
+  /* Matched by SELECTOR, so any rename or retag drops an element out of the physics with no error
+     and nothing red anywhere. That has happened three times (the hero logo when it was inlined as
+     an <svg>, the Projects rail when it was restyled to `.project-tab`, and the gallery card).
+     Change a class here in the same commit as the markup, and add a spec case. */
   const DEFAULT_EXCLUSIONS = [
     '.brand-nav',
     '.brand-footer',
@@ -105,32 +139,15 @@
     '.project-desc',
     '.project-hero',
     '.project-section',
-    // The Projects rail. These were `.brand-btn` + `.brand-btn-primary`/
-    // `-secondary` -- all three of which are excluded below -- until they were
-    // restyled to `.project-tab` (2026-07-24, LOGBOOK Entry 085), at which
-    // point they silently stopped being exclusion zones and bubbles began
-    // crossing the rail. Same trap as the hero logo, one line down: this list
-    // is matched by selector, so ANY rename or retag drops an element out of
-    // it with no error and nothing red in the suite.
+    // The Projects rail (restyled from `.brand-btn` 2026-07-24, LOGBOOK Entry 085).
     '.project-tab',
     '.wip-notice',
-    /* `.gallery-item` is deliberately absent (2026-08-08). It was here for a
-       year; removing it is the point of the "bubbles bounce off the image"
-       rule, not an oversight. A card zone is a wall AROUND the picture, so
-       bubbles rebounded off the card's outer edge and never reached the
-       artwork. The picture is now the wall — see FRAME_ZONE_SELECTOR — and the
-       card's frame, padding and caption band are open ground.
-       `tests/gallery-expand.spec.js` asserts the ART is registered instead, so
-       the retagging trap that rule guarded against is still covered. */
+    /* `.gallery-item` is deliberately absent (2026-08-08): the picture is the wall, see
+       FRAME_ZONE_SELECTOR. `tests/gallery-expand.spec.js` asserts the ART is registered instead. */
     '.about-box',
     '.hero-name',
     '.hero-sub',
-    // `.hero-logo` must be listed explicitly. The `img` selector above used to
-    // cover it, but the hero mark was inlined as a React <svg> component so it
-    // could follow `currentColor` (2026-07-24, LOGBOOK Entry 083) -- and an
-    // inline <svg> is not an <img>, so the logo silently stopped being an
-    // exclusion zone and bubbles began drifting across it. Any future
-    // <img> -> inline-<svg> swap needs the same treatment.
+    // Listed explicitly: the hero mark is an inline <svg>, which `img` does not match (Entry 083).
     '.hero-logo',
     '.brand-card-bubble',
     '.brand-hero-blob',
@@ -142,16 +159,22 @@
     '.brand-btn-secondary',
     '.icon-link'
   ];
+
+  const HOME_EXCLUSIONS = [
+    '#hero .hero-logo',
+    '#hero .hero-name',
+    '#hero .hero-sub',
+    '#work h2',
+    '#about h2',
+    '.brand-footer-inner',
+    '.brand-footer-connect'
+  ];
+
   // ── Hero-content zones (blob layer only) ────────────────────────
-  // Deliberately NOT the full exclusion list. The blobs are the hero's
-  // ambient colour wash and should keep filling it; only the mark and the
-  // actual glyphs are protected, so a blob never parks behind the logo or
-  // the name.
-  //
-  // `.hero-name` / `.hero-sub` are full-width block elements with centred
-  // text, so their element boxes span the hero (1104px at 1440px wide).
-  // Excluding those boxes would evict blobs from the entire hero band.
-  // A Range measures the ink instead of the box.
+  // Deliberately NOT the full exclusion list. The blobs are the hero's ambient colour wash and
+  // should keep filling it; only the mark and the actual glyphs are protected. `.hero-name` /
+  // `.hero-sub` are full-width blocks, so a Range measures the ink instead of the box.
+  // Returns PAGE-space rects.
   function heroContentRects() {
     const rects = [];
     const logo = document.querySelector('#hero .hero-logo');
@@ -166,185 +189,254 @@
       if (r.width > 0 && r.height > 0) rects.push(r);
     }
 
+    const sx = window.scrollX, sy = window.scrollY;
     return rects.map(r => ({
-      left:   r.left   - ZONE_PADDING,
-      top:    r.top    - ZONE_PADDING,
-      right:  r.right  + ZONE_PADDING,
-      bottom: r.bottom + ZONE_PADDING
+      left:   r.left   + sx - ZONE_PADDING,
+      top:    r.top    + sy - ZONE_PADDING,
+      right:  r.right  + sx + ZONE_PADDING,
+      bottom: r.bottom + sy + ZONE_PADDING
     }));
   }
 
-  const HOME_EXCLUSIONS = [
-    '#hero .hero-logo',
-    '#hero .hero-name',
-    '#hero .hero-sub',
-    '#work h2',
-    '#about h2',
-    '.brand-footer-inner',
-    '.brand-footer-connect'
-  ];
+  // ── Small geometry helpers ──────────────────────────────────────
+  /* A zone: the outer rect the soft physics uses (padded, or exact for a picture), plus `inner`,
+     the element's own rect, which the hard guarantee keeps the deformed box clear of. */
+  function makeZone(left, top, right, bottom, frame) {
+    const inner = { left, top, right, bottom };
+    if (frame) return { left, top, right, bottom, frame: true, inner };
+    return {
+      left: left - ZONE_PADDING, top: top - ZONE_PADDING,
+      right: right + ZONE_PADDING, bottom: bottom + ZONE_PADDING,
+      frame: false, inner
+    };
+  }
 
-  // ── Mouse tracker ───────────────────────────────────────────────
-  class MouseTracker {
+  function shiftZone(z, dx, dy) {
+    return {
+      left: z.left + dx, top: z.top + dy, right: z.right + dx, bottom: z.bottom + dy,
+      frame: z.frame,
+      inner: { left: z.inner.left + dx, top: z.inner.top + dy, right: z.inner.right + dx, bottom: z.inner.bottom + dy }
+    };
+  }
+
+  /* Height of the document WITHOUT this engine's own layer. Read from <html>'s box, which an
+     absolutely positioned child cannot stretch, never from scrollHeight, which it can: a layer
+     sized from scrollHeight would hold the page at its tallest height forever. */
+  function documentHeight() {
+    return Math.max(window.innerHeight, document.documentElement.getBoundingClientRect().height);
+  }
+
+  // ── Pointer tracker ─────────────────────────────────────────────
+  /* Position AND velocity. Velocity is what lets a flick carry bubbles with it. Mouse and pen come
+     from pointer events (coalesced samples, so a fast flick is not undersampled); touch comes from
+     passive touch events, because a touch that becomes a scroll cancels its pointer stream. */
+  class PointerTracker {
     constructor() {
-      this.x = -9999;
-      this.y = -9999;
-      this._onMove = this._onMove.bind(this);
+      this.active = false;
+      this.x = 0; this.y = 0;   // client coordinates
+      this.vx = 0; this.vy = 0; // px/s
+      this.t = 0;               // s, event timeline (same origin as rAF timestamps)
+      this._onPointerMove = this._onPointerMove.bind(this);
       this._onTouch = this._onTouch.bind(this);
-      window.addEventListener('mousemove', this._onMove, { passive: true });
+      this._onTouchEnd = this._onTouchEnd.bind(this);
+      this._onOut = this._onOut.bind(this);
+      this.clear = this.clear.bind(this);
+      window.addEventListener('pointermove', this._onPointerMove, { passive: true });
+      window.addEventListener('touchstart', this._onTouch, { passive: true });
       window.addEventListener('touchmove', this._onTouch, { passive: true });
+      window.addEventListener('touchend', this._onTouchEnd, { passive: true });
+      window.addEventListener('touchcancel', this._onTouchEnd, { passive: true });
+      document.addEventListener('pointerout', this._onOut, { passive: true });
+      window.addEventListener('blur', this.clear);
     }
-    _onMove(e) {
-      this.x = e.clientX;
-      this.y = e.clientY;
+    _feed(x, y, timeStamp) {
+      const t = timeStamp / 1000;
+      const dt = t - this.t;
+      if (this.active && dt > 0 && dt < 0.1) {
+        const k = Math.min(1, dt * 30);
+        this.vx += ((x - this.x) / dt - this.vx) * k;
+        this.vy += ((y - this.y) / dt - this.vy) * k;
+      } else if (!this.active) {
+        this.vx = 0; this.vy = 0;
+      }
+      this.x = x; this.y = y; this.t = t; this.active = true;
+    }
+    _onPointerMove(e) {
+      if (e.pointerType === 'touch') return; // touch is fed by the touch listeners
+      const list = e.getCoalescedEvents ? e.getCoalescedEvents() : null;
+      if (list && list.length) for (const ev of list) this._feed(ev.clientX, ev.clientY, ev.timeStamp);
+      else this._feed(e.clientX, e.clientY, e.timeStamp);
     }
     _onTouch(e) {
-      if (e.touches.length) {
-        this.x = e.touches[0].clientX;
-        this.y = e.touches[0].clientY;
+      if (e.touches.length) this._feed(e.touches[0].clientX, e.touches[0].clientY, e.timeStamp);
+    }
+    _onTouchEnd(e) {
+      // A lifted finger stops pushing. The old tracker kept the last touch point forever.
+      if (!e.touches.length) this.clear();
+    }
+    _onOut(e) {
+      if (!e.relatedTarget && e.pointerType !== 'touch') this.clear(); // left the window
+    }
+    clear() {
+      this.active = false;
+      this.vx = 0; this.vy = 0;
+    }
+    /** Called once per animation frame: velocity fades once the pointer stops sending samples. */
+    decay(dt, nowSec) {
+      if (nowSec - this.t > 0.05) {
+        const k = Math.exp(-dt * 12);
+        this.vx *= k; this.vy *= k;
       }
     }
     destroy() {
-      window.removeEventListener('mousemove', this._onMove);
+      window.removeEventListener('pointermove', this._onPointerMove);
+      window.removeEventListener('touchstart', this._onTouch);
       window.removeEventListener('touchmove', this._onTouch);
+      window.removeEventListener('touchend', this._onTouchEnd);
+      window.removeEventListener('touchcancel', this._onTouchEnd);
+      document.removeEventListener('pointerout', this._onOut);
+      window.removeEventListener('blur', this.clear);
     }
   }
 
   // ── Exclusion zone tracker ──────────────────────────────────────
+  /* Zones are stored in PAGE space (viewport rect + scroll at the moment of measuring), which does
+     not change when the page scrolls. So nothing here listens to scroll. Elements inside fixed or
+     sticky chrome are the exception: they move relative to the page as it scrolls, so they are
+     kept as live elements and re-read once per frame (a handful of reads, before any writes).
+
+     `rects` is the VIEWPORT-space view the specs read: padded rects for normal zones, exact rects
+     flagged `frame: true` for pictures, same as the previous engine. */
   class ExclusionZoneTracker {
-    constructor(selectors) {
+    constructor(selectors, onRefresh) {
       this.selectors = selectors;
-      this.rects = [];
-      this.version = 0; // bumped on every rebuild so consumers can cache derived data
-      this.lastUpdate = 0;
-      this._scheduledRAF = null;
-      this._update = this._update.bind(this);
-      /* Built synchronously, not on the next frame. The layers are constructed
-         immediately after this and now seed their bubbles against these rects,
-         so an empty first pass would put bubbles straight back on the furniture
-         — which is the whole point of the seeding change. `_update` re-arms the
-         periodic refresh itself. */
-      this._update();
-      window.addEventListener('resize', this._update);
-      window.addEventListener('scroll', this._update, { passive: true });
+      this.onRefresh = onRefresh || null;
+      this.page = [];    // page-space zones
+      this.pinned = [];  // { el, frame, r } — r is the latest viewport rect
+      this.version = 0;
+      this.refresh = this.refresh.bind(this);
+      this.refresh();
+      this._timer = setInterval(this.refresh, ZONE_REFRESH_MS);
     }
-    _schedule() {
-      if (this._scheduledRAF) cancelAnimationFrame(this._scheduledRAF);
-      this._scheduledRAF = requestAnimationFrame(() => {
-        const now = performance.now();
-        if (now - this.lastUpdate >= ZONE_THROTTLE) {
-          this._update();
-        } else {
-          this._schedule();
+    refresh() {
+      const sx = window.scrollX, sy = window.scrollY;
+      const pinnedCache = new Map();
+      const isPinned = (el) => {
+        const chain = [];
+        let node = el, result = false;
+        while (node && node !== document.body && node !== document.documentElement) {
+          if (pinnedCache.has(node)) { result = pinnedCache.get(node); break; }
+          chain.push(node);
+          const pos = getComputedStyle(node).position;
+          if (pos === 'fixed' || pos === 'sticky') { result = true; break; }
+          node = node.parentElement;
         }
-      });
-    }
-    _update() {
-      this.lastUpdate = performance.now();
-      this._schedule(); // keep the periodic refresh alive (layout shifts, lazy images, font reflow)
-      this.version++;
-      this.rects = [];
+        for (const n of chain) pinnedCache.set(n, result);
+        return result;
+      };
 
-      // Narrow screens only. Read per rebuild rather than cached, so a rotation
-      // or a resize past the breakpoint takes effect on the next refresh.
-      /* Deduped BY ELEMENT, which the per-selector loop below used not to be.
-         It was harmless while every zone was the element's full rect — the
-         duplicates were identical. It stops being harmless the moment one
-         element can produce two DIFFERENT rects: an image matches both `img`
-         and its own class, and without this a later full-padding pass would put
-         the padded rect straight back and silently undo the frame zone. */
+      /* Deduped BY ELEMENT: an image matches both `img` and its own class, and a later padded pass
+         must not put a padded rect back over a frame zone. */
       const seen = new Set();
-
+      const page = [];
+      const pinned = [];
       for (const sel of this.selectors) {
-        const els = document.querySelectorAll(sel);
+        let els;
+        try { els = document.querySelectorAll(sel); } catch { continue; } // bad data-exclusions entry
         for (const el of els) {
           if (seen.has(el)) continue;
           seen.add(el);
-
           const r = el.getBoundingClientRect();
-
-          if (el.matches(FRAME_ZONE_SELECTOR)) {
-            // The visible edge of the picture IS the wall, at every width. No
-            // padding, so the rebound happens against the artwork itself.
-            this.rects.push({ left: r.left, top: r.top, right: r.right, bottom: r.bottom, frame: true });
-            continue;
+          // A hidden element (display: none, e.g. return-to-top before any scroll) reports a
+          // zero box at the viewport corner; registering it would wall off a phantom corner.
+          if (r.width === 0 && r.height === 0) continue;
+          const frame = el.matches(FRAME_ZONE_SELECTOR);
+          if (isPinned(el)) {
+            pinned.push({ el, frame, r });
+          } else {
+            page.push(makeZone(r.left + sx, r.top + sy, r.right + sx, r.bottom + sy, frame));
           }
-
-          this.rects.push({
-            left:   r.left   - ZONE_PADDING,
-            top:    r.top    - ZONE_PADDING,
-            right:  r.right  + ZONE_PADDING,
-            bottom: r.bottom + ZONE_PADDING
-          });
         }
       }
+      this.page = page;
+      this.pinned = pinned;
+      this.version++;
+      if (this.onRefresh) this.onRefresh();
+    }
+    /** Per frame, before any writes: fresh viewport rects for the fixed/sticky chrome. */
+    readPinned() {
+      for (const p of this.pinned) p.r = p.el.getBoundingClientRect();
+    }
+    /** Every zone in page space for the current scroll position. */
+    pageZones(sx, sy) {
+      if (!this.pinned.length) return this.page;
+      const out = this.page.slice();
+      for (const p of this.pinned) {
+        out.push(makeZone(p.r.left + sx, p.r.top + sy, p.r.right + sx, p.r.bottom + sy, p.frame));
+      }
+      return out;
+    }
+    get rects() {
+      const sx = window.scrollX, sy = window.scrollY;
+      const out = this.page.map(z => (z.frame
+        ? { left: z.left - sx, top: z.top - sy, right: z.right - sx, bottom: z.bottom - sy, frame: true }
+        : { left: z.left - sx, top: z.top - sy, right: z.right - sx, bottom: z.bottom - sy }));
+      for (const p of this.pinned) {
+        const r = p.r;
+        out.push(p.frame
+          ? { left: r.left, top: r.top, right: r.right, bottom: r.bottom, frame: true }
+          : { left: r.left - ZONE_PADDING, top: r.top - ZONE_PADDING, right: r.right + ZONE_PADDING, bottom: r.bottom + ZONE_PADDING });
+      }
+      return out;
     }
     destroy() {
-      if (this._scheduledRAF) cancelAnimationFrame(this._scheduledRAF);
-      window.removeEventListener('resize', this._update);
-      window.removeEventListener('scroll', this._update);
+      clearInterval(this._timer);
+      this.onRefresh = null;
     }
   }
 
-  // ── Bubble class ────────────────────────────────────────────────
+  // ── Deformation (shared by bubbles and blobs) ───────────────────
+  /* A traceless symmetric tensor [[a, b], [b, -a]]: stretch along one axis, squash across it, at
+     any angle. Magnitude m = hypot(a, b). Rendered as (I + D) / sqrt(det), which keeps the area
+     constant, so a squash always bulges sideways like a real soft body. */
+  function deformMatrix(a, b) {
+    const s = 1 / Math.sqrt(Math.max(1e-3, 1 - (a * a + b * b)));
+    return [(1 + a) * s, b * s, b * s, (1 - a) * s]; // m00, m01, m10, m11
+  }
+
+  /** Elongation of size e along unit vector (nx, ny), as tensor components [a, b]. */
+  function along(nx, ny, e) {
+    return [e * (2 * nx * nx - 1), e * (2 * nx * ny)];
+  }
+
+  // ── Bubble ──────────────────────────────────────────────────────
   class Bubble {
     constructor(container, radius, colorSet, radiusT) {
       this.el = document.createElement('div');
       this.el.className = 'brand-bubble brand-bubble-physics';
       this.el.setAttribute('data-color', colorSet);
-      this.el.style.width  = radius * 2 + 'px';
-      this.el.style.height = radius * 2 + 'px';
       container.appendChild(this.el);
-
-      this.radius = radius;
       this.colorSet = colorSet;
       this.radiusT = radiusT;
+      this.setRadius(radius);
 
-      // Physics state
-      this.x = 0;
-      this.y = 0;
-      this.vx = (Math.random() - 0.5) * 1.5;
-      this.vy = (Math.random() - 0.5) * 1.5;
-      this.scaleX = 1;
-      this.scaleY = 1;
-      this.svx = 0;
-      this.svy = 0;
-    }
+      // Physics state, px and px/s, in the layer's own coordinates.
+      this.x = 0; this.y = 0;
+      this.vx = (Math.random() - 0.5) * 90;
+      this.vy = (Math.random() - 0.5) * 90;
+      // Deformation, its rate, and its spring target (lean + speed stretch).
+      this.a = 0; this.b = 0; this.va = 0; this.vb = 0; this.ta = 0; this.tb = 0;
+      // Previous step, for interpolated rendering.
+      this.px = 0; this.py = 0; this.pa = 0; this.pb = 0;
+      // Drift currents: per-bubble phases and frequencies, deterministic once seeded.
+      this.ph = [0, 1, 2, 3].map(() => Math.random() * Math.PI * 2);
+      this.w = [0.31, 0.47, 0.37, 0.53].map(w => w * (0.7 + Math.random() * 0.6));
 
-    /* Seeded CLEAR of the exclusion zones, in the layer's own coordinate space.
-       Until 2026-08-10 this was a plain uniform random point, so **2–3 of the 7
-       global bubbles started INSIDE a zone on every single load** (measured on
-       /contact/ at 1440px across 6 loads).
-
-       That is the *initiating event* behind the wedge the NO_PROGRESS_FRAMES
-       rescue above recovers from. The rescue is the right safety net and stays
-       exactly as it is — it catches wedges from scrolling cards and resizes,
-       which no amount of seeding can prevent. This just stops the engine
-       manufacturing its own work at t=0: fewer wedges to catch, and none of
-       them on the very first frames when the page is most likely to be looked
-       at.
-
-       Degrades safely. `zones` is empty only if the tracker has no rects, in
-       which case this is the old behaviour exactly; and the attempt cap means a
-       page whose zones tile nearly everything (Projects at 768px is ~94% zone
-       by area) falls back to the last candidate rather than spinning. */
-    seedPosition(bounds, zones = []) {
-      const margin = this.radius + 40;
-      const pick = () => ({
-        x: margin + Math.random() * (bounds.width  - margin * 2),
-        y: margin + Math.random() * (bounds.height - margin * 2)
-      });
-      let p = pick();
-      for (let i = 0; i < 60 && zones.length; i++) {
-        const clear = !zones.some(z =>
-          p.x > z.left - this.radius && p.x < z.right  + this.radius &&
-          p.y > z.top  - this.radius && p.y < z.bottom + this.radius);
-        if (clear) break;
-        p = pick();
-      }
-      this.x = p.x;
-      this.y = p.y;
-      this.render(); // set transform immediately so nothing flashes at (0,0)
+      this._relocating = false;
+      this._wedge = 0;
+      this._shove = 0;
+      this._lastPushX = 0;
+      this._lastPushY = 0;
     }
 
     setRadius(radius) {
@@ -353,77 +445,55 @@
       this.el.style.height = radius * 2 + 'px';
     }
 
-    applyDrift() {
-      this.vx += (Math.random() - 0.5) * DRIFT_JITTER;
-      this.vy += (Math.random() - 0.5) * DRIFT_JITTER;
-      const speed = Math.hypot(this.vx, this.vy);
-      if (speed < MIN_SPEED) {
-        const angle = Math.random() * Math.PI * 2;
-        this.vx += Math.cos(angle) * DRIFT_KICK;
-        this.vy += Math.sin(angle) * DRIFT_KICK;
+    /* Seeded CLEAR of the zones. A uniform random point put 2–3 of the 7 global bubbles inside a
+       zone on every load (measured 2026-08-10). The attempt cap means a page whose zones tile
+       nearly everything (Projects at 768px is ~94% zone by area) falls back to the last candidate
+       rather than spinning; the wedge rescue then clears it. */
+    seedPosition(bounds, zones = []) {
+      const margin = this.radius + 40;
+      const pad = this.radius + BULGE_PX;
+      const pick = () => ({
+        x: margin + Math.random() * Math.max(1, bounds.width  - margin * 2),
+        y: margin + Math.random() * Math.max(1, bounds.height - margin * 2)
+      });
+      let p = pick();
+      for (let i = 0; i < 60 && zones.length; i++) {
+        const clear = !zones.some(z =>
+          p.x > z.left - pad && p.x < z.right + pad && p.y > z.top - pad && p.y < z.bottom + pad);
+        if (clear) break;
+        p = pick();
       }
+      this.x = this.px = p.x;
+      this.y = this.py = p.y;
+      this.render(1); // set the transform immediately so nothing flashes at (0,0)
     }
 
-    applyMouseRepulsion(mouse) {
-      const dx = this.x - mouse.x;
-      const dy = this.y - mouse.y;
-      const dist = Math.hypot(dx, dy);
-      if (dist < REPEL_RADIUS && dist > 1) {
-        const strength = REPEL_FORCE * (1 - dist / REPEL_RADIUS);
-        this.vx += (dx / dist) * strength;
-        this.vy += (dy / dist) * strength;
-      }
+    /** Velocity impulse into the deformation spring: squash along n, scaled by impact speed. */
+    impact(nx, ny, dv) {
+      if (!(dv > 0)) return;
+      const omega = 2 * Math.PI * TUNING.wobbleHz;
+      const [ia, ib] = along(nx, ny, -TUNING.squish * omega * Math.min(dv, 900) / 300);
+      this.va += ia;
+      this.vb += ib;
     }
 
-    integrate() {
-      this.x += this.vx;
-      this.y += this.vy;
+    halfExtents() {
+      const m = deformMatrix(this.a, this.b);
+      return [this.radius * (Math.abs(m[0]) + Math.abs(m[1])), this.radius * (Math.abs(m[2]) + Math.abs(m[3]))];
     }
 
-    clampSpeed() {
-      const speed = Math.hypot(this.vx, this.vy);
-      if (speed > MAX_SPEED) {
-        this.vx = (this.vx / speed) * MAX_SPEED;
-        this.vy = (this.vy / speed) * MAX_SPEED;
-      }
+    snapshot() {
+      this.px = this.x; this.py = this.y; this.pa = this.a; this.pb = this.b;
     }
 
-    applyDamping() {
-      this.vx *= DAMPING;
-      this.vy *= DAMPING;
-    }
-
-    triggerSquish(axisAngle) {
-      const c = Math.cos(axisAngle);
-      const s = Math.sin(axisAngle);
-      // Flatten along collision axis, bulge perpendicular
-      this.scaleX = 1 - SQUISH_AMOUNT * Math.abs(c);
-      this.scaleY = 1 + SQUISH_AMOUNT * 0.6 * Math.abs(s);
-      this.svx = 0;
-      this.svy = 0;
-    }
-
-    recoverSquish() {
-      // Spring toward 1.0 with strong damping (no bounce / no jiggle)
-      this.svx += (1 - this.scaleX) * SPRING_K;
-      this.svy += (1 - this.scaleY) * SPRING_K;
-      this.scaleX += this.svx;
-      this.scaleY += this.svy;
-      this.svx *= SPRING_DAMP;
-      this.svy *= SPRING_DAMP;
-      // Snap to perfect rest to avoid endless micro-wobble
-      if (Math.abs(this.scaleX - 1) < SQUISH_EPSILON && Math.abs(this.scaleY - 1) < SQUISH_EPSILON) {
-        this.scaleX = 1;
-        this.scaleY = 1;
-        this.svx = 0;
-        this.svy = 0;
-      }
-    }
-
-    render(scrollOffset = 0) {
-      const tx = this.x - this.radius;
-      const ty = this.y - this.radius - scrollOffset;
-      this.el.style.transform = `translate(${tx.toFixed(1)}px, ${ty.toFixed(1)}px) scale(${this.scaleX.toFixed(3)}, ${this.scaleY.toFixed(3)})`;
+    render(alpha) {
+      const x = this.px + (this.x - this.px) * alpha;
+      const y = this.py + (this.y - this.py) * alpha;
+      const m = deformMatrix(this.pa + (this.a - this.pa) * alpha, this.pb + (this.b - this.pb) * alpha);
+      const r = this.radius;
+      this.el.style.transform =
+        `translate3d(${(x - r).toFixed(2)}px, ${(y - r).toFixed(2)}px, 0) ` +
+        `matrix(${m[0].toFixed(4)}, ${m[2].toFixed(4)}, ${m[1].toFixed(4)}, ${m[3].toFixed(4)}, 0, 0)`;
     }
 
     destroy() {
@@ -432,381 +502,370 @@
   }
 
   // ── Bubble layer ────────────────────────────────────────────────
+  /* Works in its own coordinates. The global layer's origin is the document's top-left, so its
+     coordinates ARE page coordinates; the hero layer's origin is the hero container's page
+     position. Both scroll with the page natively, so neither ever reads the scroll position. */
   class BubbleLayer {
-    constructor(containerSelector, bubbleCount, radiusRange, isFixed, zoneProvider) {
+    constructor(containerSelector, bubbleCount, radiusRange, isGlobal) {
       this.container = document.querySelector(containerSelector);
+      this.bubbles = [];
+      this.origin = { x: 0, y: 0 };
+      this.bounds = { width: 0, height: 0 };
       if (!this.container) {
-        this.bubbles = [];
         this.active = false;
         return;
       }
       this.active = true;
-      this.isFixed = isFixed;
+      this.isGlobal = isGlobal;
       this.baseRadiusRange = radiusRange;
-      this.bubbles = [];
-      this.cachedBounds = this._queryBounds();
-      this._resizeTimer = null;
-      this._onResize = this._onResize.bind(this);
-      this._onScroll = this._onScroll.bind(this);
-      window.addEventListener('resize', this._onResize);
-      window.addEventListener('scroll', this._onScroll, { passive: true });
-
-      // Resolved once, after the container is known: the provider converts the
-      // tracker's viewport-space rects into THIS layer's space.
-      const seedZones = zoneProvider ? zoneProvider(this.container, isFixed) : [];
+      this.origin = { x: 0, y: 0 };
+      this.bounds = { width: 0, height: 0 };
+      this.t = 0;
+      this.measure();
 
       const scale = getViewportScale();
       for (let i = 0; i < bubbleCount; i++) {
         const t = Math.random();
-        const base = this.baseRadiusRange[0] + t * (this.baseRadiusRange[1] - this.baseRadiusRange[0]);
-        const radius = base * scale;
-        const color = getColorSet(i);
-        const b = new Bubble(this.container, radius, color, t);
-        b.seedPosition(this.cachedBounds, seedZones);
-        this.bubbles.push(b);
+        const base = radiusRange[0] + t * (radiusRange[1] - radiusRange[0]);
+        this.bubbles.push(new Bubble(this.container, base * scale, getColorSet(i), t));
       }
     }
 
-    _queryBounds() {
-      if (this.isFixed) {
-        return {
-          width: window.innerWidth,
-          height: Math.max(
-            document.documentElement.scrollHeight,
-            document.body.scrollHeight,
-            window.innerHeight
-          )
-        };
-      }
-      const r = this.container.getBoundingClientRect();
-      return { width: r.width, height: r.height };
-    }
-
-    _onResize() {
-      if (this._resizeTimer) clearTimeout(this._resizeTimer);
-      this._resizeTimer = setTimeout(() => {
-        this.cachedBounds = this._queryBounds();
-        const scale = getViewportScale();
-        for (const b of this.bubbles) {
-          const base = this.baseRadiusRange[0] + b.radiusT * (this.baseRadiusRange[1] - this.baseRadiusRange[0]);
-          b.setRadius(base * scale);
-        }
-      }, 150);
-    }
-
-    _onScroll() {
-      if (this.isFixed) {
-        this.cachedBounds = this._queryBounds();
+    /** Layout reads: called on zone refresh and resize, never on scroll. */
+    measure() {
+      // By container, not `active`: the hero layer is inactive while scrolled out of view, and must
+      // still have current geometry the moment it comes back.
+      if (!this.container) return;
+      if (this.isGlobal) {
+        const h = documentHeight();
+        if (Math.abs(h - this.bounds.height) > 0.5) this.container.style.height = h + 'px';
+        this.bounds = { width: this.container.clientWidth || window.innerWidth, height: h };
+        this.origin = { x: 0, y: 0 };
+      } else {
+        const r = this.container.getBoundingClientRect();
+        this.bounds = { width: r.width, height: r.height };
+        this.origin = { x: r.left + window.scrollX, y: r.top + window.scrollY };
       }
     }
 
-    getBounds() {
-      return this.cachedBounds;
+    localZones(pageZones) {
+      const ox = this.origin.x, oy = this.origin.y;
+      if (!ox && !oy) return pageZones;
+      return pageZones.map(z => shiftZone(z, -ox, -oy));
     }
 
-    resolveWallCollisions() {
-      const bounds = this.cachedBounds;
-      for (const b of this.bubbles) {
-        let hit = false;
-        let axis = 0;
-        if (b.x - b.radius < 0) {
-          b.x = b.radius;
-          b.vx = Math.abs(b.vx);
-          hit = true; axis = 0;
-        } else if (b.x + b.radius > bounds.width) {
-          b.x = bounds.width - b.radius;
-          b.vx = -Math.abs(b.vx);
-          hit = true; axis = Math.PI;
-        }
-        if (b.y - b.radius < 0) {
-          b.y = b.radius;
-          b.vy = Math.abs(b.vy);
-          hit = true; axis = Math.PI / 2;
-        } else if (b.y + b.radius > bounds.height) {
-          b.y = bounds.height - b.radius;
-          b.vy = -Math.abs(b.vy);
-          hit = true; axis = -Math.PI / 2;
-        }
-        if (hit) b.triggerSquish(axis);
-      }
+    seed(pageZones) {
+      if (!this.container) return; // no hero on this page
+      const zones = this.localZones(pageZones);
+      for (const b of this.bubbles) b.seedPosition(this.bounds, zones);
     }
 
-    resolveZoneCollisions(zones) {
-      for (const b of this.bubbles) {
-        if (b._relocating) continue;
-        for (const z of zones) {
-          // Closest point on rect to bubble center
-          const cx = Math.max(z.left, Math.min(b.x, z.right));
-          const cy = Math.max(z.top,  Math.min(b.y, z.bottom));
-          const dx = b.x - cx;
-          const dy = b.y - cy;
-          const dist = Math.hypot(dx, dy);
-
-          if (dist < b.radius && dist > 0.1) {
-            // Push bubble outside rect
-            const overlap = b.radius - dist;
-            b.x += (dx / dist) * overlap;
-            b.y += (dy / dist) * overlap;
-            // Reflect velocity along normal
-            const ndx = dx / dist;
-            const ndy = dy / dist;
-            const dot = b.vx * ndx + b.vy * ndy;
-            b.vx -= 2 * dot * ndx;
-            b.vy -= 2 * dot * ndy;
-            b.triggerSquish(Math.atan2(ndy, ndx));
-          } else if (dist <= 0.1) {
-            // Center is inside the zone (e.g. a card scrolled onto a fixed
-            // bubble) — glide out through the nearest edge instead of
-            // teleporting, so the escape reads as motion, not a pop.
-            const dl = b.x - z.left;
-            const dr = z.right - b.x;
-            const dt = b.y - z.top;
-            const db = z.bottom - b.y;
-            const m = Math.min(dl, dr, dt, db);
-            /* Frame zones eject in ONE step instead of gliding.
-               The 8px/frame glide exists so a bubble that a scrolling card
-               closes over escapes as motion rather than a pop, and that is
-               right for a padded zone: the whole glide happens inside the 24px
-               buffer, where nothing is drawn. A frame zone has no buffer — its
-               wall IS the visible edge — so the same glide plays out ON TOP OF
-               the artwork, and the bubble sits up to 16px inside the card while
-               it crawls out (measured 2026-08-07). Ejecting to the near edge
-               immediately is what makes contact read as a bounce. */
-            const ESCAPE_STEP = z.frame ? m + b.radius : 8; // px/frame toward freedom
-            if (m === dl)      { b.x -= ESCAPE_STEP; b.vx = -Math.max(Math.abs(b.vx), MIN_SPEED); }
-            else if (m === dr) { b.x += ESCAPE_STEP; b.vx =  Math.max(Math.abs(b.vx), MIN_SPEED); }
-            else if (m === dt) { b.y -= ESCAPE_STEP; b.vy = -Math.max(Math.abs(b.vy), MIN_SPEED); }
-            else               { b.y += ESCAPE_STEP; b.vy =  Math.max(Math.abs(b.vy), MIN_SPEED); }
-          }
-        }
-        /* Deadlock rescue, measured by PROGRESS rather than by elapsed time.
-           Overlapping zones can squeeze a bubble so each zone's escape push
-           cancels the other's, and the zones on this site really do overlap:
-           at 1440px the Contact intro paragraph occupies y 201..303 and the
-           form's padded zone starts at y 295, so a bubble in that 8px band
-           has NO legal position. The form pushes it up, the paragraph pushes
-           it back down, and it oscillates about a pixel on the form's top
-           edge — at full opacity, with the resolver dutifully "fixing" it
-           every frame.
-
-           The old test was `centre inside a zone` for 90 frames. Both halves
-           were wrong. Ninety frames is 1.5 SECONDS of a bubble parked on the
-           furniture these zones exist to protect, which is exactly the
-           `bubbles-exclusion` flake (measured 2026-08-09: 68 consecutive
-           frames of overlap, opacity 1, `_relocating` false — so it was never
-           the relocation path TODO.md suspected). And a duration threshold
-           cannot tell a wedge from the deliberate 8px/frame glide, which is
-           healthy and can legitimately run 15+ frames when a scrolling card
-           closes over a bubble.
-
-           Progress separates them cleanly. A glide reduces its penetration
-           depth by ESCAPE_STEP every frame and keeps setting a new best; a
-           wedge oscillates and never beats its own record. So rescue on
-           "hasn't got any closer to freedom in NO_PROGRESS_FRAMES", which a
-           real glide can never trigger no matter how long it takes. */
-        let penetration = 0;
-        for (const z of zones) {
-          const cx = Math.max(z.left, Math.min(b.x, z.right));
-          const cy = Math.max(z.top,  Math.min(b.y, z.bottom));
-          penetration = Math.max(penetration, b.radius - Math.hypot(b.x - cx, b.y - cy));
-        }
-        if (penetration > 0) {
-          // Compare against the best (smallest) depth of THIS episode, not the
-          // previous frame's: a bubble bouncing +1/-1 px would otherwise reset
-          // the counter on every other frame and never be rescued.
-          if (b._bestPenetration === undefined || penetration < b._bestPenetration - 0.5) {
-            b._bestPenetration = penetration;
-            b.stuckFrames = 0;
-          } else {
-            b.stuckFrames = (b.stuckFrames || 0) + 1;
-          }
-          if (b.stuckFrames > NO_PROGRESS_FRAMES) {
-            this._relocate(b, zones);
-            b.stuckFrames = 0;
-            b._bestPenetration = undefined;
-          }
-        } else {
-          b.stuckFrames = 0;
-          b._bestPenetration = undefined;
-        }
-      }
+    rescale() {
+      const scale = getViewportScale();
+      const [lo, hi] = this.baseRadiusRange;
+      for (const b of this.bubbles) b.setRadius((lo + b.radiusT * (hi - lo)) * scale);
     }
 
-    _relocate(b, zones) {
-      const bounds = this.cachedBounds;
-      const margin = b.radius + 40;
-      for (let i = 0; i < 40; i++) {
-        const x = margin + Math.random() * (bounds.width - margin * 2);
-        const y = margin + Math.random() * (bounds.height - margin * 2);
-        const clear = !zones.some(z =>
-          x > z.left - b.radius && x < z.right + b.radius &&
-          y > z.top - b.radius && y < z.bottom + b.radius);
-        if (clear) {
-          /* Move FIRST, then fade in at the destination.
-             The original order faded out over 250ms and teleported afterwards,
-             which meant a quarter second of a bubble sitting at the position we
-             had already judged illegal, at descending but fully visible opacity,
-             with `_relocating` telling the resolver to leave it alone. Fading in
-             somewhere legal costs the same 250ms and covers nothing. The bubble
-             still never appears to jump, because it is invisible while it moves. */
-          const el = b.el;
-          b._relocating = true;
-          el.style.transition = 'none';
-          el.style.opacity = '0';
-          b.x = x;
-          b.y = y;
-          b.vx = (Math.random() - 0.5) * 1.5;
-          b.vy = (Math.random() - 0.5) * 1.5;
-          // No explicit render here — `step()` renders every bubble a few lines
-          // later in this same frame, and it is the only thing that knows this
-          // layer's scroll convention. It is opacity 0 until then regardless.
-          void el.offsetWidth; // flush, or re-enabling the transition backdates the fade
-          requestAnimationFrame(() => {
-            // Legal position again, so hand it straight back to the resolver —
-            // it must not be skipped for the length of the fade-in.
-            b._relocating = false;
-            el.style.transition = 'opacity 250ms ease';
-            el.style.opacity = '';
-            setTimeout(() => { el.style.transition = ''; }, 300);
-          });
-          return;
-        }
-      }
-      // No free space found (tiny viewport, dense page) — leave it be;
-      // it sits behind content at z-index 0 anyway.
+    snapshot() {
+      for (const b of this.bubbles) b.snapshot();
     }
 
-    resolveBubbleCollisions() {
-      for (let i = 0; i < this.bubbles.length; i++) {
-        for (let j = i + 1; j < this.bubbles.length; j++) {
-          const a = this.bubbles[i];
-          const b = this.bubbles[j];
-          const dx = b.x - a.x;
-          const dy = b.y - a.y;
-          const dist = Math.hypot(dx, dy);
-          const minDist = a.radius + b.radius;
-          if (dist < minDist && dist > 0.1) {
-            // Resolve overlap
-            const overlap = (minDist - dist) * 0.5;
-            const nx = dx / dist;
-            const ny = dy / dist;
-            a.x -= nx * overlap;
-            a.y -= ny * overlap;
-            b.x += nx * overlap;
-            b.y += ny * overlap;
-            // Inelastic collision (equal mass) — exchange normal velocity
-            // components with restitution so bubbles slow down on impact
-            const v1n = a.vx * nx + a.vy * ny;
-            const v2n = b.vx * nx + b.vy * ny;
-            const k = (1 + RESTITUTION) / 2;
-            a.vx += (v2n - v1n) * k * nx;
-            a.vy += (v2n - v1n) * k * ny;
-            b.vx += (v1n - v2n) * k * nx;
-            b.vy += (v1n - v2n) * k * ny;
-            const axis = Math.atan2(ny, nx);
-            a.triggerSquish(axis);
-            b.triggerSquish(axis + Math.PI);
-          }
-        }
-      }
+    render(alpha) {
+      for (const b of this.bubbles) b.render(alpha);
     }
 
-    step(mouse, zones) {
+    /**
+     * One fixed physics step.
+     * @param {number} h       step, seconds
+     * @param {object} env     { zones (layer-local), pointer: {x, y, vx, vy} | null, swayA }
+     */
+    step(h, env) {
       if (!this.active) return;
-      const scrollY = this.isFixed ? window.scrollY : 0;
-      // Scroll stir: scrolling drags the "water" the bubbles float in —
-      // they lag behind the scroll and swirl a little, then settle.
-      if (this.isFixed) {
-        if (this.lastScrollY === undefined) this.lastScrollY = scrollY;
-        const dScroll = Math.max(-SCROLL_STIR_MAX,
-                        Math.min(SCROLL_STIR_MAX, scrollY - this.lastScrollY));
-        this.lastScrollY = scrollY;
-        if (dScroll !== 0) {
-          for (const b of this.bubbles) {
-            b.vy += dScroll * SCROLL_STIR;
-            b.vx += (Math.random() - 0.5) * Math.abs(dScroll) * SCROLL_STIR * 0.5;
+      this.t += h;
+      // Parked bubbles (no legal spot on this page right now) sit out and retry every 0.5s.
+      for (const b of this.bubbles) {
+        if (b._parked && ++b._hiddenSteps >= 60) this._relocate(b, env.zones);
+      }
+      const B = this.bubbles.filter(b => !b._parked);
+      const t = this.t, P = TUNING;
+      const W = this.bounds.width, H = this.bounds.height;
+      const zones = env.zones;
+      const omega = 2 * Math.PI * P.wobbleHz, zeta = P.jelly;
+      const kCush = (180 / P.cushion) * (180 / P.cushion); // stops a cruising bubble within `cushion`
+      const cCush = 2 * 0.55 * Math.sqrt(kCush);
+      const ptr = env.pointer;
+
+      // Forces, then integrate (semi-implicit Euler).
+      for (const b of B) {
+        let ax = P.drift * (Math.sin(b.w[0] * t + b.ph[0]) + 0.6 * Math.sin(b.w[1] * t * 1.7 + b.ph[1]));
+        let ay = P.drift * (Math.cos(b.w[2] * t + b.ph[2]) + 0.6 * Math.sin(b.w[3] * t * 1.3 + b.ph[3]));
+        ay += env.swayA;
+
+        // Speed governor: a gentle push up to a minimum, extra drag above cruise. No random kicks.
+        const sp = Math.hypot(b.vx, b.vy);
+        if (sp < P.cruise * 0.35) {
+          const ux = sp > 1 ? b.vx / sp : Math.cos(b.ph[0]);
+          const uy = sp > 1 ? b.vy / sp : Math.sin(b.ph[0]);
+          ax += ux * 30; ay += uy * 30;
+        }
+        const over = Math.max(0, sp - P.cruise) / Math.max(sp, 1);
+        ax -= b.vx * over * 2.2; ay -= b.vy * over * 2.2;
+
+        b.ta = 0; b.tb = 0;
+        if (ptr) {
+          const dx = b.x - ptr.x, dy = b.y - ptr.y, d = Math.hypot(dx, dy);
+          if (d < POINTER_RADIUS + b.radius && d > 1) {
+            const f = 1 - Math.max(0, d - b.radius * 0.5) / (POINTER_RADIUS + b.radius * 0.5);
+            const f2 = f * f, nx = dx / d, ny = dy / d;
+            ax += nx * P.push * f2; ay += ny * P.push * f2;               // push away
+            ax += (ptr.vx - b.vx) * P.drag * f2;                          // a moving pointer
+            ay += (ptr.vy - b.vy) * P.drag * f2;                          // carries bubbles along
+            const [la, lb] = along(nx, ny, -P.lean * f2);                 // flatten toward it
+            b.ta += la; b.tb += lb;
+          }
+        }
+        if (sp > 1) { // stretch along the path, more when fast
+          const [sa, sb] = along(b.vx / sp, b.vy / sp, P.stretch * Math.min(sp / 300, 2));
+          b.ta += sa; b.tb += sb;
+        }
+
+        b.vx += ax * h; b.vy += ay * h;
+        const s2 = Math.hypot(b.vx, b.vy);
+        if (s2 > MAX_SPEED) { b.vx *= MAX_SPEED / s2; b.vy *= MAX_SPEED / s2; }
+        const damp = Math.exp(-BASE_DRAG * h);
+        b.vx *= damp; b.vy *= damp;
+        b.x += b.vx * h; b.y += b.vy * h;
+      }
+
+      // Bubble pairs: a soft spring contact, so clusters jostle instead of clicking.
+      for (let i = 0; i < B.length; i++) {
+        for (let j = i + 1; j < B.length; j++) {
+          const a = B[i], b = B[j];
+          const dx = b.x - a.x, dy = b.y - a.y, d = Math.hypot(dx, dy), md = a.radius + b.radius;
+          if (d < md && d > 0.1) {
+            const nx = dx / d, ny = dy / d, o = md - d;
+            const vn = (b.vx - a.vx) * nx + (b.vy - a.vy) * ny; // < 0: approaching
+            const k = 420, c = 2 * (1 - P.bounce) * Math.sqrt(2 * k);
+            const dv = (k * o - (vn < 0 ? c * vn : 0)) * h * 0.5;
+            a.vx -= nx * dv; a.vy -= ny * dv; b.vx += nx * dv; b.vy += ny * dv;
+            const lim = Math.min(a.radius, b.radius) * 0.3;
+            if (o > lim) {
+              const p = (o - lim) * 0.5;
+              a.x -= nx * p; a.y -= ny * p; b.x += nx * p; b.y += ny * p;
+            }
+            if (vn < 0) { a.impact(nx, ny, -vn * h * 14); b.impact(nx, ny, -vn * h * 14); }
           }
         }
       }
-      // Convert inputs to this layer's coordinate space
-      const mouseLocal = this.isFixed
-        ? { x: mouse.x, y: mouse.y + scrollY }
-        : mouse;
-      const zonesLocal = this.isFixed
-        ? zones.map(z => ({
-            left: z.left,
-            top: z.top + scrollY,
-            right: z.right,
-            bottom: z.bottom + scrollY
-          }))
-        : zones;
 
-      for (const b of this.bubbles) {
-        b.applyDrift();
-        b.applyMouseRepulsion(mouseLocal);
-        b.integrate();
+      for (const b of B) {
+        let pushX = 0, pushY = 0, contested = false;
+        const push = (dx, dy) => {
+          if (Math.abs(dx) + Math.abs(dy) < PUSH_EPSILON) return;
+          if (pushX * dx + pushY * dy < 0) contested = true;
+          pushX += dx; pushY += dy;
+        };
+
+        // Walls of the layer.
+        const r = b.radius;
+        if (b.x - r < 0) { const dv = Math.max(0, -b.vx); push(r - b.x, 0); b.x = r; b.vx = dv * P.bounce; b.impact(1, 0, dv); }
+        else if (b.x + r > W) { const dv = Math.max(0, b.vx); push(W - r - b.x, 0); b.x = W - r; b.vx = -dv * P.bounce; b.impact(1, 0, dv); }
+        if (b.y - r < 0) { const dv = Math.max(0, -b.vy); push(0, r - b.y); b.y = r; b.vy = dv * P.bounce; b.impact(0, 1, dv); }
+        else if (b.y + r > H) { const dv = Math.max(0, b.vy); push(0, H - r - b.y); b.y = H - r; b.vy = -dv * P.bounce; b.impact(0, 1, dv); }
+
+        if (!b._relocating) {
+          // Soft contact: cushion inside a padded zone's buffer; hard and tangent on a picture.
+          for (const z of zones) {
+            if (b.x < z.left - r || b.x > z.right + r || b.y < z.top - r || b.y > z.bottom + r) continue;
+            const cx = Math.max(z.left, Math.min(b.x, z.right));
+            const cy = Math.max(z.top,  Math.min(b.y, z.bottom));
+            const dx = b.x - cx, dy = b.y - cy, d = Math.hypot(dx, dy);
+            let nx, ny, depth;
+            if (d > 0.01) {
+              if (d >= r) continue;
+              nx = dx / d; ny = dy / d; depth = r - d;
+            } else { // centre inside the zone: leave through the nearest edge
+              const dl = b.x - z.left, dr = z.right - b.x, dt = b.y - z.top, db = z.bottom - b.y;
+              const m = Math.min(dl, dr, dt, db);
+              if (m === dl) { nx = -1; ny = 0; } else if (m === dr) { nx = 1; ny = 0; }
+              else if (m === dt) { nx = 0; ny = -1; } else { nx = 0; ny = 1; }
+              depth = r + m;
+            }
+            const vn = b.vx * nx + b.vy * ny;
+            if (z.frame) {
+              push(nx * depth, ny * depth);
+              b.x += nx * depth; b.y += ny * depth;
+              if (vn < 0) {
+                b.vx -= (1 + P.bounce) * vn * nx; b.vy -= (1 + P.bounce) * vn * ny;
+                b.impact(nx, ny, -vn);
+              }
+            } else {
+              const dv = (kCush * depth - cCush * Math.min(0, vn)) * h;
+              b.vx += nx * dv; b.vy += ny * dv;
+              if (vn < 0) b.impact(nx, ny, Math.min(dv, -vn));
+            }
+          }
+        }
+
+        // Deformation spring toward its target, capped by size. Runs BEFORE the hard guarantee,
+        // so the guarantee checks the shape that will actually be drawn.
+        const fa = -omega * omega * (b.a - b.ta) - 2 * zeta * omega * b.va;
+        const fb = -omega * omega * (b.b - b.tb) - 2 * zeta * omega * b.vb;
+        b.va += fa * h; b.vb += fb * h;
+        b.a += b.va * h; b.b += b.vb * h;
+        // Edge bulge sqrt((1+m)/(1-m)) - 1 <= BULGE_PX / r  =>  m <= (q^2 - 1) / (q^2 + 1).
+        const q = 1 + BULGE_PX / r, mCap = Math.min(P.maxDeform, (q * q - 1) / (q * q + 1));
+        const mag = Math.hypot(b.a, b.b);
+        if (mag > mCap) { const s = mCap / mag; b.a *= s; b.b *= s; b.va *= 0.5; b.vb *= 0.5; }
+
+        // Hard guarantee: the deformed box stays HARD_MARGIN clear of every padded zone's element.
+        let unresolved = false;
+        if (!b._relocating) {
+          for (let pass = 0; pass < 4; pass++) {
+            let any = false;
+            const [hx, hy] = b.halfExtents();
+            for (const z of zones) {
+              if (z.frame) continue;
+              const I = z.inner;
+              const ox = Math.min(b.x + hx, I.right + HARD_MARGIN) - Math.max(b.x - hx, I.left - HARD_MARGIN);
+              if (ox <= 0) continue;
+              const oy = Math.min(b.y + hy, I.bottom + HARD_MARGIN) - Math.max(b.y - hy, I.top - HARD_MARGIN);
+              if (oy <= 0) continue;
+              any = true;
+              if (ox < oy) {
+                const s = b.x < (I.left + I.right) / 2 ? -1 : 1;
+                push(s * ox, 0); b.x += s * ox;
+                if (b.vx * s < 0) { b.impact(1, 0, Math.abs(b.vx)); b.vx = -b.vx * 0.4; }
+              } else {
+                const s = b.y < (I.top + I.bottom) / 2 ? -1 : 1;
+                push(0, s * oy); b.y += s * oy;
+                if (b.vy * s < 0) { b.impact(0, 1, Math.abs(b.vy)); b.vy = -b.vy * 0.4; }
+              }
+            }
+            if (!any) break;
+            if (pass === 3) unresolved = true;
+          }
+          // The walls win over everything: a bubble shoved off the page would be clipped, and a
+          // bubble shoved back on would land on the furniture again. Either way it has no legal
+          // spot here, which is exactly what `unresolved` means.
+          if (b.x - r < -0.5 || b.x + r > W + 0.5 || b.y - r < -0.5 || b.y + r > H + 0.5) unresolved = true;
+        }
+
+        // Wedge rescue. A step that cannot produce a legal position, or a run of contested shoves,
+        // relocates at once: zero overlap is the contract, so there is no grace period in which a
+        // wedged bubble may sit visibly on the furniture.
+        if (pushX || pushY) {
+          if (contested || b._lastPushX * pushX + b._lastPushY * pushY < 0) b._wedge++;
+          b._shove++;
+          b._lastPushX = pushX; b._lastPushY = pushY;
+        } else {
+          b._wedge = 0; b._shove = 0; b._lastPushX = 0; b._lastPushY = 0;
+        }
+        if (unresolved || b._wedge > WEDGE_STEPS || b._shove > SHOVE_STEPS) this._relocate(b, zones);
       }
-      this.resolveBubbleCollisions();
-      this.resolveWallCollisions();
-      this.resolveZoneCollisions(zonesLocal);
-      for (const b of this.bubbles) {
-        b.clampSpeed();
-        b.applyDamping();
-        b.recoverSquish();
-        b.render(scrollY);
+    }
+
+    /**
+     * Is (x, y) a legal resting place for b at its worst-case deformation? Uses the same rule as the
+     * hard guarantee (the box stays HARD_MARGIN clear of each padded zone's element), plus the walls
+     * and a clear circle against pictures. `relaxed` = false also requires staying out of the soft
+     * padding, which is preferred but, on pages that are nearly all zone, often impossible.
+     */
+    _isLegal(b, x, y, zones, relaxed) {
+      const r = b.radius, e = r + BULGE_PX;
+      if (x - r < 0 || x + r > this.bounds.width || y - r < 0 || y + r > this.bounds.height) return false;
+      for (const z of zones) {
+        if (z.frame) {
+          const cx = Math.max(z.left, Math.min(x, z.right)), cy = Math.max(z.top, Math.min(y, z.bottom));
+          if (Math.hypot(x - cx, y - cy) < r) return false;
+        } else if (relaxed) {
+          const I = z.inner;
+          if (x + e > I.left - HARD_MARGIN && x - e < I.right + HARD_MARGIN &&
+              y + e > I.top - HARD_MARGIN && y - e < I.bottom + HARD_MARGIN) return false;
+        } else if (x + e > z.left && x - e < z.right && y + e > z.top && y - e < z.bottom) {
+          return false;
+        }
       }
+      return true;
+    }
+
+    /* Move FIRST, then fade in at the destination. The bubble is invisible while it moves, so it
+       never appears to jump, and nothing is ever drawn at the position judged illegal. When the page
+       has no legal spot at all (Contact @1440 is almost entirely zone), the bubble stays hidden and
+       retries; a hidden bubble covers nothing. */
+    _relocate(b, zones) {
+      b._wedge = 0; b._shove = 0; b._lastPushX = 0; b._lastPushY = 0;
+      const W = this.bounds.width, H = this.bounds.height, r = b.radius;
+      let spot = null, fallback = null;
+      for (let i = 0; i < 400 && !spot; i++) {
+        const x = r + Math.random() * Math.max(1, W - 2 * r);
+        const y = r + Math.random() * Math.max(1, H - 2 * r);
+        if (this._isLegal(b, x, y, zones, false)) spot = { x, y };
+        else if (!fallback && this._isLegal(b, x, y, zones, true)) fallback = { x, y };
+      }
+      spot = spot || fallback;
+
+      const el = b.el;
+      b._relocating = true;
+      el.style.transition = 'none';
+      el.style.opacity = '0';
+      b.a = b.b = b.va = b.vb = b.pa = b.pb = 0;
+      if (!spot) {
+        b._hiddenSteps = 0; // parked: invisible, skipped by the step, retried periodically
+        b._parked = true;
+        return;
+      }
+      b._parked = false;
+      b.x = b.px = spot.x; b.y = b.py = spot.y;
+      b.vx = (Math.random() - 0.5) * 60; b.vy = (Math.random() - 0.5) * 60;
+      void el.offsetWidth; // flush, or re-enabling the transition backdates the fade
+      requestAnimationFrame(() => {
+        if (b._parked) return;
+        b._relocating = false; // legal position: hand it straight back to the resolver
+        el.style.transition = 'opacity 250ms ease';
+        el.style.opacity = '';
+        setTimeout(() => { el.style.transition = ''; }, 300);
+      });
     }
 
     destroy() {
-      window.removeEventListener('resize', this._onResize);
-      window.removeEventListener('scroll', this._onScroll);
-      if (this._resizeTimer) clearTimeout(this._resizeTimer);
       for (const b of this.bubbles) b.destroy();
       this.bubbles = [];
+      if (this.container && this.isGlobal) this.container.style.height = '';
     }
   }
 
-  // ── Hero blob physics layer ───────────────────────────────────
+  // ── Hero blob layer ─────────────────────────────────────────────
+  /* The blobs keep their own avoidance rule: soft steering off the hero mark and the INK of the
+     name/sub (heroContentRects), never the shared hard resolver, so they keep filling the hero band
+     (tests/bubbles-exclusion.spec.js asserts the soft "not parked" bar). They share only the clock,
+     the drift currents and the jelly squish. */
   class HeroBlobLayer {
     constructor() {
       this.container = document.querySelector('.brand-hero-blobs');
+      this.blobs = [];
+      this.t = 0;
+      this.zones = [];
+      this.origin = { x: 0, y: 0 };
       if (!this.container) {
         this.active = false;
-        this.blobs = [];
         return;
       }
       this.active = true;
-      this.blobs = [];
-      this._resizeTimer = null;
-      this._cRect = null; // viewport-relative container rect, cached per scroll position
-      this._onResize = this._onResize.bind(this);
-      this._invalidateRect = this._invalidateRect.bind(this);
-      window.addEventListener('resize', this._onResize);
-      window.addEventListener('scroll', this._invalidateRect, { passive: true });
 
       const els = this.container.querySelectorAll('.brand-hero-blob');
       const cRect = this.container.getBoundingClientRect();
-
       for (const el of els) {
         const style = window.getComputedStyle(el);
         const rect = el.getBoundingClientRect();
 
         let x = 0, y = 0;
-        const top = style.top;
-        const left = style.left;
-        const bottom = style.bottom;
-        const right = style.right;
+        if (style.top !== 'auto') y = parseFloat(style.top);
+        else if (style.bottom !== 'auto') y = cRect.height - parseFloat(style.bottom) - rect.height;
+        if (style.left !== 'auto') x = parseFloat(style.left);
+        else if (style.right !== 'auto') x = cRect.width - parseFloat(style.right) - rect.width;
 
-        if (top !== 'auto') y = parseFloat(top);
-        else if (bottom !== 'auto') y = cRect.height - parseFloat(bottom) - rect.height;
-
-        if (left !== 'auto') x = parseFloat(left);
-        else if (right !== 'auto') x = cRect.width - parseFloat(right) - rect.width;
-
-        // Strip CSS float animations; keep border-radius morph.
-        // The brand-float-* / brand-blob-morph-* keyframes were removed from
-        // brand.css (2026-07-12, dead code) so this is normally a no-op —
-        // kept as a guard in case blob animations return.
+        // Strip any CSS float animation (the keyframes were removed 2026-07-12; kept as a guard).
         const animName = style.animationName;
         if (animName && animName !== 'none') {
           const names = animName.split(',').map(s => s.trim());
@@ -823,7 +882,6 @@
           el.style.animation = parts.join(', ') || 'none';
         }
 
-        // Switch to transform-based positioning
         el.style.left = '0';
         el.style.top = '0';
         el.style.right = 'auto';
@@ -831,233 +889,156 @@
         el.classList.add('brand-hero-blob-physics');
 
         this.blobs.push({
-          el, x, y,
-          baseW: rect.width,
-          baseH: rect.height,
-          w: rect.width,
-          h: rect.height,
-          vx: (Math.random() - 0.5) * 0.5,
-          vy: (Math.random() - 0.5) * 0.5,
-          scaleX: 1, scaleY: 1,
-          svx: 0, svy: 0
+          el, x, y, px: x, py: y,
+          baseW: rect.width, baseH: rect.height, w: rect.width, h: rect.height,
+          vx: (Math.random() - 0.5) * 30, vy: (Math.random() - 0.5) * 30,
+          a: 0, b: 0, va: 0, vb: 0, pa: 0, pb: 0,
+          ph: [0, 1, 2, 3].map(() => Math.random() * Math.PI * 2),
+          fw: [0.21, 0.33, 0.27, 0.39].map(w => w * (0.7 + Math.random() * 0.6))
         });
       }
-
-      this._syncBoundsAndScale();
+      this.syncBoundsAndScale();
     }
 
-    _queryBounds() {
+    measure() {
+      if (!this.active) return;
       const r = this.container.getBoundingClientRect();
-      return { width: r.width, height: r.height };
+      this.bounds = { width: r.width, height: r.height };
+      this.origin = { x: r.left + window.scrollX, y: r.top + window.scrollY };
+      const ox = this.origin.x, oy = this.origin.y;
+      this.zones = heroContentRects().map(z => ({
+        left: z.left - ox, top: z.top - oy, right: z.right - ox, bottom: z.bottom - oy
+      }));
     }
 
-    _invalidateRect() {
-      this._cRect = null;
-    }
-
-    _syncBoundsAndScale() {
+    syncBoundsAndScale() {
+      if (!this.active) return;
       const scale = getViewportScale();
-      this._cRect = null;
-      this.cachedBounds = this._queryBounds();
+      this.measure();
       for (const b of this.blobs) {
         b.w = b.baseW * scale;
         b.h = b.baseH * scale;
         b.el.style.width = b.w + 'px';
         b.el.style.height = b.h + 'px';
-        // Clamp to new bounds
-        b.x = Math.max(0, Math.min(b.x, this.cachedBounds.width - b.w));
-        b.y = Math.max(0, Math.min(b.y, this.cachedBounds.height - b.h));
+        b.x = b.px = Math.max(0, Math.min(b.x, this.bounds.width - b.w));
+        b.y = b.py = Math.max(0, Math.min(b.y, this.bounds.height - b.h));
       }
     }
 
-    _onResize() {
-      if (this._resizeTimer) clearTimeout(this._resizeTimer);
-      this._resizeTimer = setTimeout(() => {
-        this._syncBoundsAndScale();
-      }, 50);
+    impact(b, nx, ny, dv) {
+      if (!(dv > 0)) return;
+      const omega = 2 * Math.PI * BLOB.wobbleHz;
+      const [ia, ib] = along(nx, ny, -BLOB.squish * omega * Math.min(dv, 200) / BLOB.cruise);
+      b.va += ia; b.vb += ib;
     }
 
-    step(mouse, heroZones) {
-      if (!this.active) return;
-      const bounds = this.cachedBounds || this._queryBounds();
-      const cRect = this._cRect || (this._cRect = this.container.getBoundingClientRect());
+    snapshot() {
+      for (const b of this.blobs) { b.px = b.x; b.py = b.y; b.pa = b.a; b.pb = b.b; }
+    }
 
-      const mouseLocal = {
-        x: mouse.x - cRect.left,
-        y: mouse.y - cRect.top
-      };
+    render(alpha) {
+      for (const b of this.blobs) {
+        const x = b.px + (b.x - b.px) * alpha, y = b.py + (b.y - b.py) * alpha;
+        const m = deformMatrix(b.pa + (b.a - b.pa) * alpha, b.pb + (b.b - b.pb) * alpha);
+        b.el.style.transform =
+          `translate3d(${x.toFixed(2)}px, ${y.toFixed(2)}px, 0) ` +
+          `matrix(${m[0].toFixed(4)}, ${m[2].toFixed(4)}, ${m[1].toFixed(4)}, ${m[3].toFixed(4)}, 0, 0)`;
+      }
+    }
 
-      // Viewport -> container-local, same conversion the hero bubble layer does.
-      const zonesLocal = heroZones && heroZones.length
-        ? heroZones.map(z => ({
-            left:   z.left   - cRect.left,
-            top:    z.top    - cRect.top,
-            right:  z.right  - cRect.left,
-            bottom: z.bottom - cRect.top
-          }))
-        : null;
+    /** @param {object|null} ptr pointer in PAGE space, or null */
+    step(h, ptr) {
+      if (!this.active || !this.bounds) return;
+      this.t += h;
+      const t = this.t, W = this.bounds.width, H = this.bounds.height;
+      const local = ptr ? { x: ptr.x - this.origin.x, y: ptr.y - this.origin.y } : null;
+      const omega = 2 * Math.PI * BLOB.wobbleHz;
 
       for (const b of this.blobs) {
-        // Drift
-        b.vx += (Math.random() - 0.5) * 0.015;
-        b.vy += (Math.random() - 0.5) * 0.015;
+        let ax = BLOB.drift * (Math.sin(b.fw[0] * t + b.ph[0]) + 0.6 * Math.sin(b.fw[1] * t * 1.7 + b.ph[1]));
+        let ay = BLOB.drift * (Math.cos(b.fw[2] * t + b.ph[2]) + 0.6 * Math.sin(b.fw[3] * t * 1.3 + b.ph[3]));
 
-        // Minimum speed
-        const speed = Math.hypot(b.vx, b.vy);
-        if (speed < 0.2) {
-          const angle = Math.random() * Math.PI * 2;
-          b.vx += Math.cos(angle) * 0.06;
-          b.vy += Math.sin(angle) * 0.06;
+        const sp = Math.hypot(b.vx, b.vy);
+        if (sp < BLOB.minSpeed) {
+          const ux = sp > 0.5 ? b.vx / sp : Math.cos(b.ph[0]);
+          const uy = sp > 0.5 ? b.vy / sp : Math.sin(b.ph[0]);
+          ax += ux * BLOB.minSpeedAccel; ay += uy * BLOB.minSpeedAccel;
         }
 
-        // Mouse repulsion
-        const dx = (b.x + b.w / 2) - mouseLocal.x;
-        const dy = (b.y + b.h / 2) - mouseLocal.y;
-        const dist = Math.hypot(dx, dy);
-        if (dist < 240 && dist > 1) {
-          const strength = 0.2 * (1 - dist / 240);
-          b.vx += (dx / dist) * strength;
-          b.vy += (dy / dist) * strength;
+        const bcx = b.x + b.w / 2, bcy = b.y + b.h / 2;
+        if (local) {
+          const dx = bcx - local.x, dy = bcy - local.y, d = Math.hypot(dx, dy);
+          if (d < BLOB.repelRadius && d > 1) {
+            const f = BLOB.repel * (1 - d / BLOB.repelRadius);
+            ax += (dx / d) * f; ay += (dy / d) * f;
+          }
         }
 
-        // Hero-content repulsion. Steering, not clamping: a hard ejection
-        // would read as a glitch on shapes this large and slow, so the blob
-        // is pushed off the logo/name with the same soft force the mouse
-        // uses, and settles just clear of it.
-        if (zonesLocal) {
-          const bcx = b.x + b.w / 2;
-          const bcy = b.y + b.h / 2;
-          for (const z of zonesLocal) {
-            // Nearest point on the zone to the blob centre.
-            const nx = Math.max(z.left, Math.min(bcx, z.right));
-            const ny = Math.max(z.top,  Math.min(bcy, z.bottom));
-            const zdx = bcx - nx;
-            const zdy = bcy - ny;
-            const zdist = Math.hypot(zdx, zdy);
-            const reach = b.w / 2; // clear when the blob no longer covers it
-
-            if (zdist < reach) {
-              const falloff = 1 - zdist / reach;
-              if (zdist > 1) {
-                b.vx += (zdx / zdist) * BLOB_ZONE_PUSH * falloff;
-                b.vy += (zdy / zdist) * BLOB_ZONE_PUSH * falloff;
-              } else {
-                // Centre sits exactly on the zone: push toward the nearer
-                // horizontal edge rather than dividing by ~zero.
-                const zcx = (z.left + z.right) / 2;
-                b.vx += (bcx < zcx ? -1 : 1) * BLOB_ZONE_PUSH;
-              }
+        // Soft steering off the hero copy: pushed with a falloff, settles just clear of it.
+        for (const z of this.zones) {
+          const nx = Math.max(z.left, Math.min(bcx, z.right));
+          const ny = Math.max(z.top,  Math.min(bcy, z.bottom));
+          const zdx = bcx - nx, zdy = bcy - ny, zd = Math.hypot(zdx, zdy);
+          const reach = b.w / 2;
+          if (zd < reach) {
+            const falloff = 1 - zd / reach;
+            if (zd > 1) {
+              ax += (zdx / zd) * BLOB.zonePush * falloff;
+              ay += (zdy / zd) * BLOB.zonePush * falloff;
+            } else {
+              ax += (bcx < (z.left + z.right) / 2 ? -1 : 1) * BLOB.zonePush;
             }
           }
         }
 
-        // Integrate
-        b.x += b.vx;
-        b.y += b.vy;
-
-        // Clamp speed
-        const s = Math.hypot(b.vx, b.vy);
-        if (s > 0.8) {
-          b.vx = (b.vx / s) * 0.8;
-          b.vy = (b.vy / s) * 0.8;
-        }
-
-        // Damping
-        b.vx *= 0.994;
-        b.vy *= 0.994;
-
-        // Wall collisions with squish
-        let hit = false;
-        let axis = 0;
-        if (b.x < 0) {
-          b.x = 0;
-          b.vx = Math.abs(b.vx) * 0.8;
-          hit = true; axis = 0;
-        } else if (b.x + b.w > bounds.width) {
-          b.x = bounds.width - b.w;
-          b.vx = -Math.abs(b.vx) * 0.8;
-          hit = true; axis = Math.PI;
-        }
-        if (b.y < 0) {
-          b.y = 0;
-          b.vy = Math.abs(b.vy) * 0.8;
-          hit = true; axis = Math.PI / 2;
-        } else if (b.y + b.h > bounds.height) {
-          b.y = bounds.height - b.h;
-          b.vy = -Math.abs(b.vy) * 0.8;
-          hit = true; axis = -Math.PI / 2;
-        }
-
-        if (hit) {
-          const c = Math.cos(axis);
-          const s_ = Math.sin(axis);
-          b.scaleX = 1 - 0.12 * Math.abs(c);
-          b.scaleY = 1 + 0.12 * 0.5 * Math.abs(s_);
-        }
-
-        // Recover squish
-        b.svx += (1 - b.scaleX) * 0.1;
-        b.svy += (1 - b.scaleY) * 0.1;
-        b.scaleX += b.svx;
-        b.scaleY += b.svy;
-        b.svx *= 0.85;
-        b.svy *= 0.85;
-
-        if (Math.abs(b.scaleX - 1) < 0.005 && Math.abs(b.scaleY - 1) < 0.005) {
-          b.scaleX = 1; b.scaleY = 1; b.svx = 0; b.svy = 0;
-        }
-
-        // Render
-        b.el.style.transform = `translate(${b.x.toFixed(1)}px, ${b.y.toFixed(1)}px) scale(${b.scaleX.toFixed(3)}, ${b.scaleY.toFixed(3)})`;
+        b.vx += ax * h; b.vy += ay * h;
+        const s2 = Math.hypot(b.vx, b.vy);
+        if (s2 > BLOB.cruise) { const k = Math.exp(-3 * h * (s2 - BLOB.cruise) / s2); b.vx *= k; b.vy *= k; }
+        const s3 = Math.hypot(b.vx, b.vy);
+        if (s3 > BLOB.maxSpeed) { b.vx *= BLOB.maxSpeed / s3; b.vy *= BLOB.maxSpeed / s3; }
+        const damp = Math.exp(-BLOB.drag * h);
+        b.vx *= damp; b.vy *= damp;
+        b.x += b.vx * h; b.y += b.vy * h;
       }
 
-      // Blob-blob collisions
+      // Blob-blob soft collisions.
       for (let i = 0; i < this.blobs.length; i++) {
         for (let j = i + 1; j < this.blobs.length; j++) {
-          const a = this.blobs[i];
-          const b = this.blobs[j];
-          const cx1 = a.x + a.w / 2;
-          const cy1 = a.y + a.h / 2;
-          const cx2 = b.x + b.w / 2;
-          const cy2 = b.y + b.h / 2;
-          const dx = cx2 - cx1;
-          const dy = cy2 - cy1;
-          const dist = Math.hypot(dx, dy);
-          const minDist = (Math.max(a.w, a.h) + Math.max(b.w, b.h)) / 2 * 0.65;
-
-          if (dist < minDist && dist > 0.1) {
-            const overlap = (minDist - dist) * 0.5;
-            const nx = dx / dist;
-            const ny = dy / dist;
-            a.x -= nx * overlap;
-            a.y -= ny * overlap;
-            b.x += nx * overlap;
-            b.y += ny * overlap;
-
-            const v1n = a.vx * nx + a.vy * ny;
-            const v2n = b.vx * nx + b.vy * ny;
-            const k = (1 + RESTITUTION) / 2;
-            a.vx += (v2n - v1n) * k * nx;
-            a.vy += (v2n - v1n) * k * ny;
-            b.vx += (v1n - v2n) * k * nx;
-            b.vy += (v1n - v2n) * k * ny;
-
-            const axis = Math.atan2(ny, nx);
-            const c = Math.cos(axis);
-            const s = Math.sin(axis);
-            a.scaleX = 1 - 0.14 * Math.abs(c);
-            a.scaleY = 1 + 0.14 * 0.5 * Math.abs(s);
-            b.scaleX = 1 - 0.14 * Math.abs(c);
-            b.scaleY = 1 + 0.14 * 0.5 * Math.abs(s);
+          const a = this.blobs[i], b = this.blobs[j];
+          const dx = (b.x + b.w / 2) - (a.x + a.w / 2), dy = (b.y + b.h / 2) - (a.y + a.h / 2);
+          const d = Math.hypot(dx, dy);
+          const md = (Math.max(a.w, a.h) + Math.max(b.w, b.h)) / 2 * 0.65;
+          if (d < md && d > 0.1) {
+            const nx = dx / d, ny = dy / d, o = (md - d) * 0.5;
+            a.x -= nx * o; a.y -= ny * o; b.x += nx * o; b.y += ny * o;
+            const v1 = a.vx * nx + a.vy * ny, v2 = b.vx * nx + b.vy * ny;
+            if (v1 - v2 > 0) {
+              const k = (1 + BLOB.bounce) / 2;
+              a.vx += (v2 - v1) * k * nx; a.vy += (v2 - v1) * k * ny;
+              b.vx += (v1 - v2) * k * nx; b.vy += (v1 - v2) * k * ny;
+              this.impact(a, nx, ny, v1 - v2);
+              this.impact(b, nx, ny, v1 - v2);
+            }
           }
         }
+      }
+
+      for (const b of this.blobs) {
+        if (b.x < 0) { const dv = Math.max(0, -b.vx); b.x = 0; b.vx = dv * BLOB.bounce; this.impact(b, 1, 0, dv); }
+        else if (b.x + b.w > W) { const dv = Math.max(0, b.vx); b.x = W - b.w; b.vx = -dv * BLOB.bounce; this.impact(b, 1, 0, dv); }
+        if (b.y < 0) { const dv = Math.max(0, -b.vy); b.y = 0; b.vy = dv * BLOB.bounce; this.impact(b, 0, 1, dv); }
+        else if (b.y + b.h > H) { const dv = Math.max(0, b.vy); b.y = H - b.h; b.vy = -dv * BLOB.bounce; this.impact(b, 0, 1, dv); }
+
+        const fa = -omega * omega * b.a - 2 * BLOB.jelly * omega * b.va;
+        const fb = -omega * omega * b.b - 2 * BLOB.jelly * omega * b.vb;
+        b.va += fa * h; b.vb += fb * h;
+        b.a += b.va * h; b.b += b.vb * h;
+        const mag = Math.hypot(b.a, b.b);
+        if (mag > BLOB.maxDeform) { const s = BLOB.maxDeform / mag; b.a *= s; b.b *= s; b.va *= 0.5; b.vb *= 0.5; }
       }
     }
 
     destroy() {
-      window.removeEventListener('resize', this._onResize);
-      window.removeEventListener('scroll', this._invalidateRect);
-      if (this._resizeTimer) clearTimeout(this._resizeTimer);
       for (const b of this.blobs) {
         b.el.classList.remove('brand-hero-blob-physics');
         b.el.style.transform = '';
@@ -1065,6 +1046,8 @@
         b.el.style.top = '';
         b.el.style.right = '';
         b.el.style.bottom = '';
+        b.el.style.width = '';
+        b.el.style.height = '';
         b.el.style.animation = '';
       }
       this.blobs = [];
@@ -1074,56 +1057,47 @@
   // ── Main engine ─────────────────────────────────────────────────
   class PhysicsEngine {
     constructor() {
-      this.mouse = new MouseTracker();
+      this.pointer = new PointerTracker();
       this.running = false;
       this.rAF = null;
 
-      // Build exclusion selector list
       const extraSel = document.querySelector('.brand-bubbles-global')?.dataset.exclusions || '';
       const extra = extraSel.split(',').map(s => s.trim()).filter(Boolean);
       const hasHero = !!document.querySelector('#hero');
       const selectors = [...DEFAULT_EXCLUSIONS, ...(hasHero ? HOME_EXCLUSIONS : []), ...extra];
+
+      // Zones first: the layers seed against them.
       this.zones = new ExclusionZoneTracker(selectors);
 
-      /* Seeding zones, converted into each layer's own space. The tracker's
-         rects are VIEWPORT-relative; the fixed global layer works in DOCUMENT
-         space (`render(scrollY)` subtracts the scroll on the way out) and the
-         hero layer works in container-local space. Getting this wrong would
-         seed bubbles clear of the wrong rectangles, which fails silently. */
-      const seedZones = (container, isFixed) => {
-        const rects = this.zones.rects;
-        if (isFixed) {
-          const scrollY = window.scrollY;
-          return rects.map(z => ({
-            left: z.left, right: z.right,
-            top: z.top + scrollY, bottom: z.bottom + scrollY
-          }));
-        }
-        const c = container.getBoundingClientRect();
-        return rects.map(z => ({
-          left:   z.left   - c.left,
-          right:  z.right  - c.left,
-          top:    z.top    - c.top,
-          bottom: z.bottom - c.top
-        }));
-      };
-
-      // Create layers
-      this.globalLayer = new BubbleLayer('.brand-bubbles-global', 7, [10, 28], true, seedZones);
-      this.heroLayer    = new BubbleLayer('.brand-bubbles-hero',   3, [40, 75], false, seedZones);
+      this.globalLayer   = new BubbleLayer('.brand-bubbles-global', 7, [10, 28], true);
+      this.heroLayer     = new BubbleLayer('.brand-bubbles-hero',   3, [40, 75], false);
       this.heroBlobLayer = new HeroBlobLayer();
 
-      // Per-frame layout caches — hero rect and derived local zones only
-      // change on scroll/resize, not every frame
-      this._heroRect = null;
-      this._zonesLocal = null;
-      this._zonesVersion = -1;
-      this._heroContentZones = null; // viewport-relative; see _loop
-      this._invalidateBounds = this._invalidateBounds.bind(this);
-      window.addEventListener('resize', this._invalidateBounds);
-      window.addEventListener('scroll', this._invalidateBounds, { passive: true });
+      const sx = window.scrollX, sy = window.scrollY;
+      this.zones.readPinned();
+      const seedZones = this.zones.pageZones(sx, sy);
+      this.globalLayer.seed(seedZones);
+      this.heroLayer.seed(seedZones);
 
-      // Visibility / intersection guards
+      // Layer geometry is re-measured with every zone refresh: never on scroll.
+      this.zones.onRefresh = () => this._measureLayers();
+
+      this._resizeTimer = null;
+      this._onResize = this._onResize.bind(this);
+      window.addEventListener('resize', this._onResize);
+
+      // Content growth (lazy images, expanding gallery cards) re-sizes the page layer promptly.
+      this._roPending = false;
+      this._ro = null;
+      if ('ResizeObserver' in window) {
+        this._ro = new ResizeObserver(() => {
+          if (this._roPending) return;
+          this._roPending = true;
+          requestAnimationFrame(() => { this._roPending = false; this.zones.refresh(); });
+        });
+        this._ro.observe(document.documentElement);
+      }
+
       this._onVis = this._onVis.bind(this);
       document.addEventListener('visibilitychange', this._onVis);
 
@@ -1138,83 +1112,114 @@
         this.heroObs.observe(heroEl);
       }
 
+      this._acc = 0;
+      this._last = null;
+      this._sv = 0;               // smoothed page scroll velocity, px/s
+      this._lastScrollY = sy;
+
       this._loop = this._loop.bind(this);
       this.running = true;
-      this._loop();
+      this._loop(performance.now());
+    }
+
+    _measureLayers() {
+      this.globalLayer.measure();
+      this.heroLayer.measure();
+      this.heroBlobLayer.measure();
+    }
+
+    _onResize() {
+      if (this._resizeTimer) clearTimeout(this._resizeTimer);
+      this._resizeTimer = setTimeout(() => {
+        this.globalLayer.rescale();
+        this.heroLayer.rescale();
+        this.heroBlobLayer.syncBoundsAndScale();
+        this.zones.refresh();
+      }, 150);
     }
 
     _onVis() {
       if (document.visibilityState === 'hidden') {
         this.running = false;
         if (this.rAF) cancelAnimationFrame(this.rAF);
-      } else {
+      } else if (!this.running) {
         this.running = true;
-        this._invalidateBounds(); // layout may have shifted while hidden
-        this._loop();
+        this._last = null;  // no catch-up for the time spent hidden
+        this.zones.refresh(); // layout may have shifted while hidden
+        this._loop(performance.now());
       }
     }
 
-    _invalidateBounds() {
-      this._heroRect = null;
-      this._heroContentZones = null; // recomputed lazily in _loop
-      if (this.heroBlobLayer && this.heroBlobLayer.active) {
-        this.heroBlobLayer._invalidateRect();
-      }
-    }
-
-    _loop() {
+    /** One animation frame. `t` is the rAF timestamp and is the ONLY clock the physics reads. */
+    _loop(t) {
       if (!this.running) return;
-      // Global layer uses document coordinates — bubbles scroll with the page
-      this.globalLayer.step(this.mouse, this.zones.rects);
-      // Hero layer uses container-local coordinates — convert mouse and zones
-      if (this.heroLayer.active) {
-        let heroRect = this._heroRect;
-        if (!heroRect) {
-          heroRect = this._heroRect = this.heroLayer.container.getBoundingClientRect();
-          this._zonesLocal = null; // rect moved, cached local zones are stale
-        }
-        if (!this._zonesLocal || this._zonesVersion !== this.zones.version) {
-          this._zonesVersion = this.zones.version;
-          this._zonesLocal = this.zones.rects.map(z => ({
-            left:   z.left   - heroRect.left,
-            top:    z.top    - heroRect.top,
-            right:  z.right  - heroRect.left,
-            bottom: z.bottom - heroRect.top
-          }));
-        }
-        const mouseLocal = {
-          x: this.mouse.x - heroRect.left,
-          y: this.mouse.y - heroRect.top
+      if (typeof t !== 'number') t = performance.now();
+      const dt = this._last === null ? STEP : Math.min(MAX_FRAME_DT, Math.max(0, (t - this._last) / 1000));
+      this._last = t;
+
+      // Reads first, before this frame writes anything.
+      const sx = window.scrollX, sy = window.scrollY;
+      this.zones.readPinned();
+      const zonesPage = this.zones.pageZones(sx, sy);
+
+      // Smoothed scroll speed -> sway, so bubbles trail a scroll like water and settle after.
+      const raw = dt > 0 ? (sy - this._lastScrollY) / dt : 0;
+      this._lastScrollY = sy;
+      this._sv += (raw - this._sv) * (1 - Math.exp(-dt * 8));
+      const swayA = Math.max(-500, Math.min(500, this._sv * TUNING.sway));
+
+      const ptr = this.pointer;
+      ptr.decay(dt, t / 1000);
+      const pagePtr = ptr.active ? { x: ptr.x + sx, y: ptr.y + sy, vx: ptr.vx, vy: ptr.vy } : null;
+
+      const G = this.globalLayer, Hr = this.heroLayer, Bl = this.heroBlobLayer;
+      const gEnv = { zones: G.active ? G.localZones(zonesPage) : [], pointer: pagePtr, swayA };
+      let hEnv = null;
+      if (Hr.active) {
+        const ox = Hr.origin.x, oy = Hr.origin.y;
+        hEnv = {
+          zones: Hr.localZones(zonesPage),
+          pointer: pagePtr ? { x: pagePtr.x - ox, y: pagePtr.y - oy, vx: pagePtr.vx, vy: pagePtr.vy } : null,
+          swayA
         };
-        this.heroLayer.step(mouseLocal, this._zonesLocal);
       }
-      // Hero blobs use container-local coordinates; skip when the hero
-      // is scrolled out of view (blobs only live inside #hero)
-      if (this._heroVisible) {
-        // These zones are viewport-relative, so they go stale on scroll for
-        // exactly the same reason the blob container rect does. Invalidate
-        // them together, or a fresh rect gets paired with stale zones and the
-        // blobs dodge empty space. Cached otherwise: this measures a Range,
-        // and the logo/headings only move on reflow.
-        if (!this.heroBlobLayer._cRect) this._heroContentZones = null;
-        if (!this._heroContentZones) this._heroContentZones = heroContentRects();
-        this.heroBlobLayer.step(this.mouse, this._heroContentZones);
+      const blobsOn = this._heroVisible && Bl.active;
+
+      this._acc += dt;
+      let n = 0;
+      while (this._acc >= STEP && n < MAX_SUBSTEPS) {
+        G.snapshot();
+        if (hEnv) Hr.snapshot();
+        if (blobsOn) Bl.snapshot();
+        G.step(STEP, gEnv);
+        if (hEnv) Hr.step(STEP, hEnv);
+        if (blobsOn) Bl.step(STEP, pagePtr);
+        this._acc -= STEP;
+        n++;
       }
+      if (n === MAX_SUBSTEPS) this._acc = 0;
+
+      const alpha = this._acc / STEP;
+      G.render(alpha);
+      if (hEnv) Hr.render(alpha);
+      if (blobsOn) Bl.render(alpha);
+
       this.rAF = requestAnimationFrame(this._loop);
     }
 
     destroy() {
       this.running = false;
       if (this.rAF) cancelAnimationFrame(this.rAF);
-      window.removeEventListener('resize', this._invalidateBounds);
-      window.removeEventListener('scroll', this._invalidateBounds);
+      if (this._resizeTimer) clearTimeout(this._resizeTimer);
+      window.removeEventListener('resize', this._onResize);
       document.removeEventListener('visibilitychange', this._onVis);
-      this.mouse.destroy();
+      if (this._ro) this._ro.disconnect();
+      if (this.heroObs) this.heroObs.disconnect();
+      this.pointer.destroy();
       this.zones.destroy();
       this.globalLayer.destroy();
       this.heroLayer.destroy();
       this.heroBlobLayer.destroy();
-      if (this.heroObs) this.heroObs.disconnect();
     }
   }
 

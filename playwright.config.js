@@ -36,11 +36,12 @@ export default defineConfig({
     {
       // Mobile Safari surface. Deliberately narrow: only the specs that guard
       // WebKit-only rendering differences run here, so the suite does not double
-      // in length. focus-ring.spec.js joins because focus behaviour is the one
+      // in length. bubbles-motion.spec.js joins for its page-space layer case (the
+      // others skip themselves here). focus-ring.spec.js joins because focus behaviour is the one
       // thing this repo only trusts after seeing it in more than one engine.
       // Needs `npx playwright install webkit` once per machine.
       name: 'webkit-mobile',
-      testMatch: /(nav-safari|focus-ring|gallery-mockups)\.spec\.js/,
+      testMatch: /(nav-safari|focus-ring|gallery-mockups|bubbles-motion)\.spec\.js/,
       use: { ...devices['iPhone 13'] },
     },
   ],

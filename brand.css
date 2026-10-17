@@ -2211,9 +2211,20 @@ html.dark .brand-glow-text {
 }
 
 /* ── Bubble physics layers ──────────────────────────────────── */
+/* PAGE space, not `position: fixed` (2026-10-16). A fixed layer had to be moved back by the scroll
+   offset every animation frame, and the browser scrolls on its compositor thread first, so the
+   bubbles lagged each scroll by its full distance and then snapped. In page space the browser
+   scrolls bubbles and content together. `bubbles.js` sets the height to the document's height,
+   read from <html>'s box so the layer can never stretch the page; `overflow: clip` keeps a bubble
+   at the bottom edge from adding scroll. Its containing block is the initial one (a direct child
+   of <body>, no positioned ancestor), so top: 0 is the top of the document. */
 .brand-bubbles-global {
-  position: fixed;
-  inset: 0;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  overflow: clip;
   pointer-events: none;
   z-index: 0;
 }

@@ -1,0 +1,27 @@
+{
+  "scrollLockstep": {
+    "scrolled": 300,
+    "meanLagPx": 300,
+    "maxLagPx": 300
+  },
+  "layoutReads": {
+    "idleReads": 265,
+    "scrollReads": 4770,
+    "scrollEvents": 90,
+    "readsPerScrollEvent": 50.05555555555556
+  },
+  "scrollSmoothness": {
+    "samples": 1246,
+    "p50": 0.14120962489282393,
+    "p95": 0.41151270259611916,
+    "p99": 2.8963205364876803,
+    "max": 5.489746004791323,
+    "snapsOver4px": 5,
+    "longAnimationFrames": 0
+  },
+  "frameRate": {
+    "pxPerSecondAt60": 22.89531568328877,
+    "pxPerSecondAt120": 45.69791606655516,
+    "ratio120to60": 1.995950468589081
+  }
+}

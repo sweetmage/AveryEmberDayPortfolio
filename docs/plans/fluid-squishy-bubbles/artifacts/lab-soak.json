@@ -1,0 +1,12 @@
+{
+  "page": "docs/mockups/bubble-feel-lab.html",
+  "date": "2026-10-16",
+  "browser": "T3 preview (Chromium), 1280x800",
+  "frames": 1500,
+  "events": "throw every 250 frames; smooth scroll +600px and -300px every 400 frames",
+  "metric": "worst visible bubble box overlap with any protected (.z) element, px^2, sampled every frame (proposed) and every 5th frame (today)",
+  "proposedWorstOverlapPx2": 0,
+  "proposedFramesWithOverlap": 0,
+  "todayWorstOverlapPx2": 916.39,
+  "fps": 61
+}

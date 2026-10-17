@@ -23,6 +23,19 @@ before a push ships in the same deploy.
 
 ### Ready to build now
 
+- [~] **Fluid, squishy bubbles (shxdowloop 2026-10-16), waiting for the user's review.** Branch
+      `shxdowloop/2026-10-16/fluid-squishy-bubbles`; plan `docs/plans/2026-10-16-fluid-squishy-bubbles-shxdowloop.md`.
+      Page-space layer (no scroll lag), page-space zones, fixed 120Hz clock, jelly squish, cushioned
+      contacts, pointer flick. Next: the user tries it on the review link, then a separate yes to merge
+      into `portfoliowebsite` (a 15-credit production deploy).
+- [ ] **Two WebKit specs fail on SOL at the base commit too** (`focus-ring.spec.js:124`,
+      `gallery-mockups.spec.js:119`, checked 2026-10-16 on `9f9f960`); Playwright WebKit renders the
+      site at ~4fps there. Not caused by the bubble work; investigate separately.
+- [ ] **`gallery-expand.spec.js` filter-diagonal tests wait a fixed 60ms** for the view transition,
+      which starts 55-79ms after the click on SOL with or without the bubble engine (measured
+      2026-10-16). They pass in normal full runs and fail now and then under `--repeat-each` load.
+      Wait for the transition instead of a fixed timeout.
+
 - [x] **Brand voice and tone: approved 2026-10-14** and live on the Brand page on the loop branch (`BrandVoice` in `app/portfolio/BrandProject.tsx`, after *Type System*). The user removed "Use US spelling. Use one title: Brand & Visual Designer." before approving. Draft and rules: `docs/plans/2026-10-13-brand-voice-draft.md`, `.agents/memories/brand-voice.md`.
 - [x] **Push the loop branch to `portfoliowebsite`** (one 15-credit production deploy): done 2026-10-14 at the user's "deploy". Baselines regenerated on SOL (48), 147 non-visual tests green, final signoff PASS.
 - [ ] **Alt text for the five SECTION 6 logos is a first draft.** Written by the agent in
