@@ -23,19 +23,6 @@ before a push ships in the same deploy.
 
 ### Ready to build now
 
-- [~] **Fluid, squishy bubbles (shxdowloop 2026-10-16), waiting for the user's review.** Branch
-      `shxdowloop/2026-10-16/fluid-squishy-bubbles`; plan `docs/plans/2026-10-16-fluid-squishy-bubbles-shxdowloop.md`.
-      Page-space layer (no scroll lag), page-space zones, fixed 120Hz clock, jelly squish, cushioned
-      contacts, pointer flick. Next: the user tries it on the review link, then a separate yes to merge
-      into `portfoliowebsite` (a 15-credit production deploy).
-- [~] **SECTION 6 logo descriptions rewritten (shxdowloop 2026-10-17), waiting for the user's review.**
-      Branch `shxdowloop/2026-10-17/section6-logo-descriptions`, stacked on the bubble branch above, so
-      merging it ships both. Plan `docs/plans/2026-10-17-section6-logo-descriptions-shxdowloop.md`.
-- [x] **Two WebKit specs failing on SOL: fixed 2026-10-17 (Entry 169).** `focus-ring` could not
-      Tab to links in Windows WebKit; `gallery-mockups` passed but took ~50s against a 30s limit.
-- [x] **`gallery-expand.spec.js` fixed 60ms waits: fixed 2026-10-17 (Entry 169).** The filter
-      tests now wait for the view transition to start.
-
 - [x] **Brand voice and tone: approved 2026-10-14** and live on the Brand page on the loop branch (`BrandVoice` in `app/portfolio/BrandProject.tsx`, after *Type System*). The user removed "Use US spelling. Use one title: Brand & Visual Designer." before approving. Draft and rules: `docs/plans/2026-10-13-brand-voice-draft.md`, `.agents/memories/brand-voice.md`.
 - [x] **Push the loop branch to `portfoliowebsite`** (one 15-credit production deploy): done 2026-10-14 at the user's "deploy". Baselines regenerated on SOL (48), 147 non-visual tests green, final signoff PASS.
 - [ ] **Alt text for the five SECTION 6 logos is a first draft.** Written by the agent in
@@ -99,6 +86,17 @@ Full detail in `LOGBOOK.md` (newest-first). Plan docs live in `docs/plans/`; ear
 consolidated in [`docs/archives/plans.md`](docs/archives/plans.md).
 
 ### 2026-10
+
+- **Oct 18** — **Netlify ignore rule now skips `tests/` and `playwright.config.js`.** A push that touches only docs,
+  agent files, Playwright specs or its config no longer starts a billed build; none of them reach `out/`.
+
+- **Oct 17** — **LIVE on `portfoliowebsite` (`70985ab..21beab5`): fluid, squishy bubbles and the rewritten SECTION 6 logo
+  descriptions.** Page-space layer with no scroll lag, page-space zones, jelly squish, cushioned contacts, pointer flick;
+  plans `docs/plans/2026-10-16-fluid-squishy-bubbles-shxdowloop.md` and `docs/plans/2026-10-17-section6-logo-descriptions-shxdowloop.md`.
+
+- **Oct 17** — **Standing test failures fixed (`2268cae`, Entry 169).** `focus-ring` reaches links in Windows WebKit by script
+  focus after a keyboard Tab; `gallery-mockups` has a 120s limit for its ~50s walk; the `gallery-expand` filter tests wait for
+  the view transition instead of a fixed 60ms. Full suite twice: 246 passed, 0 failed, 5 skipped.
 
 - **Oct 14** — **RELEASED (second push): White Rose 2x2, Tools rows, Brand alt text.** The four White Rose logos sit
   two by two from 768px in the user's order; Mistrust has a Tools row with one Figma pill; Brand has the user's
