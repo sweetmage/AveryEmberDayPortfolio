@@ -22,12 +22,12 @@ export default function MistrustProject() {
           Description
         </h4>
         <p className="project-desc">
-          A long-form Instagram carousel series with 3 sets of 10 slides examining
-          the roots and ripple effects of medical mistrust, spanning the Tuskegee
-          syphilis study, HIV/AIDS era stigma, contemporary LGBTQ+ health
-          disparities, and the community-led models offering a way forward. Backed
-          by full preproduction including moodboard, storyboards, and process
-          documentation.
+          A 30-slide Instagram carousel series, in three sets of 10, on the
+          roots and ripple effects of medical mistrust: the Tuskegee syphilis
+          study, the stigma of the HIV/AIDS era, LGBTQ+ health disparities
+          today, and the community-led care offering a way forward. I made it at
+          every stage, from the research and sources to the writing, the
+          moodboard and storyboards, and the final slide design in Figma.
         </p>
       </section>
 

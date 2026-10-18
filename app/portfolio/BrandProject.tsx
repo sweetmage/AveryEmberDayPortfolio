@@ -311,9 +311,13 @@ export default function BrandProject() {
           Description
         </h4>
         <p className="project-desc">
-          A complete personal brand identity system: logos, color, type, and
-          applications. Built to work across dark and light contexts with a
-          consistent voice.
+          A complete personal brand identity system: logos, color, type and
+          voice, built to work together. The look is soft and bright, with
+          bubbly logos in Brand Blue, pops of neon and gold, and clean type in
+          Sriracha, Outfit and Inter. The voice is clear, warm and quietly
+          playful, like a good conversation over coffee. Every piece is reusable
+          and built to last across print and digital, from business cards and
+          posters to this website, in dark and light.
         </p>
       </section>
 

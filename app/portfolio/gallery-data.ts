@@ -29,7 +29,8 @@ export const galleryItems: GalleryItem[] = [
     height: 1600,
     tags: ['Digital'],
     tools: ['Adobe Photoshop', 'Photography'],
-    description: '',
+    description:
+      "A portrait drawn from a photograph in Photoshop, its hand-drawn lines altered to glow an urgent red and blue. The subject's bored stare shows how one grows numb to emergencies just to survive.",
     mockups: [
       {
         src: '/images/myart/Mockups/in-danger-canvas.webp',
@@ -55,7 +56,8 @@ export const galleryItems: GalleryItem[] = [
     height: 1970,
     tags: ['Traditional', 'Digital'],
     tools: ['Adobe Photoshop', 'Colored Pencil'],
-    description: '',
+    description:
+      'A colored pencil drawing, flattened in Photoshop. The subject protects his chill vibes with both arms raised in defense, while bright pink and orange waves swirl all around.',
     mockups: [
       {
         src: '/images/myart/Mockups/chill-poster.webp',
@@ -81,7 +83,8 @@ export const galleryItems: GalleryItem[] = [
     height: 1481,
     tags: ['Traditional', 'Digital'],
     tools: ['Adobe Photoshop', 'Acrylic Paint'],
-    description: '',
+    description:
+      'An acrylic painting, flattened in Photoshop. The subject recoils in full-face disgust, with eyes squeezed into a wince and lip curled, the cool blue skin popping against a red collar and a black background.',
     mockups: [
       {
         src: '/images/myart/Mockups/gross-skateboard.webp',
