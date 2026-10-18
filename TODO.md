@@ -25,8 +25,8 @@ before a push ships in the same deploy.
 
 - [x] **Brand voice and tone: approved 2026-10-14** and live on the Brand page on the loop branch (`BrandVoice` in `app/portfolio/BrandProject.tsx`, after *Type System*). The user removed "Use US spelling. Use one title: Brand & Visual Designer." before approving. Draft and rules: `docs/plans/2026-10-13-brand-voice-draft.md`, `.agents/memories/brand-voice.md`.
 - [x] **Push the loop branch to `portfoliowebsite`** (one 15-credit production deploy): done 2026-10-14 at the user's "deploy". Baselines regenerated on SOL (48), 147 non-visual tests green, final signoff PASS.
-- [ ] **Alt text for the five SECTION 6 logos is a first draft.** Written by the agent in
-      `app/portfolio/Section6Project.tsx`; the user wanted real alt text written with them. Review it.
+- [x] **Alt text for the five SECTION 6 logos: approved as written, 2026-10-18.** The user reviewed the
+      agent's draft in `app/portfolio/Section6Project.tsx` and kept it unchanged. It is already live.
 - [ ] **Brand Assets (hidden).** Built behind `SHOW_BRAND_ASSETS = false` in `app/portfolio/BrandProject.tsx`: a
       business card and a website banner, each as design plus mockup. The user will make the pieces later;
       fill in each `design` and `mockup` and flip the flag to launch. The card mockup 4 was **not approved**;
@@ -114,7 +114,7 @@ consolidated in [`docs/archives/plans.md`](docs/archives/plans.md).
   SVG and PNG downloads, Tools row); tiles in one row from 768px, no sideways scroll at 320px; the approved Brand
   Voice and Tone section on the Brand page; Brand Assets built and hidden (`SHOW_BRAND_ASSETS = false`). Gates:
   baselines regenerated on SOL (48, two clean re-checks), 147 non-visual tests green, fresh-context final signoff
-  PASS. The logo alt text is the agent's first draft. Entries 156 to 161.
+  PASS. Entries 156 to 161.
 
 - **Oct 13** — **SECTION 6 Logo Design built (not pushed to production).** Third project tile and its page
   `/portfolio/section-6-logo-design/` (Phoenix in vivid red `#E4101E`, four White Rose SVGs and PNGs, Tools row,
