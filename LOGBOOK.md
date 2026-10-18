@@ -19,6 +19,18 @@ When this logbook exceeds ~1000 lines, split it:
 
 ---
 
+## Entry 167 - 2026-10-17
+
+**Agent:** Claude Opus 5.5 (main agent, SOL)
+**Cycle:** shxdowloop, Stage 1 (SECTION 6 logo descriptions)
+**Task:** Replace the Phoenix and White Rose descriptions on the SECTION 6 page with the user's wording.
+
+- Copy (`app/portfolio/Section6Project.tsx`), the user's words with a closing period added to the Phoenix line: "A stencil symbol representing a revolutionary movement, ignited by the legendary hero, Phoenix." and "The logo of a morally ambiguous, large scientific research corporation."
+- Branch `shxdowloop/2026-10-17/section6-logo-descriptions`, cut from the unmerged bubble branch at `e6c110d` at the user's choice. Plan: `docs/plans/2026-10-17-section6-logo-descriptions-shxdowloop.md`.
+- Plan review PASS on agy (gemini-3.8-flash-high). The Codex attempt was void (its sandbox blocked the file read), and OpenCode failed on an expired API key. The reviewer's point applied: the copy change moves pixels, so the 8 `portfolio-section-6` baselines were regenerated and the 360 light and 1440 dark captures were reviewed by eye.
+- Verification: tsc 0; `npm run build:next` 0; the export has both new strings and neither old one. Full `npm test` 3 runs: 243 passed, 2 failed every time: `focus-ring.spec.js:124` and `gallery-mockups.spec.js:119` on webkit-mobile. Both are the known base-commit failures in TODO; every visual baseline passed.
+- Not merged or deployed. Merging into `portfoliowebsite` also ships the bubble engine and is a 15-credit production deploy.
+
 ## Entry 166 - 2026-10-16
 
 **Agent:** Claude Opus 5.5 (main agent, SOL)

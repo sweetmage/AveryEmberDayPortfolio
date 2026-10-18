@@ -28,6 +28,9 @@ before a push ships in the same deploy.
       Page-space layer (no scroll lag), page-space zones, fixed 120Hz clock, jelly squish, cushioned
       contacts, pointer flick. Next: the user tries it on the review link, then a separate yes to merge
       into `portfoliowebsite` (a 15-credit production deploy).
+- [~] **SECTION 6 logo descriptions rewritten (shxdowloop 2026-10-17), waiting for the user's review.**
+      Branch `shxdowloop/2026-10-17/section6-logo-descriptions`, stacked on the bubble branch above, so
+      merging it ships both. Plan `docs/plans/2026-10-17-section6-logo-descriptions-shxdowloop.md`.
 - [ ] **Two WebKit specs fail on SOL at the base commit too** (`focus-ring.spec.js:124`,
       `gallery-mockups.spec.js:119`, checked 2026-10-16 on `9f9f960`); Playwright WebKit renders the
       site at ~4fps there. Not caused by the bubble work; investigate separately.
