@@ -19,6 +19,15 @@ When this logbook exceeds ~1000 lines, split it:
 
 ---
 
+## Entry 168 - 2026-10-17
+
+**Agent:** OpenCode, claude-opus-5-5 (main agent, SOL)
+**Task:** Proofread the SECTION 6 logo descriptions and apply the versions the user picked.
+
+- Copy (`app/portfolio/Section6Project.tsx`): Phoenix is now "A stencil symbol for a revolutionary movement ignited by the legendary hero Phoenix, sprayed onto armor, flags and walls." White Rose is now "The logo of a large, morally ambiguous research corporation." The fixes: the order and comma in "large, morally ambiguous", the comma that made "ignited" seem to describe the symbol, the plainer "for", and the sprayed-on detail brought back from the old line.
+- 8 `portfolio-section-6` baselines regenerated; 360 light and 1440 dark checked by eye.
+- Verification: tsc 0. Full `npm test` twice: run 1 had 235 passed, 3 failed and 4 skipped; run 2 had 221 passed, 4 failed and 4 skipped. Both runs had the 2 known webkit-mobile failures plus `gallery-expand.spec.js:634` (the fixed 60ms wait in TODO). That test fails 3 of 3 at `cf198cb`, before this change, as well. Run 2 also had `bubbles-exclusion.spec.js:219`, which passed 3 of 3 when run alone.
+
 ## Entry 167 - 2026-10-17
 
 **Agent:** Claude Opus 5.5 (main agent, SOL)

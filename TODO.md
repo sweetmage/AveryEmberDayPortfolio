@@ -37,6 +37,8 @@ before a push ships in the same deploy.
 - [ ] **`gallery-expand.spec.js` filter-diagonal tests wait a fixed 60ms** for the view transition,
       which starts 55-79ms after the click on SOL with or without the bubble engine (measured
       2026-10-16). They pass in normal full runs and fail now and then under `--repeat-each` load.
+      On 2026-10-17 `:634` failed in both full runs and 3 of 3 alone, at `cf198cb` too, so it is no
+      longer occasional on SOL.
       Wait for the transition instead of a fixed timeout.
 
 - [x] **Brand voice and tone: approved 2026-10-14** and live on the Brand page on the loop branch (`BrandVoice` in `app/portfolio/BrandProject.tsx`, after *Type System*). The user removed "Use US spelling. Use one title: Brand & Visual Designer." before approving. Draft and rules: `docs/plans/2026-10-13-brand-voice-draft.md`, `.agents/memories/brand-voice.md`.

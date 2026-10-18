@@ -145,8 +145,8 @@ export default function Section6Project() {
           The Phoenix Logo
         </h4>
         <p className="project-desc mb-6">
-          A stencil symbol representing a revolutionary movement, ignited by the legendary hero,
-          Phoenix.
+          A stencil symbol for a revolutionary movement ignited by the legendary hero Phoenix,
+          sprayed onto armor, flags and walls.
         </p>
         <div className={GRID}>
           <LogoCard logo={phoenix} />
@@ -158,7 +158,7 @@ export default function Section6Project() {
           White Rose
         </h4>
         <p className="project-desc mb-6">
-          The logo of a morally ambiguous, large scientific research corporation.
+          The logo of a large, morally ambiguous research corporation.
         </p>
         <div className={ROSE_GRID}>
           {roses.map((logo) => (

@@ -51,6 +51,8 @@ One work file (`app/portfolio/Section6Project.tsx`), so no track table.
 **Checkpoint:** pending
 **Notes:** Only one stage; no stage boundary to justify.
 
+**Proofread follow-up (2026-10-17, user's pick):** Phoenix "A stencil symbol for a revolutionary movement ignited by the legendary hero Phoenix, sprayed onto armor, flags and walls." White Rose "The logo of a large, morally ambiguous research corporation." Baselines regenerated again; LOGBOOK Entry 168.
+
 ## Helper roles and iteration stop conditions
 
 Plan reviewer: one round. FINDINGS of a FAIL are fixed without another round.
