@@ -222,15 +222,20 @@ test.describe('bubble exclusion zones', () => {
 
     // Guards the specific failure mode: the logo is matched by class, so
     // re-inlining or re-tagging the element cannot silently drop it again.
-    const covered = await page.evaluate(() => {
+    const r = await page.evaluate(() => {
       const logo = document.querySelector('#hero .hero-logo');
       const L = logo.getBoundingClientRect();
+      const rects = window.__bubbleEngine.zones.rects;
       // A zone carries ZONE_PADDING, so the registered rect contains the logo.
-      return window.__bubbleEngine.zones.rects.some(
+      const covered = rects.some(
         (z) => z.left <= L.left && z.top <= L.top && z.right >= L.right && z.bottom >= L.bottom
       );
+      const near = rects
+        .map((z) => ({ z, d: Math.abs(z.left - L.left) + Math.abs(z.top - L.top) }))
+        .sort((a, b) => a.d - b.d)[0];
+      return { covered, logo: [L.left, L.top, L.right, L.bottom], nearest: near && near.z, scrollY: window.scrollY, zones: rects.length };
     });
-    expect(covered).toBe(true);
+    expect(r.covered, JSON.stringify(r)).toBe(true);
   });
 
   test('hero blobs are not parked on the hero copy', async ({ page }) => {

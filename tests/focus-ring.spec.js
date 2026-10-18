@@ -152,6 +152,33 @@ test.describe('footer and skip-link rings are the accent on focus', () => {
       if (hit && !found[hit.match]) found[hit.match] = hit;
     }
 
+    /* Playwright's WebKit on Windows never Tabs to a link, with Alt, Control, Meta or
+       no modifier (measured on SOL 2026-10-17: the walk cycles theme toggle, Return to
+       top, body). The macOS Option+Tab link walk has no Windows equivalent there. For
+       a link Tab cannot reach, Tab to a button first, so focus is keyboard-visible, then
+       move focus to the link from script. WebKit keeps :focus-visible for script focus
+       that follows a keyboard-visible focus, and the read is in the same task as the
+       focus, so a ring that fades in still fails. */
+    if (browserName === 'webkit') {
+      for (const selector of CONTROLS.filter((s) => !found[s])) {
+        await page.keyboard.press(key);
+        found[selector] = await page.evaluate((s) => {
+          const el = document.querySelector(s);
+          if (!el) return null;
+          el.focus();
+          if (document.activeElement !== el) return null;
+          const cs = getComputedStyle(el);
+          return {
+            match: s,
+            focusVisible: el.matches(':focus-visible'),
+            color: cs.outlineColor,
+            width: cs.outlineWidth,
+            style: cs.outlineStyle,
+          };
+        }, selector);
+      }
+    }
+
     for (const selector of CONTROLS) {
       const hit = found[selector];
       expect(hit, `Tab never reached ${selector}`).toBeTruthy();

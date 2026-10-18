@@ -110,20 +110,38 @@ test('layout reads caused by scroll events', async ({ page }, testInfo) => {
   const r = await page.evaluate(async () => {
     const frame = () => new Promise((res) => requestAnimationFrame(() => res()));
     const FR = 90;
-    // Idle segment: the engine's own periodic refreshes, the floor to subtract.
+    /* The zone refresh runs on a 250ms TIMER, so how many land in a 90-frame segment depends on
+       wall time, not frames. Under a loaded full run the scroll segment can take longer than the
+       idle one and catch an extra refresh, ~80 reads, which read as "caused by scrolling" (failed
+       2 of 3 under --repeat-each load on SOL, 2026-10-17). So count refreshes by
+       `zones.version`, measure what one refresh costs, and take refresh reads out of both
+       segments. A read in a scroll handler is still counted: it does not bump the version. */
+    const zones = window.__bubbleEngine.zones;
+    const version = () => (zones && typeof zones.version === 'number' ? zones.version : 0);
     let c0 = window.__gbcr;
+    if (zones && typeof zones.refresh === 'function') zones.refresh();
+    const perRefresh = window.__gbcr - c0;
+    // Idle segment: the engine's own per-frame reads, the floor to subtract.
+    c0 = window.__gbcr; let v0 = version();
     for (let i = 0; i < FR; i++) await frame();
-    const idle = window.__gbcr - c0;
+    const idleRefreshes = version() - v0;
+    const idle = window.__gbcr - c0 - idleRefreshes * perRefresh;
     // Scroll segment: one scroll step per frame, same number of frames.
-    c0 = window.__gbcr; const s0 = window.__scrollEvents;
+    c0 = window.__gbcr; v0 = version(); const s0 = window.__scrollEvents; const t0 = performance.now();
     for (let i = 0; i < FR; i++) { window.scrollBy({ top: i < FR / 2 ? 24 : -24, behavior: 'instant' }); await frame(); }
-    const scrolling = window.__gbcr - c0, events = window.__scrollEvents - s0;
-    return { idleReads: idle, scrollReads: scrolling, scrollEvents: events,
+    const scrollMs = performance.now() - t0;
+    const scrollRefreshes = version() - v0;
+    const scrolling = window.__gbcr - c0 - scrollRefreshes * perRefresh;
+    const events = window.__scrollEvents - s0;
+    return { perRefresh, idleRefreshes, scrollRefreshes, scrollMs, idleReads: idle, scrollReads: scrolling, scrollEvents: events,
              readsPerScrollEvent: events ? Math.max(0, scrolling - idle) / events : 0 };
   });
   probe.layoutReads = r;
   expect(r.scrollEvents).toBeGreaterThan(30);
-  expect(r.readsPerScrollEvent).toBeLessThanOrEqual(1);
+  // Refresh reads are subtracted above, so scrolling must not be what triggers refreshes.
+  expect(r.scrollRefreshes, `scrolling triggered zone refreshes: ${JSON.stringify(r)}`)
+    .toBeLessThanOrEqual(Math.ceil(r.scrollMs / 250) + 1);
+  expect(r.readsPerScrollEvent, JSON.stringify(r)).toBeLessThanOrEqual(1);
 });
 
 test('content-relative smoothness while the page scrolls', async ({ page }, testInfo) => {

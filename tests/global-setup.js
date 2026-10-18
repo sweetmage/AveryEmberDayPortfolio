@@ -80,10 +80,15 @@ export default async function globalSetup() {
 
   // Return teardown function (Playwright calls this after all tests).
   return async () => {
-    server.kill('SIGTERM');
-    // Windows: taskkill is more reliable than SIGTERM for tree processes
+    // Windows: with `shell: true`, server.pid is cmd.exe, and `npx` and `serve` run under it.
+    // Kill the TREE, and before anything else: `server.kill` ends cmd.exe at once, which orphans
+    // `serve` so a later `taskkill /T` has no tree left to walk. Either mistake left `serve`
+    // running after every suite, holding 4322 and its working directory (found 2026-10-17: one
+    // left over from a temp worktree kept the folder locked).
     if (process.platform === 'win32') {
-      try { execSync(`taskkill /F /PID ${server.pid}`, { stdio: 'ignore' }); } catch {}
+      try { execSync(`taskkill /F /T /PID ${server.pid}`, { stdio: 'ignore' }); } catch {}
+    } else {
+      server.kill('SIGTERM');
     }
     await new Promise((r) => setTimeout(r, 500));
   };

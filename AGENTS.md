@@ -165,8 +165,11 @@ Do NOT use these in `bash` tool calls (they are PowerShell-specific and often fa
 >
 > **Playwright's WebKit on Windows renders the site at ~4fps with the bubbles on, with the old engine
 > and the new one alike** (62fps under reduced motion), so a WebKit test that waits on many animation
-> frames will time out on SOL. Two WebKit specs, `focus-ring.spec.js:124` and
-> `gallery-mockups.spec.js:119`, fail on SOL at the base commit `9f9f960` as well (checked 2026-10-16).
+> frames will time out on SOL. It also **never Tabs to a link** on Windows, with Alt, Control, Meta
+> or no modifier (the macOS Option+Tab link walk has no equivalent there), so `focus-ring.spec.js`
+> reaches links WebKit cannot Tab to by Tabbing to a button and then focusing the link from script.
+> Both WebKit failures that stood on SOL from 2026-10-16 were these two limits, fixed in the specs
+> on 2026-10-17 (LOGBOOK Entry 169).
 
 > **The two motion-enabled specs are the only coverage for anything that moves.** `bubbles-exclusion.spec.js`
 > and `gallery-expand.spec.js` both run `test.describe.configure({ mode: 'serial' })`, and both must keep

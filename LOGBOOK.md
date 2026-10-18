@@ -19,6 +19,19 @@ When this logbook exceeds ~1000 lines, split it:
 
 ---
 
+## Entry 169 - 2026-10-17
+
+**Agent:** OpenCode, claude-opus-5-5 (main agent, SOL)
+**Task:** Fix the test failures left from Entry 168, and stop the test server leaking.
+
+- `gallery-expand.spec.js`: the two filter-diagonal tests and the slide-out test waited a fixed 60ms for a transition that starts 55-79ms after the click. They now poll until the gallery's view-transition groups exist (`installTransitionWait`). Went from failing 3 of 3 to passing 15 of 15.
+- `focus-ring.spec.js:125` (webkit-mobile): Playwright's WebKit on Windows never Tabs to a link, with Alt, Control, Meta or no modifier. Measured: the walk cycles through the theme toggle, Return to top and body. For a control Tab cannot reach, WebKit now Tabs to a button and then focuses the control from script, reading the ring in the same task. Injected-regression check: `transition-all` on the skip link fails it.
+- `gallery-mockups.spec.js:119` (webkit-mobile): it was passing but took ~50s against the 30s default. It now has a 120s limit.
+- `bubbles-motion.spec.js` layout reads: the zone refresh runs on a 250ms timer, so a slow scroll segment caught extra refreshes and failed 2 of 3 under load. The test now measures what one refresh costs, subtracts refresh reads from both segments, and asserts that scrolling does not raise the refresh count. Injected-regression check: a refresh on every scroll fails it (96 refreshes in 1.5s).
+- `bubbles-exclusion.spec.js` hero logo: no repeat in 9 loaded runs. Its failure message now prints the logo rect and the nearest zone, for next time.
+- `global-setup.js` teardown: on Windows it killed cmd.exe and left `serve` running on 4322 after every suite. One left over from a temp worktree locked that folder. Fix: `taskkill /T` first. Checked: no 4322 server left after a run.
+- Full `npm test` twice, PowerShell: 246 passed, 0 failed, 5 skipped, both runs.
+
 ## Entry 168 - 2026-10-17
 
 **Agent:** OpenCode, claude-opus-5-5 (main agent, SOL)

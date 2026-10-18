@@ -117,6 +117,10 @@ test.describe('gallery print mockups', () => {
   }
 
   test('no card shows a mockup while collapsed; expanding shows exactly two', async ({ page }) => {
+    /* 24 clicks, each waiting for a stable box. Playwright's WebKit on Windows renders this
+       page slowly enough that the walk takes ~50s on SOL (measured 2026-10-17, passing), so
+       the default 30s cut it off at the eighth card. Chromium takes a few seconds. */
+    test.setTimeout(120000);
     await page.emulateMedia({ reducedMotion: 'reduce' });
     await page.setViewportSize({ width: 1440, height: 900 });
     await page.goto(`${BASE_URL}/portfolio/`, { waitUntil: 'networkidle' });

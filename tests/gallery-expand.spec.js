@@ -47,6 +47,24 @@ async function countViewTransitions(page) {
   });
 }
 
+/* A filter's view transition starts 55-79ms after the click on SOL with or without the
+   bubble engine (measured 2026-10-16), so a fixed 60ms wait often read the page before
+   anything moved. `window.waitForGalleryTransition()` polls until the gallery groups
+   exist instead. They appear in the same task that resolves `ready`, and the
+   component's `ready.then` rewrite runs as a microtask before the next poll. */
+async function installTransitionWait(page) {
+  await page.addInitScript(() => {
+    window.waitForGalleryTransition = async (timeout = 5000) => {
+      const start = performance.now();
+      while (performance.now() - start < timeout) {
+        if (document.getAnimations().some((a) => a.effect?.pseudoElement?.startsWith('::view-transition-group(vt-gal-'))) return;
+        await new Promise((resolve) => setTimeout(resolve, 5));
+      }
+      throw new Error('the gallery view transition never started');
+    };
+  });
+}
+
 /** Wait for the idle-deferred bubble engine, then let the physics settle. */
 async function waitForEngine(page, settleFrames = 300) {
   await page.waitForFunction(() => typeof window.__bubbleEngine !== 'undefined', null, { timeout: 15000 });
@@ -632,6 +650,7 @@ test.describe('gallery expand-on-click', () => {
      component adds a corner keyframe: horizontal first, then vertical. */
   for (const [from, to] of [['Digital', 'All'], ['All', 'Traditional']]) {
     test(`filtering ${from} → ${to} moves no card on a diagonal`, async ({ page }) => {
+      await installTransitionWait(page);
       await page.goto(`${BASE_URL}/portfolio/`, { waitUntil: 'networkidle' });
       if (from !== 'All') {
         await page.getByRole('button', { name: from }).click();
@@ -640,7 +659,7 @@ test.describe('gallery expand-on-click', () => {
 
       const paths = await page.evaluate(async (target) => {
         [...document.querySelectorAll('button')].find((b) => b.textContent.trim() === target).click();
-        await new Promise((resolve) => setTimeout(resolve, 60));
+        await waitForGalleryTransition();
         const xy = (t) => {
           const m = /matrix\(([^)]+)\)/.exec(t || '');
           if (!m) return null;
@@ -669,11 +688,12 @@ test.describe('gallery expand-on-click', () => {
   }
 
   test('cards a filter removes slide one space out instead of fading in place', async ({ page }) => {
+    await installTransitionWait(page);
     await page.goto(`${BASE_URL}/portfolio/`, { waitUntil: 'networkidle' });
     const result = await page.evaluate(async () => {
       const before = [...document.querySelectorAll('.gallery-item')].length;
       [...document.querySelectorAll('button')].find((b) => b.textContent.trim() === 'Traditional').click();
-      await new Promise((resolve) => setTimeout(resolve, 60));
+      await waitForGalleryTransition();
       const old = document.getAnimations().filter((a) => /^::view-transition-old\(vt-gal-\d+\)$/.test(a.effect?.pseudoElement || ''));
       const slides = old.filter((a) => a.effect.getKeyframes().some((k) => /translateX/.test(k.transform || '')));
       // Only the leaving cards' own pseudos: a staying card's old snapshot keeps

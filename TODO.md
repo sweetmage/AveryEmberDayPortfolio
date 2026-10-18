@@ -31,15 +31,10 @@ before a push ships in the same deploy.
 - [~] **SECTION 6 logo descriptions rewritten (shxdowloop 2026-10-17), waiting for the user's review.**
       Branch `shxdowloop/2026-10-17/section6-logo-descriptions`, stacked on the bubble branch above, so
       merging it ships both. Plan `docs/plans/2026-10-17-section6-logo-descriptions-shxdowloop.md`.
-- [ ] **Two WebKit specs fail on SOL at the base commit too** (`focus-ring.spec.js:124`,
-      `gallery-mockups.spec.js:119`, checked 2026-10-16 on `9f9f960`); Playwright WebKit renders the
-      site at ~4fps there. Not caused by the bubble work; investigate separately.
-- [ ] **`gallery-expand.spec.js` filter-diagonal tests wait a fixed 60ms** for the view transition,
-      which starts 55-79ms after the click on SOL with or without the bubble engine (measured
-      2026-10-16). They pass in normal full runs and fail now and then under `--repeat-each` load.
-      On 2026-10-17 `:634` failed in both full runs and 3 of 3 alone, at `cf198cb` too, so it is no
-      longer occasional on SOL.
-      Wait for the transition instead of a fixed timeout.
+- [x] **Two WebKit specs failing on SOL: fixed 2026-10-17 (Entry 169).** `focus-ring` could not
+      Tab to links in Windows WebKit; `gallery-mockups` passed but took ~50s against a 30s limit.
+- [x] **`gallery-expand.spec.js` fixed 60ms waits: fixed 2026-10-17 (Entry 169).** The filter
+      tests now wait for the view transition to start.
 
 - [x] **Brand voice and tone: approved 2026-10-14** and live on the Brand page on the loop branch (`BrandVoice` in `app/portfolio/BrandProject.tsx`, after *Type System*). The user removed "Use US spelling. Use one title: Brand & Visual Designer." before approving. Draft and rules: `docs/plans/2026-10-13-brand-voice-draft.md`, `.agents/memories/brand-voice.md`.
 - [x] **Push the loop branch to `portfoliowebsite`** (one 15-credit production deploy): done 2026-10-14 at the user's "deploy". Baselines regenerated on SOL (48), 147 non-visual tests green, final signoff PASS.
