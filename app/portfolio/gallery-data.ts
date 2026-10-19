@@ -191,7 +191,8 @@ export const galleryItems: GalleryItem[] = [
     height: 1643,
     tags: ['Traditional', 'Digital'],
     tools: ['Adobe Photoshop', 'Acrylic Paint'],
-    description: '',
+    description:
+      'An acrylic painting, color corrected in Photoshop. A subject with pale blond hair and flushed pink skin rolls their eyes back into their head, leaving only the whites. Thick black ink runs down from both eyes and the mouth, set against a smeared grey background and a red collar.',
     mockups: [
       {
         src: '/images/myart/Mockups/overflow-canvas.webp',
