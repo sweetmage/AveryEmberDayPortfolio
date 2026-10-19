@@ -19,6 +19,21 @@ When this logbook exceeds ~1000 lines, split it:
 
 ---
 
+## Entry 170 - 2026-10-18
+
+**Agent:** OpenCode, claude-opus-5-5 (C0debr34k3r, VOID), main agent
+**Cycle:** shxdowflow, copy pass
+**Task:** Finish the copy pass: Brand and Mistrust summaries and all 12 gallery descriptions, each approved by Comet.
+
+- Copy: the Brand and Mistrust summaries (`BrandProject.tsx`, `MistrustProject.tsx`) and all 12 `description` fields in `app/portfolio/gallery-data.ts`. Each was drafted from the artwork and its listed tools, then revised to Comet's corrections (e.g. Faces, Lollipop and Shadow were painted from photographs; Overflow and Beheaded were color corrected in Photoshop; Shadow is the puppy's name; Texas Lake Landscape is Canyon Lake). Started in a Claude Code session that hit its limit after Faces; continued here.
+- `tests/gallery-mockups.spec.js`: the collapsed-height check was measured with every description empty, so it failed by 30.5px once real copy showed its one-line collapsed preview (by design, plan Q1). It now adds the preview back and asserts the preview stays one clamped line (< 31px), so a broken clamp still fails.
+- Not done: visual baselines (Portfolio, Brand, Mistrust) must be regenerated on SOL, and `alt` is still the caption. Both are in TODO.md.
+- `bubbles-motion.spec.js:266` failed once under full-suite load and passed 3 of 3 alone; recorded in TODO.md as flaky, unrelated to copy.
+- Verification: `tsc --noEmit` clean; `build:next` OK and the new copy is in `out/`; full suite minus `visual-baseline.spec.js` (win32 baselines), zsh on VOID: 198 passed, 0 failed, 5 skipped. First run: 184 passed, 3 failed, 4 skipped, 12 did not run (failures above).
+- Review: own diff read; no signoff (copy and one test, no auth or permission code).
+
+---
+
 ## Entry 169 - 2026-10-17
 
 **Agent:** OpenCode, claude-opus-5-5 (main agent, SOL)

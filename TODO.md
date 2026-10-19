@@ -41,19 +41,22 @@ before a push ships in the same deploy.
       visual work. Full sequence and rationale:
       [`docs/visual-gate.md`](docs/visual-gate.md#open-item--running-the-gate-in-ci).
 
-### Waiting on the user's draft
+### Copy pass
 
-- [ ] **Copy pass — remainder of Tracks A and C.** **The About box** (Entry 119, user's draft
-      published verbatim) **and the Contact intro** (Entry 120, rewritten to stop duplicating the
-      About's closing invitation) **are done**; 16 baselines regenerated and reviewed between them.
-      Still waiting on the user's draft for: **12 gallery descriptions** (Moonlight, added Oct 6,
-      made it 12) and **both project summaries**. **The user writes the first draft; the agent
-      proofreads only.** `GalleryItem.description` is `''` on all 12 items and the render path now exists (Entry 118), so
-      the gallery side is pure data. Still outstanding from the plan: `alt` becomes a real image
-      description (the captions already became `<h3>` titles in Entry 118). Plan:
+- [x] **Copy pass: all 12 gallery descriptions and both project summaries, approved 2026-10-18**
+      (Comet, one piece at a time; Entry 170). The About box (Entry 119) and Contact intro (Entry 120)
+      were done earlier.
+- [ ] **Copy pass, Track D: regenerate the visual baselines on SOL.** The copy is now final, so this
+      is due. Every gallery card now shows a one-line description preview (about 30px taller), and the
+      Brand and Mistrust summaries changed, so the Portfolio, Brand and Mistrust snapshots will fail on
+      SOL until regenerated and reviewed (`docs/visual-gate.md`). Netlify never runs the suite, so this
+      does not hold a deploy.
+- [ ] **Copy pass: `alt` becomes a real image description** for the 12 gallery pieces (still the
+      caption today). The approved descriptions are a good source. Plan:
       [`docs/plans/2026-08-01-copy-pass-and-gallery-descriptions.md`](docs/plans/2026-08-01-copy-pass-and-gallery-descriptions.md).
-      Track D (re-baseline) is strictly last — re-baselining before the copy is final wastes the
-      review pass.
+- [ ] **Flaky under full-suite load: `bubbles-motion.spec.js:266` (pointer flick).** Failed once in a
+      full run on VOID 2026-10-18, passed 3 of 3 alone and in the next full run. Measure before
+      changing anything (AGENTS.md bubble rules).
 
 ---
 

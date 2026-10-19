@@ -110,7 +110,18 @@ test.describe('gallery print mockups', () => {
       const expected = BASE_COLLAPSED_HEIGHTS[width];
       for (const caption of CAPTIONS) {
         const box = await card(page, caption).boundingBox();
-        const want = typeof expected === 'number' ? expected : expected[caption];
+        /* The base heights were measured with every description empty. A filled
+           description adds its one-line collapsed preview, which is by design, so
+           add that line and its margin back. Every card now has one, so the
+           stretched rows from 768px up grow by the same amount. */
+        const preview = await card(page, caption).evaluate((el) => {
+          const desc = el.querySelector('.gallery-desc');
+          if (!desc) return 0;
+          return desc.getBoundingClientRect().height + parseFloat(getComputedStyle(desc).marginTop);
+        });
+        // One clamped line (8px margin + 15px * 1.5), never the full paragraph.
+        expect(preview, `${caption} preview is one line`).toBeLessThan(31);
+        const want = (typeof expected === 'number' ? expected : expected[caption]) + preview;
         expect(Math.abs(box.height - want), `${caption} at ${width}px`).toBeLessThan(0.5);
       }
     });
