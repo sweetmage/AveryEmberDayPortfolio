@@ -326,7 +326,8 @@ export const galleryItems: GalleryItem[] = [
     height: 800,
     tags: ['Digital'],
     tools: ['Procreate'],
-    description: '',
+    description:
+      'A digital painting in Procreate. Looking straight up through a ring of bare, olive-toned trees, a thin crescent moon glows in a deep indigo sky. Its light pours out in long violet rays, and three black birds cross the sky beside it.',
     mockups: [
       {
         src: '/images/myart/Mockups/moonlight-framed.webp',
