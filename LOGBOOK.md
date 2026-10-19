@@ -31,6 +31,7 @@ When this logbook exceeds ~1000 lines, split it:
 - `bubbles-exclusion.spec.js` card interior @1440: 4/20 failures on this branch, 0/20 at `c2a2129`. It waited for one of 7 random page-space bubbles to wander into a card (2-200 hits per run; mean ~73 before, ~114 after, so reach did not drop; the taller page made zero more likely). Rewritten to ask the engine: every card has a legal resting spot for the smallest bubble (`_isLegal`), and a bubble placed there stays. 30/30 green at 390/768/1440; re-adding `.gallery-item` to the exclusions fails it.
 - Verification: suite minus `visual-baseline.spec.js`, zsh on VOID, twice: 198 passed, 0 failed, 5 skipped each. No leftover processes or scratch on SOL (checked: no 4322 listener, clone and logs removed).
 - Review: own diff read; no signoff (tests and baselines, no auth or permission code). Routing: main agent only; spawn_policy found no provider below OpenCode's pace, Claude closed at 100% session.
+- Shipped: Comet reviewed the local preview (`serve out` on :4400, stopped after) and said push. `portfoliowebsite` fast-forwarded to the loop branch and pushed: one production deploy.
 
 ---
 

@@ -46,9 +46,8 @@ before a push ships in the same deploy.
 - [x] **Copy pass: all 12 gallery descriptions and both project summaries, approved 2026-10-18**
       (Comet, one piece at a time; Entry 170). The About box (Entry 119) and Contact intro (Entry 120)
       were done earlier.
-- [ ] **Push the copy pass to `portfoliowebsite` (one 15-credit production deploy).** Held by Comet
-      for the next batch (2026-10-18). Merge `shxdowloop/2026-10-18/visual-baselines` (which carries the
-      copy pass, its baselines and the two test fixes) into `portfoliowebsite` first. Ask before pushing.
+- [x] **Copy pass pushed to `portfoliowebsite` (one 15-credit production deploy), 2026-10-18,** at
+      Comet's go-ahead after reviewing the local preview. Loop branch fast-forwarded in (Entry 171).
 - [x] **Copy pass, Track D: visual baselines regenerated on SOL, 2026-10-18** (24 Portfolio, Brand and
       Mistrust captures, each reviewed; Entry 171). Branch `shxdowloop/2026-10-18/visual-baselines`.
 - [x] **Copy pass: real alt text for the 12 gallery pieces, approved 2026-10-18** (Comet; short and
