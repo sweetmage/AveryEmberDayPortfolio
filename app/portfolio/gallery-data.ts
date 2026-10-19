@@ -110,7 +110,8 @@ export const galleryItems: GalleryItem[] = [
     height: 1600,
     tags: ['Digital'],
     tools: ['Procreate'],
-    description: '',
+    description:
+      'A digital painting in Procreate. Two subjects rise out of a dark purple haze like smoke: one bows forward in deep blue, head in hand, while the other arches back in fiery orange, face turned up to the light.',
     mockups: [
       {
         src: '/images/myart/Mockups/emergence-canvas.webp',
@@ -136,7 +137,8 @@ export const galleryItems: GalleryItem[] = [
     height: 1556,
     tags: ['Traditional'],
     tools: ['Watercolor Paint', 'Marker', 'Photography'],
-    description: '',
+    description:
+      'A watercolor and marker painting drawn from an assortment of photographs. Faces with no eyes crowd every inch of the page in a rainbow of colors, each one only a nose and an open mouth: some lick their lips, some gasp, some bare their teeth.',
     mockups: [
       {
         src: '/images/myart/Mockups/faces-framed.webp',
