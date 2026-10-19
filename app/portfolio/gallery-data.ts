@@ -299,7 +299,8 @@ export const galleryItems: GalleryItem[] = [
     height: 1011,
     tags: ['Traditional', 'Digital'],
     tools: ['Adobe Photoshop', 'Chalk Pastel', 'Photography'],
-    description: '',
+    description:
+      'A chalk pastel drawing of Canyon Lake, Texas, made from a photograph and color corrected in Photoshop. Sandy dunes dotted with green shrubs and tall brown grasses roll down to deep blue water and whitecaps. Above, a billowing white cloud rises from a band of pink clouds along the horizon.',
     mockups: [
       {
         src: '/images/myart/Mockups/texas-lake-landscape-poster.webp',
