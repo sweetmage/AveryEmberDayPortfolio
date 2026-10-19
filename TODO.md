@@ -46,6 +46,8 @@ before a push ships in the same deploy.
 - [x] **Copy pass: all 12 gallery descriptions and both project summaries, approved 2026-10-18**
       (Comet, one piece at a time; Entry 170). The About box (Entry 119) and Contact intro (Entry 120)
       were done earlier.
+- [ ] **Push the copy pass to `portfoliowebsite` (one 15-credit production deploy).** Committed on
+      VOID, not pushed: Comet chose to hold it for the next batch (2026-10-18). Ask before pushing.
 - [ ] **Copy pass, Track D: regenerate the visual baselines on SOL.** The copy is now final, so this
       is due. Every gallery card now shows a one-line description preview (about 30px taller), and the
       Brand and Mistrust summaries changed, so the Portfolio, Brand and Mistrust snapshots will fail on
