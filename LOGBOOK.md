@@ -19,6 +19,21 @@ When this logbook exceeds ~1000 lines, split it:
 
 ---
 
+## Entry 171 - 2026-10-18
+
+**Agent:** OpenCode, claude-opus-5-5 (C0debr34k3r, VOID), main agent
+**Cycle:** shxdowloop, visual-baselines
+**Task:** Regenerate the copy-pass visual baselines on SOL and fix two intermittent motion tests.
+
+- Branch `shxdowloop/2026-10-18/visual-baselines` from `portfoliowebsite` at `4f2c21f`; Netlify builds only `portfoliowebsite`, so pushing it deploys nothing. Plan: `docs/plans/2026-10-18-visual-baselines-shxdowloop.md`.
+- Baselines (SOL, Windows PowerShell, fresh clone in %TEMP%): old set at `c2a2129` 48 passed (3 on retry). Before the update exactly the 24 Portfolio, Brand and Mistrust captures failed. `--update-snapshots=all` also rewrote 4 SECTION 6 captures whose page did not change; they failed both re-checks (639-685px, Trap 7), so the committed copies were restored, and two more re-checks passed 48/48 (2 retries each). Heights match the copy (Portfolio +30.5px per card row; Brand +54 to +190px; Mistrust +0 or +27px); side-by-side crops at the first differing row show only new copy. Committed 24 PNGs.
+- `bubbles-motion.spec.js` pointer flick: measured, not slow frames. The stretch follows speed through a 3.2Hz spring and peaks ~80ms after the sweep's last frame; read during the sweep it was 0.02-0.04 (8 of 40 runs under the 0.03 floor), through 20 more frames min 0.113. The test now samples through the settle and asserts > 0.06. 30/30 green; stretch and lean both off fails it.
+- `bubbles-exclusion.spec.js` card interior @1440: 4/20 failures on this branch, 0/20 at `c2a2129`. It waited for one of 7 random page-space bubbles to wander into a card (2-200 hits per run; mean ~73 before, ~114 after, so reach did not drop; the taller page made zero more likely). Rewritten to ask the engine: every card has a legal resting spot for the smallest bubble (`_isLegal`), and a bubble placed there stays. 30/30 green at 390/768/1440; re-adding `.gallery-item` to the exclusions fails it.
+- Verification: suite minus `visual-baseline.spec.js`, zsh on VOID, twice: 198 passed, 0 failed, 5 skipped each. No leftover processes or scratch on SOL (checked: no 4322 listener, clone and logs removed).
+- Review: own diff read; no signoff (tests and baselines, no auth or permission code). Routing: main agent only; spawn_policy found no provider below OpenCode's pace, Claude closed at 100% session.
+
+---
+
 ## Entry 170 - 2026-10-18
 
 **Agent:** OpenCode, claude-opus-5-5 (C0debr34k3r, VOID), main agent

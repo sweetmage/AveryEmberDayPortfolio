@@ -494,28 +494,43 @@ test.describe('gallery frame zones', () => {
       await page.goto(`${BASE_URL}/portfolio/`, { waitUntil: 'networkidle' });
       await waitForEngine(page);
 
-      // The whole point: they used to be locked out of the card entirely.
-      const contacts = await page.evaluate(async () => {
-        const engine = window.__bubbleEngine;
-        let hits = 0;
-        for (let s = 0; s < 40; s++) {
-          const scrollY = window.scrollY;
-          const cards = [...document.querySelectorAll('.gallery-item')].map((el) => {
-            const r = el.getBoundingClientRect();
-            return { left: r.left, right: r.right, top: r.top + scrollY, bottom: r.bottom + scrollY };
-          });
-          for (const b of engine.globalLayer.bubbles) {
-            if (b._relocating) continue;
-            for (const z of cards) {
-              if (b.x > z.left && b.x < z.right && b.y > z.top && b.y < z.bottom) hits++;
+      /* The whole point: they used to be locked out of the card entirely. This used to wait 200
+         frames for one of the 7 page-space bubbles to wander into a card, which is chance: at 1440
+         no card is on screen at load, and hits ranged 2-200 per run. Once the copy pass made the
+         page taller it failed 4 of 20 (0 of 20 before), with reach unchanged (VOID, 2026-10-18).
+         Now it asks the engine itself: every card must hold a spot where the smallest bubble may
+         legally rest, and a bubble placed there must stay inside the card. */
+      const r = await page.evaluate(async () => {
+        const e = window.__bubbleEngine, layer = e.globalLayer;
+        const zones = layer.localZones(e.zones.pageZones(window.scrollX, window.scrollY));
+        const b = layer.bubbles.filter((x) => !x._parked && !x._relocating).sort((p, q) => p.radius - q.radius)[0];
+        let best = null, legalCards = 0, cards = 0;
+        for (const el of document.querySelectorAll('.gallery-item')) {
+          cards++;
+          const q = el.getBoundingClientRect();
+          const c = { left: q.left + scrollX, right: q.right + scrollX, top: q.top + scrollY, bottom: q.bottom + scrollY };
+          let any = false;
+          for (let y = c.top; y <= c.bottom; y += 4) {
+            for (let x = c.left; x <= c.right; x += 4) {
+              if (!layer._isLegal(b, x, y, zones, false)) continue;
+              any = true;
+              const m = Math.min(x - c.left, c.right - x, y - c.top, c.bottom - y);
+              if (!best || m > best.m) best = { x, y, m, c };
             }
           }
-          for (let i = 0; i < 5; i++) await new Promise((r) => requestAnimationFrame(r));
+          if (any) legalCards++;
         }
-        return hits;
+        if (!best) return { cards, legalCards, stayed: false };
+        b.x = b.px = best.x; b.y = b.py = best.y; b.vx = b.vy = 0;
+        for (let i = 0; i < 20; i++) await new Promise((res) => requestAnimationFrame(res));
+        const c = best.c;
+        const stayed = b.x > c.left && b.x < c.right && b.y > c.top && b.y < c.bottom && !b._relocating;
+        return { cards, legalCards, stayed };
       });
 
-      expect(contacts, 'bubbles never got inside a card').toBeGreaterThan(0);
+      expect(r.cards).toBeGreaterThan(0);
+      expect(r.legalCards, 'a card has no spot where a bubble may rest').toBe(r.cards);
+      expect(r.stayed, 'a bubble placed inside a card was pushed out').toBe(true);
     });
   }
 

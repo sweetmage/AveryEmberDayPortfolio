@@ -284,6 +284,14 @@ test('a pointer flick carries and squishes a bubble; a lifted finger stops pushi
       peakDeform = Math.max(peakDeform, Math.hypot(b.a, b.b));
     }
     const activeDuring = e.pointer.active;
+    /* The stretch follows speed through a 3.2Hz spring, so it peaks ~80ms after the bubble's speed
+       does, which is at the END of the sweep. Stopping at the last sweep frame read the rising edge:
+       0.02-0.04 with 8 of 40 runs under 0.03 (VOID, 2026-10-18). Through 20 more frames the peak
+       measured 0.113 minimum, 0.138 median over the same 40 runs. */
+    for (let i = 0; i < 20; i++) {
+      await frame();
+      peakDeform = Math.max(peakDeform, Math.hypot(b.a, b.b));
+    }
     window.dispatchEvent(new TouchEvent('touchstart', { touches: [new Touch({ identifier: 1, target: document.body, clientX: 10, clientY: 10 })] }));
     const activeOnTouch = e.pointer.active;
     window.dispatchEvent(new TouchEvent('touchend', { touches: [] }));
@@ -301,7 +309,7 @@ test('a pointer flick carries and squishes a bubble; a lifted finger stops pushi
 
   expect(r.activeDuring).toBe(true);
   expect(r.peakAlong, 'the flick did not carry the bubble along').toBeGreaterThan(150);
-  expect(r.peakDeform, 'the bubble did not deform under the flick').toBeGreaterThan(0.03);
+  expect(r.peakDeform, 'the bubble did not deform under the flick').toBeGreaterThan(0.06);
   expect(r.activeOnTouch).toBe(true);
   expect(r.activeAfterLift, 'a lifted finger kept pushing').toBe(false);
   expect(r.blobs).toBeGreaterThan(0);

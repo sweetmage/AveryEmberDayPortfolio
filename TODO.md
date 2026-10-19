@@ -46,18 +46,15 @@ before a push ships in the same deploy.
 - [x] **Copy pass: all 12 gallery descriptions and both project summaries, approved 2026-10-18**
       (Comet, one piece at a time; Entry 170). The About box (Entry 119) and Contact intro (Entry 120)
       were done earlier.
-- [ ] **Push the copy pass to `portfoliowebsite` (one 15-credit production deploy).** Committed on
-      VOID, not pushed: Comet chose to hold it for the next batch (2026-10-18). Ask before pushing.
-- [ ] **Copy pass, Track D: regenerate the visual baselines on SOL.** The copy is now final, so this
-      is due. Every gallery card now shows a one-line description preview (about 30px taller), and the
-      Brand and Mistrust summaries changed, so the Portfolio, Brand and Mistrust snapshots will fail on
-      SOL until regenerated and reviewed (`docs/visual-gate.md`). Netlify never runs the suite, so this
-      does not hold a deploy.
+- [ ] **Push the copy pass to `portfoliowebsite` (one 15-credit production deploy).** Held by Comet
+      for the next batch (2026-10-18). Merge `shxdowloop/2026-10-18/visual-baselines` (which carries the
+      copy pass, its baselines and the two test fixes) into `portfoliowebsite` first. Ask before pushing.
+- [x] **Copy pass, Track D: visual baselines regenerated on SOL, 2026-10-18** (24 Portfolio, Brand and
+      Mistrust captures, each reviewed; Entry 171). Branch `shxdowloop/2026-10-18/visual-baselines`.
 - [x] **Copy pass: real alt text for the 12 gallery pieces, approved 2026-10-18** (Comet; short and
       visual, leaving medium and meaning to the visible description; Entry 170).
-- [ ] **Flaky under full-suite load: `bubbles-motion.spec.js:266` (pointer flick).** Failed once in a
-      full run on VOID 2026-10-18, passed 3 of 3 alone and in the next full run. Measure before
-      changing anything (AGENTS.md bubble rules).
+- [x] **Two intermittent motion tests fixed, 2026-10-18** (Entry 171): the pointer-flick test read the
+      stretch before it peaked; the card-interior test relied on a random bubble wandering into a card.
 
 ---
 

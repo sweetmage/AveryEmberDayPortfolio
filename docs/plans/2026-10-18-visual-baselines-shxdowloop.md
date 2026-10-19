@@ -67,12 +67,22 @@ the new copy. Portfolio 360 dark also differs above the gallery: 9,676 pixels by
 
 ## Stage 3 - Pointer-flick flake
 
-**Status:** Pending
+**Status:** Complete
 **Goal:** measure `bubbles-motion.spec.js:266` under full-suite load before changing anything.
 **Phases:**
-- [ ] 3.1 Repeat the test under load; capture which assertion fails and its values.
-- [ ] 3.2 Fix only with a measured cause; never raise a tolerance (AGENTS.md).
+- [x] 3.1 Repeat the test under load; capture which assertion fails and its values.
+- [x] 3.2 Fix only with a measured cause; never raise a tolerance (AGENTS.md).
 **Verification:** suite minus visual spec green; the flick test green under repeated load.
+**Notes:** Flick: CPU throttling did not slow frames, so slow frames were not the cause. Over 40 runs
+the deformation read during the sweep was 0.02-0.04, 8 under the 0.03 floor; the stretch peaks ~80ms
+after the speed, which is after the sweep's last frame. Sampling 20 more frames: min 0.113, median 0.138.
+The test now samples through the settle and asserts > 0.06. 30/30 green; with stretch and lean both
+off it fails. A second motion test, "bubbles reach the card interior @ 1440px", failed once in a full
+run; measured 4/20 on this branch, 0/20 at `c2a2129`. Cause: it waited for one of 7 random page-space
+bubbles to wander into a card (hits 2-200 per run; mean rose from ~73 to ~114 after the copy, so reach
+did not drop). Rewritten to ask the engine: every card has a legal resting spot for the smallest
+bubble, and a bubble placed there stays. 30/30 green at 390/768/1440; with `.gallery-item` re-added to
+the exclusions it fails ("a card has no spot where a bubble may rest").
 
 ## Checkpoint log
 
@@ -82,7 +92,7 @@ the new copy. Portfolio 360 dark also differs above the gallery: 9,676 pixels by
 |---|---|---|
 | Visual spec, old set at `c2a2129` | SOL | 48 passed (3 on retry) |
 | Visual spec, update + re-checks | SOL | update 48 passed; re-checks 3 and 4 (SECTION 6 restored) 48 passed, 2 on retry each |
-| Non-visual suite | VOID | |
+| Non-visual suite | VOID | 198 passed, 0 failed, 5 skipped, twice (zsh) |
 
 ## Open risks
 
@@ -90,6 +100,6 @@ the new copy. Portfolio 360 dark also differs above the gallery: 9,676 pixels by
 
 ## Merge readiness checklist
 
-- [ ] Baselines committed and reviewed
-- [ ] Non-visual suite green
-- [ ] LOGBOOK and TODO updated
+- [x] Baselines committed and reviewed
+- [x] Non-visual suite green
+- [x] LOGBOOK and TODO updated
