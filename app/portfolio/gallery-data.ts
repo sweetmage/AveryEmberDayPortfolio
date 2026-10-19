@@ -245,7 +245,8 @@ export const galleryItems: GalleryItem[] = [
     height: 1571,
     tags: ['Traditional', 'Digital'],
     tools: ['Adobe Photoshop', 'Acrylic Paint'],
-    description: '',
+    description:
+      'An acrylic painting, color corrected in Photoshop. A severed head with a shock of hot pink and orange hair floats in a churning blue background. Black X\'s mark the eyes, and thick black paint drips from the mouth and the cut at the neck.',
     mockups: [
       {
         src: '/images/myart/Mockups/beheaded-canvas.webp',
