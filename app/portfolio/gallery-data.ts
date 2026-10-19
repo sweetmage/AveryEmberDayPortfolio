@@ -272,7 +272,8 @@ export const galleryItems: GalleryItem[] = [
     height: 1440,
     tags: ['Traditional'],
     tools: ['Acrylic Paint', 'Photography'],
-    description: '',
+    description:
+      'An acrylic painting made from a photograph. Shadow, a scruffy black puppy, grins at the viewer with his pink tongue out and one ear flopped over, his tail a blur of white strokes. He stands under a graffiti-covered bridge, with shrubs lining the edges of the concrete and a red and orange skateboard tipped up beside him.',
     mockups: [
       {
         src: '/images/myart/Mockups/shadow-framed.webp',
