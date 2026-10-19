@@ -164,7 +164,8 @@ export const galleryItems: GalleryItem[] = [
     height: 1559,
     tags: ['Traditional'],
     tools: ['Acrylic Paint', 'Photography'],
-    description: '',
+    description:
+      'An acrylic painting made from a photograph. A face tilts back in close-up, eyes closed, as a glossy blue lollipop on a red stick slips between parted lips. Soft violet and periwinkle skin sits against a warm brown background.',
     mockups: [
       {
         src: '/images/myart/Mockups/lollipop-poster.webp',
