@@ -23,7 +23,8 @@ export interface GalleryItem {
 export const galleryItems: GalleryItem[] = [
   {
     src: '/images/myart/Gallery/SelfPortraitSeries/Self Portrait Series - In Danger - Final.webp',
-    alt: 'In Danger',
+    alt:
+      'A glowing red and blue line drawing on black of a subject resting their chin on one hand, staring blankly.',
     caption: 'In Danger',
     width: 1200,
     height: 1600,
@@ -50,7 +51,8 @@ export const galleryItems: GalleryItem[] = [
   },
   {
     src: '/images/myart/Gallery/chillFinal.webp',
-    alt: 'Chill',
+    alt:
+      'A cartoon subject in a green T-shirt raises both hands under a speech bubble that reads "Chill", against swirling pink, orange and red waves.',
     caption: 'Chill',
     width: 1200,
     height: 1970,
@@ -77,7 +79,8 @@ export const galleryItems: GalleryItem[] = [
   },
   {
     src: '/images/myart/Gallery/grossFinal.webp',
-    alt: 'Gross',
+    alt:
+      'A blue-skinned subject with red bangs and braids winces in disgust, lip curled, against a black background.',
     caption: 'Gross',
     width: 1200,
     height: 1481,
@@ -104,7 +107,8 @@ export const galleryItems: GalleryItem[] = [
   },
   {
     src: '/images/myart/Gallery/EmergenceFinal.webp',
-    alt: 'Emergence',
+    alt:
+      'Two subjects rise from a purple haze, one in blue bowed forward with head in hand, one in orange arched back toward the light.',
     caption: 'Emergence',
     width: 1200,
     height: 1600,
@@ -131,7 +135,8 @@ export const galleryItems: GalleryItem[] = [
   },
   {
     src: '/images/myart/Gallery/FacesFinal.webp',
-    alt: 'Faces',
+    alt:
+      'A crowd of brightly colored faces with no eyes, each only a nose and an open mouth, fills the whole page.',
     caption: 'Faces',
     width: 1200,
     height: 1556,
@@ -158,7 +163,8 @@ export const galleryItems: GalleryItem[] = [
   },
   {
     src: '/images/myart/Gallery/lollypopFinal.webp',
-    alt: 'Lollipop',
+    alt:
+      'A close-up of a violet-skinned face, eyes closed, with a blue lollipop on a red stick between parted lips.',
     caption: 'Lollipop',
     width: 1200,
     height: 1559,
@@ -185,7 +191,8 @@ export const galleryItems: GalleryItem[] = [
   },
   {
     src: '/images/myart/Gallery/overflowFinal.webp',
-    alt: 'Overflow',
+    alt:
+      'A close-up portrait of a subject with blond hair rolling their eyes back as black ink drips from the eyes and mouth.',
     caption: 'Overflow',
     width: 1200,
     height: 1643,
@@ -212,7 +219,8 @@ export const galleryItems: GalleryItem[] = [
   },
   {
     src: '/images/myart/Gallery/stairsFinal.webp',
-    alt: 'Stairs',
+    alt:
+      'Seen from below, a subject in a blue sweater climbs green carpeted stairs, with the sole of a brown boot in the foreground.',
     caption: 'Stairs',
     width: 1200,
     height: 1953,
@@ -239,7 +247,8 @@ export const galleryItems: GalleryItem[] = [
   },
   {
     src: '/images/myart/Gallery/beheadedFinal.webp',
-    alt: 'Beheaded',
+    alt:
+      'A severed head with pink and orange hair and black X\'s for eyes, dripping black paint, on a swirling blue background.',
     caption: 'Beheaded',
     width: 1200,
     height: 1571,
@@ -266,7 +275,8 @@ export const galleryItems: GalleryItem[] = [
   },
   {
     src: '/images/myart/Gallery/ShadowFinal.webp',
-    alt: 'Shadow',
+    alt:
+      'Shadow, a black puppy with his tongue out, under a graffiti-covered bridge beside a red and orange skateboard.',
     caption: 'Shadow',
     width: 1200,
     height: 1440,
@@ -293,7 +303,8 @@ export const galleryItems: GalleryItem[] = [
   },
   {
     src: '/images/myart/Gallery/txlakelandscapeFinal.webp',
-    alt: 'Texas Lake Landscape',
+    alt:
+      'Sand dunes with green shrubs and tall grass above Canyon Lake, under white and pink clouds.',
     caption: 'Texas Lake Landscape',
     width: 1200,
     height: 1011,
@@ -320,7 +331,8 @@ export const galleryItems: GalleryItem[] = [
   },
   {
     src: '/images/myart/Gallery/MoonlightFinal.webp',
-    alt: 'Moonlight',
+    alt:
+      'Looking up through bare trees at a crescent moon casting violet rays, with three black birds flying past.',
     caption: 'Moonlight',
     width: 1200,
     height: 800,

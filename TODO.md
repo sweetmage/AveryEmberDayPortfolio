@@ -53,9 +53,8 @@ before a push ships in the same deploy.
       Brand and Mistrust summaries changed, so the Portfolio, Brand and Mistrust snapshots will fail on
       SOL until regenerated and reviewed (`docs/visual-gate.md`). Netlify never runs the suite, so this
       does not hold a deploy.
-- [ ] **Copy pass: `alt` becomes a real image description** for the 12 gallery pieces (still the
-      caption today). The approved descriptions are a good source. Plan:
-      [`docs/plans/2026-08-01-copy-pass-and-gallery-descriptions.md`](docs/plans/2026-08-01-copy-pass-and-gallery-descriptions.md).
+- [x] **Copy pass: real alt text for the 12 gallery pieces, approved 2026-10-18** (Comet; short and
+      visual, leaving medium and meaning to the visible description; Entry 170).
 - [ ] **Flaky under full-suite load: `bubbles-motion.spec.js:266` (pointer flick).** Failed once in a
       full run on VOID 2026-10-18, passed 3 of 3 alone and in the next full run. Measure before
       changing anything (AGENTS.md bubble rules).
