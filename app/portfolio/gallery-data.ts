@@ -218,7 +218,8 @@ export const galleryItems: GalleryItem[] = [
     height: 1953,
     tags: ['Traditional', 'Digital'],
     tools: ['Adobe Photoshop', 'Colored Pencil', 'Photography'],
-    description: '',
+    description:
+      'A colored pencil drawing made from a photograph, color corrected in Photoshop. Seen from below, a subject in a ribbed blue sweater climbs a green carpeted stairwell. The worn sole of a brown boot fills the foreground, framed by the black rails of the banister and the yellow light of the hall above.',
     mockups: [
       {
         src: '/images/myart/Mockups/stairs-framed.webp',
