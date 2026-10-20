@@ -1,7 +1,7 @@
 # Logo Design section, project tools, and brand page expansion
 
 **Written:** 2026-10-13, from the user's brief in chat.
-**Status:** Track A is **paused for the user's corrected linework**; the rest not started. Every open box here is mirrored in [`../../TODO.md`](../../TODO.md).
+**Status (2026-10-20):** Tracks A, B and D are done and released (A: 2026-10-14, the user said the rose is fixed; B: Tools rows, 2026-10-14, Entries 162-164; D: 2026-10-13). Track C is done except **Brand Assets**, built hidden behind `SHOW_BRAND_ASSETS = false` in `app/portfolio/BrandProject.tsx`; the user will design the business card and website banner (card mockup 4 was not approved). That open work is tracked in [`../../TODO.md`](../../TODO.md). Brand voice and tone shipped 2026-10-14 (Entry 159).
 **Branch:** none yet. Work on a `shxdowloop` or feature branch off `portfoliowebsite`; nothing
 here ships until the user says so (a push to `portfoliowebsite` is a 15-credit production deploy,
 so batch these tracks into as few pushes as possible).
@@ -284,7 +284,7 @@ The user approved mockups 1 and 2 ("approve section 6 tile, section 6 projects p
 - `app/portfolio/page.tsx`: third tile, `md:grid-cols-3`; `app/portfolio/Section6Project.tsx` and `app/portfolio/section-6-logo-design/page.tsx`: the page; assets in `public/images/section-6/` (five SVGs with PNGs, plus `phoenix-thumb.svg`, the tile crop).
 - Tests: tile count 3 and one row from 768px; new SECTION 6 page tests (five logos, 10 download links that exist, real alt text, no sideways scroll at 320px); the visual gate lists the new page. Baselines are not regenerated yet (once, last, on SOL).
 - **Brand Assets** (the extra Brand-page section, decided by the user): a business card and a website banner, each as design plus mockup, made later by the user. Built hidden behind `SHOW_BRAND_ASSETS = false` in `BrandProject.tsx`. Replaces Track C's business-card item; the user will design the card themself.
-- **Brand voice and tone** must be finished before the push. Research and recommendation: [`2026-10-13-brand-voice-recommendation.md`](2026-10-13-brand-voice-recommendation.md).
+- **Brand voice and tone** must be finished before the push. Research and recommendation: `2026-10-13-brand-voice-recommendation.md`, archived in [`../archives/plans.md`](../archives/plans.md#consolidation-stubs-2026-10-20).
 - The alt text for the five logos is the agent's first draft, for the user to review.
 
 **Tools rows (user, 2026-10-14), built and released with the 2x2 White Rose layout:** Mistrust shows one pill, Figma, and no sentence (the user removed "Made entirely in Figma"). Brand shows the user's own paragraph, "The logo was made in Adobe Creative Suite. The site is a static export from Next.js ... Netlify hosts it.", above the "This website" pills; the gate count in it reads 48 because the visual gate has 48 baselines now. This replaces Track B's table above, which says InDesign, Figma "entirely" and "40-screenshot". The Brand logo cards' alt text is "Blue bubble logo with the initials A E D" (Black, White) and "Blue bubble logo" (Black, White) for the icon marks.

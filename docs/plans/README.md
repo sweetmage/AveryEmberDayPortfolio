@@ -10,7 +10,7 @@ an unticked box, it belongs in `TODO.md` too. Verify with:
 grep -rn "^\s*- \[ \]" docs/plans/
 ```
 
-That returns nothing as of 2026-10-06.
+That returns nothing as of 2026-10-20.
 
 ---
 
@@ -18,11 +18,9 @@ That returns nothing as of 2026-10-06.
 
 | Plan | Status |
 |---|---|
-| [`2026-10-09-print-mockups-shxdowloop.md`](2026-10-09-print-mockups-shxdowloop.md) | **Released from `shxdowloop/2026-10-09/print-mockups`.** Archive at the next sweep. Two print mockups per gallery piece (24), under the description slot; Gross on a skateboard deck. Released 2026-10-09. |
-| [`2026-10-13-overnight-plans-shxdowloop.md`](2026-10-13-overnight-plans-shxdowloop.md) | **Built and released from `shxdowloop/2026-10-13/overnight-plans` (user said "deploy", 2026-10-14).** Mockups 1, 2 and the voice section of 5 approved and built; mockup 4 not approved; Brand Assets built hidden; mockup 3 (Tools on Brand and Mistrust) still pending. Archive at the next sweep. |
-| [`2026-10-13-brand-voice-recommendation.md`](2026-10-13-brand-voice-recommendation.md) | **Done.** Research and recommendation; the approved section is live on the Brand page and drafted in [`2026-10-13-brand-voice-draft.md`](2026-10-13-brand-voice-draft.md). Rules saved in `.agents/memories/brand-voice.md`. |
-| [`2026-10-13-logo-design-and-brand-expansion.md`](2026-10-13-logo-design-and-brand-expansion.md) | **Tracks A and D done and released.** SECTION 6 tile and page built from the user's approved mockups (rose fix confirmed by the user); Track C became Brand Assets (hidden) and the voice section. Open: Track B for Brand and Mistrust (mockup 3), alt text review. |
-| [`2026-08-01-copy-pass-and-gallery-descriptions.md`](2026-08-01-copy-pass-and-gallery-descriptions.md) | **Tracks A and C wait on the user's first draft.** Track B is done (Entry 118); the render path for `description` now exists, so the copy is data only. |
+| [`2026-10-20-visual-gate-container.md`](2026-10-20-visual-gate-container.md) | **In progress.** Containerized visual gate (one Linux baseline set inside the Playwright image, run through Colima) and this plans sweep. |
+| [`2026-10-13-logo-design-and-brand-expansion.md`](2026-10-13-logo-design-and-brand-expansion.md) | **Open: Brand Assets only (Track C).** Tracks A, B and D shipped (SECTION 6 tile and page, Tools rows, watermark fix) and so did brand voice. The Brand Assets section (business card and website banner, each as design plus mockup) is built hidden behind `SHOW_BRAND_ASSETS = false`; the user will design the pieces. Tracked in `TODO.md`. |
+| [`2026-10-13-overnight-plans-shxdowloop.md`](2026-10-13-overnight-plans-shxdowloop.md) | **Open: Brand Assets only.** Everything else in the loop shipped (mockups 1, 2, 3 and the voice section of 5; the copy pass). Mockup 4, the business card, was not approved; the user will design it. Keeps the five mockups in [`2026-10-13-overnight-plans/`](2026-10-13-overnight-plans/mockups/index.html). |
 
 ## Complete
 
@@ -33,6 +31,10 @@ text:
 - 2026-08-09: all 23 plans finished by then ([stubs](../archives/plans.md#consolidation-stubs-2026-08-09));
 - 2026-10-04: the two shipped on 2026-08-10 ([stubs](../archives/plans.md#consolidation-stubs-2026-10-04));
 - 2026-10-06: the three shipped in the Portfolio release, Entry 142 ([stubs](../archives/plans.md#consolidation-stubs-2026-10-06)), then the next-step loop's two ([stubs](../archives/plans.md#consolidation-stubs-2026-10-06-b)).
+- 2026-10-20: the seven plans finished between Aug 1 and Oct 18 — copy pass, print mockups, brand voice (draft and recommendation), fluid squishy bubbles, SECTION 6 logo descriptions, visual baselines ([stubs](../archives/plans.md#consolidation-stubs-2026-10-20)). The two plans carrying the open Brand Assets work stay above.
+
+`fluid-squishy-bubbles/artifacts/` stays here although its plan is archived: it holds the bubble-motion
+baselines that `AGENTS.md` and `tests/bubbles-motion.spec.js` point at.
 
 A plan is archived only once it is in git history, since the recovery path is `git show`. This
 directory holds only plans with work still open: a plan sitting here means something is unfinished.

@@ -16,7 +16,7 @@ const ROOT = path.join(__dirname, '..');
  * mockups, because the visual gate cannot see an expanded card and only ever
  * grades the collapsed grid against its own past self.
  *
- * Plan: docs/plans/2026-10-09-print-mockups-shxdowloop.md (Track C).
+ * Plan (Track C), archived 2026-10-20: git show 76b4448:docs/plans/2026-10-09-print-mockups-shxdowloop.md
  */
 
 // Serial like gallery-expand.spec.js: the motion-enabled case below drives a real
