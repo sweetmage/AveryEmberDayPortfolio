@@ -16,15 +16,20 @@ visual change, and any push without the user's yes.
 
 ## Goal
 
-One Linux snapshot set is canonical (user decision 2026-07-23, `docs/visual-gate.md`). Any machine
-with Docker grades the site against the same pixels, so a visual regression no longer depends on
-SOL being the machine that runs the suite.
+One Linux snapshot set is canonical (user decision 2026-07-23, `docs/visual-gate.md`), captured on
+linux/amd64 in the official image, so the gate no longer depends on SOL being the machine that runs
+it. Cross-host equality (VOID under Rosetta vs a native x86-64 Docker host) is expected, not yet
+proven: SOL has no Docker (no WSL since its reinstall, `fleet.md`), so it cannot run the gate until
+Docker is installed there. The open item in `docs/visual-gate.md` is about running the gate in
+*hosted* CI; this session does the local container half, and hosted CI stays open in `TODO.md`.
+
+No UI change, so no mockup gate.
 
 ## Approach
 
 - **Runner:** `tests/visual-docker.mjs`, a Node script (Node so it runs from zsh on VOID and
-  PowerShell on SOL alike). It reads the installed `@playwright/test` version from
-  `node_modules/@playwright/test/package.json` and runs `mcr.microsoft.com/playwright:v<that>-noble`
+  PowerShell on SOL alike). It reads the `@playwright/test` version the lockfile pins
+  (`package-lock.json`, so a fresh clone works) and runs `mcr.microsoft.com/playwright:v<that>-noble`
   with `--platform linux/amd64`, the repo bind-mounted at `/work`, and named volumes over
   `/work/node_modules` and `/work/.next` so the host's macOS or Windows binaries (Next's SWC) never
   meet the Linux container. Inside: `npm ci` when the lockfile hash changed, then
@@ -43,14 +48,18 @@ SOL being the machine that runs the suite.
 - **Baselines:** regenerate with `--update-snapshots=all` in the container, check each by eye
   against its win32 predecessor (same layout, only rasteriser differences), re-run twice green,
   then `git rm` the 48 win32 files.
-- **Docs:** `docs/visual-gate.md` (open item closed, how to run, Linux set), `AGENTS.md` lines
-  that say baselines are regenerated on SOL, TODO, LOGBOOK.
+- **Docs:** `docs/visual-gate.md` (local container half of the open item done, hosted CI still
+  open, Colima instead of Docker Desktop, how to run, Linux set), `AGENTS.md:102` (win32, "only green
+  on Windows", regenerate on SOL), `docs/ARCHITECTURE.md:288` (`-chromium-win32`), TODO, LOGBOOK.
+- **Never run the host suite and the container gate at once.** Both run `build:next` in
+  `tests/global-setup.js`, which deletes and recreates the shared `out/` through the bind mount
+  (Trap 2).
 
 ## Parallel tracks
 
 | Track | Goal | Scope | Depends on | Verification | Owner |
 |---|---|---|---|---|---|
-| A. Container gate | runner, spec guard, 48 Linux baselines, win32 set removed, gate docs | `tests/visual-docker.mjs`, `tests/visual-baseline.spec.js`, `tests/visual-baseline.spec.js-snapshots/`, `docs/visual-gate.md`, `AGENTS.md`, `.gitignore` | Docker running (done) | container run twice green, 48/48; host `npx playwright test` shows the spec skipped | main agent |
+| A. Container gate | runner, spec guard, 48 Linux baselines, win32 set removed, gate docs | `tests/visual-docker.mjs`, `tests/visual-baseline.spec.js`, `tests/visual-baseline.spec.js-snapshots/`, `docs/visual-gate.md`, `docs/ARCHITECTURE.md`, `AGENTS.md` | Docker running (done) | container run twice green, 48/48; host `npx playwright test` shows the spec skipped | main agent |
 | B. Plans sweep | archive shipped plans, tick stale boxes, fix README | `docs/plans/` (except this file), `docs/archives/plans.md` | none | `grep -rn "^\s*- \[ \]" docs/plans/` empty; every archived plan has a stub with outcome, entries, `git show` path | native `worker` (Haiku) |
 
 Scopes are disjoint. TODO and LOGBOOK are bookkeeping, written by the main agent at the end.
@@ -58,8 +67,13 @@ Scopes are disjoint. TODO and LOGBOOK are bookkeeping, written by the main agent
 ## Verification
 
 - `node tests/visual-docker.mjs` twice after regeneration: 48 passed both times.
-- Injected-regression check: change one colour token in a scratch edit, the container run fails,
-  revert.
+- Each Linux PNG's height against its win32 predecessor (same page, so within a few px), plus a
+  look at every one.
+- Injected-regression check, the one `docs/visual-gate.md` uses for `threshold`: change the dark
+  theme's `--brand-text-soft` from `#d7d7d1` to `#cfcfc9` where the token is defined (not a plain
+  declaration in another stylesheet, which loses the cascade), run `node tests/visual-docker.mjs`
+  without `--update-snapshots`; the dark captures must fail (the semibold pages on both attempts).
+  Revert, and `git status` shows the token file clean.
 - Host suite: `npx playwright test` on VOID, visual spec reported skipped, rest as before
   (198 passed, 0 failed, 5 skipped baseline from Entry 171, plus 48 skips).
 - `grep -rn "^\s*- \[ \]" docs/plans/` returns nothing; `shxdowmap status` fresh.
@@ -73,6 +87,11 @@ Scopes are disjoint. TODO and LOGBOOK are bookkeeping, written by the main agent
 - Rosetta emulation is slower; the 48 captures may take several minutes. Not a correctness issue.
 - Files the container writes into `out/` must stay owned by `comet` on the host; checked after the
   first run.
+
+- The container builds with Node 24 (the image's), Netlify with Node 20, so the graded export is
+  not byte-for-byte production's build. Same Next version and source; acceptable for a visual gate.
+
+Plan review: native oracle (Opus 5.5), round 1, PASS with 7 findings, all applied above.
 
 ## Planning shape
 

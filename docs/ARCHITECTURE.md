@@ -284,10 +284,11 @@ Three harness facts that are easy to break and cost a cycle each:
   so. The wedge rescue moves a trapped bubble while it is invisible and fades
   it in at a legal spot; `_relocating` is true only for that invisible frame.
   Visible bubbles are still held to exactly zero overlap.
-- Do not rename the `chromium` project - the 40 baselines are suffixed
-  `-chromium-win32`.
+- Do not rename the `chromium` project - the 48 baselines are suffixed
+  `-chromium-linux`, captured in the Playwright container (`node tests/visual-docker.mjs`;
+  the spec skips itself on the host).
 
-To accept an intentional visual change: `npm test -- --update-snapshots`, review
+To accept an intentional visual change: `node tests/visual-docker.mjs --update-snapshots=all`, review
 the regenerated PNGs, then **re-run the full suite until green twice in a row**.
 A bulk update can silently skip files, and a bad baseline passes on the update run
 and only surfaces later as a phantom regression.

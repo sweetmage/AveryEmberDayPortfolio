@@ -19,6 +19,25 @@ When this logbook exceeds ~1000 lines, split it:
 
 ---
 
+## Entry 172 - 2026-10-20
+
+**Agent:** Claude Code, claude-opus-5-5 (Quillfeather, VOID), main agent
+**Cycle:** shxdowflow, visual-gate-container
+**Task:** Run the visual gate in the Playwright container on one Linux baseline set, and sweep the shipped plans.
+
+- Proposal approved by Comet. Plan: docs/plans/2026-10-20-visual-gate-container.md. Plan review: native oracle (Opus 5.5), 1 round, PASS with 7 findings, all applied (dropped .gitignore from scope, which would have cost a build; hosted CI stays open; ARCHITECTURE and AGENTS win32 lines; SOL has no Docker; cross-host equality unproven; never run host suite and container at once; concrete injected regression).
+- Docker on VOID: brew install colima docker; colima start --vm-type vz --vz-rosetta. Image mcr.microsoft.com/playwright:v1.61.1-noble runs as linux/amd64 (x86_64 under Rosetta).
+- Runner tests/visual-docker.mjs: image tag from the lockfile's @playwright/test, repo bind-mounted at /work, named volumes over node_modules and .next, npm ci only when the lockfile hash changes, args passed through. Under tests/ and not an npm script because netlify.toml's ignore rule skips tests/ and docs but not package.json or scripts/. Files it writes are owned by comet.
+- visual-baseline.spec.js skips itself unless VISUAL_CONTAINER=1, so a host run reports 48 skipped instead of failing and writing a darwin set.
+- Baselines: 48 regenerated with --update-snapshots=all (48 passed, 1.4m), the 48 -chromium-win32 files deleted. Every Linux PNG is the same width as its win32 predecessor and within 1px of its height; a per-pair pixel diff found no 40x40 tile above 369/1600 differing pixels (text antialiasing only; a missing element would approach 1600), confirmed by eye on index 360 light and the Mistrust 1440 dark image and diff mask.
+- Re-checks: two full container runs, 48 passed each, no retries used (1.3m each). Injected regression: dark --brand-text-soft #d7d7d1 to #cfcfc9 at brand.css:45 failed exactly the 24 dark captures, 24 light passed; reverted, git status clean. Contact rerun after moving the skip block: 8 passed.
+- Host suite (zsh, VOID): npx playwright test, 198 passed, 0 failed, 53 skipped (5 usual + 48 visual).
+- Plans sweep (native worker, Sonnet): 7 shipped plans archived to stubs in docs/archives/plans.md#consolidation-stubs-2026-10-20, the 4 stale boxes ticked, README rewritten; the two plans carrying Brand Assets stay. Commit 32a0609. The brand-voice memory fix and two code comments that still name archived plans would each start a billed build (.agents/, app/, scripts/ are not in the ignore rule), so they wait in TODO for the next site deploy.
+- Docs: docs/visual-gate.md (how to run, amd64, Colima, open item half done), AGENTS.md, docs/ARCHITECTURE.md. TODO: hosted CI open pending Comet's call; Docker on SOL; the ride-along items.
+- Review: own diff read; no signoff (test infrastructure and docs, no auth, credential or permission code). Routing: native scout not needed, worker (Sonnet) for the sweep, oracle (Opus) for the plan; nano router refused all classes, Antigravity signed out, t3_sol timed out.
+
+---
+
 ## Entry 171 - 2026-10-18
 
 **Agent:** OpenCode, claude-opus-5-5 (C0debr34k3r, VOID), main agent
