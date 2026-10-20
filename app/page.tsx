@@ -86,6 +86,18 @@ export default function HomePage() {
               character and logo designs for a WGAW-registered animated series pitch.
             </p>
             <p>
+              Outside client work, I run a Redbubble shop,{' '}
+              <a
+                href="https://www.redbubble.com/people/BubbleComet/shop"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                BubbleComet
+              </a>
+              , where I make small illustrations for print on stickers, apparel, and
+              accessories.
+            </p>
+            <p>
               I'm always looking for new opportunities to collaborate. If my work
               catches your eye, or you have an opportunity for a project you would
               like my input on, feel free to reach out through my contact page or
