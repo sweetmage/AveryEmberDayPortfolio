@@ -91,6 +91,7 @@ export default function HomePage() {
                 href="https://www.redbubble.com/people/BubbleComet/shop"
                 target="_blank"
                 rel="noopener noreferrer"
+                className="text-text-soft underline underline-offset-2 hover:text-text"
               >
                 BubbleComet
               </a>
