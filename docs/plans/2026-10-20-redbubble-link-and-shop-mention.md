@@ -10,8 +10,9 @@ None. Resolved 2026-10-20: shop `https://www.redbubble.com/people/BubbleComet/sh
 
 ## Approved About copy (owner, 2026-10-20)
 
-> Outside client work, I run a Redbubble shop, BubbleComet, where I make small illustrations for print on stickers, apparel, and accessories. Per `.agents/memories/brand-voice.md` the owner writes the
-  first draft; this is a draft they asked for, so every line is theirs to change.
+> Outside client work, I run a Redbubble shop, BubbleComet, where I make small illustrations for print on stickers, apparel, and accessories.
+Per `.agents/memories/brand-voice.md` the owner writes the first draft; this one was drafted at their
+request and then edited and approved by them.
 
 ## UI and UX mockup record
 
