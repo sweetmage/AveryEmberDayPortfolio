@@ -42,8 +42,12 @@ Legacy static `index.html` (unmaintained, not deployed; see AGENTS.md).
 - `npx playwright test --list`, then run the specs except `visual-baseline.spec.js` (baselines are
   `chromium-win32`; AGENTS.md Build & Test).
 - `focus-ring.spec.js` already walks every `.icon-link`, so the new icon is covered with no spec change.
-- Visual baselines: the footer is on every page and the About box grows by a line, so the win32 baselines
-  will change. Regenerate on SOL per `docs/visual-gate.md`; do not accept platform PNGs from this host.
+- Visual baselines: NOT regenerated. The footer is on every page and the About box grew a paragraph, so
+  the Linux baselines (`chromium-linux`, canonical since 2026-10-20) need regenerating with
+  `node tests/visual-docker.mjs --update-snapshots=all`, then two plain re-runs, on a host whose gate
+  passes unchanged (VOID per `docs/visual-gate.md`). A cloud-session attempt on 2026-10-21 could not
+  reproduce the committed set even on the unchanged `portfoliowebsite` (23 of 40 captures failed: the
+  Sriracha display font did not load behind the session proxy), so no baselines were written.
 - Review link for the owner before any push (`.agents/memories/review-links.md`).
 
 ## Branch
