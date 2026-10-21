@@ -39,8 +39,8 @@ Legacy static `index.html` (unmaintained, not deployed; see AGENTS.md).
 
 ## Tests and verification
 
-- `npx playwright test --list`, then run the specs except `visual-baseline.spec.js` (baselines are
-  `chromium-win32`; AGENTS.md Build & Test).
+- `npx playwright test --list`, then run the specs except `visual-baseline.spec.js` (the gate runs in the
+  Playwright container: `docs/visual-gate.md`).
 - `focus-ring.spec.js` already walks every `.icon-link`, so the new icon is covered with no spec change.
 - Visual baselines: NOT regenerated. The footer is on every page and the About box grew a paragraph, so
   the Linux baselines (`chromium-linux`, canonical since 2026-10-20) need regenerating with
@@ -52,5 +52,5 @@ Legacy static `index.html` (unmaintained, not deployed; see AGENTS.md).
 
 ## Branch
 
-Work on `claude/youthful-maxwell-k2do5o`. Nothing is pushed to `portfoliowebsite` (a push there deploys
-to production and needs the owner's go-ahead in the moment).
+Built on `claude/youthful-maxwell-k2do5o`. Merged into `portfoliowebsite` and pushed 2026-10-21 at the
+owner's direction (production deploy), with the visual baselines still stale.
