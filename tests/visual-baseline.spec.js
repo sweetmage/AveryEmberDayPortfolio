@@ -4,6 +4,15 @@ import { test, expect } from '@playwright/test';
 // Deliberately not 3000/3001 -- those are where `next dev` lands.
 const BASE_URL = 'http://localhost:4322';
 
+/* The baselines are the Linux set captured in the Playwright container, so the gate runs
+   only there: `node tests/visual-docker.mjs`. On a macOS or Windows host Playwright would
+   look for -chromium-darwin or -chromium-win32 files, fail every capture, and write a stray
+   platform set. A host `npm test` reports these as skipped instead. */
+test.skip(
+  !process.env.VISUAL_CONTAINER,
+  'Visual baselines are graded in the Playwright container: node tests/visual-docker.mjs'
+);
+
 /* Deterministic text rasterisation for the captures only. With default
    hinting and LCD anti-aliasing, Chromium on Windows rendered Outfit 600 (the
    portfolio's tile and section titles, from 2026-10-05) with run-to-run
@@ -57,7 +66,7 @@ const THEMES = ['light', 'dark'];
  *
  * To accept intentional visual changes:
  *
- *     npm test -- --update-snapshots
+ *     node tests/visual-docker.mjs --update-snapshots=all
  *
  * Review the regenerated PNGs before committing them. An unreviewed
  * `--update-snapshots` defeats the entire point of the gate.

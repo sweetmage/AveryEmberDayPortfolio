@@ -34,12 +34,19 @@ before a push ships in the same deploy.
 
 ### Blocked on a prerequisite
 
-- [ ] **Run the visual gate in CI.** Not blocked on a decision — that was made 2026-07-23
-      (containerize capture so one Linux snapshot set is canonical). **Blocked on Docker, which is
-      not installed on this machine** (recorded 2026-08-03). Requires a one-time regeneration of all
-      40 baselines inside `mcr.microsoft.com/playwright`, which should not be interleaved with other
-      visual work. Full sequence and rationale:
-      [`docs/visual-gate.md`](docs/visual-gate.md#open-item--running-the-gate-in-ci).
+- [ ] **Run the visual gate in hosted CI.** The local half is done (2026-10-20): the gate runs in
+      the Playwright container (`node tests/visual-docker.mjs`, Colima on VOID) against 48
+      `-chromium-linux` baselines. Hosting it needs the user's call, since the standing rule is no
+      GitHub Actions unless asked. Recommendation: keep it local until a visual regression actually
+      slips through. [`docs/visual-gate.md`](docs/visual-gate.md#open-item--running-the-gate-in-ci).
+- [ ] **Docker on SOL** before any session there runs the visual gate. SOL has no WSL since its
+      reinstall, so Docker Desktop's WSL2 backend needs WSL back first. Until then, run the gate from VOID.
+- [ ] **Ride along with the next site deploy** (each of these paths starts a billed build, so not on
+      its own): retarget `.agents/memories/brand-voice.md` "Where it lives" from the two archived
+      brand-voice plans to the live `BrandVoice` section and `git show 237d559:` / `git show 031bacf:`
+      ([stubs](docs/archives/plans.md#consolidation-stubs-2026-10-20)); the same for the plan names in
+      comments at `app/portfolio/BrandProject.tsx:135` and `scripts/generate-mockups.js:26`; and add
+      `:(exclude).agents/` to `netlify.toml`'s ignore rule so memory edits stop costing a build.
 
 ### Copy pass
 
@@ -86,6 +93,10 @@ Full detail in `LOGBOOK.md` (newest-first). Plan docs live in `docs/plans/`; ear
 consolidated in [`docs/archives/plans.md`](docs/archives/plans.md).
 
 ### 2026-10
+
+- **Oct 20** — **The visual gate runs in the Playwright container on one Linux set** (Entry 172).
+  `node tests/visual-docker.mjs` (Colima on VOID, linux/amd64); 48 `-chromium-linux` baselines
+  replace the win32 set; host `npm test` skips the 48. Plans sweep: 7 shipped plans archived.
 
 - **Oct 18** — **Netlify ignore rule now skips `tests/` and `playwright.config.js`.** A push that touches only docs,
   agent files, Playwright specs or its config no longer starts a billed build; none of them reach `out/`.

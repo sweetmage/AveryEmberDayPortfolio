@@ -18,23 +18,46 @@ matters.
 | | |
 |---|---|
 | Spec | [`tests/visual-baseline.spec.js`](../tests/visual-baseline.spec.js) |
-| Baselines | `tests/visual-baseline.spec.js-snapshots/` — **40 PNGs** |
+| Baselines | `tests/visual-baseline.spec.js-snapshots/` — **48 PNGs**, `-chromium-linux` |
 | Failure artifacts | `test-results/` — actual, expected, and diff PNGs |
-| Coverage | 5 pages × 4 breakpoints × 2 themes |
-| Pages | `index`, `portfolio`, `portfolio-mistrust`, `portfolio-brand`, `contact` (since 2026-10-06; `projects`, `projects-mistrust` and `gallery` retired with the Portfolio merge) |
+| Coverage | 6 pages × 4 breakpoints × 2 themes |
+| Pages | `index`, `portfolio`, `portfolio-mistrust`, `portfolio-brand`, `portfolio-section-6`, `contact` (since 2026-10-06; `projects`, `projects-mistrust` and `gallery` retired with the Portfolio merge; SECTION 6 added 2026-10-13) |
 | Breakpoints | 360, 768, 1024, 1440 |
 | Themes | light, dark |
 
 `portfolio-mistrust` and `portfolio-brand` are the project pages, `/portfolio/history-of-mistrust/`
-and `/portfolio/brand/`. Baselines are `chromium-win32` and are regenerated on SOL (Trap 7).
+and `/portfolio/brand/`. Since 2026-10-20 the baselines are `chromium-linux`, captured in the
+official Playwright image on linux/amd64; the `chromium-win32` set captured on SOL is gone.
 
 ## Running it
 
+The gate runs **only in the Playwright container**. The spec skips itself unless
+`VISUAL_CONTAINER=1`, which the runner sets, so a host `npm test` on macOS or Windows reports
+the 48 captures as skipped instead of failing and writing a stray platform set.
+
 ```bash
-npm test                                  # whole suite (198 tests as of 2026-10-06; green only on Windows)
-npx playwright test visual-baseline       # just the gate
-npx playwright test -g "portfolio @ 1440" # one case
+node tests/visual-docker.mjs                          # the gate (needs Docker running)
+node tests/visual-docker.mjs -g "portfolio @ 1440"    # one case
+node tests/visual-docker.mjs --update-snapshots=all   # regenerate; see "Accepting a change"
+npm test                                              # everything else, on the host
 ```
+
+`tests/visual-docker.mjs` runs `mcr.microsoft.com/playwright:v<version>-noble`, the version being
+the `@playwright/test` the lockfile pins, with `--platform linux/amd64`. The repo is bind-mounted at
+`/work`; named volumes (`portfolio-visual-node-modules`, `portfolio-visual-next`) cover
+`node_modules` and `.next`, so the host's macOS or Windows binaries never meet the container, and
+`npm ci` reruns inside only when the lockfile changes. It lives under `tests/` and is not an npm
+script on purpose: `netlify.toml`'s ignore rule skips pushes that touch only `tests/` and docs, and
+a `package.json` or `scripts/` change would make such a push a 15-credit production build.
+
+**Why amd64:** hosted runners and SOL are x86-64, and Chromium's rasteriser is not guaranteed
+identical on arm64. On VOID (Apple Silicon) Docker comes from Colima, started with
+`colima start --vm-type vz --vz-rosetta`, so the image runs under Rosetta. That the Rosetta capture
+matches a native x86-64 host pixel for pixel is expected, not yet proven: no native Docker host has
+run the gate yet. SOL has no Docker (no WSL since its reinstall).
+
+**Never run the host suite and the container gate at the same time.** Both build into the same
+`out/` through the bind mount, and a build mid-run is Trap 2.
 
 The server is started **inside `tests/global-setup.js`**, not by `webServer.command`. This is
 load-bearing — see [Trap 2](#trap-2--the-gate-graded-a-stale-out).
@@ -42,10 +65,10 @@ load-bearing — see [Trap 2](#trap-2--the-gate-graded-a-stale-out).
 ## Accepting an intentional visual change
 
 ```bash
-npm test -- --update-snapshots   # rewrite baselines
+node tests/visual-docker.mjs --update-snapshots=all   # rewrite baselines
 # → REVIEW THE REGENERATED PNGs
-npm test                          # must pass
-npm test                          # must pass again
+node tests/visual-docker.mjs                          # must pass
+node tests/visual-docker.mjs                          # must pass again
 ```
 
 Three rules, each of which exists because skipping it caused a real defect:
@@ -112,7 +135,7 @@ reads exactly like a real regression.
 Fix: re-run the specific tests, which writes them reliably.
 
 ```bash
-npx playwright test --update-snapshots -g "<test name>"
+node tests/visual-docker.mjs --update-snapshots=all -g "<test name>"
 ```
 
 ### Trap 2 — the gate graded a stale `out/`
@@ -202,16 +225,17 @@ attempts. A missing baseline is never retried.
 Soak after the retry: **5 runs, 0 hard failures**, 3 captures passing on retry. The flags change
 how every page renders in the gate, so **never drop one without regenerating all 40.**
 
-**Where baselines come from now:** SOL, over SSH from the Mac, because the committed set is
-`chromium-win32`:
+All of the above was measured on Windows. The Linux container keeps the flags and the retry.
 
-1. Shallow-clone the branch from the Mac into `%TEMP%\wt-portfolio-baselines`.
-2. `npm ci` and `npx playwright install chromium`.
-3. `--update-snapshots=all`, then **two** re-checks. **Not** the bare flag: since Playwright 1.50
-   it means `changed`, which rewrites only captures that FAIL, and a change under the 500px floor
-   passes. On 2026-10-09 the footer's new Home link moved every page by 186-196px at md+, so the
-   bare flag left 26 baselines showing a footer without it while all 40 re-checks went green.
-4. Zip and `scp` the images back to the Mac, review every one, and commit.
+**Where baselines come from now (since 2026-10-20):** the container, on any machine with Docker.
+Until then they came from SOL over SSH, because the set was `chromium-win32`.
+
+1. `node tests/visual-docker.mjs --update-snapshots=all`, then **two** re-checks without the flag.
+   **Not** the bare `--update-snapshots`: since Playwright 1.50 it means `changed`, which rewrites
+   only captures that FAIL, and a change under the 500px floor passes. On 2026-10-09 the footer's
+   new Home link moved every page by 186-196px at md+, so the bare flag left 26 baselines showing a
+   footer without it while all 40 re-checks went green.
+2. Review every regenerated image, then commit.
 
 Before trusting a new machine or a reinstall, compare the pre-change commit first. All untouched
 pages must pass; on 2026-10-06 that was 24 of 24 at `c6b83aa`.
@@ -238,10 +262,13 @@ old position inside the zone*. Measuring it there reports a fading bubble as cov
 
 ## Open item — running the gate in CI
 
-**Status: not implemented. Blocked on a prerequisite, not on a decision.**
+**Status: half done.** The local container half landed 2026-10-20 (steps 1, 2 and 4 below,
+with Colima instead of Docker Desktop). Running it in **hosted** CI (step 3) is still open: the
+standing rule is no GitHub Actions unless the user asks, so it waits on that call.
 
 Netlify runs only `next build`; there is no `.github/workflows` in this repo. So the gate is
-local and opt-in, and a visual regression deploys unchallenged if nobody runs `npm test`.
+local and opt-in, and a visual regression deploys unchallenged if nobody runs
+`node tests/visual-docker.mjs`.
 
 **Decision made 2026-07-23 (user):** containerize capture — run Playwright in the official
 `mcr.microsoft.com/playwright` image both locally *and* in CI, so one Linux snapshot set is
@@ -253,13 +280,14 @@ rendering and antialiasing differ enough to fail every comparison. Adopting the 
 requires a **one-time regeneration of all 40 baselines** inside it, reviewed like any other bulk
 update.
 
-**Prerequisite, recorded 2026-08-03: Docker is not installed on this machine.** That is the actual
-blocker. Sequence when picking this up:
+**Prerequisite, recorded 2026-08-03: Docker is not installed on this machine.** Resolved
+2026-10-20 on VOID with Colima. Sequence:
 
-1. Install Docker Desktop.
-2. Regenerate all 40 baselines inside `mcr.microsoft.com/playwright`, review them, commit.
-3. Add the container run to CI.
-4. Delete the `-chromium-win32` set — keeping both invites grading against the wrong one.
+1. ~~Install Docker Desktop.~~ Done with Colima (`brew install colima docker`).
+2. ~~Regenerate all 40 baselines inside `mcr.microsoft.com/playwright`, review them, commit.~~
+   Done for all 48, 2026-10-20.
+3. Add the container run to CI. **Open**, waiting on the user's call on hosted CI.
+4. ~~Delete the `-chromium-win32` set.~~ Done 2026-10-20.
 
 Note that step 2 replaces every baseline, so it should not be interleaved with other visual work.
 Land visual changes first, then re-baseline once.

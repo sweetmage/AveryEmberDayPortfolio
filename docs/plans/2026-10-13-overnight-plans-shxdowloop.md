@@ -1,6 +1,7 @@
 # Overnight plans: the whole to-do list, drafted for morning (shxdowloop)
 
 **Written:** 2026-10-13, overnight, for Avery to read tomorrow.
+**Status (2026-10-20):** everything built and released except **Brand Assets**, the one open item (Track C: built hidden behind `SHOW_BRAND_ASSETS = false`; the user will design the business card and website banner, so mockup 4 was never approved). Tools rows shipped 2026-10-14 (Entries 162-164) and the copy pass 2026-10-18 (Entries 170-171). Open work lives in [`../../TODO.md`](../../TODO.md).
 **Branch:** `shxdowloop/2026-10-13/overnight-plans`, cut from `origin/portfoliowebsite` (`8bf209f`). Pushed to its own branch only (first push is the Stage 1 checkpoint). `portfoliowebsite` is never touched by this loop, so nothing here deploys.
 **Orchestrator:** Claude Sonnet 5.5 (ember-quill, VOID).
 **Mockups:** [`2026-10-13-overnight-plans/mockups/index.html`](2026-10-13-overnight-plans/mockups/index.html). How to open them is in *Morning checklist*.
@@ -33,7 +34,7 @@ Offer answered 2026-10-13, verbatim: "Yes, mockups overnight, approve tomorrow (
 |---|---|---|---|
 | 1 | The SECTION 6 tile on `/portfolio/` | **Approved**, 2026-10-13. Built. | "approve section 6 tile" |
 | 2 | The SECTION 6 project page | **Approved**, 2026-10-13. Built. | "approve ... section 6 projects page" |
-| 3 | Tools rows on both project pages | **Pending** (only the SECTION 6 page's Tools row, which is part of mockup 2, is built and live) | |
+| 3 | Tools rows on both project pages | **Built and released 2026-10-14** (Entries 162-164, the "White Rose 2x2, Tools rows, Brand alt text" release). Pending until then; the SECTION 6 page's own Tools row was part of mockup 2. | "approve changes and push all together" (2026-10-14, Entry 163) |
 | 4 | Business card, front and back, real QR | **Not approved**, 2026-10-13. The user will design it and show it under Brand Assets. | "do not approve business card" |
 | 5 | Brand voice and tone, plus the one more section | **Voice and tone APPROVED 2026-10-14** (user: "remove \"use US spelling. use one title: Brand & Visual Designer\" from the page, then approve"), built on the Brand page. Extra section: **Brand Assets**, built hidden. Earlier note: **Partly decided.** The extra section is **Brand Assets**, hidden for now (built, switched off). Voice and tone is waiting on the user's draft; research in `2026-10-13-brand-voice-recommendation.md`. | "the additional section will be brand assets ... the section should remain hidden on the main site for now" |
 
@@ -70,7 +71,7 @@ A History of Mistrust is Figma, made entirely in it. The Brand row lists InDesig
 - **Voice and tone.** I draft it, the agent proofreads, and nothing gets written for me. Mockup 5 holds the slot.
 - **One more section with a header.** Still has no topic. Candidates in the mockup: logo usage and clear space, the card as its own section, or the brand in the wild. **Waiting on me:** pick one or tell it a better one.
 
-### D. The copy pass (waiting on my first draft)
+### D. The copy pass (done 2026-10-18: Entries 170-171)
 
 12 gallery descriptions (Moonlight made it 12) and both project summaries. I write the first draft, the agent proofreads and nothing else. `alt` becomes a real description of each image. The render path exists, so this is pure data once I write. **Waiting on me:** the drafts.
 
@@ -102,15 +103,15 @@ Fewest stages the real gates allow. The user gate is the only forcing reason, an
 
 ### Stage 2: Build, after approval (tomorrow, with me)
 
-**Status:** Complete for everything approved (2026-10-14); mockup 3 still pending
+**Status:** Complete for everything approved (2026-10-14); mockup 3 (Tools rows) built and released 2026-10-14; copy pass finished 2026-10-18
 **Goal:** Build each page I approved, and only those.
 **Forcing reason:** each page needs my yes first, and the corrected art needs my upload.
 **Phases:**
 - [x] 2.1 SECTION 6 tile and page (mockups 1 and 2 approved; the user said the rose is fixed; the alt text is the agent's first draft, still for the user to review)
-- [ ] 2.2 Tools rows on Brand and Mistrust: needs mockup 3 (SECTION 6's own Tools row is built)
+- [x] 2.2 Tools rows on Brand and Mistrust: built and released 2026-10-14 (Entries 162-164; SECTION 6's own Tools row was built earlier)
 - [x] 2.3 Business card: not approved; the user will design it and show it under Brand Assets (built, hidden)
 - [x] 2.4 Brand voice and tone approved and built; the extra section is Brand Assets, built hidden
-- [ ] 2.5 Copy pass data (12 gallery descriptions, both project summaries): still needs the user's drafts
+- [x] 2.5 Copy pass data (12 gallery descriptions, both project summaries): approved 2026-10-18 and pushed (Entries 170-171)
 - [x] 2.6 Regenerate the baselines on SOL with `--update-snapshots=all` (48, two clean re-checks)
 - [x] 2.7 One batched push to `portfoliowebsite`, only with my go-ahead in the moment (one production deploy: 15 of the 300 monthly credits, 1 of the 20 deploys they buy)
 

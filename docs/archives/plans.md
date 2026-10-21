@@ -4,6 +4,9 @@ All completed, cancelled, and superseded implementation plans consolidated from 
 
 ## Table of Contents
 
+### Retired stubs (2026-10-20)
+The seven plans finished between Aug 1 and Oct 18, archived in the plans sweep — see [Consolidation Stubs — 2026-10-20](#consolidation-stubs-2026-10-20).
+
 ### Retired stubs (2026-10-06)
 The three plans shipped in the 2026-10-06 Portfolio release, and the two from the next-step loop that followed it — see [Consolidation Stubs — 2026-10-06](#consolidation-stubs-2026-10-06) and [its second batch](#consolidation-stubs-2026-10-06-b).
 
@@ -1954,3 +1957,39 @@ git show de66bd4:docs/plans/2026-10-06-next-step-cleanup-icons-mistrust-shxdowlo
 | `docs/plans/2026-10-06-next-step-cleanup-icons-mistrust-shxdowloop.md` | Shipped. Logo download kit on `/portfolio/brand/` (SVG + PNG per card), four unused files deleted, the 82 Mistrust sources numbered by a CSS counter, the first batch above archived; Moonlight rode along. Final signoff degraded at its cap (both Codex rounds PASS on content, voided for truncated reads of the minified `style.css`) and **accepted by the user** ("accept the signoff, merge it and ship"). Entries 143, 144, 146. |
 | `docs/plans/2026-10-06-next-step-cleanup-icons-mistrust-shxdowloop-dry-run.md` | The dry run for the plan above: its fact base (file lists, sizes, reference greps). Entry 143. |
 
+
+
+<a id="consolidation-stubs-2026-10-20"></a>
+# Consolidation Stubs — 2026-10-20
+
+The plans sweep: every plan in `docs/plans/` whose work had shipped by 2026-10-20. Each is in history
+at the commit that last touched it (the file was unchanged since). Recover any of them with:
+
+```bash
+git show 45f6fcf:docs/plans/2026-08-01-copy-pass-and-gallery-descriptions.md
+git show 76b4448:docs/plans/2026-10-09-print-mockups-shxdowloop.md
+git show 237d559:docs/plans/2026-10-13-brand-voice-draft.md
+git show 031bacf:docs/plans/2026-10-13-brand-voice-recommendation.md
+git show e6c110d:docs/plans/2026-10-16-fluid-squishy-bubbles-shxdowloop.md
+git show 21beab5:docs/plans/2026-10-17-section6-logo-descriptions-shxdowloop.md
+git show 8a028e2:docs/plans/2026-10-18-visual-baselines-shxdowloop.md
+```
+
+Two plans stay in `docs/plans/` because **Brand Assets** (hidden behind `SHOW_BRAND_ASSETS = false`;
+the user will design the business card and banner) is their open Track C:
+`2026-10-13-logo-design-and-brand-expansion.md` and `2026-10-13-overnight-plans-shxdowloop.md`. Their
+supporting folder `docs/plans/2026-10-13-overnight-plans/` (the five mockups) stays with them.
+
+Supporting material that is **not** archived, because live files link to it:
+`docs/plans/fluid-squishy-bubbles/artifacts/` (the bubble-motion baselines; `AGENTS.md` and
+`tests/bubbles-motion.spec.js` point at it).
+
+| Removed file | Outcome |
+|---|---|
+| `docs/plans/2026-08-01-copy-pass-and-gallery-descriptions.md` | Shipped. The About box and Contact intro (Entries 119-120), the expand-in-place render path for gallery descriptions (Track B, Entry 118), then the drafts: both project summaries and all 12 gallery descriptions approved 2026-10-18, real alt text for the 12 pieces, and the 24 affected visual baselines regenerated. Pushed 2026-10-18. Entries 118-120, 170-171. |
+| `docs/plans/2026-10-09-print-mockups-shxdowloop.md` | Shipped. Two print mockups per gallery piece (24, composited by `scripts/generate-mockups.js` from `images/mockups/mockups.json`), shown under the description; Gross on a skateboard deck. Released 2026-10-09 from `shxdowloop/2026-10-09/print-mockups`. Entries 149-150, 152. |
+| `docs/plans/2026-10-13-brand-voice-draft.md` | Shipped. The user's edited Brand Voice and Tone text; approved 2026-10-14 after they removed "Use US spelling. Use one title: Brand & Visual Designer." Live as `BrandVoice` on the Brand page. Rules in `.agents/memories/brand-voice.md`. Entries 156, 159, released in 160-161. |
+| `docs/plans/2026-10-13-brand-voice-recommendation.md` | Shipped. Research on what other brands put in voice sections and an analysis of the site's copy; the recommendation became the approved Brand page section above. Entries 158-159. |
+| `docs/plans/2026-10-16-fluid-squishy-bubbles-shxdowloop.md` | Shipped. Page-space bubble layer with no scroll lag, jelly squish, cushioned contacts and pointer flick, measured against pass marks stored in `docs/plans/fluid-squishy-bubbles/artifacts/`. Live 2026-10-17 (`70985ab..21beab5`), user reviewed. Entries 165-166. |
+| `docs/plans/2026-10-17-section6-logo-descriptions-shxdowloop.md` | Shipped. The Phoenix and White Rose descriptions on `/portfolio/section-6-logo-design/` replaced with the user's wording (Phoenix gains a closing period); 8 `portfolio-section-6` baselines regenerated. Live 2026-10-17 with the bubble plan above. Entries 167-168. |
+| `docs/plans/2026-10-18-visual-baselines-shxdowloop.md` | Shipped. The 24 Portfolio, Brand and Mistrust baselines regenerated on SOL after the copy pass (48 total), plus two intermittent motion tests fixed (`bubbles-motion` pointer flick, `bubbles-exclusion` card interior). Pushed 2026-10-18. Entry 171. |
