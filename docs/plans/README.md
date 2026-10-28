@@ -18,6 +18,7 @@ That returns nothing as of 2026-10-20.
 
 | Plan | Status |
 |---|---|
+| [`2026-10-28-bubble-brand-guide-pdf.md`](2026-10-28-bubble-brand-guide-pdf.md) | **Planned.** The college retro brand guide PDF rebuilt in the bubble brand (HTML pages printed to PDF with Playwright). Waiting on the user's answers to six open questions. Tracked in `TODO.md`. |
 | [`2026-10-20-visual-gate-container.md`](2026-10-20-visual-gate-container.md) | **In progress.** Containerized visual gate (one Linux baseline set inside the Playwright image, run through Colima) and this plans sweep. |
 | [`2026-10-13-logo-design-and-brand-expansion.md`](2026-10-13-logo-design-and-brand-expansion.md) | **Open: Brand Assets only (Track C).** Tracks A, B and D shipped (SECTION 6 tile and page, Tools rows, watermark fix) and so did brand voice. The Brand Assets section (business card and website banner, each as design plus mockup) is built hidden behind `SHOW_BRAND_ASSETS = false`; the user will design the pieces. Tracked in `TODO.md`. |
 | [`2026-10-13-overnight-plans-shxdowloop.md`](2026-10-13-overnight-plans-shxdowloop.md) | **Open: Brand Assets only.** Everything else in the loop shipped (mockups 1, 2, 3 and the voice section of 5; the copy pass). Mockup 4, the business card, was not approved; the user will design it. Keeps the five mockups in [`2026-10-13-overnight-plans/`](2026-10-13-overnight-plans/mockups/index.html). |

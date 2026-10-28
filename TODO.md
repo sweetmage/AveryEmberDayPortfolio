@@ -31,6 +31,11 @@ before a push ships in the same deploy.
       business card and a website banner, each as design plus mockup. The user will make the pieces later;
       fill in each `design` and `mockup` and flip the flag to launch. The card mockup 4 was **not approved**;
       the user will design the card themself. Plan: Track C.
+- [ ] **Bubble brand identity guide (PDF).** Rebuild the 19-page college retro guide (on SOL under
+      `D:\My Stuff\creations\Active Projects\finished\BrandAveryEmberDay\`) in the bubble brand, as HTML pages
+      printed to PDF by Playwright. Waiting on the user's answers to six questions (tagline, who writes the copy,
+      card and banner, mood board images, logo tiers, evolution page), then a three-page mockup for approval.
+      Plan: [`docs/plans/2026-10-28-bubble-brand-guide-pdf.md`](docs/plans/2026-10-28-bubble-brand-guide-pdf.md).
 
 ### Blocked on a prerequisite
 
