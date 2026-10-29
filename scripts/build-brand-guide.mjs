@@ -21,6 +21,8 @@ const GUIDE = path.join(ROOT, 'docs/brand-guide/guide.html');
 const OUT = path.join(ROOT, 'docs/brand-guide/out');
 const PAGES = path.join(OUT, 'pages');
 const PDF_NAME = 'Avery Ember Day Brand Identity Guide.pdf';
+const EXPECTED_PAGES = 20;
+const FONT_FAMILIES = ['Sriracha', 'Outfit', 'Inter'];
 
 await rm(PAGES, { recursive: true, force: true });
 await mkdir(PAGES, { recursive: true });
@@ -35,8 +37,16 @@ try {
     Promise.all([...document.images].map((img) => (img.complete ? null : img.decode().catch(() => null)))),
   );
 
+  // A failed Google Fonts request resolves fonts.ready with fallback fonts, so check the families loaded.
+  const loaded = await page.evaluate(() =>
+    [...document.fonts].filter((f) => f.status === 'loaded').map((f) => f.family.replace(/"/g, '')),
+  );
+  const missing = FONT_FAMILIES.filter((family) => !loaded.includes(family));
+  if (missing.length) throw new Error(`Fonts not loaded: ${missing.join(', ')}`);
+
   const pages = page.locator('section.page');
   const count = await pages.count();
+  if (count !== EXPECTED_PAGES) throw new Error(`Expected ${EXPECTED_PAGES} pages, found ${count}`);
   for (let i = 0; i < count; i++) {
     const shot = path.join(PAGES, `page-${String(i + 1).padStart(2, '0')}.png`);
     const box = await pages.nth(i).evaluate((el) => {
