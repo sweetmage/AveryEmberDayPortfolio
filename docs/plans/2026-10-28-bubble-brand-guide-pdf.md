@@ -2,7 +2,7 @@
 
 **Written:** 2026-10-28 (Consensus, VOID), from the user's ask: recreate the old brand guide PDF with the
 bubble brand's design choices.
-**Status:** Plan only. Nothing is built. Waiting on the user's answers to the open questions at the end.
+**Status:** Questions answered 2026-10-28 (see *Decisions*). Copy edit and the three-page mockup in progress.
 **Branch:** `portfoliowebsite` (current). Nothing here touches the site or needs a push until the
 optional last step (a download link on the Brand page), which is a production deploy and needs the
 user's go-ahead in the moment.
@@ -79,7 +79,7 @@ portrait, 8.5 x 11 in, to match.
 | 4 | Voice and Tone | Replaces the old Tone page with the approved Brand Voice and Tone section: intro, three trait cards with live-site examples, how it feels on each page, words that fit, writing habits. Text copied from `BrandProject.tsx`, not retyped |
 | 5 | Moodboard | New bubble board: soap-film iridescence, soft blobs, glassy light, the spectrum, cozy dark rooms (Q4) |
 | 6 | Logo: Final Design | 2 x 3 grid: Primary and Icon Mark, each blue on Dark BG, white on dark, black on Light BG. Same images as the site's download kit |
-| 7 | Logo Evolution | Becomes the story page: first iteration (neon triangle), second iteration (circle and triangle), the retro final, then the bubble mark. One short caption each. Uses the old PNGs from SOL |
+| 7 | (removed from main) | The retro evolution moves to a single footnote at the end of the guide (decision 6, revised 2026-10-28): the first and second iterations, the retro logo and the previous draft wording. The old PNGs from SOL go in the footnote only |
 | 8 | Clear Space | New unit for the bubble mark (proposal: the diameter of the small left bubble, measured from the SVG path, not by eye). Diagram drawn over the SVG, table: version, use, min size, background, margins |
 | 9 | Sizes and Color Variations | Min sizes found by rendering the SVGs down until the AED lettering stops reading (Primary) and until the bubbles merge (Icon Mark), checked at 1x and 2x. Rules for blue, white and black, matching the site's swatch notes ("Dark backgrounds", "Light backgrounds", "Favicon, app icon") |
 | 10 | Logo Usage | Do and Do Not, phrased as what to do (voice rule 3), with misuse examples rendered from the real SVG with CSS transforms: stretched, recolored, rotated, busy photo background, drop shadow, bubbles rearranged, redrawn lettering. One correct example |
@@ -154,9 +154,20 @@ on a home printer. Settled at the mockup step (step 2).
 - QR code (if the card has one): scanned from the printed or on-screen PDF before sign-off.
 - Two consecutive builds produce the same page PNGs.
 
-## Open questions for the user
+## Decisions (Comet, 2026-10-28)
 
-Each has a recommendation; none blocks the others.
+1. **Tagline:** keep "Where vision finds form."
+2. **Words:** the old guide's text is Comet's draft. The agent edits it to the voice rules in
+   `docs/brand-guide/copy.md`; **Comet makes the final call** on every line.
+3. **Business card and banner:** wait for Comet's own designs. Those two slots stay placeholders.
+4. **Mood board:** built from Comet's own material only (art, logo, spectrum, textures drawn in code).
+5. **Logos:** the retro guide's three marks (full, AED, star icon) appear only as the previous
+   version. The new guide documents Comet's existing bubble logos (Primary and Icon Mark), nothing new.
+6. **Evolution page:** show the retro marks as earlier iterations.
+
+## Open questions (answered above)
+
+Kept for the record.
 
 1. **Tagline.** Keep "Where vision finds form." from the retro guide, or write a new one for the
    bubble brand? *Recommend:* keep it; it reads fine with the bubble look and it is already yours.
@@ -179,3 +190,17 @@ Each has a recommendation; none blocks the others.
    to make or approve.
 6. **Evolution page.** *Recommend:* turn the old Drafts page into a retro-to-bubble story, showing the
    old marks as earlier iterations. Or leave the retro brand out of the new guide entirely.
+
+## Approved scope (acceptance contract, 2026-10-28)
+
+Approved by Comet through `/shxdowflow` Proposal mode. Scope: build all remaining pages of the guide into
+`docs/brand-guide/guide.html` (the page order below), fix the grey strip, build the PDF and page PNGs, and make a
+local commit on `portfoliowebsite`. No push, no site change, no deploy. Business card and banner stay placeholders
+until Comet sends designs. Mood board drawn in code from the logo, spectrum and textures unless Comet sends images.
+Retro marks (the three old logos) appear only in the footnote, copied from the SOL logo pack into
+`docs/brand-guide/assets/retro/`.
+
+Page order (folio numbers): 1 Cover, 2 Contents, 3 Mission, 4 Values and personality, 5 Voice and tone,
+6 Moodboard, 7 Logo final design, 8 Clear space, 9 Sizes and color variations, 10 Logo usage, 11 Color,
+12 Typography, 13 Type reference, 14 Visual summary, 15 Business card (placeholder), 16 Stationery,
+17 Backdrops, 18 Social and icons, 19 Email and contact, 20 Footnote: previous retro brand.

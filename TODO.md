@@ -31,11 +31,21 @@ before a push ships in the same deploy.
       business card and a website banner, each as design plus mockup. The user will make the pieces later;
       fill in each `design` and `mockup` and flip the flag to launch. The card mockup 4 was **not approved**;
       the user will design the card themself. Plan: Track C.
-- [ ] **Bubble brand identity guide (PDF).** Rebuild the 19-page college retro guide (on SOL under
+- [ ] **Bubble brand identity guide (PDF).** Rebuild the 20-page college retro guide (on SOL under
       `D:\My Stuff\creations\Active Projects\finished\BrandAveryEmberDay\`) in the bubble brand, as HTML pages
-      printed to PDF by Playwright. Waiting on the user's answers to six questions (tagline, who writes the copy,
-      card and banner, mood board images, logo tiers, evolution page), then a three-page mockup for approval.
-      Plan: [`docs/plans/2026-10-28-bubble-brand-guide-pdf.md`](docs/plans/2026-10-28-bubble-brand-guide-pdf.md).
+      printed to PDF by Playwright. Built 2026-10-28 in `docs/brand-guide/` (`guide.html`, `copy.md`), built by
+      `scripts/build-brand-guide.mjs`. Plan: [`docs/plans/2026-10-28-bubble-brand-guide-pdf.md`](docs/plans/2026-10-28-bubble-brand-guide-pdf.md).
+      Not committed or pushed. Outstanding before it goes live:
+  - [ ] **Comet's final call on every line of `docs/brand-guide/copy.md`.** The agent edited Comet's draft; Comet decides.
+  - [ ] **Business card (page 15) is a placeholder.** Waiting on Comet's design, front, back, print size and QR code.
+  - [ ] **Social media banner is a placeholder** in `copy.md`; no page shows it yet. Waiting on Comet's design.
+  - [ ] **Mood board (page 6) is drawn in code.** Replace with Comet's own images if Comet sends them.
+  - [ ] **CMYK values are missing from the Color page (page 11).** The note says pending a proof; add values once a proof exists.
+  - [ ] **Clear-space diagram (page 8) has no dimension marks.** It shows the zone only; add the measured unit (30% of logo width).
+  - [ ] **Check the PDF itself.** Poppler is not installed, so fonts (Sriracha, Outfit, Inter embedding) and every page at full size are not yet verified.
+  - [ ] **Retro logo PNGs** (`docs/brand-guide/assets/retro/`) were copied from SOL. Confirm they can be committed.
+  - [ ] **Commit the guide files** on `portfoliowebsite`. Nothing is committed yet.
+  - [ ] **Optional: download link on the Brand page.** A site change and a production deploy; needs Comet's go-ahead first.
 
 ### Blocked on a prerequisite
 

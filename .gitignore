@@ -39,6 +39,9 @@ next-env.d.ts
 # Playwright test artifacts
 /test-results/
 
+# Brand guide review copies (per-page PNGs from scripts/build-brand-guide.mjs)
+/docs/brand-guide/out/pages/
+
 # shxdowmap seed cache (1MB+ repomix dump, rebuilt on demand by `shxdowmap refresh`)
 /.shxdowmap/
 
