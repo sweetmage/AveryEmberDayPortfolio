@@ -154,19 +154,9 @@ const voiceTraits = [
   },
 ];
 
-const voiceFeel = [
-  { where: 'About', feel: 'Friendly, personal, a little playful' },
-  { where: 'Project pages', feel: 'Clear, calm, informative' },
-  { where: 'Heavy topics, like A History of Mistrust', feel: 'Grounded, careful, kind' },
-  { where: 'Contact', feel: 'Welcoming, helpful, brief' },
-  { where: 'Gallery titles', feel: 'Bold, simple, a bit cheeky' },
-  { where: 'Image descriptions', feel: 'Simple and exact' },
-];
-
 const voiceWords = [
   'systems',
   'reusable',
-  'built to last',
   'character',
   'mood',
   'craft',
@@ -174,13 +164,14 @@ const voiceWords = [
   'clear',
   'accessible',
   'listening',
-  'the brief',
+  'timeless',
+  'bold',
+  'personal',
+  'friendly',
+  'informative',
 ];
 
 const voiceWordsNote = 'Everyday words like use, build, make, listen, and reach out.';
-
-const voiceHabits =
-  'Speak in the first person, with contractions. Use commas and colons for pauses. Keep exclamation marks to one a page.';
 
 function BrandVoice() {
   return (
@@ -203,21 +194,6 @@ function BrandVoice() {
       </div>
 
       <h5 className="mb-3 font-heading text-sm font-medium uppercase tracking-[0.08em] text-text-muted">
-        How it feels on each page
-      </h5>
-      <dl className="brand-frame mb-8 p-5">
-        {voiceFeel.map((row) => (
-          <div
-            key={row.where}
-            className="brand-frame-divider grid grid-cols-1 gap-1 border-b py-3 first:pt-0 last:border-b-0 last:pb-0 md:grid-cols-[minmax(0,1fr)_minmax(0,2fr)] md:gap-x-6"
-          >
-            <dt className="font-body text-sm font-medium text-text">{row.where}</dt>
-            <dd className="m-0 font-body text-base text-text-soft">{row.feel}</dd>
-          </div>
-        ))}
-      </dl>
-
-      <h5 className="mb-3 font-heading text-sm font-medium uppercase tracking-[0.08em] text-text-muted">
         Words that fit
       </h5>
       <ul className="m-0 mb-3 flex list-none flex-wrap gap-2 p-0">
@@ -230,12 +206,7 @@ function BrandVoice() {
           </li>
         ))}
       </ul>
-      <p className="m-0 mb-8 font-body text-base text-text-soft">{voiceWordsNote}</p>
-
-      <h5 className="mb-3 font-heading text-sm font-medium uppercase tracking-[0.08em] text-text-muted">
-        Writing habits
-      </h5>
-      <p className="m-0 font-body text-base leading-relaxed text-text-soft">{voiceHabits}</p>
+      <p className="m-0 font-body text-base text-text-soft">{voiceWordsNote}</p>
     </section>
   );
 }
