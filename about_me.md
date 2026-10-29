@@ -10,6 +10,8 @@ At Arizona State University, I earned my B.S. in Graphic Information Technology 
 
 Since 2018, I've been working as a freelance graphic and brand designer, collaborating with small businesses, content creators, and creative projects of all kinds. My work spans brand identity systems, print production, digital illustration, motion graphics, and more. I'm fluent in the Adobe Creative Suite, including Illustrator, Photoshop, InDesign, After Effects, Premiere Pro, Substance 3D, Dimension, plus Figma, Blender, and HTML/CSS/JavaScript. I'm not afraid to use AI tools to write scripts that automate my process without cutting corners.
 
+Outside client work, I run a Redbubble shop, BubbleComet, where I make small illustrations for print on stickers, apparel, and accessories.
+
 What I care about most is getting the brief right. Every project starts with listening. The best visual solutions come from understanding a clients vision, not just what they asked for. I design with empathy and I deliver with precision.
 
 When I'm not creating something new, I'm probably brewing a cup of coffee, playing cozy video games, or spending time with my family.
