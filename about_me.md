@@ -4,7 +4,7 @@
 
 I've been making things since before I had words for it.
 
-I woke up in a world that was falling apart at the seams, with a crayon in my hand. It was around that time that I was old enough to store long term memories in my undeveloped brain. The only logical thing to do at this point was to keep using the crayon, pencil, tablet, camera, or whatever else I was handed to create somthing that made this world a better place. That early obsession with craft led me through high school painting, sculpture, and portfolio art classes, and earned me five National Art Honor Society medals along the way. But it wasn't until I discovered  that everything clicked into place. 
+I woke up in a world that was falling apart at the seams, with a crayon in my hand. It was around that time that I was old enough to store long term memories in my undeveloped brain. The only logical thing to do at this point was to keep using the crayon, pencil, tablet, camera, or whatever else I was handed to create something that made this world a better place. That early obsession with craft led me through high school painting, sculpture, and portfolio art classes, and earned me five National Art Honor Society medals along the way. But it wasn't until I discovered  that everything clicked into place. 
 
 At Arizona State University, I earned my B.S. in Graphic Information Technology — a program that sits right at the intersection of art and technology. Learning to translate the things I'd always done by hand into purposeful, production-ready digital work felt less like a pivot and more like finding the right language. I fell hard for typography, color theory, brand systems, and the challenge of making something that's not just beautiful, but genuinely communicates.
 
@@ -12,7 +12,7 @@ Since 2018, I've been working as a freelance graphic and brand designer, collabo
 
 Outside client work, I run a Redbubble shop, BubbleComet, where I make small illustrations for print on stickers, apparel, and accessories.
 
-What I care about most is getting the brief right. Every project starts with listening. The best visual solutions come from understanding a clients vision, not just what they asked for. I design with empathy and I deliver with precision.
+What I care about most is getting the brief right. Every project starts with listening. The best visual solutions come from understanding a client's vision, not just what they asked for. I design with empathy and I deliver with precision.
 
 When I'm not creating something new, I'm probably brewing a cup of coffee, playing cozy video games, or spending time with my family.
 
