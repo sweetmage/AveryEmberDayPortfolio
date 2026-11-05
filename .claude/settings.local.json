@@ -1,5 +1,4 @@
 {
-  "enableAllProjectMcpServers": true,
   "permissions": {
     "allow": [
       "Skill(shxdow-flow)",
@@ -8,7 +7,9 @@
       "mcp__c3c98b80-186d-4612-b2bd-a34d1a79b42e__list_projects",
       "mcp__c3c98b80-186d-4612-b2bd-a34d1a79b42e__search_task",
       "mcp__5887f38d-32fc-40a9-9680-8d7b1f3334ad__whoami",
-      "mcp__5887f38d-32fc-40a9-9680-8d7b1f3334ad__get_design_context"
+      "mcp__5887f38d-32fc-40a9-9680-8d7b1f3334ad__get_design_context",
+      "mcp__exa__web_search_exa"
     ]
-  }
+  },
+  "enableAllProjectMcpServers": true
 }
