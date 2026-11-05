@@ -19,6 +19,19 @@ When this logbook exceeds ~1000 lines, split it:
 
 ---
 
+## Entry 173 - 2026-11-05
+
+**Agent:** Claude Code, claude-opus-5-5 (Serenade, VOID), main agent
+**Task:** Redo the Gross skateboard mockup so the whole face fits on the deck, on a black background.
+
+- The old deck cover-cropped the art and cut off the hair, eyes and chin. scripts/generate-mockups.js gains a `"fit": "contain"` mode (containTile): the art, or its `crop` given as fractions, is fitted to the deck width at `centerY`, and the rest of the deck is filled with the art's own corner colour (#0f0f12 range for Gross) or a `deckColor`. `feather` (one value, or [top, right, bottom, left]; 0 keeps an edge hard) blends the crop edges into that fill. Cover mode is unchanged for every other item.
+- Gross item in images/mockups/mockups.json: crop [0.21, 0.05, 0.71, 1] (Comet: bigger, sides shaved, eyes kept; the outer hair, most of the braid and the smoke cloud fall outside), feather [0.03, 0, 0, 0] (only the top fades into the black), centerY 1 (Comet: her collar should reach the bottom, so the art is anchored to the tail; the rounded tail clips the lower collar and shirt corners, and the top of the deck is plain black). Concrete scene kept.
+- Regenerated gross-skateboard.webp (30 KB) plus 480w/900w variants. The --only run also re-rendered gross-poster with slightly different bytes (sharp drift), which I reverted as unrelated.
+- Checks: npx playwright test tests/gallery-mockups.spec.js, 19 passed, 1 skipped. Looked at the full mockup and a zoomed crop: the whole head is visible, no seam where the crop meets the deck fill.
+- Not committed. A push would start a billed Netlify build, because scripts/ and public/ are outside the ignore rule.
+
+---
+
 ## Entry 172 - 2026-10-20
 
 **Agent:** Claude Code, claude-opus-5-5 (Quillfeather, VOID), main agent

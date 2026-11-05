@@ -12,7 +12,9 @@
  *    canvas edge all sit OUTSIDE the art rectangle.
  *  - The skateboard is the one exception, on purpose: the art is cover-cropped into
  *    the deck outline and the deck's concave shading is multiplied/screened over it,
- *    because a flat print on a bent deck would read as a sticker.
+ *    because a flat print on a bent deck would read as a sticker. A deck item can
+ *    set `"fit": "contain"` instead, so the whole art (or its `crop`) fits the deck
+ *    width on a fill colour sampled from the art; see containTile.
  *  - Output is deterministic: seeded noise, no clocks, fixed WebP settings, so a
  *    re-run produces identical bytes.
  *
@@ -380,6 +382,80 @@ function deckPath(cx, top, len, wid) {
   );
 }
 
+/** Cover-crop: scale to fill the deck, crop horizontally at focusX, centre vertically. */
+async function coverTile(item, artPath, wid, len) {
+  const meta = await sharp(artPath).metadata();
+  const scale = Math.max(wid / meta.width, len / meta.height);
+  const sw = Math.max(wid, Math.round(meta.width * scale));
+  const sh = Math.max(len, Math.round(meta.height * scale));
+  const focusX = item.focusX == null ? 0.5 : item.focusX;
+  const cropX = Math.round((sw - wid) * clamp(focusX, 0, 1));
+  const cropY = Math.round((sh - len) / 2);
+  return sharp(artPath)
+    .resize(sw, sh, { fit: 'fill' })
+    .extract({ left: cropX, top: cropY, width: wid, height: len })
+    .toBuffer();
+}
+
+/**
+ * Contain: the whole art (or its `crop`, given as [x0, y0, x1, y1] fractions) is fitted
+ * to the deck width, placed at `centerY` (fraction of deck length), and the rest of the
+ * deck is filled with `deckColor` (default: the median of the art's top corners, so a
+ * dark background runs on as one piece). `feather` (fraction of deck width) softens the
+ * art's edges into that fill so no seam shows where the art stops.
+ */
+async function containTile(item, artPath, wid, len) {
+  const meta = await sharp(artPath).metadata();
+  const [x0, y0, x1, y1] = item.crop || [0, 0, 1, 1];
+  const region = {
+    left: Math.round(meta.width * x0),
+    top: Math.round(meta.height * y0),
+    width: Math.round(meta.width * (x1 - x0)),
+    height: Math.round(meta.height * (y1 - y0)),
+  };
+  const aw = wid;
+  const ah = Math.round((region.height * wid) / region.width);
+  if (ah > len) throw new Error(`contain: art is ${ah}px tall at deck width, deck is ${len}px`);
+
+  let fill = item.deckColor ? hexToRgb(item.deckColor) : null;
+  if (!fill) {
+    const { data, info } = await sharp(artPath).raw().toBuffer({ resolveWithObject: true });
+    const samples = [];
+    const n = Math.round(Math.min(info.width, info.height) * 0.03);
+    for (const [cx, cy] of [[n, n], [info.width - n, n]]) {
+      const o = (cy * info.width + cx) * info.channels;
+      samples.push([data[o], data[o + 1], data[o + 2]]);
+    }
+    fill = [0, 1, 2].map((c) => Math.round(samples.reduce((s, p) => s + p[c], 0) / samples.length));
+  }
+
+  // feather: one fraction for every edge, or [top, right, bottom, left]. An edge set to 0
+  // stays hard (the inset rect runs past it so the blur cannot soften it).
+  const fr = item.feather == null ? 0.06 : item.feather;
+  const [ft, frt, fb, fl] = (Array.isArray(fr) ? fr : [fr, fr, fr, fr]).map((v) => Math.round(wid * v));
+  const pad = (v) => (v ? v : -wid);
+  const sigma = Math.max(ft, frt, fb, fl) / 2;
+  const fade = svgBuf(
+    aw,
+    ah,
+    `<defs><filter id="b" filterUnits="userSpaceOnUse" x="${-wid}" y="${-wid}" width="${aw + 2 * wid}" height="${ah + 2 * wid}"><feGaussianBlur stdDeviation="${sigma}"/></filter></defs>` +
+      `<rect x="${pad(fl)}" y="${pad(ft)}" width="${aw - pad(fl) - pad(frt)}" height="${ah - pad(ft) - pad(fb)}" fill="#000" filter="url(#b)"/>`
+  );
+  const art = await sharp(artPath)
+    .extract(region)
+    .resize(aw, ah, { fit: 'fill' })
+    .ensureAlpha()
+    .composite([{ input: fade, blend: 'dest-in' }])
+    .png()
+    .toBuffer();
+
+  const top = Math.round(clamp(len * (item.centerY == null ? 0.5 : item.centerY) - ah / 2, 0, len - ah));
+  return sharp({ create: { width: wid, height: len, channels: 3, background: { r: fill[0], g: fill[1], b: fill[2] } } })
+    .composite([{ input: art, left: 0, top }])
+    .png()
+    .toBuffer();
+}
+
 async function skateboardBuffer(item, artPath, scene, W, H, box) {
   const len = Math.round(Math.min(H * DECK_LENGTH_FRAC, box ? box.h : Infinity, box ? box.w / DECK_WIDTH_RATIO : Infinity));
   const wid = Math.round(len * DECK_WIDTH_RATIO);
@@ -390,18 +466,7 @@ async function skateboardBuffer(item, artPath, scene, W, H, box) {
   const d = deckPath(cx, top, len, wid);
   const dLocal = deckPath(wid / 2, 0, len, wid);
 
-  // Cover-crop: scale to fill the deck, crop horizontally at focusX, centre vertically.
-  const meta = await sharp(artPath).metadata();
-  const scale = Math.max(wid / meta.width, len / meta.height);
-  const sw = Math.max(wid, Math.round(meta.width * scale));
-  const sh = Math.max(len, Math.round(meta.height * scale));
-  const focusX = item.focusX == null ? 0.5 : item.focusX;
-  const cropX = Math.round((sw - wid) * clamp(focusX, 0, 1));
-  const cropY = Math.round((sh - len) / 2);
-  const tile = await sharp(artPath)
-    .resize(sw, sh, { fit: 'fill' })
-    .extract({ left: cropX, top: cropY, width: wid, height: len })
-    .toBuffer();
+  const tile = item.fit === 'contain' ? await containTile(item, artPath, wid, len) : await coverTile(item, artPath, wid, len);
 
   const concave = svgBuf(
     wid,

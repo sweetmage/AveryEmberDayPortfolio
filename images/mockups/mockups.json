@@ -61,7 +61,10 @@
       "art": "public/images/myart/Gallery/grossFinal.webp",
       "kind": "skateboard",
       "scene": "concrete",
-      "focusX": 0.5
+      "fit": "contain",
+      "crop": [0.21, 0.05, 0.71, 1],
+      "feather": [0.03, 0, 0, 0],
+      "centerY": 1
     },
     {
       "slug": "gross",
