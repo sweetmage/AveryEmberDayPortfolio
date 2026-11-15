@@ -19,6 +19,20 @@ When this logbook exceeds ~1000 lines, split it:
 
 ---
 
+## Entry 174 - 2026-11-14
+
+**Agent:** Claude Code, claude-opus-5-5 (Quill, VOID), main agent
+**Task:** Comet: carry the Texas Lake corner repair from the Redbubble print (cash repo, `scripts/redbubble_prints.py` `patch_corner`) to the portfolio gallery.
+
+- Defect: the bottom-right ~185x200 px of the 2240x1888 original (blob 2216a1fcc7) is pale, unpainted paper with a dotted texture. On the site it sat under the watermark's edge.
+- Watermark recipe rebuilt and proven: the ce81a48 compositing script was discarded, but sharp with images/watermarks/watermark-white.svg (density 600) at 27% width, 2.7% margin, bottom-right, webp quality 80, on the pre-watermark public file (14a42ee5b6, 1200x1011) reproduces the live 1213a167cb exactly (mean diff 0, same 184946 bytes).
+- Repair applied as a delta only: resize(patched original) minus resize(original), added to 14a42ee5b6, so every pixel outside the corner box (x 1065-1199, y 864-1010) is untouched (9 of 1.2 M pixels moved more than 8 levels after re-encode). Then the watermark recipe. Installed at public/images/myart/Gallery/, images/myart/Gallery/ and images/watermarked/Gallery/ (identical bytes); 480w/900w rungs regenerated (--force --only).
+- Mockups: the committed ones (39a1b07, 2026-10-09) predate the watermark, like every other work's. The generator reads the now-watermarked public file, so a plain regen stamped the mark onto the poster and framed scenes. Rendered them from the repaired clean copy instead (put in place for the run, then the watermarked file restored and checked with cmp), plus their rungs.
+- Checks: npx playwright test tests/gallery-mockups.spec.js, 19 passed, 1 skipped. Corner crops of the gallery file and the poster mockup looked at side by side with the old ones. Not run: the visual gate (gallery thumbnails change at the corner; baselines live on the Linux container run).
+- Committed on portfoliowebsite, not pushed: a push is a production deploy and waits for Comet's yes after the local review link.
+
+---
+
 ## Entry 173 - 2026-11-05
 
 **Agent:** Claude Code, claude-opus-5-5 (Serenade, VOID), main agent
