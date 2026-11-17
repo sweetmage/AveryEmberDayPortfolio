@@ -46,6 +46,7 @@ before a push ships in the same deploy.
   - [ ] **Retro logo PNGs** (`docs/brand-guide/assets/retro/`) were copied from SOL. Confirm they can be committed.
   - [ ] **Commit the guide files** on `portfoliowebsite`. Nothing is committed yet.
   - [ ] **Optional: download link on the Brand page.** A site change and a production deploy; needs Comet's go-ahead first.
+- [ ] **About page: team size still says 20.** The About page at averyemberday.com still says teams of 20; the resumes were corrected 2026-11-04 to teams of 2–6 (superseding the 2026-07-16 figure of 20). Update the About copy to 2–6. Rides along with the next deploy, not a deploy on its own.
 
 ### Blocked on a prerequisite
 
@@ -387,3 +388,4 @@ Durable versions now live where they get read:
 
 TickTick "Portfolio Website" list (project id `69c8addc8f0823c509e1979f`) mirrors **Open work**
 above. Run `node scripts/sync-all.js --dry-run` after edits.
+
