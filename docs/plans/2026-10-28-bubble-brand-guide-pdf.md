@@ -144,8 +144,9 @@ on a home printer. Settled at the mockup step (step 2).
 
 - Every page PNG looked at, at full size, in the review link; nothing overflows the page or clips.
 - Page count and contents numbers match; every contents entry and outline bookmark jumps to its page.
-- Fonts: Sriracha, Outfit and Inter embedded (check with `pdffonts` or `qpdf --show-pages`; install
-  poppler with Homebrew if missing). No fallback font on any page.
+- Fonts: Sriracha, Outfit and Inter embedded (check with `pdffonts` or `qpdf --show-pages`; poppler
+  is not on SOL yet; installing it, for example `winget install oschwartz10612.Poppler`, is
+  Comet's call). No fallback font on any page.
 - Every HEX, RGB and token on the Color page is read from `brand.css` / `BrandProject.tsx` at build
   time; a check fails the build if a value in the page differs from the source.
 - Text contrast WCAG AA on both page themes (`docs/accessibility.md`): 4.5:1 body, 3:1 large.

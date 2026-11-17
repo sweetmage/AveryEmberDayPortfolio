@@ -42,7 +42,7 @@ before a push ships in the same deploy.
   - [ ] **Mood board (page 6) is drawn in code.** Replace with Comet's own images if Comet sends them.
   - [ ] **CMYK values are missing from the Color page (page 11).** The note says pending a proof; add values once a proof exists.
   - [ ] **Clear-space diagram (page 8) has no dimension marks.** It shows the zone only; add the measured unit (30% of logo width).
-  - [ ] **Check the PDF itself.** Poppler is not installed, so fonts (Sriracha, Outfit, Inter embedding) and every page at full size are not yet verified.
+  - [ ] **Check the PDF itself.** Poppler is not installed on SOL, so fonts (Sriracha, Outfit, Inter embedding) and every page at full size are not yet verified.
   - [ ] **Retro logo PNGs** (`docs/brand-guide/assets/retro/`) were copied from SOL. Confirm they can be committed.
   - [ ] **Commit the guide files** on `portfoliowebsite`. Nothing is committed yet.
   - [ ] **Optional: download link on the Brand page.** A site change and a production deploy; needs Comet's go-ahead first.
@@ -51,18 +51,25 @@ before a push ships in the same deploy.
 ### Blocked on a prerequisite
 
 - [ ] **Run the visual gate in hosted CI.** The local half is done (2026-10-20): the gate runs in
-      the Playwright container (`node tests/visual-docker.mjs`, Colima on VOID) against 48
+      the Playwright container (`node tests/visual-docker.mjs`) against 48
       `-chromium-linux` baselines. Hosting it needs the user's call, since the standing rule is no
       GitHub Actions unless asked. Recommendation: keep it local until a visual regression actually
       slips through. [`docs/visual-gate.md`](docs/visual-gate.md#open-item--running-the-gate-in-ci).
-- [ ] **Docker on SOL** before any session there runs the visual gate. SOL has no WSL since its
-      reinstall, so Docker Desktop's WSL2 backend needs WSL back first. Until then, run the gate from VOID.
+- [ ] **Docker on SOL, so the visual gate can run again.** SOL is the only home checkout since
+      2026-11-17 and VOID only runs Python scripts (it no longer has Colima or a checkout), so the
+      gate has nowhere to run until SOL gets Docker. SOL has no WSL since its reinstall, so Docker
+      Desktop's WSL2 backend needs WSL back first. Installing WSL and Docker Desktop is Comet's call.
+      Until then, any visual change ships with the gate marked "not run" in its LOGBOOK entry.
 - [ ] **Ride along with the next site deploy** (each of these paths starts a billed build, so not on
       its own): retarget `.agents/memories/brand-voice.md` "Where it lives" from the two archived
       brand-voice plans to the live `BrandVoice` section and `git show 237d559:` / `git show 031bacf:`
       ([stubs](docs/archives/plans.md#consolidation-stubs-2026-10-20)); the same for the plan names in
       comments at `app/portfolio/BrandProject.tsx:135` and `scripts/generate-mockups.js:26`; and add
-      `:(exclude).agents/` to `netlify.toml`'s ignore rule so memory edits stop costing a build.
+      `:(exclude).agents/` to `netlify.toml`'s ignore rule so memory edits stop costing a build. Also
+      from the SOL move (2026-11-17): `.agents/memories/review-links.md` says "this Mac" for the
+      review server, which now runs on SOL; and the `scripts/logo-traces.py` docstring still gives
+      `cd ~/Repos/cash/scripts` (a deleted VOID checkout) for the crop step, so point it at the
+      AGENTS.md "Machines and checkouts" route.
 
 ### Copy pass
 

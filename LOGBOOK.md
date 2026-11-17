@@ -19,6 +19,20 @@ When this logbook exceeds ~1000 lines, split it:
 
 ---
 
+## Entry 175 - 2026-11-17
+
+**Agent:** Claude Code, claude-opus-5-5 (Tableau, SOL), child of Quorum (SOL)
+**Task:** Comet moved all repo work from VOID to SOL. Align the repo's workflow docs with the rule: SOL is the home checkout, VOID only runs Python scripts.
+
+- AGENTS.md: new "Machines and checkouts" section. SOL checkout path, VOID's role, and the exact ssh/scp/uv route for a Python script, verified on VOID today (`~/.local/bin/uv run --python 3.12 --with pillow --with numpy --with psd-tools`, CPython 3.12.15; bare `uv` is not on the non-interactive ssh PATH; `/usr/bin/python3` is 3.9.6). Test-command paragraph no longer says `colima start` on VOID.
+- Visual gate: VOID has no Colima or checkout now and SOL has no Docker, so the gate has nowhere to run. `docs/visual-gate.md`, TODO "Docker on SOL" and the `tests/visual-docker.mjs` error say so; WSL + Docker Desktop install is Comet's call. The first SOL run doubles as the first native x86-64 check of the Rosetta-captured baselines.
+- Brand-guide plan: poppler install note retargeted from Homebrew to SOL (winget), install left to Comet.
+- Not changed, on purpose: `.agents/memories/review-links.md` ("this Mac") and the `scripts/logo-traces.py` docstring (`~/Repos/cash`). Both paths fall outside netlify.toml's ignore list, so editing them would start a 15-credit build. Added to TODO's ride-along list. Historical "on VOID" lines in plans, LOGBOOK and test comments left as dated history.
+- `docs/sync/local-tasks.json` regenerated on SOL from the current TODO.md (`node scripts/parse-todo.js`, 24 tasks) instead of copying the 2026-11-08 file from the D: checkout, which predates later TODO edits.
+- Checks: `node tests/visual-docker.mjs` exits 2 with the new message (no Docker). Edited paths are all inside netlify.toml's docs-only skip list.
+
+---
+
 ## Entry 174 - 2026-11-14
 
 **Agent:** Claude Code, claude-opus-5-5 (Quill, VOID), main agent

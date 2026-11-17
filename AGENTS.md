@@ -32,6 +32,39 @@ trigger matches the task.
 
 **`portfoliowebsite` is the branch Netlify deploys from** (repointed 2026-07-12 via the Netlify API at the user's direction — production branch and allowed-branches both changed from `master` to `portfoliowebsite`, verified with a production deploy from the new branch; see `LOGBOOK.md` Entry 069). Pushing `portfoliowebsite` publishes to production. That makes every push to this branch a production-affecting action: get the user's explicit go-ahead in the moment before pushing, every time — this note is informational, not standing authorization. `master` is retained as a historical branch; do not merge into it without explicit user direction.
 
+## Machines and checkouts
+
+**SOL (Windows 11) is the only home of this repo** (Comet, 2026-11-17). All work is saved, committed
+and pushed from `C:\Users\aday6\AveryEmberDayPortfolio` on `portfoliowebsite`. Builds, `npm test`,
+review links, baselines and the brand-guide PDF all run on SOL.
+
+**VOID (the Mac mini, `ssh mac-mini`) is a Python runner and nothing else.** No checkout lives there
+(the old `/Users/comet/Repos/...` checkouts are deleted), and nothing durable stays there. Older plans,
+LOGBOOK entries and test comments that say "on VOID" are history from before the move, not
+instructions. A Python script that has to run on VOID goes like this:
+
+```bash
+# from SOL (Git Bash). ssh/scp need dangerouslyDisableSandbox: true for agents; reuse ~/.ssh/id_ed25519.
+RUN=tmp-runs/<task>                                    # relative to ~ on VOID
+ssh mac-mini "mkdir -p ~/$RUN/in ~/$RUN/out"
+scp scripts/<script>.py mac-mini:$RUN/                 # plus any inputs into $RUN/in/
+ssh mac-mini "cd ~/$RUN && ~/.local/bin/uv run --python 3.12 --with <dep> ... python <script>.py <args>"
+scp -r mac-mini:$RUN/out ./<local-dest>                # bring results back to SOL
+ssh mac-mini "rm -rf ~/$RUN"                           # leave nothing behind
+```
+
+- Use **`~/.local/bin/uv` by full path**: a non-interactive `ssh mac-mini '...'` does not have
+  `~/.local/bin` on `PATH`, so a bare `uv` is "not found". `--python 3.12` picks the uv-managed
+  CPython 3.12.15; VOID's `/usr/bin/python3` is 3.9.6 and too old. Verified 2026-11-17 with
+  pillow, numpy and psd-tools.
+- Quote SOL paths with spaces (`"D:/My Stuff/..."`) on the scp side.
+- The only Python script in this repo is `scripts/logo-traces.py` (SECTION 6 logo traces). Its own
+  docstring still names the old VOID path for the art repo's crop step; on SOL the art repo is
+  `D:\My Stuff\Git\CometGit\cash`, so copy `cash/scripts/crop_svg.py`, `rasterize.py` and `recolor.py`
+  into the run dir with the SVGs and add `--with resvg-py` to the uv line.
+- Everything else here is Node and runs on SOL. Do not route Node, Playwright, Docker or git work
+  through VOID.
+
 ## Git hooks
 
 **`core.hooksPath` is set to `.githooks/`** (2026-07-31, by `shxdowmap install-hook`). That setting
@@ -99,7 +132,7 @@ Do NOT use these in `bash` tool calls (they are PowerShell-specific and often fa
 
 `npm run serve` — serves the repo root on :8080 (**legacy static site only** — not the Next.js app)
 
-`npm test` / `npx playwright test` — smoke tests + a **compare-based** visual regression gate, plus bubble-engine coverage (zones, and since 2026-10-16 motion: scroll lockstep, layout reads, jerk, frame-rate independence, pointer flick and touch release), gallery expand coverage, Mistrust set-strip and mosaic checks, project tiles, focus rings and the WebKit nav guard (**251 tests in 13 `*.spec.js` files**, counted by `--list` on 2026-10-16). **Re-run `--list` rather than trusting this number** — it has read 73, 90, 131, 151, 171, 184, 190, 198 and 249, and was stale every time. Playwright collects **`*.spec.js` only** (`testMatch` in `playwright.config.js`, 2026-10-06). `tests/google-docs.test.js` is a `node:test` unit file: run it with **`npm run test:docs`**, which skips the three file-dependent `resolveDoc` cases (the enforcement cases always run) when the user-owned, gitignored `docs/sync/google-docs.json` is absent. Before that change, a bare run died at collection on any checkout without that file. A bare run now works everywhere. **The visual gate runs only in the Playwright container** (since 2026-10-20): `node tests/visual-docker.mjs`, with Docker running (on VOID, `colima start`). The 48 baselines are `chromium-linux`, captured there on linux/amd64; a host `npm test` reports those 48 as skipped. Never run the host suite and the container gate at once: both rebuild `out/`. Regenerate baselines with `node tests/visual-docker.mjs --update-snapshots=all` (`docs/visual-gate.md`).
+`npm test` / `npx playwright test` — smoke tests + a **compare-based** visual regression gate, plus bubble-engine coverage (zones, and since 2026-10-16 motion: scroll lockstep, layout reads, jerk, frame-rate independence, pointer flick and touch release), gallery expand coverage, Mistrust set-strip and mosaic checks, project tiles, focus rings and the WebKit nav guard (**251 tests in 13 `*.spec.js` files**, counted by `--list` on 2026-10-16). **Re-run `--list` rather than trusting this number** — it has read 73, 90, 131, 151, 171, 184, 190, 198 and 249, and was stale every time. Playwright collects **`*.spec.js` only** (`testMatch` in `playwright.config.js`, 2026-10-06). `tests/google-docs.test.js` is a `node:test` unit file: run it with **`npm run test:docs`**, which skips the three file-dependent `resolveDoc` cases (the enforcement cases always run) when the user-owned, gitignored `docs/sync/google-docs.json` is absent. Before that change, a bare run died at collection on any checkout without that file. A bare run now works everywhere. **The visual gate runs only in the Playwright container** (since 2026-10-20): `node tests/visual-docker.mjs`, with Docker running on SOL. **SOL has no Docker yet** (no WSL since its reinstall), so the gate cannot run until it does; it does not move to VOID, which only runs Python. The 48 baselines are `chromium-linux`, captured in the container on linux/amd64 (on VOID under Rosetta, 2026-10-20); a host `npm test` reports those 48 as skipped. Never run the host suite and the container gate at once: both rebuild `out/`. Regenerate baselines with `node tests/visual-docker.mjs --update-snapshots=all` (`docs/visual-gate.md`).
 
 > **The suite tests the Next.js app and nothing else.** `tests/smoke-interaction.spec.js` and the
 > repo-root `webServer` on :4321 that existed only to feed it were both deleted 2026-08-09 (Entry

@@ -1,37 +1,247 @@
 {
   "version": "1.0",
-  "generatedAt": "2026-10-10T00:45:59.098Z",
+  "generatedAt": "2026-11-17T21:52:04.142Z",
   "source": "TODO.md",
   "tasks": [
     {
-      "id": "open-work-ready-to-build-now-watermark-artwork-users-own-task",
-      "title": "**Watermark artwork.** User's own task.",
+      "id": "open-work-ready-to-build-now-brand-voice-and-tone-approved-2026-10-14",
+      "title": "**Brand voice and tone: approved 2026-10-14** and live on the Brand page on the loop branch (`BrandVoice` in `app/portfolio/BrandProject.tsx`, after *Type System*). The user removed \"Use US spelling. Use one title: Brand & Visual Designer.\" before approving. Draft and rules: `docs/plans/2026-10-13-brand-voice-draft.md`, `.agents/memories/brand-voice.md`.",
       "description": null,
-      "status": "pending",
+      "status": "completed",
       "priority": "normal",
       "tags": [],
       "list": "Ready to build now",
       "sourceLine": 26
     },
     {
-      "id": "open-work-blocked-on-a-prerequisite-run-the-visual-gate-in-ci-not-blocked-on",
-      "title": "**Run the visual gate in CI.** Not blocked on a decision — that was made 2026-07-23",
+      "id": "open-work-ready-to-build-now-push-the-loop-branch-to-portfoliowebsite",
+      "title": "**Push the loop branch to `portfoliowebsite`** (one 15-credit production deploy): done 2026-10-14 at the user's \"deploy\". Baselines regenerated on SOL (48), 147 non-visual tests green, final signoff PASS.",
+      "description": null,
+      "status": "completed",
+      "priority": "normal",
+      "tags": [],
+      "list": "Ready to build now",
+      "sourceLine": 27
+    },
+    {
+      "id": "open-work-ready-to-build-now-alt-text-for-the-five-section-6-logos-ap",
+      "title": "**Alt text for the five SECTION 6 logos: approved as written, 2026-10-18.** The user reviewed the",
+      "description": null,
+      "status": "completed",
+      "priority": "normal",
+      "tags": [],
+      "list": "Ready to build now",
+      "sourceLine": 28
+    },
+    {
+      "id": "open-work-ready-to-build-now-brand-assets-hidden-built-behind-showbra",
+      "title": "**Brand Assets (hidden).** Built behind `SHOW_BRAND_ASSETS = false` in `app/portfolio/BrandProject.tsx`: a",
+      "description": null,
+      "status": "pending",
+      "priority": "normal",
+      "tags": [],
+      "list": "Ready to build now",
+      "sourceLine": 30
+    },
+    {
+      "id": "open-work-ready-to-build-now-bubble-brand-identity-guide-pdf-rebuild-",
+      "title": "**Bubble brand identity guide (PDF).** Rebuild the 20-page college retro guide (on SOL under",
+      "description": null,
+      "status": "pending",
+      "priority": "normal",
+      "tags": [],
+      "list": "Ready to build now",
+      "sourceLine": 34
+    },
+    {
+      "id": "open-work-ready-to-build-now-comets-final-call-on-every-line-of-docsb",
+      "title": "**Comet's final call on every line of `docs/brand-guide/copy.md`.** The agent edited Comet's draft; Comet decides.",
+      "description": null,
+      "status": "pending",
+      "priority": "normal",
+      "tags": [],
+      "list": "Ready to build now",
+      "sourceLine": 39
+    },
+    {
+      "id": "open-work-ready-to-build-now-business-card-page-15-is-a-placeholder-w",
+      "title": "**Business card (page 15) is a placeholder.** Waiting on Comet's design, front, back, print size and QR code.",
+      "description": null,
+      "status": "pending",
+      "priority": "normal",
+      "tags": [],
+      "list": "Ready to build now",
+      "sourceLine": 40
+    },
+    {
+      "id": "open-work-ready-to-build-now-social-media-banner-is-a-placeholder-in-",
+      "title": "**Social media banner is a placeholder** in `copy.md`; no page shows it yet. Waiting on Comet's design.",
+      "description": null,
+      "status": "pending",
+      "priority": "normal",
+      "tags": [],
+      "list": "Ready to build now",
+      "sourceLine": 41
+    },
+    {
+      "id": "open-work-ready-to-build-now-mood-board-page-6-is-drawn-in-code-repla",
+      "title": "**Mood board (page 6) is drawn in code.** Replace with Comet's own images if Comet sends them.",
+      "description": null,
+      "status": "pending",
+      "priority": "normal",
+      "tags": [],
+      "list": "Ready to build now",
+      "sourceLine": 42
+    },
+    {
+      "id": "open-work-ready-to-build-now-cmyk-values-are-missing-from-the-color-p",
+      "title": "**CMYK values are missing from the Color page (page 11).** The note says pending a proof; add values once a proof exists.",
+      "description": null,
+      "status": "pending",
+      "priority": "normal",
+      "tags": [],
+      "list": "Ready to build now",
+      "sourceLine": 43
+    },
+    {
+      "id": "open-work-ready-to-build-now-clear-space-diagram-page-8-has-no-dimens",
+      "title": "**Clear-space diagram (page 8) has no dimension marks.** It shows the zone only; add the measured unit (30% of logo width).",
+      "description": null,
+      "status": "pending",
+      "priority": "normal",
+      "tags": [],
+      "list": "Ready to build now",
+      "sourceLine": 44
+    },
+    {
+      "id": "open-work-ready-to-build-now-check-the-pdf-itself-poppler-is-not-inst",
+      "title": "**Check the PDF itself.** Poppler is not installed on SOL, so fonts (Sriracha, Outfit, Inter embedding) and every page at full size are not yet verified.",
+      "description": null,
+      "status": "pending",
+      "priority": "normal",
+      "tags": [],
+      "list": "Ready to build now",
+      "sourceLine": 45
+    },
+    {
+      "id": "open-work-ready-to-build-now-retro-logo-pngs-docsbrand-guideassetsret",
+      "title": "**Retro logo PNGs** (`docs/brand-guide/assets/retro/`) were copied from SOL. Confirm they can be committed.",
+      "description": null,
+      "status": "pending",
+      "priority": "normal",
+      "tags": [],
+      "list": "Ready to build now",
+      "sourceLine": 46
+    },
+    {
+      "id": "open-work-ready-to-build-now-commit-the-guide-files-on-portfoliowebsi",
+      "title": "**Commit the guide files** on `portfoliowebsite`. Nothing is committed yet.",
+      "description": null,
+      "status": "pending",
+      "priority": "normal",
+      "tags": [],
+      "list": "Ready to build now",
+      "sourceLine": 47
+    },
+    {
+      "id": "open-work-ready-to-build-now-optional-download-link-on-the-brand-page",
+      "title": "**Optional: download link on the Brand page.** A site change and a production deploy; needs Comet's go-ahead first.",
+      "description": null,
+      "status": "pending",
+      "priority": "normal",
+      "tags": [],
+      "list": "Ready to build now",
+      "sourceLine": 48
+    },
+    {
+      "id": "open-work-ready-to-build-now-about-page-team-size-still-says-20-the-a",
+      "title": "**About page: team size still says 20.** The About page at averyemberday.com still says teams of 20; the resumes were corrected 2026-11-04 to teams of 2–6 (superseding the 2026-07-16 figure of 20). Update the About copy to 2–6. Rides along with the next deploy, not a deploy on its own.",
+      "description": null,
+      "status": "pending",
+      "priority": "normal",
+      "tags": [],
+      "list": "Ready to build now",
+      "sourceLine": 49
+    },
+    {
+      "id": "open-work-blocked-on-a-prerequisite-run-the-visual-gate-in-hosted-ci-the-loc",
+      "title": "**Run the visual gate in hosted CI.** The local half is done (2026-10-20): the gate runs in",
       "description": null,
       "status": "pending",
       "priority": "normal",
       "tags": [],
       "list": "Blocked on a prerequisite",
-      "sourceLine": 31
+      "sourceLine": 53
     },
     {
-      "id": "open-work-waiting-on-the-users-draft-copy-pass-remainder-of-tracks-a-and-c-th",
-      "title": "**Copy pass — remainder of Tracks A and C.** **The About box** (Entry 119, user's draft",
+      "id": "open-work-blocked-on-a-prerequisite-docker-on-sol-so-the-visual-gate-can-run",
+      "title": "**Docker on SOL, so the visual gate can run again.** SOL is the only home checkout since",
       "description": null,
       "status": "pending",
       "priority": "normal",
       "tags": [],
-      "list": "Waiting on the user's draft",
-      "sourceLine": 40
+      "list": "Blocked on a prerequisite",
+      "sourceLine": 58
+    },
+    {
+      "id": "open-work-blocked-on-a-prerequisite-ride-along-with-the-next-site-deploy-eac",
+      "title": "**Ride along with the next site deploy** (each of these paths starts a billed build, so not on",
+      "description": null,
+      "status": "pending",
+      "priority": "normal",
+      "tags": [],
+      "list": "Blocked on a prerequisite",
+      "sourceLine": 63
+    },
+    {
+      "id": "open-work-copy-pass-copy-pass-all-12-gallery-descriptions-an",
+      "title": "**Copy pass: all 12 gallery descriptions and both project summaries, approved 2026-10-18**",
+      "description": null,
+      "status": "completed",
+      "priority": "normal",
+      "tags": [],
+      "list": "Copy pass",
+      "sourceLine": 76
+    },
+    {
+      "id": "open-work-copy-pass-copy-pass-pushed-to-portfoliowebsite-one",
+      "title": "**Copy pass pushed to `portfoliowebsite` (one 15-credit production deploy), 2026-10-18,** at",
+      "description": null,
+      "status": "completed",
+      "priority": "normal",
+      "tags": [],
+      "list": "Copy pass",
+      "sourceLine": 79
+    },
+    {
+      "id": "open-work-copy-pass-copy-pass-track-d-visual-baselines-regen",
+      "title": "**Copy pass, Track D: visual baselines regenerated on SOL, 2026-10-18** (24 Portfolio, Brand and",
+      "description": null,
+      "status": "completed",
+      "priority": "normal",
+      "tags": [],
+      "list": "Copy pass",
+      "sourceLine": 81
+    },
+    {
+      "id": "open-work-copy-pass-copy-pass-real-alt-text-for-the-12-galle",
+      "title": "**Copy pass: real alt text for the 12 gallery pieces, approved 2026-10-18** (Comet; short and",
+      "description": null,
+      "status": "completed",
+      "priority": "normal",
+      "tags": [],
+      "list": "Copy pass",
+      "sourceLine": 83
+    },
+    {
+      "id": "open-work-copy-pass-two-intermittent-motion-tests-fixed-2026",
+      "title": "**Two intermittent motion tests fixed, 2026-10-18** (Entry 171): the pointer-flick test read the",
+      "description": null,
+      "status": "completed",
+      "priority": "normal",
+      "tags": [],
+      "list": "Copy pass",
+      "sourceLine": 85
     }
   ]
 }

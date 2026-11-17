@@ -51,10 +51,17 @@ script on purpose: `netlify.toml`'s ignore rule skips pushes that touch only `te
 a `package.json` or `scripts/` change would make such a push a 15-credit production build.
 
 **Why amd64:** hosted runners and SOL are x86-64, and Chromium's rasteriser is not guaranteed
-identical on arm64. On VOID (Apple Silicon) Docker comes from Colima, started with
-`colima start --vm-type vz --vz-rosetta`, so the image runs under Rosetta. That the Rosetta capture
-matches a native x86-64 host pixel for pixel is expected, not yet proven: no native Docker host has
-run the gate yet. SOL has no Docker (no WSL since its reinstall).
+identical on arm64. The 48 committed baselines were captured 2026-10-20 on VOID (Apple Silicon)
+under Colima with `colima start --vm-type vz --vz-rosetta`, so the image ran under Rosetta. That the
+Rosetta capture matches a native x86-64 host pixel for pixel is expected, not yet proven: no native
+Docker host has run the gate yet.
+
+**Where it runs now (2026-11-17):** SOL is the only home checkout and VOID only runs Python
+scripts, with no checkout and no Colima. The gate belongs on SOL, and **SOL has no Docker yet** (no
+WSL since its reinstall), so until Docker Desktop is installed there the gate is not run and a
+visual change records it as "not run". The first SOL run is also the first native x86-64 run: if
+it fails on unchanged pages, that is the Rosetta question answered, and the fix is one reviewed
+`--update-snapshots=all` on SOL. See `TODO.md`, "Docker on SOL".
 
 **Never run the host suite and the container gate at the same time.** Both build into the same
 `out/` through the bind mount, and a build mid-run is Trap 2.
