@@ -152,7 +152,7 @@ export default function MistrustSlideshow() {
               <div className="mistrust-slide" key={slide.n} aria-hidden={i !== index}>
                 {/* `tile`, not `src`: the track lays slides edge to edge, so mid-swipe
                     two neighbours share the stage and a plain slide shows the seam
-                    (slides 1|2 share a 19px band; user, 2026-10-05). */}
+                    (21|22 overlap by 10px; the user caught the old 1|2 seam on 2026-10-05). */}
                 <img
                   src={slide.tile}
                   alt={i === index ? slide.alt : ''}

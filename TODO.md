@@ -60,21 +60,17 @@ before a push ships in the same deploy.
       baselines date from 2026-10-20 and miss every site change since (Redbubble footer icon and
       About sentence, Brand voice trim, Gross mockup, Texas Lake repair). Rendering itself matched.
       All 48 were re-captured on SOL and graded 48/48 twice (Entry 176).
-- [ ] **Mistrust set strips 1 and 3 are slightly off.** The August re-export on the retired `develop`
-      branch found the live `set-1.webp` and `set-3.webp` strips are not exact renders (first gap off
-      by 19px and 10px). The fix exists only in the archive the plans name
-      ([plan](docs/plans/2026-08-14-mistrust-reexport-shxdowloop.md)). Comet decides: finish it (a
-      site change and a deploy) or leave the strips as they are.
+- [x] **Mistrust set strips 1 and 3 fixed, 2026-11-17** at Comet's "fix the mistrust strips" (Entry 178).
+      Shipped the August plan: Comet's 2026-08-25 Figma export of slides 1-10, 21, 22 and the cover,
+      with strips laid out from `frame-geometry.json` (set 1 now 10800px, set 3 10765px).
 - [ ] **Ride along with the next site deploy** (each of these paths starts a billed build, so not on
       its own): retarget `.agents/memories/brand-voice.md` "Where it lives" from the two archived
       brand-voice plans to the live `BrandVoice` section and `git show 237d559:` / `git show 031bacf:`
       ([stubs](docs/archives/plans.md#consolidation-stubs-2026-10-20)); the same for the plan names in
       comments at `app/portfolio/BrandProject.tsx:135` and `scripts/generate-mockups.js:26`; and add
-      `:(exclude).agents/` to `netlify.toml`'s ignore rule so memory edits stop costing a build. Also
-      from the SOL move (2026-11-17): `.agents/memories/review-links.md` says "this Mac" for the
-      review server, which now runs on SOL; and the `scripts/logo-traces.py` docstring still gives
-      `cd ~/Repos/cash/scripts` (a deleted VOID checkout) for the crop step, so point it at the
-      AGENTS.md "Machines and checkouts" route.
+      `:(exclude).agents/` to `netlify.toml`'s ignore rule so memory edits stop costing a build. (The
+      two SOL-move notes, `review-links.md` and the `logo-traces.py` docstring, rode the
+      2026-11-17 Mistrust deploy, Entry 178.)
 
 ### Copy pass
 

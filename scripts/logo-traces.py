@@ -7,7 +7,9 @@ Illustrator Image Trace runs on SOL between the two steps (creative-hub/scripts/
     prepare  PSD + Phoenix PNG -> trace-ready PNGs in OUT/{color,bw,phoenix}/
     finish   traced SVGs       -> named SVGs in OUT: B&W roses de-magentaed with white petals, Phoenix filled (vivid red)
 
-Run with uv so the deps stay out of the repo:
+Run with uv so the deps stay out of the repo. Python scripts run on VOID, not SOL: copy this file and
+its inputs over and run it with `~/.local/bin/uv run --python 3.12 ...` per AGENTS.md "Machines and
+checkouts", then copy the outputs back. The commands below are what runs inside that run dir:
 
     uv run --with psd-tools --with numpy --with pillow python scripts/logo-traces.py prepare \
         --psd "$ART/Procreate to PSD/White Rose Logo.psd" --phoenix "$ART/PhoenixSymbol.png" --out /tmp/logo-in
@@ -15,9 +17,10 @@ Run with uv so the deps stay out of the repo:
     #   color/    "6 Colors"     bw/  "6 Colors" (magenta backdrop)     phoenix/  "Black and White Logo"
     uv run python scripts/logo-traces.py finish --color DIR --bw DIR --phoenix DIR --out "$ART/SECTION 6 Logo Design"
 
-After `finish`, run the art repo's crop on the output (it needs that repo's rasterize.py and recolor.py):
+After `finish`, run the art repo's crop on the output. The art repo lives on SOL at
+D:My StuffGitCometGitcash; copy its scripts/crop_svg.py, rasterize.py and recolor.py into the VOID run dir:
 
-    cd ~/Repos/cash/scripts && uv run --with pillow --with resvg-py --with numpy python crop_svg.py -i "$OUT" --strip-bg --pad 20
+    uv run --with pillow --with resvg-py --with numpy python crop_svg.py -i "$OUT" --strip-bg --pad 20
 
 That removes the Illustrator canvas path (the color roses and the Phoenix still have it; the B&W roses lost
 theirs in `finish`) and crops each viewBox to the art. Then render every file on a dark backdrop and look.

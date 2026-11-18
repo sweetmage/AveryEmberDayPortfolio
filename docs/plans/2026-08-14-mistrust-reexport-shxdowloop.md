@@ -1,11 +1,11 @@
 # shxdowloop — A History of Mistrust re-export
 
-> **Not on portfoliowebsite (2026-11-17, Tableau).** This loop ran on the old `develop` branch, which
-> Comet retired unmerged (LOGBOOK Entry 155, 2026-10-13). None of its code or assets are on this branch
-> or the live site. The stage 0 commit, the Stage 1 slide re-export and the corrected geometry survive
-> only in `D:\My Stuff\Git\CometGit\_archive\portfoliowebsite-develop-2026-11-17\` (git bundle plus
-> patches; see its `README.txt`). "Complete" below means done on `develop`. Kept for its finding: the
-> live set strips 1 and 3 are not faithful 1x renders. See TODO, "Mistrust set strips".
+> **Shipped on portfoliowebsite 2026-11-17 (Tableau, LOGBOOK Entry 178).** This loop originally ran
+> on the old `develop` branch, which Comet retired unmerged (Entry 155). Its outcome was ported, not
+> merged: the 2026-08-25 slide sources (Comet's Figma export), `frame-geometry.json`, and the
+> manifest-driven layout in `scripts/generate-mistrust-assets.js`, rebuilt on top of the later
+> seamless-tile code. "Complete" below means done on `develop`; the original commits survive in
+> `D:\My Stuff\Git\CometGit\_archive\portfoliowebsite-develop-2026-11-17\`.
 
 **Date:** 2026-08-14
 **Agent:** Opus 5 (vellum, ShxdowCaptain)

@@ -1,0 +1,310 @@
+{
+  "_comment": "Canvas geometry for the \"A History of Mistrust\" slide frames. Source of truth for how scripts/generate-mistrust-assets.js lays out the wide sets/set-N.webp strips. See that script's header, and AGENTS.md, before editing by hand.",
+  "coordinateSpace": "figma-canvas-absolute",
+  "_coordinateSpaceNote": "Absolute Figma canvas coordinates, read frame by frame from the Design panel on 2026-08-25 via OpenTabs against the live file. The generator consumes only x - min(x) within a set, so absolute and set-relative are equivalent for build purposes; absolute is kept because it is what the file actually says and can be re-read directly. This REPLACED the 2026-08-14 bootstrap, which template-matched slides into the raster set exports and got the first gap of sets 1 and 3 wrong (1061 vs 1080, and 1056 vs 1046). Those two gaps fall in flat cream margins with zero column variance, where the matcher could slide freely at distance 0.000. Set 2 was correct throughout.",
+  "figmaFileKey": "KmVvT8SsdhQIuUPDOFjFXF",
+  "capturedAt": "2026-08-26T01:55:35.892Z",
+  "frames": [
+    {
+      "slide": 1,
+      "nodeId": "1:5",
+      "name": "Instagram post - 1",
+      "set": 1,
+      "x": -309,
+      "width": 1080,
+      "height": 1080,
+      "y": -541
+    },
+    {
+      "slide": 2,
+      "nodeId": "1:19",
+      "name": "Instagram post - 2",
+      "set": 1,
+      "x": 771,
+      "width": 1080,
+      "height": 1080,
+      "y": -541
+    },
+    {
+      "slide": 3,
+      "nodeId": "1:21",
+      "name": "Instagram post - 3",
+      "set": 1,
+      "x": 1851,
+      "width": 1080,
+      "height": 1080,
+      "y": -541
+    },
+    {
+      "slide": 4,
+      "nodeId": "1:13",
+      "name": "Instagram post - 4",
+      "set": 1,
+      "x": 2931,
+      "width": 1080,
+      "height": 1080,
+      "y": -541
+    },
+    {
+      "slide": 5,
+      "nodeId": "1:17",
+      "name": "Instagram post - 5",
+      "set": 1,
+      "x": 4011,
+      "width": 1080,
+      "height": 1080,
+      "y": -541
+    },
+    {
+      "slide": 6,
+      "nodeId": "1:15",
+      "name": "Instagram post - 6",
+      "set": 1,
+      "x": 5091,
+      "width": 1080,
+      "height": 1080,
+      "y": -541
+    },
+    {
+      "slide": 7,
+      "nodeId": "1:23",
+      "name": "Instagram post - 7",
+      "set": 1,
+      "x": 6171,
+      "width": 1080,
+      "height": 1080,
+      "y": -541
+    },
+    {
+      "slide": 8,
+      "nodeId": "1:25",
+      "name": "Instagram post - 8",
+      "set": 1,
+      "x": 7251,
+      "width": 1080,
+      "height": 1080,
+      "y": -541
+    },
+    {
+      "slide": 9,
+      "nodeId": "1:27",
+      "name": "Instagram post - 9",
+      "set": 1,
+      "x": 8331,
+      "width": 1080,
+      "height": 1080,
+      "y": -541
+    },
+    {
+      "slide": 10,
+      "nodeId": "1:29",
+      "name": "Instagram post - 10",
+      "set": 1,
+      "x": 9411,
+      "width": 1080,
+      "height": 1080,
+      "y": -541
+    },
+    {
+      "slide": 11,
+      "nodeId": "1:31",
+      "name": "Instagram post - 11",
+      "set": 2,
+      "x": -340,
+      "width": 1080,
+      "height": 1080,
+      "y": 725
+    },
+    {
+      "slide": 12,
+      "nodeId": "1:33",
+      "name": "Instagram post - 12",
+      "set": 2,
+      "x": 740,
+      "width": 1080,
+      "height": 1080,
+      "y": 725
+    },
+    {
+      "slide": 13,
+      "nodeId": "1:35",
+      "name": "Instagram post - 13",
+      "set": 2,
+      "x": 1820,
+      "width": 1080,
+      "height": 1080,
+      "y": 725
+    },
+    {
+      "slide": 14,
+      "nodeId": "1:37",
+      "name": "Instagram post - 14",
+      "set": 2,
+      "x": 2900,
+      "width": 1080,
+      "height": 1080,
+      "y": 725
+    },
+    {
+      "slide": 15,
+      "nodeId": "1:39",
+      "name": "Instagram post - 15",
+      "set": 2,
+      "x": 3980,
+      "width": 1080,
+      "height": 1080,
+      "y": 725
+    },
+    {
+      "slide": 16,
+      "nodeId": "1:41",
+      "name": "Instagram post - 16",
+      "set": 2,
+      "x": 5060,
+      "width": 1080,
+      "height": 1080,
+      "y": 725
+    },
+    {
+      "slide": 17,
+      "nodeId": "1:43",
+      "name": "Instagram post - 17",
+      "set": 2,
+      "x": 6140,
+      "width": 1080,
+      "height": 1080,
+      "y": 725
+    },
+    {
+      "slide": 18,
+      "nodeId": "1:45",
+      "name": "Instagram post - 18",
+      "set": 2,
+      "x": 7220,
+      "width": 1080,
+      "height": 1080,
+      "y": 725
+    },
+    {
+      "slide": 19,
+      "nodeId": "1:47",
+      "name": "Instagram post - 19",
+      "set": 2,
+      "x": 8300,
+      "width": 1080,
+      "height": 1080,
+      "y": 725
+    },
+    {
+      "slide": 20,
+      "nodeId": "1:49",
+      "name": "Instagram post - 20",
+      "set": 2,
+      "x": 9380,
+      "width": 1080,
+      "height": 1080,
+      "y": 725
+    },
+    {
+      "slide": 21,
+      "nodeId": "1:51",
+      "name": "Instagram post - 21",
+      "set": 3,
+      "x": -275,
+      "width": 1056,
+      "height": 1080,
+      "y": 1991
+    },
+    {
+      "slide": 22,
+      "nodeId": "1:53",
+      "name": "Instagram post - 22",
+      "set": 3,
+      "x": 771,
+      "width": 1080,
+      "height": 1080,
+      "y": 1991
+    },
+    {
+      "slide": 23,
+      "nodeId": "1:59",
+      "name": "Instagram post - 23",
+      "set": 3,
+      "x": 1851,
+      "width": 1080,
+      "height": 1080,
+      "y": 1991
+    },
+    {
+      "slide": 24,
+      "nodeId": "1:55",
+      "name": "Instagram post - 24",
+      "set": 3,
+      "x": 2931,
+      "width": 1080,
+      "height": 1080,
+      "y": 1991
+    },
+    {
+      "slide": 25,
+      "nodeId": "1:57",
+      "name": "Instagram post - 25",
+      "set": 3,
+      "x": 4010,
+      "width": 1080,
+      "height": 1080,
+      "y": 1991
+    },
+    {
+      "slide": 26,
+      "nodeId": "1:61",
+      "name": "Instagram post - 26",
+      "set": 3,
+      "x": 5090,
+      "width": 1080,
+      "height": 1080,
+      "y": 1991
+    },
+    {
+      "slide": 27,
+      "nodeId": "1:65",
+      "name": "Instagram post - 27",
+      "set": 3,
+      "x": 6170,
+      "width": 1080,
+      "height": 1080,
+      "y": 1991
+    },
+    {
+      "slide": 28,
+      "nodeId": "1:63",
+      "name": "Instagram post - 28",
+      "set": 3,
+      "x": 7250,
+      "width": 1080,
+      "height": 1080,
+      "y": 1991
+    },
+    {
+      "slide": 29,
+      "nodeId": "1:67",
+      "name": "Instagram post - 29",
+      "set": 3,
+      "x": 8330,
+      "width": 1080,
+      "height": 1080,
+      "y": 1991
+    },
+    {
+      "slide": 30,
+      "nodeId": "1:69",
+      "name": "Instagram post - 30",
+      "set": 3,
+      "x": 9410,
+      "width": 1080,
+      "height": 1080,
+      "y": 1991
+    }
+  ],
+  "capturedFrom": "figma-design-panel"
+}

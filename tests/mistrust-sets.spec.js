@@ -13,10 +13,11 @@ import sharp from 'sharp';
  * screenshot, plus whoever the full-set artefact is shared with.
  *
  * That blind spot is how a duplicated 19px seam shipped in `set-1.webp` from 2026-07-27 until
- * 2026-08-01: slides 1 and 2 share a band of artwork, and composing at cumulative native widths
- * drew it twice. `scripts/generate-mistrust-assets.js` now takes each slide's offset from the
- * Figma set export. These assertions hold the *committed* output to that contract, so a stale or
- * hand-edited strip fails here rather than silently on a page nobody screenshots.
+ * 2026-08-01, and how sets 1 and 3 were then laid out by matching slides into raster exports that
+ * did not match Figma (19px and 10px off) until 2026-11-17. `scripts/generate-mistrust-assets.js`
+ * now takes each slide's offset from `frame-geometry.json` (Figma canvas coordinates). These
+ * assertions hold the *committed* output to that contract, so a stale or hand-edited strip fails
+ * here rather than silently on a page nobody screenshots.
  *
  * No browser is used; this is pure asset verification that rides along with the gate.
  */
@@ -26,7 +27,32 @@ const ROOT = path.join(__dirname, '..');
 const REL = 'images/myart/A History of Mistrust';
 
 const composedPath = (tree, n) => path.join(ROOT, tree, REL, 'sets', `set-${n}.webp`);
-const exportPath = (n) => path.join(ROOT, REL, 'sets', `A History of Mistrust Set ${n}.png`);
+
+/* The reference is no longer the raster `A History of Mistrust Set N.png` export: those were
+   proven unfaithful on 2026-08-25 (first gap of sets 1 and 3 off by 19px and 10px) and are not
+   read since 2026-11-17. It is a lossless strip composed here, independently of the generator,
+   from the slide PNGs at the Figma canvas x of each frame in `frame-geometry.json`. */
+const geometry = JSON.parse(
+  require('node:fs').readFileSync(path.join(ROOT, REL, 'frame-geometry.json'), 'utf8')
+);
+// Canvas widths read from Figma on 2026-08-25; a geometry change has to update these on purpose.
+const EXPECTED_WIDTH = { 1: 10800, 2: 10800, 3: 10765 };
+const referenceCache = new Map();
+async function exportPath(n) {
+  if (referenceCache.has(n)) return referenceCache.get(n);
+  const frames = geometry.frames.filter((f) => f.set === n).sort((a, b) => a.x - b.x);
+  const origin = frames[0].x;
+  const width = Math.max(...frames.map((f) => f.x - origin + f.width));
+  const height = Math.max(...frames.map((f) => f.height));
+  const buf = await sharp({ create: { width, height, channels: 3, background: { r: 255, g: 255, b: 255 } } })
+    .composite(frames.map((f) => ({
+      input: path.join(ROOT, REL, `Instagram post - ${f.slide}.png`), left: f.x - origin, top: 0,
+    })))
+    .png()
+    .toBuffer();
+  referenceCache.set(n, buf);
+  return buf;
+}
 
 /** One row of per-column average brightness; `resize(w, 1)` is exactly a column mean. */
 async function columnProfile(file) {
@@ -40,11 +66,12 @@ async function columnProfile(file) {
 }
 
 for (const n of [1, 2, 3]) {
-  test(`set-${n}.webp reproduces its Figma export`, async () => {
+  test(`set-${n}.webp reproduces its Figma frame layout`, async () => {
     const composed = await columnProfile(composedPath('.', n));
-    const exported = await columnProfile(exportPath(n));
+    const exported = await columnProfile(await exportPath(n));
 
     // Geometry is the whole point: a wrong offset anywhere changes the total width.
+    expect(exported.width, `frame-geometry.json set ${n} width`).toBe(EXPECTED_WIDTH[n]);
     expect(composed.width, `set-${n} width`).toBe(exported.width);
     expect(composed.height, `set-${n} height`).toBe(exported.height);
 
@@ -114,9 +141,9 @@ function edgeDifference(a, b, size) {
 }
 
 for (const set of manifest.sets) {
-  test(`set ${set.set} slides join exactly as the Figma export does (mosaic, stage, lightbox)`, async () => {
+  test(`set ${set.set} slides join exactly as the Figma frames do (mosaic, stage, lightbox)`, async () => {
     const size = manifest.tileSize;
-    const exported = exportPath(set.set);
+    const exported = await exportPath(set.set);
     const height = (await sharp(exported).metadata()).height;
 
     // The regions must tile the export end to end with no gap and no overlap.

@@ -1,8 +1,7 @@
 # A History of Mistrust — browser re-export, and geometry from frame coordinates
 
-> **Not on portfoliowebsite (2026-11-17, Tableau).** "Shipped" and "merged" below mean merged to the old
-> `develop` branch, which Comet retired unmerged (LOGBOOK Entry 155, 2026-10-13). Nothing here is on this
-> branch or the live site; the work survives in `D:\My Stuff\Git\CometGit\_archive\portfoliowebsite-develop-2026-11-17\`.
+> **Shipped on portfoliowebsite 2026-11-17 (LOGBOOK Entry 178).** "Shipped" and "merged" below refer to
+> the old `develop` branch (retired unmerged, Entry 155); the result was ported onto portfoliowebsite.
 > Companion loop plan: [`2026-08-14-mistrust-reexport-shxdowloop.md`](2026-08-14-mistrust-reexport-shxdowloop.md).
 
 **Date:** 2026-08-14

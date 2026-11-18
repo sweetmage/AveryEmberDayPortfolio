@@ -9,11 +9,11 @@ How, in order of preference:
 1. **Local export server, reachable from their phone.** `preview_start` the `portfolio-export`
    launch config (`.claude/launch.json`: `npm run build:next && npx serve out -l 4400`), then hand
    over both:
-   - `http://localhost:4400/<page>/` for this Mac;
-   - `http://<this Mac's Tailscale IP>:4400/<page>/` for the phone or another machine on the
+   - `http://localhost:4400/<page>/` for SOL, the home checkout's machine;
+   - `http://<SOL's Tailscale IP>:4400/<page>/` for the phone or another machine on the
      tailnet. The address lives in the private fleet memory (`~/.claude/memory/fleet.md`), never in
      this repo, which is public. `serve` binds every interface, so the unreleased build is also
-     reachable from whatever LAN the Mac is on while the server runs: stop it once the review is
+     reachable from whatever LAN SOL is on while the server runs: stop it once the review is
      done.
    Prove both return 200 with `curl` before sending, and name the exact page and the interaction to
    try (for example "expand Gross").

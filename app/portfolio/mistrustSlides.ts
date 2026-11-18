@@ -25,7 +25,7 @@ const BASE = '/images/myart/A History of Mistrust/slides/';
 
 /* Slides whose mosaic tile is cut from the set strip rather than being the
    slide itself. Written by scripts/generate-mistrust-assets.js, which explains
-   why: adjacent slides can share artwork (1|2 share a 19px band) and slide 21
+   why: adjacent frames can overlap in Figma (22 sits 10px inside 21) and slide 21
    is not square, so the plain slides do not join seamlessly in the mosaic. */
 const SEAMLESS_TILES: ReadonlySet<number> = new Set(
   tileManifest.sets.flatMap((set) => set.tiles.filter((t) => t.seamless).map((t) => t.slide)),

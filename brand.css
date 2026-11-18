@@ -2123,7 +2123,10 @@ html.dark .brand-glow-text {
    than scattered so the next control added to the footer has an obvious place
    to join. The Mistrust page's 82 source links joined on 2026-10-06: no rule
    targeted them, so they painted the browser's 1px blue default ring, caught
-   by the every-stop check in tests/focus-ring.spec.js. */
+   by the every-stop check in tests/focus-ring.spec.js. The About box's
+   BubbleComet shop link (added 2026-10-20) joined on 2026-11-17 for the same
+   reason: it shipped with the browser default ring (Entry 178). */
+.about-shop-link:focus-visible,
 .sources-list a:focus-visible,
 .logo-download:focus-visible,
 .brand-footer-links a:focus-visible,

@@ -19,6 +19,22 @@ When this logbook exceeds ~1000 lines, split it:
 
 ---
 
+## Entry 178 - 2026-11-17
+
+**Agent:** Claude Code, claude-opus-5-5 (Tableau, SOL), child of Quorum (SOL)
+**Task:** Comet (via Quorum): "fix the mistrust strips" per the August re-export plan, visual check on SOL, re-capture only what changed, one production deploy carrying the two queued SOL-move notes.
+
+- **Premise check first.** On the slides that were live, slide 1's trailing 19 columns carry the orange arc (min 53) and match slide 2's leading 19 at mean abs diff 0.064, so the live 19px dedupe was correct for the live art. The 2026-08-25 geometry (1080 abut, 22 inside 21 by 10px) is only right with the 2026-08-25 repaint (there: flat cream, diff 0.000; 21|22 diff 0.140). Applying the geometry alone would have doubled the arc band. So the fix ships both, as the plan does.
+- Sources: slides 1-10, 21, 22 and `A History of Mistrust.png` from Comet's Figma export `D:\My Stuff\creations\finished\A History of Mistrust\A History of Mistrust (2)\` (all 30 byte-identical to the develop working tree). `frame-geometry.json` from develop.
+- `scripts/generate-mistrust-assets.js`: `deriveOffsets` (template-matching into `Set N.png`) replaced by develop's `frameGeometry()` + `layoutSet()`; manifest counts as a source; header rewritten. Seamless-tile logic kept. Result: set-1 10781→10800, set-3 10775→10765, set-2 byte-identical; seamless tiles now 21, 22, 24 (was 1, 2, 21, 24), so tile-01/02 (both trees, 8 files) removed; `mistrust-tiles.json` regenerated.
+- Specs: `mistrust-sets.spec.js` reference is now a lossless strip composed in-test from slide PNGs at manifest x, plus pinned widths 10800/10800/10765; `mistrust-slideshow.spec.js` expects plain slides 1-3 and tiles 21/22/24. Comments in `mistrustSlides.ts`, `MistrustSlideshow.tsx`, ARCHITECTURE.md corrected.
+- Found by the full suite, fixed in the same deploy: the home About box's BubbleComet link (0302e7f, 2026-10-20) painted the browser default focus ring. Joined the grouped accent-ring rule in `brand.css` as `.about-shop-link`. `focus-ring.spec.js` 12/12.
+- Rode along: `.agents/memories/review-links.md` (Mac → SOL) and the `scripts/logo-traces.py` docstring (VOID uv route, art repo at `D:\My Stuff\Git\CometGit\cash`).
+- Checks: tsc clean; host suite 198 passed, 0 failed, 53 skipped; Mistrust specs 37/37. Visual gate: 16 failed before re-capture, all `portfolio-mistrust` (diffs inside slideshow and mosaic bands; dark-mode heading glyphs antialias only) and `portfolio` (diff bbox 58,324-464,550 = the Mistrust thumbnail, slide-01@2x). Re-captured those 16 only (`-g "portfolio(-mistrust)? @"`), then 48/48 twice.
+- Before/after for Comet: scratchpad `strip-review/index.html` (whole strips and 1:1 joins).
+
+---
+
 ## Entry 177 - 2026-11-17
 
 **Agent:** Claude Code, claude-opus-5-5 (Tableau, SOL), child of Quorum (SOL)
