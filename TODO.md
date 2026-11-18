@@ -55,11 +55,11 @@ before a push ships in the same deploy.
       `-chromium-linux` baselines. Hosting it needs the user's call, since the standing rule is no
       GitHub Actions unless asked. Recommendation: keep it local until a visual regression actually
       slips through. [`docs/visual-gate.md`](docs/visual-gate.md#open-item--running-the-gate-in-ci).
-- [ ] **Review the re-captured visual baselines, then commit them.** Docker Desktop 29.9.3 is on SOL
+- [x] **Review the re-captured visual baselines, then commit them.** Approved by Comet and committed 2026-11-17 (Entry 177). Docker Desktop 29.9.3 is on SOL
       (Comet enabled SVM, 2026-11-17), and the gate runs there. Its first SOL run failed all 48: the
       baselines date from 2026-10-20 and miss every site change since (Redbubble footer icon and
       About sentence, Brand voice trim, Gross mockup, Texas Lake repair). Rendering itself matched.
-      All 48 are re-captured in the working tree, **not committed**, waiting on Comet's look (Entry 176).
+      All 48 were re-captured on SOL and graded 48/48 twice (Entry 176).
 - [ ] **Mistrust set strips 1 and 3 are slightly off.** The August re-export on the retired `develop`
       branch found the live `set-1.webp` and `set-3.webp` strips are not exact renders (first gap off
       by 19px and 10px). The fix exists only in the archive the plans name

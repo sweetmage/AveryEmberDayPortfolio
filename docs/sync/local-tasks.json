@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "generatedAt": "2026-11-18T04:50:03.734Z",
+  "generatedAt": "2026-11-18T05:08:35.191Z",
   "source": "TODO.md",
   "tasks": [
     {
@@ -175,9 +175,9 @@
     },
     {
       "id": "open-work-blocked-on-a-prerequisite-review-the-re-captured-visual-baselines-",
-      "title": "**Review the re-captured visual baselines, then commit them.** Docker Desktop 29.9.3 is on SOL",
+      "title": "**Review the re-captured visual baselines, then commit them.** Approved by Comet and committed 2026-11-17 (Entry 177). Docker Desktop 29.9.3 is on SOL",
       "description": null,
-      "status": "pending",
+      "status": "completed",
       "priority": "normal",
       "tags": [],
       "list": "Blocked on a prerequisite",

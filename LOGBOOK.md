@@ -19,6 +19,17 @@ When this logbook exceeds ~1000 lines, split it:
 
 ---
 
+## Entry 177 - 2026-11-17
+
+**Agent:** Claude Code, claude-opus-5-5 (Tableau, SOL), child of Quorum (SOL)
+**Task:** Comet (via Quorum) approved the 48 re-captured visual baselines from Entry 176: commit and push if no paid deploy.
+
+- Before staging, all 48 PNGs in `tests/visual-baseline.spec.js-snapshots/` compared byte for byte (`cmp`) against the copies Comet reviewed: identical.
+- Committed the 48 `-chromium-linux` baselines plus this entry and the TODO tick. Every path is under `tests/`, `TODO.md`, `LOGBOOK.md` or `docs/`, all in netlify.toml's skip list, so the push is a no-build fast-forward.
+- The gate's baselines are now SOL-native (x86_64, Docker Desktop 29.9.3). Nothing left running.
+
+---
+
 ## Entry 176 - 2026-11-17
 
 **Agent:** Claude Code, claude-opus-5-5 (Tableau, SOL), child of Quorum (SOL)
