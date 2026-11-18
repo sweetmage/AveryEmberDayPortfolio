@@ -29,7 +29,8 @@ When this logbook exceeds ~1000 lines, split it:
 - Brand-guide plan: poppler install note retargeted from Homebrew to SOL (winget), install left to Comet.
 - Not changed, on purpose: `.agents/memories/review-links.md` ("this Mac") and the `scripts/logo-traces.py` docstring (`~/Repos/cash`). Both paths fall outside netlify.toml's ignore list, so editing them would start a 15-credit build. Added to TODO's ride-along list. Historical "on VOID" lines in plans, LOGBOOK and test comments left as dated history.
 - `docs/sync/local-tasks.json` regenerated on SOL from the current TODO.md (`node scripts/parse-todo.js`, 24 tasks) instead of copying the 2026-11-08 file from the D: checkout, which predates later TODO edits.
-- Checks: `node tests/visual-docker.mjs` exits 2 with the new message (no Docker). Edited paths are all inside netlify.toml's docs-only skip list.
+- Checks: `node tests/visual-docker.mjs` exits 2 with the new message (no Docker). Edited paths are all inside netlify.toml's docs-only skip list. Push cb29de7: Netlify canceled it as no content change.
+- Follow-up at Comet's "proceed": Docker on SOL is blocked on firmware (`systeminfo`: Virtualization Enabled In Firmware: No; session not elevated), so nothing was installed; the BIOS step and install commands are in TODO. Copied the gitignored `.env` from the D: checkout into this one (Netlify token verified, 200).
 
 ---
 

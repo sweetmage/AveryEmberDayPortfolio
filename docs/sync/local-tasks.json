@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "generatedAt": "2026-11-17T21:52:04.142Z",
+  "generatedAt": "2026-11-18T00:16:34.449Z",
   "source": "TODO.md",
   "tasks": [
     {
@@ -191,7 +191,7 @@
       "priority": "normal",
       "tags": [],
       "list": "Blocked on a prerequisite",
-      "sourceLine": 63
+      "sourceLine": 67
     },
     {
       "id": "open-work-copy-pass-copy-pass-all-12-gallery-descriptions-an",
@@ -201,7 +201,7 @@
       "priority": "normal",
       "tags": [],
       "list": "Copy pass",
-      "sourceLine": 76
+      "sourceLine": 80
     },
     {
       "id": "open-work-copy-pass-copy-pass-pushed-to-portfoliowebsite-one",
@@ -211,7 +211,7 @@
       "priority": "normal",
       "tags": [],
       "list": "Copy pass",
-      "sourceLine": 79
+      "sourceLine": 83
     },
     {
       "id": "open-work-copy-pass-copy-pass-track-d-visual-baselines-regen",
@@ -221,7 +221,7 @@
       "priority": "normal",
       "tags": [],
       "list": "Copy pass",
-      "sourceLine": 81
+      "sourceLine": 85
     },
     {
       "id": "open-work-copy-pass-copy-pass-real-alt-text-for-the-12-galle",
@@ -231,7 +231,7 @@
       "priority": "normal",
       "tags": [],
       "list": "Copy pass",
-      "sourceLine": 83
+      "sourceLine": 87
     },
     {
       "id": "open-work-copy-pass-two-intermittent-motion-tests-fixed-2026",
@@ -241,7 +241,7 @@
       "priority": "normal",
       "tags": [],
       "list": "Copy pass",
-      "sourceLine": 85
+      "sourceLine": 89
     }
   ]
 }

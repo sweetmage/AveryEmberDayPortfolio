@@ -58,7 +58,11 @@ before a push ships in the same deploy.
 - [ ] **Docker on SOL, so the visual gate can run again.** SOL is the only home checkout since
       2026-11-17 and VOID only runs Python scripts (it no longer has Colima or a checkout), so the
       gate has nowhere to run until SOL gets Docker. SOL has no WSL since its reinstall, so Docker
-      Desktop's WSL2 backend needs WSL back first. Installing WSL and Docker Desktop is Comet's call.
+      Desktop's WSL2 backend needs WSL back first. **First blocker (checked 2026-11-17):**
+      `systeminfo` reports "Virtualization Enabled In Firmware: No", so Comet has to turn on
+      virtualization (SVM / VT-x) in SOL's BIOS before WSL2 can work. Then, from an admin shell:
+      `wsl --install` (reboot), `winget install Docker.DockerDesktop`, start Docker Desktop, and run
+      `node tests/visual-docker.mjs`.
       Until then, any visual change ships with the gate marked "not run" in its LOGBOOK entry.
 - [ ] **Ride along with the next site deploy** (each of these paths starts a billed build, so not on
       its own): retarget `.agents/memories/brand-voice.md` "Where it lives" from the two archived
