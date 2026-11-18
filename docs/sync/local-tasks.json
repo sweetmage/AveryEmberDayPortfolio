@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "generatedAt": "2026-11-18T00:16:34.449Z",
+  "generatedAt": "2026-11-18T04:50:03.734Z",
   "source": "TODO.md",
   "tasks": [
     {
@@ -174,14 +174,24 @@
       "sourceLine": 53
     },
     {
-      "id": "open-work-blocked-on-a-prerequisite-docker-on-sol-so-the-visual-gate-can-run",
-      "title": "**Docker on SOL, so the visual gate can run again.** SOL is the only home checkout since",
+      "id": "open-work-blocked-on-a-prerequisite-review-the-re-captured-visual-baselines-",
+      "title": "**Review the re-captured visual baselines, then commit them.** Docker Desktop 29.9.3 is on SOL",
       "description": null,
       "status": "pending",
       "priority": "normal",
       "tags": [],
       "list": "Blocked on a prerequisite",
       "sourceLine": 58
+    },
+    {
+      "id": "open-work-blocked-on-a-prerequisite-mistrust-set-strips-1-and-3-are-slightly",
+      "title": "**Mistrust set strips 1 and 3 are slightly off.** The August re-export on the retired `develop`",
+      "description": null,
+      "status": "pending",
+      "priority": "normal",
+      "tags": [],
+      "list": "Blocked on a prerequisite",
+      "sourceLine": 63
     },
     {
       "id": "open-work-blocked-on-a-prerequisite-ride-along-with-the-next-site-deploy-eac",
@@ -191,7 +201,7 @@
       "priority": "normal",
       "tags": [],
       "list": "Blocked on a prerequisite",
-      "sourceLine": 67
+      "sourceLine": 68
     },
     {
       "id": "open-work-copy-pass-copy-pass-all-12-gallery-descriptions-an",
@@ -201,7 +211,7 @@
       "priority": "normal",
       "tags": [],
       "list": "Copy pass",
-      "sourceLine": 80
+      "sourceLine": 81
     },
     {
       "id": "open-work-copy-pass-copy-pass-pushed-to-portfoliowebsite-one",
@@ -211,7 +221,7 @@
       "priority": "normal",
       "tags": [],
       "list": "Copy pass",
-      "sourceLine": 83
+      "sourceLine": 84
     },
     {
       "id": "open-work-copy-pass-copy-pass-track-d-visual-baselines-regen",
@@ -221,7 +231,7 @@
       "priority": "normal",
       "tags": [],
       "list": "Copy pass",
-      "sourceLine": 85
+      "sourceLine": 86
     },
     {
       "id": "open-work-copy-pass-copy-pass-real-alt-text-for-the-12-galle",
@@ -231,7 +241,7 @@
       "priority": "normal",
       "tags": [],
       "list": "Copy pass",
-      "sourceLine": 87
+      "sourceLine": 88
     },
     {
       "id": "open-work-copy-pass-two-intermittent-motion-tests-fixed-2026",
@@ -241,7 +251,7 @@
       "priority": "normal",
       "tags": [],
       "list": "Copy pass",
-      "sourceLine": 89
+      "sourceLine": 90
     }
   ]
 }

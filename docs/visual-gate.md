@@ -57,11 +57,15 @@ Rosetta capture matches a native x86-64 host pixel for pixel is expected, not ye
 Docker host has run the gate yet.
 
 **Where it runs now (2026-11-17):** SOL is the only home checkout and VOID only runs Python
-scripts, with no checkout and no Colima. The gate belongs on SOL, and **SOL has no Docker yet** (no
-WSL since its reinstall), so until Docker Desktop is installed there the gate is not run and a
-visual change records it as "not run". The first SOL run is also the first native x86-64 run: if
-it fails on unchanged pages, that is the Rosetta question answered, and the fix is one reviewed
-`--update-snapshots=all` on SOL. See `TODO.md`, "Docker on SOL".
+scripts, with no checkout and no Colima. The gate runs on SOL with Docker Desktop (29.9.3,
+WSL2 backend, x86_64; installed 2026-11-17 after SVM was enabled in firmware). Start Docker
+Desktop, then `node tests/visual-docker.mjs`.
+
+**First native x86-64 run, 2026-11-17 (Entry 176):** all 48 failed, but every failure traced to a
+site change made after the 2026-10-20 capture (Redbubble footer icon and About sentence, Brand
+voice trim, Gross mockup, Texas Lake repair); unchanged regions such as the Contact form matched
+by eye. The Rosetta-vs-native question is therefore not cleanly answered by that run. It is
+answered by the re-captured set grading itself twice in a row on SOL.
 
 **Never run the host suite and the container gate at the same time.** Both build into the same
 `out/` through the bind mount, and a build mid-run is Trap 2.

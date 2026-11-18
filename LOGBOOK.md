@@ -19,6 +19,19 @@ When this logbook exceeds ~1000 lines, split it:
 
 ---
 
+## Entry 176 - 2026-11-17
+
+**Agent:** Claude Code, claude-opus-5-5 (Tableau, SOL), child of Quorum (SOL)
+**Task:** Comet (via Quorum): Docker is on SOL, run the visual gate and prepare any re-capture for review without committing; sort the old `D:\My Stuff\Git\CometGit\portfoliowebsite` checkout so Comet can retire it.
+
+- Visual gate, first SOL run (Docker Desktop 29.9.3, x86_64): 48 of 48 failed. Every failure traced to site changes made after the 2026-10-20 capture: Redbubble footer icon on every page and the BubbleComet About sentence (0302e7f, 2026-10-20), Brand voice trim (6bd62ad), Gross mockup (9282489), Texas Lake repair (5359f24). Contact at 1440 dark compared side by side: identical apart from the footer icon.
+- `--update-snapshots=all` rewrote all 48; the gate then passed 48/48 twice in a row. New PNGs are in the working tree, **not committed**, waiting on Comet's review. Review page with old and new side by side: scratchpad `baseline-review.html` (old copies in `old-baselines/`).
+- Old checkout: 5 commits on retired `develop` (focus-ring fix and LOGBOOK archive already on portfoliowebsite in other form; branch-policy doc superseded; Mistrust stage 0 retired by Comet in Entry 155), 3 stashes (gallery tags shipped; June legacy-page bubble glow obsolete; Mistrust Stage 1 re-export), 92 uncommitted files (the rest of that re-export, dead win32 baselines, regenerable files). Nothing touched there. Everything unmerged is archived at `D:\My Stuff\Git\CometGit\_archive\portfoliowebsite-develop-2026-11-17\` (bundle of develop minus df0db2d, verified; binary patches for the 3 stashes and the working tree; README.txt).
+- Brought over, docs only: the two 2026-08-14 Mistrust re-export plans, each headed with a note that none of it is on this branch. TODO gains "Mistrust set strips 1 and 3 are slightly off" for Comet's call, and "Review the re-captured visual baselines" replaces "Docker on SOL". `docs/visual-gate.md`, AGENTS.md and the runner's error message now say the gate runs on SOL.
+- No deploy: committed paths are all inside netlify.toml's skip list.
+
+---
+
 ## Entry 175 - 2026-11-17
 
 **Agent:** Claude Code, claude-opus-5-5 (Tableau, SOL), child of Quorum (SOL)

@@ -36,7 +36,7 @@ const image = `mcr.microsoft.com/playwright:v${version}-noble`;
 
 const docker = spawnSync('docker', ['info', '--format', '{{.ServerVersion}}'], { encoding: 'utf8' });
 if (docker.status !== 0) {
-  console.error('visual-docker: Docker is not running. Run the gate on SOL with Docker Desktop started (see TODO.md "Docker on SOL").');
+  console.error('visual-docker: Docker is not running. Start Docker Desktop on SOL and rerun (docs/visual-gate.md).');
   process.exit(2);
 }
 

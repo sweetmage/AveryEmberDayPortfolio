@@ -55,15 +55,16 @@ before a push ships in the same deploy.
       `-chromium-linux` baselines. Hosting it needs the user's call, since the standing rule is no
       GitHub Actions unless asked. Recommendation: keep it local until a visual regression actually
       slips through. [`docs/visual-gate.md`](docs/visual-gate.md#open-item--running-the-gate-in-ci).
-- [ ] **Docker on SOL, so the visual gate can run again.** SOL is the only home checkout since
-      2026-11-17 and VOID only runs Python scripts (it no longer has Colima or a checkout), so the
-      gate has nowhere to run until SOL gets Docker. SOL has no WSL since its reinstall, so Docker
-      Desktop's WSL2 backend needs WSL back first. **First blocker (checked 2026-11-17):**
-      `systeminfo` reports "Virtualization Enabled In Firmware: No", so Comet has to turn on
-      virtualization (SVM / VT-x) in SOL's BIOS before WSL2 can work. Then, from an admin shell:
-      `wsl --install` (reboot), `winget install Docker.DockerDesktop`, start Docker Desktop, and run
-      `node tests/visual-docker.mjs`.
-      Until then, any visual change ships with the gate marked "not run" in its LOGBOOK entry.
+- [ ] **Review the re-captured visual baselines, then commit them.** Docker Desktop 29.9.3 is on SOL
+      (Comet enabled SVM, 2026-11-17), and the gate runs there. Its first SOL run failed all 48: the
+      baselines date from 2026-10-20 and miss every site change since (Redbubble footer icon and
+      About sentence, Brand voice trim, Gross mockup, Texas Lake repair). Rendering itself matched.
+      All 48 are re-captured in the working tree, **not committed**, waiting on Comet's look (Entry 176).
+- [ ] **Mistrust set strips 1 and 3 are slightly off.** The August re-export on the retired `develop`
+      branch found the live `set-1.webp` and `set-3.webp` strips are not exact renders (first gap off
+      by 19px and 10px). The fix exists only in the archive the plans name
+      ([plan](docs/plans/2026-08-14-mistrust-reexport-shxdowloop.md)). Comet decides: finish it (a
+      site change and a deploy) or leave the strips as they are.
 - [ ] **Ride along with the next site deploy** (each of these paths starts a billed build, so not on
       its own): retarget `.agents/memories/brand-voice.md` "Where it lives" from the two archived
       brand-voice plans to the live `BrandVoice` section and `git show 237d559:` / `git show 031bacf:`
