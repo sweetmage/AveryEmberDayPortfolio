@@ -32,6 +32,7 @@ When this logbook exceeds ~1000 lines, split it:
 - Rode along: `.agents/memories/review-links.md` (Mac → SOL) and the `scripts/logo-traces.py` docstring (VOID uv route, art repo at `D:\My Stuff\Git\CometGit\cash`).
 - Checks: tsc clean; host suite 198 passed, 0 failed, 53 skipped; Mistrust specs 37/37. Visual gate: 16 failed before re-capture, all `portfolio-mistrust` (diffs inside slideshow and mosaic bands; dark-mode heading glyphs antialias only) and `portfolio` (diff bbox 58,324-464,550 = the Mistrust thumbnail, slide-01@2x). Re-captured those 16 only (`-g "portfolio(-mistrust)? @"`), then 48/48 twice.
 - Before/after for Comet: scratchpad `strip-review/index.html` (whole strips and 1:1 joins).
+- Release: pushed `2ccf5b9` (fast-forward from 1074754), one production deploy at Comet's instruction. Netlify deploy `6afd42e717dfee870280eb53` ready. Live check: set-1 10800x1080, set-2 10800x1080, set-3 10765x1080, slide-01, slide-02@2x, slide-22, tile-21, tile-22@2x, tile-24 all byte-identical to `public/`; tile-01 404; /, /portfolio/, /portfolio/history-of-mistrust/, /portfolio/brand/, /contact/ 200; the live Mistrust page references tile-21/22/24; home carries `about-shop-link`.
 
 ---
 
