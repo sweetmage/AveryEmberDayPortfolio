@@ -19,6 +19,18 @@ When this logbook exceeds ~1000 lines, split it:
 
 ---
 
+## Entry 179 - 2026-11-21
+
+**Agent:** Claude Code, claude-opus-5-5 (Sparkle, SOL), child of Quorum (SOL)
+**Task:** Comet: "add an image of my first logo from my drafts in my retro design to my current brand design, it is missing a visual".
+
+- Brand guide page 20 ("How the marks evolved") had three text-only cards. Each now leads with its mark: `assets/retro/retro-first-iteration.png` (496x494) and `assets/retro/retro-second-iteration.png` (506x488), both cropped from the retro guide's Drafts page (`D:\My Stuff\creations\finished\BrandAveryEmberDay\BrandAveryEmberDay\Avery Ember Day Brand Identity Guide.png\Avery Ember Day - Brand Guide - Page 07.png`), plus the current `bubbleLogo.svg` on white. Only the first was asked for; the other two keep the row even.
+- `guide.css`: `.evolve-img` (square, contain, black plate) and `.evolve-img--light` (white plate, 18% padding).
+- PDF rebuilt with `node scripts/build-brand-guide.mjs`: 20 pages, font check passed, page 20 checked by eye.
+- Docs-only push; netlify.toml's ignore rule skips the build.
+
+---
+
 ## Entry 178 - 2026-11-17
 
 **Agent:** Claude Code, claude-opus-5-5 (Tableau, SOL), child of Quorum (SOL)

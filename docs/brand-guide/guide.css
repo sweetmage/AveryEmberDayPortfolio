@@ -212,3 +212,5 @@ h3 { font: 600 13pt/1.2 var(--brand-font-heading); margin: 0 0 8px; }
 .evolve { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 14px; margin-top: 10px; }
 .evolve-step { padding: 16px 16px 18px; border-radius: var(--brand-radius-lg); background: rgba(0,0,0,.04); }
 .evolve-step .note { color: var(--ink-soft); margin: 6px 0 0; }
+.evolve-img { display: block; width: 100%; aspect-ratio: 1; object-fit: contain; background: #000; border-radius: var(--brand-radius-md); margin-bottom: 12px; }
+.evolve-img--light { background: #fff; padding: 18%; box-sizing: border-box; }
