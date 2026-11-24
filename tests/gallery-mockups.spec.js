@@ -34,7 +34,7 @@ const declared = [...dataSource.matchAll(
 
 const CAPTIONS = [
   'In Danger', 'Chill', 'Gross', 'Emergence', 'Faces', 'Lollipop',
-  'Overflow', 'Stairs', 'Beheaded', 'Shadow', 'Texas Lake Landscape', 'Moonlight',
+  'Overflow', 'Stairs', 'Beheaded', 'Shadow', 'Texas Lake Landscape', 'Moonlight', 'Redwoods',
 ];
 
 /* Collapsed card (<figure>) heights in px, measured at base commit 20860ef (the
@@ -46,6 +46,7 @@ const BASE_COLLAPSED_HEIGHTS = {
     'In Danger': 462.09, Chill: 547.81, Gross: 434.53, Emergence: 462.09,
     Faces: 451.91, Lollipop: 452.59, Overflow: 472.06, Stairs: 563.47,
     Beheaded: 455.38, Shadow: 425.03, 'Texas Lake Landscape': 345.23, Moonlight: 276.77,
+    Redwoods: 438.47, // added 2026-11-23, measured at 360px with the preview line subtracted
   },
   768: 625.64,
   1024: 626.64,
@@ -60,8 +61,8 @@ const card = (page, caption) =>
 
 test.describe('gallery print mockups', () => {
   test('declared mockups mirror the manifest', () => {
-    expect(manifest.items).toHaveLength(24);
-    expect(declared).toHaveLength(24);
+    expect(manifest.items).toHaveLength(26);
+    expect(declared).toHaveLength(26);
     for (const item of manifest.items) {
       const entry = declared.find((d) => d.slug === item.slug && d.kind === item.kind);
       expect(entry, `gallery-data.ts has the ${item.kind} mockup for ${item.slug}`).toBeTruthy();
@@ -73,7 +74,7 @@ test.describe('gallery print mockups', () => {
   test('every piece has two mockups, each a different kind in a different scene', () => {
     const bySlug = {};
     for (const item of manifest.items) (bySlug[item.slug] ||= []).push(item);
-    expect(Object.keys(bySlug)).toHaveLength(12);
+    expect(Object.keys(bySlug)).toHaveLength(13);
     for (const [slug, rows] of Object.entries(bySlug)) {
       expect(rows, slug).toHaveLength(2);
       expect(rows[0].kind, slug).not.toBe(rows[1].kind);

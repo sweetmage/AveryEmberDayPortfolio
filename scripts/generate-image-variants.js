@@ -37,6 +37,7 @@ const MANIFEST = [
     'lollypopFinal.webp',
     'MoonlightFinal.webp',
     'overflowFinal.webp',
+    'RedwoodsFinal.webp',
     'ShadowFinal.webp',
     'stairsFinal.webp',
     'txlakelandscapeFinal.webp',

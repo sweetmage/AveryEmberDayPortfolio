@@ -357,4 +357,32 @@ export const galleryItems: GalleryItem[] = [
       },
     ],
   },
+  {
+    src: '/images/myart/Gallery/RedwoodsFinal.webp',
+    alt:
+      'Two redwood trunks glowing orange and pink, their bark split by dark veins, with a deep teal forest between them.',
+    caption: 'Redwoods',
+    width: 1200,
+    height: 1498,
+    tags: ['Traditional'],
+    tools: ['Acrylic Paint'],
+    description:
+      'An acrylic painting on canvas. Two redwood trunks fill the frame, their bark broken into long flame-like shapes of orange, coral and pink by dark, winding veins. Between them, a deep teal forest fades back into shadow.',
+    mockups: [
+      {
+        src: '/images/myart/Mockups/redwoods-canvas.webp',
+        width: 1600,
+        height: 1067,
+        alt: 'Redwoods as a stretched canvas print on a warm off-white wall',
+        kind: 'canvas',
+      },
+      {
+        src: '/images/myart/Mockups/redwoods-framed.webp',
+        width: 1600,
+        height: 1067,
+        alt: 'Redwoods in a thin black frame with a white mat on a light grey plaster wall',
+        kind: 'framed',
+      },
+    ],
+  },
 ];

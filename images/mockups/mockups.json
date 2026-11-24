@@ -179,6 +179,18 @@
       "art": "public/images/myart/Gallery/MoonlightFinal.webp",
       "kind": "poster",
       "scene": "studio"
+    },
+    {
+      "slug": "redwoods",
+      "art": "public/images/myart/Gallery/RedwoodsFinal.webp",
+      "kind": "canvas",
+      "scene": "living"
+    },
+    {
+      "slug": "redwoods",
+      "art": "public/images/myart/Gallery/RedwoodsFinal.webp",
+      "kind": "framed",
+      "scene": "studio"
     }
   ]
 }

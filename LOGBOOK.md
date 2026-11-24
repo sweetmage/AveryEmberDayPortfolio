@@ -19,6 +19,19 @@ When this logbook exceeds ~1000 lines, split it:
 
 ---
 
+## Entry 180 - 2026-11-23
+
+**Agent:** Claude Code, claude-opus-5-5 (Whimsy, SOL)
+**Task:** Comet: "i uploaded a new painting "redwoods" to icloud. please put this picture on my portfolio website and my redbubble and schedule posts for it".
+
+- Source: iCloud `ArtBridge/Redwoods.jpeg` (`D:\My Stuff\iCloudDrive\iCloudDrive\ArtBridge\`), 2862x3573 RGB photo of the canvas, sha256 80e316f3... (pinned in cash `scripts/redbubble_prints.py`). Medium per Comet: acrylic on canvas.
+- `RedwoodsFinal.webp` 1200x1498, white watermark composited as ce81a48 (27% of width, 2.7% margin, bottom-right, q88), written to `public/images/myart/Gallery/`, `images/myart/Gallery/` and `images/watermarked/Gallery/` like the other 12. `-480w`/`-900w` via `generate-image-variants.js` (added to its MANIFEST).
+- `gallery-data.ts`: Redwoods appended after Moonlight (Traditional, Acrylic Paint, alt and description). Mockups: canvas/living and framed/studio in `mockups.json`. `npm run images:mockups` re-encoded all 24 existing mockups with different bytes; those were restored, only the 6 Redwoods files are new.
+- `gallery-mockups.spec.js`: 26 items, 13 pieces, `Redwoods` in CAPTIONS, 360px base height 438.47 (measured, preview line subtracted).
+- Verify: host `gallery-mockups` + `gallery-expand` + `smoke-next`, 61 passed 1 skipped. Container visual gate on SOL (Docker Desktop started headless with `docker desktop start`): 40 passed, exactly the 8 `portfolio @` captures failed (new card), re-captured with `-g "portfolio @" --update-snapshots=all`; 1440 dark checked by eye (Redwoods alone on the last row, 13 cards in 3 columns).
+
+---
+
 ## Entry 179 - 2026-11-21
 
 **Agent:** Claude Code, claude-opus-5-5 (Sparkle, SOL), child of Quorum (SOL)
